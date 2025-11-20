@@ -6,7 +6,7 @@ if (! function_exists('get_options')) {
     function get_options(string $key, bool $decode = false, $locale = false)
     {
         if ($locale === true) {
-            $cachekey = $key.$locale;
+            $cachekey = $key . $locale;
         } else {
             $cachekey = $key;
         }

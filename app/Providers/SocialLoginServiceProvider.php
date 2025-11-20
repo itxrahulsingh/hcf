@@ -20,14 +20,12 @@ class SocialLoginServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('app.installed')) {
-            // Login with google
-            config()->set('services.google.client_id', Setting::pull('google_client_id'));
-            config()->set('services.google.client_secret', Setting::pull('google_client_secret'));
+        // Login with google
+        config()->set('services.google.client_id', Setting::pull('google_client_id'));
+        config()->set('services.google.client_secret', Setting::pull('google_client_secret'));
 
-            // Login with facebook
-            config()->set('services.facebook.client_id', Setting::pull('facebook_app_id'));
-            config()->set('services.facebook.client_secret', Setting::pull('facebook_app_secret'));
-        }
+        // Login with facebook
+        config()->set('services.facebook.client_id', Setting::pull('facebook_app_id'));
+        config()->set('services.facebook.client_secret', Setting::pull('facebook_app_secret'));
     }
 }

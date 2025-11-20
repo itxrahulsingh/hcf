@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CaseStudyCategoriesController;
 use App\Http\Controllers\Admin\CaseStudyController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CauseController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\CouponController;
@@ -393,6 +394,28 @@ Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
     Route::put('/update/{product}', [ProductController::class, 'update'])->name('update')->can('products.edit');
     Route::delete('/destroy/{product}', [ProductController::class, 'destroy'])->name('destroy')->can('products.delete');
     Route::delete('/bulk-delete', [ProductController::class, 'bulkDelete'])->name('bulk.delete')->can('products.delete');
+});
+
+// Causse category Routes
+Route::group(['prefix' => 'cause-categories', 'as' => 'cause.categories.'], function () {
+    Route::get('/', [CauseCategoryController::class, 'index'])->name('index')->can('cause_categories.index');
+    Route::get('/create', [CauseCategoryController::class, 'create'])->name('create')->can('cause_categories.create');
+    Route::post('/store', [CauseCategoryController::class, 'store'])->name('store')->can('cause_categories.create');
+    Route::get('/edit/{category}', [CauseCategoryController::class, 'edit'])->name('edit')->can('cause_categories.edit');
+    Route::put('/update/{category}', [CauseCategoryController::class, 'update'])->name('update')->can('cause_categories.edit');
+    Route::delete('/destroy/{category}', [CauseCategoryController::class, 'destroy'])->name('destroy')->can('cause_categories.delete');
+    Route::delete('/bulk-delete', [CauseCategoryController::class, 'bulkDelete'])->name('bulk.delete')->can('cause_categories.delete');
+});
+
+// Causes Routes
+Route::group(['prefix' => 'causes', 'as' => 'causes.'], function () {
+    Route::get('/', [CauseController::class, 'index'])->name('index')->can('causes.index');
+    Route::get('/create', [CauseController::class, 'create'])->name('create')->can('causes.create');
+    Route::post('/store', [CauseController::class, 'store'])->name('store')->can('causes.create');
+    Route::get('/edit/{cause}', [CauseController::class, 'edit'])->name('edit')->can('causes.edit');
+    Route::put('/update/{cause}', [CauseController::class, 'update'])->name('update')->can('causes.edit');
+    Route::delete('/destroy/{cause}', [CauseController::class, 'destroy'])->name('destroy')->can('causes.delete');
+    Route::delete('/bulk-delete', [CauseController::class, 'bulkDelete'])->name('bulk.delete')->can('causes.delete');
 });
 
 /** Coupon routes **/

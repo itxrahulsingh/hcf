@@ -122,29 +122,20 @@ class MediaController extends Controller
         $fileSize = $file->getSize();
         $fileType = $file->getMimeType();
 
-        /*
-    |--------------------------------------------------------------------------
-    | Detect file type and assign folder
-    |--------------------------------------------------------------------------
-    */
-        if (str_starts_with($fileType, 'image')) {
-            $baseFolder = 'media/images/';
-        } elseif (str_starts_with($fileType, 'video')) {
-            $baseFolder = 'media/videos/';
-        } elseif (str_starts_with($fileType, 'audio')) {
-            $baseFolder = 'media/audios/';
-        } else {
-            $baseFolder = 'media/documents/';
-        }
+        // if (str_starts_with($fileType, 'image')) {
+        //     $baseFolder = 'media/images/';
+        // } elseif (str_starts_with($fileType, 'video')) {
+        //     $baseFolder = 'media/videos/';
+        // } elseif (str_starts_with($fileType, 'audio')) {
+        //     $baseFolder = 'media/audios/';
+        // } else {
+        //     $baseFolder = 'media/documents/';
+        // }
+        $baseFolder = 'media/';
 
         // Year/Month structure
         $folder = $baseFolder . date('Y') . '/' . date('m');
 
-        /*
-    |--------------------------------------------------------------------------
-    | Create sluggified + unique filename
-    |--------------------------------------------------------------------------
-    */
         $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $extension    = $file->getClientOriginalExtension();
 
@@ -153,11 +144,6 @@ class MediaController extends Controller
 
         $fileName = "{$slug}-{$unique}.{$extension}";
 
-        /*
-    |--------------------------------------------------------------------------
-    | Get dimensions if image (and not SVG)
-    |--------------------------------------------------------------------------
-    */
         $imageDimensions = null;
         if (str_starts_with($fileType, 'image') && $fileType !== 'image/svg+xml') {
             $dimensions = @getimagesize($file->getPathname());
@@ -166,19 +152,9 @@ class MediaController extends Controller
             }
         }
 
-        /*
-    |--------------------------------------------------------------------------
-    | Store file
-    |--------------------------------------------------------------------------
-    */
         $disk = config('filesystems.default');
         $path = $file->storeAs($folder, $fileName, $disk);
 
-        /*
-    |--------------------------------------------------------------------------
-    | Save database record
-    |--------------------------------------------------------------------------
-    */
         $media = Media::create([
             'title'      => $originalName,
             'user_id'    => Auth::id(),

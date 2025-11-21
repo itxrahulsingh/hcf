@@ -16,15 +16,15 @@ class UpdateController extends Controller
     public function update()
     {
         $sql_path = base_path('update.sql');
-        if (file_exists($sql_path)){
+        if (file_exists($sql_path)) {
             DB::unprepared(file_get_contents($sql_path));
             // copy language file
             $language = json_decode(Setting::pull('languages'), true);
             $directory = base_path('lang/');
             $newData = base_path('lang.json');
             $newLangData = json_decode(File::get($newData), true);
-            foreach ($language as $key => $lang){
-                $path = $directory.$key.'.json';
+            foreach ($language as $key => $lang) {
+                $path = $directory . $key . '.json';
                 $existingData = [];
                 if (File::exists($path)) {
                     $existingData = json_decode(File::get($path), true);
@@ -48,7 +48,7 @@ class UpdateController extends Controller
     {
         $pagePath = base_path('page.json');
         $pageData = json_decode(File::get($pagePath), true);
-        foreach ($pageData as $value){
+        foreach ($pageData as $value) {
             $page = Page::create([
                 'slug' => $value['slug'],
                 'type' => $value['type'],
@@ -61,7 +61,7 @@ class UpdateController extends Controller
 
 
             $language = json_decode(Setting::pull('languages'), true);
-            foreach ($language as $key => $lang){
+            foreach ($language as $key => $lang) {
                 PageContent::create([
                     'page_id' => $page->id,
                     'language_code' => $key,

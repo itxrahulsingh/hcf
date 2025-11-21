@@ -12,7 +12,7 @@ import ThSortable from "@/Admin/Components/Table/ThSortable"
 import hasPermission from "@/Admin/Utils/hasPermission"
 import translate from "@/utils/translate"
 
-export default function Index({ products = { data: [], total: 0, links: [] }, sort = {}, filtered_lang, languages = {} }) {
+export default function Index({ causes = { data: [], total: 0, links: [] }, sort = {}, filtered_lang, languages = {} }) {
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedLang, setSelectedLang] = useState(filtered_lang)
     const [selectedOption, setSelectedOption] = useState("Bulk Action")
@@ -21,7 +21,7 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
 
     const getResults = (search, lang) => {
         router.get(
-            route("admin.products.index", {
+            route("admin.causes.index", {
                 search: search ?? searchQuery,
                 sort: sort,
                 filter: {
@@ -42,7 +42,7 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
             setMarkItems([])
             setIsMarkAll(false)
         } else {
-            const items = products.data.map((product) => product.id)
+            const items = causes.data.map((product) => product.id)
             setMarkItems(items)
             setIsMarkAll(true)
         }
@@ -64,8 +64,8 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
         let action = ""
 
         if (selectedOption === "Delete") {
-            confirmMessage = "You want to delete selected products?"
-            action = "admin.products.bulk.delete"
+            confirmMessage = "You want to delete selected causes?"
+            action = "admin.causes.bulk.delete"
         }
         setIsMarkAll([])
         showAlert("Are you sure?", confirmMessage, selectedOption + "!", () => {
@@ -165,8 +165,8 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
                                                 <IonIcon icon={search} />
                                             </button>
                                         </div>
-                                        {hasPermission("products.create") && (
-                                            <Link href={route("admin.products.create")} className="btn btn-success btn-sm yoo-table-btn1">
+                                        {hasPermission("causes.create") && (
+                                            <Link href={route("admin.causes.create")} className="btn btn-success btn-sm yoo-table-btn1">
                                                 <span className="yoo-add">+</span> {translate("Create New")}
                                             </Link>
                                         )}
@@ -192,7 +192,7 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
                                                 <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="status">
                                                     {translate("Status")}
                                                 </ThSortable>
-                                                {(hasPermission("products.edit") || hasPermission("products.delete")) && (
+                                                {(hasPermission("causes.edit") || hasPermission("causes.delete")) && (
                                                     <th style={{ width: "10%" }} className="sorting">
                                                         {translate("Action")}
                                                     </th>
@@ -200,7 +200,7 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {products.data.map((product, index) => (
+                                            {causes.data.map((product, index) => (
                                                 <tr className="odd" key={index}>
                                                     <td className="sorting_1" onClick={() => handleMark(product.id)}>
                                                         <div
@@ -218,12 +218,12 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
                                                         {product.status === 1 && <span className="badge badge-success">Active</span>}
                                                         {product.status === 0 && <span className="badge badge-warning">Inactive</span>}
                                                     </td>
-                                                    {(hasPermission("products.edit") || hasPermission("products.delete")) && (
+                                                    {(hasPermission("causes.edit") || hasPermission("causes.delete")) && (
                                                         <td>
                                                             <div className="yoo-group-btn">
-                                                                {hasPermission("products.edit") && (
+                                                                {hasPermission("causes.edit") && (
                                                                     <Link
-                                                                        href={route("admin.products.edit", product)}
+                                                                        href={route("admin.causes.edit", product)}
                                                                         className="badge badge-primary"
                                                                     >
                                                                         <IonIcon
@@ -235,7 +235,7 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
                                                                         />
                                                                     </Link>
                                                                 )}
-                                                                {hasPermission("products.show") && (
+                                                                {hasPermission("causes.show") && (
                                                                     <a
                                                                         href={route("shop.show", product.slug)}
                                                                         target="_blank"
@@ -250,8 +250,8 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
                                                                         />
                                                                     </a>
                                                                 )}
-                                                                {hasPermission("products.delete") && (
-                                                                    <DeleteButton href={route("admin.products.destroy", product)} />
+                                                                {hasPermission("causes.delete") && (
+                                                                    <DeleteButton href={route("admin.causes.destroy", product)} />
                                                                 )}
                                                             </div>
                                                         </td>
@@ -260,7 +260,7 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
                                             ))}
                                         </tbody>
                                     </table>
-                                    {products.total === 0 && (
+                                    {causes.total === 0 && (
                                         <div
                                             className="no-data-found"
                                             style={{
@@ -277,10 +277,10 @@ export default function Index({ products = { data: [], total: 0, links: [] }, so
                         </div>
                     </div>
                 </div>
-                {products.total > 1 && (
+                {causes.total > 1 && (
                     <div className="pagination-wrapper" style={{ marginTop: "10px" }}>
                         <ul className="pagination">
-                            {products.links.map((link, index) => (
+                            {causes.links.map((link, index) => (
                                 <li className={`page-item ${link.active ? "active" : ""}`} key={`pagination_${index}`}>
                                     <Link
                                         href={link.url}

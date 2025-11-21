@@ -44,7 +44,7 @@ class InstallController extends Controller
 
     public function step3()
     {
-        if (!self::core()){
+        if (!self::core()) {
             return redirect()->route('step2');
         }
         return view('installation.step3');
@@ -52,7 +52,7 @@ class InstallController extends Controller
 
     public function step4()
     {
-        if (!self::core()){
+        if (!self::core()) {
             return redirect()->route('step2');
         }
         return view('installation.step4');
@@ -60,7 +60,7 @@ class InstallController extends Controller
 
     public function step5()
     {
-        if (!self::core()){
+        if (!self::core()) {
             return redirect()->route('step2');
         }
         return view('installation.step5');
@@ -130,7 +130,9 @@ class InstallController extends Controller
             $val = trim($val);
             if (is_numeric(strpos(file_get_contents($path), $type)) && strpos(file_get_contents($path), $type) >= 0) {
                 file_put_contents($path, str_replace(
-                    $type.'='.env($type), $type.'='.$val, file_get_contents($path)
+                    $type . '=' . env($type),
+                    $type . '=' . $val,
+                    file_get_contents($path)
                 ));
             }
         }
@@ -149,7 +151,6 @@ class InstallController extends Controller
 
     private function updatePageLink()
     {
-
         $newDomain = request()->getHost();
         // update page
         Page::with('contents')->each(function ($page) {

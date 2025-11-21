@@ -27,6 +27,9 @@ return new class extends Migration
             $table->date('deadline')->nullable();
             $table->enum('status', [0, 1])->comment('0 means unpublished, 1 means published')->default(0);
             $table->string('meta_image', 255)->nullable();
+            $table->string('meta_title', 255)->nullable()->comment('meta title for seo');
+            $table->string('meta_tags', 255)->nullable();
+            $table->string('meta_description', 255)->nullable()->comment('meta description for seo');
             $table->timestamps();
         });
 
@@ -39,9 +42,6 @@ return new class extends Migration
             $table->longText('projects')->nullable();
             $table->text('faq')->nullable();
             $table->text('updates')->nullable();
-            $table->string('meta_title', 255)->nullable()->comment('meta title for seo');
-            $table->string('meta_tags', 255)->nullable();
-            $table->string('meta_description', 255)->nullable()->comment('meta description for seo');
             $table->timestamps();
 
             // Foreign key constraint

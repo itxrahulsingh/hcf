@@ -94,7 +94,9 @@ class HandleInertiaRequests extends Middleware
             config()->set('app.name', $appName);
             $sql_path = base_path('update.sql');
             if (! file_exists($sql_path)) {
-                eval(base64_decode('aWYgKCFjb25maWcoImFwcC5hY3RpdmUiKSl7CiAgICAgICAgICAgICAgICBhYm9ydChiYXNlNjRfZGVjb2RlKCJOREF6IiksIGJhc2U2NF9kZWNvZGUoIlRHbGpaVzVqWlNCdWIzUWdZV04wYVhaaGRHVT0iKSk7CiAgICAgICAgICAgIH0='));
+                if (!config("app.active")) {
+                    abort(403, 'Licence not activated. Please contact support.');
+                }
             }
         }
 

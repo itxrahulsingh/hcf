@@ -26,9 +26,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(CurrencySeeder::class);
         // $this->call(LanguageSeeder::class);
 
-        User::create(['name' => 'Mahadi Hasan', 'email' => 'mahadicreation@gmail.com', 'about' => 'Full stack web developer', 'password' => Hash::make('password'), 'email_verified_at' => Carbon::now()])->assignRole('admin');
-        User::create(['name' => 'Rakibul Islam', 'email' => 'dr.rakibulislammridha@gmail.com', 'about' => 'Full stack web developer', 'password' => Hash::make('password'), 'email_verified_at' => Carbon::now()])->assignRole('admin');
-        User::create(['name' => 'Tamzid Bin Mortaza', 'email' => 'tamzidbinmortaza@gmail.com', 'about' => 'Frontend web developer', 'password' => Hash::make('password'), 'email_verified_at' => Carbon::now()])->assignRole('admin');
+        User::create(['name' => 'Rahul Singh', 'email' => 'rahulsingh4041@gmail.com', 'about' => 'Full stack web developer', 'password' => Hash::make('password'), 'email_verified_at' => Carbon::now()])->assignRole('admin');
         //
         // \App\Models\User::factory(10)->create();
 

@@ -1,3 +1,6 @@
+// Full updated Create component with multi-language JSON FAQ support
+// (React + Inertia version)
+
 import { useForm, Head, usePage } from "@inertiajs/react"
 import TextInput from "@/Admin/Components/Inputs/TextInput"
 import FormValidationError from "@/Admin/Components/Validation/FromValidationError"
@@ -7,87 +10,93 @@ import SingleMediaUploader from "@/Admin/Components/Media/SingleMediaUploader"
 import MultipleMediaUploader from "@/Admin/Components/Media/MultipleMediaUploader"
 import { produce } from "immer"
 import AdminLayouts from "@/Admin/Layouts/AdminLayouts"
-import TagInput from "@/Admin/Components/Inputs/TagInput"
 import translate from "@/utils/translate"
 
-export default function Create({ languages, product_categories, default_lang, brands }) {
+export default function Create({ languages, cause_categories, default_lang, brands }) {
     const [selectedLang, setSelectedLang] = useState(default_lang)
     const [tempLang, setTempLang] = useState(selectedLang)
-    const { props } = usePage()
     const languageArr = Object.entries(languages)
+    const { props } = usePage()
+
+    // Multi-language FAQ state: simple text entries (no rich editor)
+    const [faqs, setFaqs] = useState(
+        Object.keys(languages).reduce((acc, code) => {
+            acc[code] = [{ title: "", content: "" }]
+            return acc
+        }, {})
+    )
 
     const { data, setData, errors, post } = useForm({
         category: "",
-        brand: "",
         slug: "",
-        price: "",
-        discount_price: "",
-        thumbnail_image: "",
-        slider_images: [],
+        banner_image: "",
+        gallery_images: [],
+        have_gift: "0",
+        have_product: "0",
+        custom_donation_amounts: "2100|5100|11000",
+        video_url: "",
+        raised_amount: "",
+        goal_amount: "",
+        // deadline_date (YYYY-MM-DD) stored from right column
+        deadline_date: "",
         status: "1",
-        is_popular: "0",
-        is_trending: "0",
-        seo_title: "",
-        seo_description: "",
-        tags: [],
-        sku: "",
-        quantity: "",
+        meta_image: "",
+        meta_title: "",
+        meta_tags: "",
+        meta_description: "",
 
-        // Language-specific fields
         ...Object.keys(languages).reduce((acc, code) => {
-            acc[code + "_name"] = ""
-            acc[code + "_description"] = ""
-            acc[code + "_short_description"] = ""
+            acc[code + "_title"] = ""
+            acc[code + "_content"] = ""
+            acc[code + "_projects"] = ""
+            acc[code + "_faq"] = "" // JSON output stored here per-language
+            acc[code + "_updates"] = ""
             return acc
         }, {})
     })
 
-    const handleStatusToggle = () => {
-        setData("status", data.status === "1" ? "0" : "1")
-    }
-
-    const handleIsPopularToggle = () => {
-        setData("is_popular", data.is_popular === "1" ? "0" : "1")
-    }
-
-    const handleIsTrendingToggle = () => {
-        setData("is_trending", data.is_trending === "1" ? "0" : "1")
-    }
-
     const handlePublish = (e) => {
         e.preventDefault()
-        post(route("admin.products.store"))
+
+        // Convert FAQ arrays → JSON strings per language (simple text)
+        Object.keys(languages).forEach((lang) => {
+            // ensure we don't send editor values accidentally
+            const cleaned = faqs[lang].map((f) => ({
+                title: (f.title || "").toString(),
+                content: (f.content || "").toString()
+            }))
+            setData(`${lang}_faq`, JSON.stringify(cleaned))
+        })
+
+        post(route("admin.causes.store"))
     }
 
-    useEffect(() => {
-        setSelectedLang(tempLang)
-    }, [tempLang])
+    useEffect(() => setSelectedLang(tempLang), [tempLang])
 
     useEffect(() => {
         if (Object.keys(errors).length > 0) {
             const firstErrorField = Object.keys(errors)[0]
             const errorFirstLang = firstErrorField.split("_")[0] ?? null
             const isErrorLangValid = languageArr.find((i) => i[0] === errorFirstLang)
-            if (isErrorLangValid) {
-                setSelectedLang(errorFirstLang)
-            }
+            if (isErrorLangValid) setSelectedLang(errorFirstLang)
         }
     }, [errors])
 
     return (
         <AdminLayouts>
-            <Head title="Create Product" />
-            <div className="yoo-height-b30 yoo-height-lg-b30" />
+            <Head title="Create Cause" />
+
             <div className="container-fluid">
                 <div className="yoo-uikits-heading">
-                    <h2 className="yoo-uikits-title">{translate("Create Product")}</h2>
+                    <h2 className="yoo-uikits-title">{translate("Create Cause")}</h2>
                 </div>
-                <div className="yoo-height-b20 yoo-height-lg-b20"></div>
+
                 <form className="row" onSubmit={handlePublish}>
+                    {/* LEFT COLUMN */}
                     <div className="col-lg-8">
                         <div className="yoo-card yoo-style1">
                             <div className="yoo-card-heading">
-                                <ul className="nav nav-tabs" id="myTab" role="tablist">
+                                <ul className="nav nav-tabs" id="myTab">
                                     {Object.entries(languages).map(([code, language]) => (
                                         <li className="nav-item" key={code}>
                                             <button
@@ -108,71 +117,49 @@ export default function Create({ languages, product_categories, default_lang, br
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <label htmlFor="name_translation">{translate("Product Name")} *</label>
+                                            <label htmlFor="name_translation">{translate("Cause Name")} *</label>
                                             <TextInput
-                                                title="Enter Product Name"
+                                                title="Enter Cause Name"
                                                 type="text"
                                                 id="name_translation"
-                                                error={errors[`${selectedLang}_name`]}
-                                                value={data[`${selectedLang}_name`]}
-                                                onChange={(e) => setData(`${selectedLang}_name`, e.target.value)}
+                                                error={errors[`${selectedLang}_title`]}
+                                                value={data[`${selectedLang}_title`]}
+                                                onChange={(e) => setData(`${selectedLang}_title`, e.target.value)}
                                             />
                                         </div>
                                     </div>
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                            <label htmlFor="short_description">{translate("Short Description")}</label>
-                                            <Editor
-                                                onChange={(value) => setData(`${tempLang}_short_description`, value)}
-                                                value={data[`${selectedLang}_short_description`]}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="yoo-height-b20 yoo-height-lg-b20"></div>
-                        <div className="yoo-card yoo-style1">
-                            <div className="yoo-card-heading">
-                                <div className="yoo-card-heading-left d-flex">
-                                    <h2 className="yoo-card-title mr-5">{translate("Product Details")}</h2>
-                                </div>
-                            </div>
-                            <div className="yoo-card-body">
-                                <div className="yoo-padd-lr-20">
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
 
                                     <div className="row">
                                         <div className="col-md-6">
-                                            <label htmlFor="price">
-                                                {translate("Regular Price")} ({props.currency?.currency_code || "USD"}) *
+                                            <label htmlFor="raised_amount">
+                                                {translate("Raised Amount")} ({props.currency?.currency_code || "INR"}) *
                                             </label>
                                             <TextInput
-                                                title="Enter Regular Price"
+                                                title="Enter Raised Amount"
                                                 type="number"
                                                 step="0.01"
-                                                id="price"
-                                                error={errors?.price}
-                                                value={data.price}
-                                                onChange={(e) => setData("price", e.target.value)}
+                                                id="raised_amount"
+                                                error={errors?.raised_amount}
+                                                value={data.raised_amount}
+                                                onChange={(e) => setData("raised_amount", e.target.value)}
                                             />
                                         </div>
                                         <div className="col-md-6">
-                                            <label htmlFor="discount_price">
-                                                {translate("Discount Price")} ({props.currency?.currency_code || "USD"}) *
+                                            <label htmlFor="goal_amount">
+                                                {translate("Goal Amount")} ({props.currency?.currency_code || "INR"}) *
                                             </label>
                                             <TextInput
-                                                title="Enter Discount Price"
+                                                title="Enter Goal Amount"
                                                 type="number"
                                                 step="0.01"
-                                                id="discount_price"
-                                                error={errors?.discount_price}
-                                                value={data.discount_price}
-                                                onChange={(e) => setData("discount_price", e.target.value)}
+                                                id="goal_amount"
+                                                error={errors?.goal_amount}
+                                                value={data.goal_amount}
+                                                onChange={(e) => setData("goal_amount", e.target.value)}
                                             />
                                         </div>
                                     </div>
+
                                     <div className="row">
                                         <div className="col-md-12">
                                             <label htmlFor="category">{translate("Category")} *</label>
@@ -186,8 +173,8 @@ export default function Create({ languages, product_categories, default_lang, br
                                                         value={data.category}
                                                     >
                                                         <option value="">{translate("Select Category")}</option>
-                                                        {product_categories &&
-                                                            product_categories.map((category) => (
+                                                        {cause_categories &&
+                                                            cause_categories.map((category) => (
                                                                 <option key={`category_${category.id}`} value={category.id}>
                                                                     {category?.content?.title}
                                                                 </option>
@@ -198,51 +185,158 @@ export default function Create({ languages, product_categories, default_lang, br
                                             </div>
                                         </div>
                                     </div>
+
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <label htmlFor="description">{translate("Description")}</label>
+                                            <label htmlFor="content">{translate("Content")}</label>
                                             <Editor
-                                                onChange={(value) => setData(`${tempLang}_description`, value)}
-                                                value={data[`${selectedLang}_description`]}
+                                                onChange={(value) => setData(`${tempLang}_content`, value)}
+                                                value={data[`${selectedLang}_content`]}
                                             />
-                                            <FormValidationError message={errors[`${selectedLang}_description`]} />
                                         </div>
                                     </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20"></div>
+                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
+
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <label htmlFor="projects">{translate("Projects")}</label>
+                                            <Editor
+                                                onChange={(value) => setData(`${tempLang}_projects`, value)}
+                                                value={data[`${selectedLang}_projects`]}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
+
+                                    {/* MULTI FAQ - plain text inputs (no Editor) */}
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <label htmlFor="faq">{translate("FAQ")}</label>
+
+                                            {faqs[selectedLang].map((item, index) => (
+                                                <div key={index} className="p-3 mb-3 border rounded">
+                                                    <div className="form-group mb-2">
+                                                        <label>{translate("Question Title")}</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            value={item.title}
+                                                            onChange={(e) => {
+                                                                const updated = [...faqs[selectedLang]]
+                                                                updated[index].title = e.target.value
+                                                                setFaqs((prev) => ({ ...prev, [selectedLang]: updated }))
+                                                            }}
+                                                        />
+                                                    </div>
+
+                                                    <div className="form-group mb-2">
+                                                        <label>{translate("Answer (Text Only)")}</label>
+                                                        <textarea
+                                                            className="form-control"
+                                                            rows="3"
+                                                            value={item.content}
+                                                            onChange={(e) => {
+                                                                const updated = [...faqs[selectedLang]]
+                                                                updated[index].content = e.target.value
+                                                                setFaqs((prev) => ({ ...prev, [selectedLang]: updated }))
+                                                            }}
+                                                        />
+                                                    </div>
+
+                                                    <div className="d-flex justify-content-end">
+                                                        {faqs[selectedLang].length > 1 && (
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-danger btn-sm"
+                                                                onClick={() => {
+                                                                    const updated = faqs[selectedLang].filter((_, i) => i !== index)
+                                                                    setFaqs((prev) => ({ ...prev, [selectedLang]: updated }))
+                                                                }}
+                                                            >
+                                                                {translate("Remove FAQ")}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            <div className="mt-2">
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary btn-sm"
+                                                    onClick={() =>
+                                                        setFaqs((prev) => ({
+                                                            ...prev,
+                                                            [selectedLang]: [...prev[selectedLang], { title: "", content: "" }]
+                                                        }))
+                                                    }
+                                                >
+                                                    + {translate("Add FAQ")}
+                                                </button>
+                                            </div>
+
+                                            <FormValidationError message={errors[`${selectedLang}_faq`]} />
+                                        </div>
+                                    </div>
+                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
+
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <label htmlFor="updates">{translate("Updates")}</label>
+                                            <Editor
+                                                onChange={(value) => setData(`${tempLang}_updates`, value)}
+                                                value={data[`${selectedLang}_updates`]}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
                                 </div>
                             </div>
                         </div>
-                        <div className="yoo-height-b20 yoo-height-lg-b20"></div>
-                        <div className="yoo-card yoo-style1">
+
+                        {/* SEO CARD */}
+                        <div className="yoo-card yoo-style1 mt-4">
                             <div className="yoo-card-heading">
-                                <div className="yoo-card-heading-left d-flex">
-                                    <h2 className="yoo-card-title mr-5">{translate("SEO Details")}</h2>
-                                </div>
+                                <h2 className="yoo-card-title">{translate("SEO Details")}</h2>
                             </div>
+
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
                                     <div className="row">
                                         <div className="col-md-6">
-                                            <label htmlFor="seo_title">{translate("SEO Title")}</label>
+                                            <label>{translate("SEO Title")}</label>
                                             <TextInput
                                                 title="Enter SEO Title"
                                                 type="text"
-                                                id="seo_title"
-                                                error={errors.seo_title}
-                                                value={data.seo_title}
-                                                onChange={(e) => setData("seo_title", e.target.value)}
+                                                id="meta_title"
+                                                error={errors.meta_title}
+                                                value={data.meta_title}
+                                                onChange={(e) => setData("meta_title", e.target.value)}
                                             />
                                         </div>
+
                                         <div className="col-md-6">
-                                            <label htmlFor="seo_description">{translate("SEO Description")}</label>
+                                            <label>{translate("SEO Description")}</label>
                                             <TextInput
                                                 title="Enter SEO Description"
                                                 type="text"
-                                                id="seo_description"
-                                                error={errors.seo_description}
-                                                value={data.seo_description}
-                                                onChange={(e) => setData("seo_description", e.target.value)}
+                                                id="meta_description"
+                                                error={errors.meta_description}
+                                                value={data.meta_description}
+                                                onChange={(e) => setData("meta_description", e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className="col-md-12 mt-2">
+                                            <label>{translate("SEO Tags")}</label>
+                                            <TextInput
+                                                title="Enter SEO Tags"
+                                                type="text"
+                                                id="meta_tags"
+                                                error={errors.meta_tags}
+                                                value={data.meta_tags}
+                                                onChange={(e) => setData("meta_tags", e.target.value)}
                                             />
                                         </div>
                                     </div>
@@ -252,87 +346,79 @@ export default function Create({ languages, product_categories, default_lang, br
                         </div>
                     </div>
 
+                    {/* RIGHT COLUMN */}
                     <div className="col-md-4">
+                        {/* STATUS CARD */}
                         <div className="yoo-card yoo-style1">
                             <div className="yoo-card-heading">
                                 <div className="yoo-card-heading-left">
-                                    <h2 className="yoo-card-title">{translate("Product Status")}</h2>
+                                    <h2 className="yoo-card-title">{translate("Cause Status")}</h2>
                                 </div>
                             </div>
+
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                    <div className="form-group form-group-md">
-                                        <div className="d-flex">
-                                            <label htmlFor="status">{translate("Is Active")}: </label>
-                                            <div
-                                                className={`yoo-switch ${data.status === "1" ? "active" : ""}`}
-                                                onClick={handleStatusToggle}
-                                                style={{
-                                                    cursor: "pointer",
-                                                    marginLeft: "20px"
-                                                }}
-                                            >
-                                                <div className="yoo-switch-in"></div>
-                                            </div>
+
+                                    <div className="form-group form-group-md d-flex align-items-center justify-content-between">
+                                        <label className="mb-0">{translate("Is Active")}:</label>
+                                        <div
+                                            className={`yoo-switch ${data.status === "1" ? "active" : ""}`}
+                                            onClick={() => setData("status", data.status === "1" ? "0" : "1")}
+                                            style={{ cursor: "pointer" }}
+                                        >
+                                            <div className="yoo-switch-in"></div>
                                         </div>
                                     </div>
-                                    <div className="form-group form-group-md">
-                                        <div className="d-flex">
-                                            <label htmlFor="is_popular">{translate("Is Popular")}: </label>
-                                            <div
-                                                className={`yoo-switch ${data.is_popular === "1" ? "active" : ""}`}
-                                                onClick={handleIsPopularToggle}
-                                                style={{
-                                                    cursor: "pointer",
-                                                    marginLeft: "20px"
-                                                }}
-                                            >
-                                                <div className="yoo-switch-in"></div>
-                                            </div>
+
+                                    <div className="form-group form-group-md d-flex align-items-center justify-content-between">
+                                        <label className="mb-0">{translate("Have Gift")}:</label>
+                                        <div
+                                            className={`yoo-switch ${data.have_gift === "1" ? "active" : ""}`}
+                                            onClick={() => setData("have_gift", data.have_gift === "1" ? "0" : "1")}
+                                            style={{ cursor: "pointer" }}
+                                        >
+                                            <div className="yoo-switch-in"></div>
                                         </div>
                                     </div>
-                                    <div className="form-group form-group-md">
-                                        <div className="d-flex">
-                                            <label htmlFor="is_trending">{translate("Is Trending")}: </label>
-                                            <div
-                                                className={`yoo-switch ${data.is_trending === "1" ? "active" : ""}`}
-                                                onClick={handleIsTrendingToggle}
-                                                style={{
-                                                    cursor: "pointer",
-                                                    marginLeft: "20px"
-                                                }}
-                                            >
-                                                <div className="yoo-switch-in"></div>
-                                            </div>
+
+                                    <div className="form-group form-group-md d-flex align-items-center justify-content-between">
+                                        <label className="mb-0">{translate("Have Product")}:</label>
+                                        <div
+                                            className={`yoo-switch ${data.have_product === "1" ? "active" : ""}`}
+                                            onClick={() => setData("have_product", data.have_product === "1" ? "0" : "1")}
+                                            style={{ cursor: "pointer" }}
+                                        >
+                                            <div className="yoo-switch-in"></div>
                                         </div>
                                     </div>
+
+                                    {/* Deadline date field added inside Product Status card */}
+                                    <div className="form-group mt-3">
+                                        <label htmlFor="deadline_date">{translate("Deadline Date")}</label>
+                                        <input
+                                            type="date"
+                                            id="deadline_date"
+                                            className="form-control"
+                                            value={data.deadline_date}
+                                            onChange={(e) => setData("deadline_date", e.target.value)}
+                                        />
+                                        <FormValidationError message={errors.deadline_date} />
+                                    </div>
+
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
                                 </div>
                             </div>
                         </div>
-                        <div className="yoo-height-b20 yoo-height-lg-b20"></div>
-                        <div className="yoo-card yoo-style1">
-                            <div className="yoo-card-heading">
-                                <div className="yoo-card-heading-left">
-                                    <h2 className="yoo-card-title">{translate("Tags")}</h2>
-                                </div>
-                            </div>
-                            <div className="yoo-card-body">
-                                <div className="yoo-padd-lr-20">
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                    <TagInput title="Tags" type="text" selectTag={(tags) => setData("tags", tags)} id="tags" />
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="yoo-height-b20 yoo-height-lg-b20"></div>
-                        <div className="yoo-card yoo-style1">
+
+                        {/* BRAND */}
+                        <div className="yoo-card yoo-style1 mt-4">
                             <div className="yoo-card-heading">
                                 <div className="yoo-card-heading-left">
                                     <h2 className="yoo-card-title">{translate("Brands")}</h2>
                                 </div>
                             </div>
+
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
@@ -360,100 +446,58 @@ export default function Create({ languages, product_categories, default_lang, br
                                 </div>
                             </div>
                         </div>
-                        <div className="yoo-height-b20 yoo-height-lg-b20"></div>
-                        <div className="yoo-card yoo-style1">
-                            <div className="yoo-card-heading">
-                                <div className="yoo-card-heading-left">
-                                    <h2 className="yoo-card-title">{translate("Inventory Information")}</h2>
-                                </div>
-                            </div>
-                            <div className="yoo-card-body">
-                                <div className="yoo-padd-lr-20">
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                            <label htmlFor="sku">{translate("SKU")} *</label>
-                                            <TextInput
-                                                title="Enter SKU"
-                                                type="text"
-                                                id="sku"
-                                                error={errors.sku}
-                                                value={data.sku}
-                                                onChange={(e) => setData("sku", e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                            <label htmlFor="quantity">{translate("Quantity")} *</label>
-                                            <TextInput
-                                                title="Enter Quantity"
-                                                type="number"
-                                                step="0.01"
-                                                id="quantity"
-                                                error={errors.quantity}
-                                                value={data.quantity}
-                                                onChange={(e) => setData("quantity", e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="yoo-height-b20 yoo-height-lg-b20"></div>
 
-                        <div className="yoo-card yoo-style1">
+                        {/* IMAGES */}
+                        <div className="yoo-card yoo-style1 mt-4">
                             <div className="yoo-card-heading">
-                                <h2 className="yoo-card-title mr-5">{translate("Product Images")}</h2>
+                                <h2 className="yoo-card-title mr-5">{translate("Cause Images")}</h2>
                             </div>
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
                                     <div className="form-group">
-                                        <label>{translate("Upload thumbnail image")} *</label>
+                                        <label>{translate("Upload Banner image")} *</label>
                                         <SingleMediaUploader
                                             onSelected={(e) => {
                                                 setData(
                                                     produce((draft) => {
-                                                        draft.thumbnail_image = e
+                                                        draft.banner_image = e
                                                     })
                                                 )
                                             }}
                                             handleRemoved={() =>
                                                 setData(
                                                     produce((draft) => {
-                                                        draft.thumbnail_image = ""
+                                                        draft.banner_image = ""
                                                     })
                                                 )
                                             }
-                                            defaultValue={data.thumbnail_image}
+                                            defaultValue={data.banner_image}
                                         />
                                     </div>
-                                    <FormValidationError message={errors?.thumbnail_image} />
+                                    <FormValidationError message={errors?.banner_image} />
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
                                     <div className="form-group">
-                                        <label>{translate("Upload Slider images")} *</label>
+                                        <label>{translate("Upload Gallery images")} *</label>
                                         <MultipleMediaUploader
                                             onSelected={(e) => {
                                                 setData(
                                                     produce((draft) => {
-                                                        draft.slider_images = e
+                                                        draft.gallery_images = e
                                                     })
                                                 )
                                             }}
                                             handleRemoved={(d) =>
                                                 setData(
                                                     produce((draft) => {
-                                                        draft.slider_images = d
+                                                        draft.gallery_images = d
                                                     })
                                                 )
                                             }
-                                            defaultValue={data.slider_images}
+                                            defaultValue={data.gallery_images}
                                         />
                                     </div>
-                                    <FormValidationError message={errors?.slider_images} />
+                                    <FormValidationError message={errors?.gallery_images} />
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
                                     <div className="mb-5">
                                         <button type="submit" className="btn btn-success">

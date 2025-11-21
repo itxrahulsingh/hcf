@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CaseStudyCategoriesController;
 use App\Http\Controllers\Admin\CaseStudyController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CauseCategoriesController;
 use App\Http\Controllers\Admin\CauseController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
@@ -398,13 +399,13 @@ Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
 
 // Causse category Routes
 Route::group(['prefix' => 'cause-categories', 'as' => 'cause.categories.'], function () {
-    Route::get('/', [CauseCategoryController::class, 'index'])->name('index')->can('cause_categories.index');
-    Route::get('/create', [CauseCategoryController::class, 'create'])->name('create')->can('cause_categories.create');
-    Route::post('/store', [CauseCategoryController::class, 'store'])->name('store')->can('cause_categories.create');
-    Route::get('/edit/{category}', [CauseCategoryController::class, 'edit'])->name('edit')->can('cause_categories.edit');
-    Route::put('/update/{category}', [CauseCategoryController::class, 'update'])->name('update')->can('cause_categories.edit');
-    Route::delete('/destroy/{category}', [CauseCategoryController::class, 'destroy'])->name('destroy')->can('cause_categories.delete');
-    Route::delete('/bulk-delete', [CauseCategoryController::class, 'bulkDelete'])->name('bulk.delete')->can('cause_categories.delete');
+    Route::get('/', [CauseCategoriesController::class, 'index'])->name('index')->can('cause_categories.index');
+    Route::get('/create', [CauseCategoriesController::class, 'create'])->name('create')->can('cause_categories.create');
+    Route::post('/store', [CauseCategoriesController::class, 'store'])->name('store')->can('cause_categories.create');
+    Route::get('/edit/{causeCategory}', [CauseCategoriesController::class, 'edit'])->name('edit')->can('cause_categories.edit');
+    Route::put('/update/{causeCategory}', [CauseCategoriesController::class, 'update'])->name('update')->can('cause_categories.edit');
+    Route::delete('/destroy/{causeCategory}', [CauseCategoriesController::class, 'destroy'])->name('destroy')->can('cause_categories.delete');
+    Route::delete('/bulk-delete', [CauseCategoriesController::class, 'bulkDelete'])->name('bulk.delete')->can('cause_categories.delete');
 });
 
 // Causes Routes

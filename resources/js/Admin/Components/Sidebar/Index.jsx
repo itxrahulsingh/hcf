@@ -16,8 +16,8 @@ export default function Sidebar() {
 
     // Determine initially active menu based on current route
     const initialActiveMenu = () => {
-        if (isRouteActive(["admin.products.*", "admin.product.categories.*", "admin.brands.*", "admin.coupons.*", "admin.product.tags.*", "admin.reviews.*"]))
-            return "products"
+        if (isRouteActive(["admin.products.*", "admin.product.categories.*", "admin.brands.*", "admin.coupons.*", "admin.product.tags.*", "admin.reviews.*"])) return "products"
+        if (isRouteActive(["admin.causes.*", "admin.cause.categories.*"])) return "causes"
         if (isRouteActive(["admin.orders.*"])) return "orders"
         if (isRouteActive(["admin.posts.*", "admin.categories.*", "admin.tags.*"])) return "posts"
         if (isRouteActive(["admin.pages.*"])) return "pages"
@@ -154,6 +154,53 @@ export default function Sidebar() {
                                             <span className="yoo-sidebar-link-text">{translate("Comments")}</span>
                                         </span>
                                     </Link>
+                                </li>
+                            )}
+
+                            {/* Causes Menu */}
+                            {hasPermission("causes.index") && (
+                                <li className={`yoo-sidebar-has-children ${activeMenu === "causes" ? "active" : ""}`}>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            toggleMenu("causes")
+                                        }}
+                                    >
+                                        <span className="yoo-sidebar-link-title">
+                                            <span className="yoo-sidebar-link-icon yoo-pink-bg">
+                                                <Icon icon="ion:bag-handle-outline" width="20" height="20" />
+                                            </span>
+                                            <span className="yoo-sidebar-link-text">{translate("Causes")}</span>
+                                        </span>
+                                        <span className="yoo-dropdown-arrow">
+                                            <Icon
+                                                icon={activeMenu === "causes" ? "ion:chevron-down" : "ion:chevron-forward"}
+                                                width="16"
+                                                height="16"
+                                            />
+                                        </span>
+                                    </a>
+                                    <ul className={`yoo-sidebar-nav-dropdown ${activeMenu === "causes" ? "active" : ""}`}>
+                                        {hasPermission("causes.index") && (
+                                            <li className={`${route().current("admin.causes.*") && "active"}`}>
+                                                <Link href={route("admin.causes.index")}>
+                                                    <span className="yoo-sidebar-link-title">
+                                                        <span className="yoo-sidebar-link-text">{translate("Causes")}</span>
+                                                    </span>
+                                                </Link>
+                                            </li>
+                                        )}
+                                        {hasPermission("cause_categories.index") && (
+                                            <li className={`${route().current("admin.cause.categories.*") && "active"}`}>
+                                                <Link href={route("admin.cause.categories.index")}>
+                                                    <span className="yoo-sidebar-link-title">
+                                                        <span className="yoo-sidebar-link-text">{translate("Categories")}</span>
+                                                    </span>
+                                                </Link>
+                                            </li>
+                                        )}
+                                    </ul>
                                 </li>
                             )}
 

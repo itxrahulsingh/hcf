@@ -2,10 +2,11 @@
 
 namespace App\Repositories\Admin;
 
-use App\Http\Requests\Admin\CauseCategoryStoreRequest;
-use App\Http\Requests\Admin\CauseCategoryUpdateRequest;
+use App\Http\Requests\Admin\Causes\Categories\CauseCategoryStoreRequest;
+use App\Http\Requests\Admin\Causes\Categories\CauseCategoryUpdateRequest;
 use App\Models\Cause;
 use App\Models\CauseCategory;
+use App\Models\CauseCategoryContent;
 use App\Models\Setting;
 use App\Repositories\Traits\ModelRepositoryTraits;
 use Illuminate\Http\Request;
@@ -61,7 +62,7 @@ class CauseCategoryRepository
      */
     public function store(CauseCategoryStoreRequest $request): void
     {
-        $testimonial = $this->model->create($request->all());
+        $category = $this->model->create($request->all());
 
         $languages = json_decode(Setting::pull('languages'), true);
         $content = array_map(function ($language) use ($request) {
@@ -70,46 +71,64 @@ class CauseCategoryRepository
             return [
                 'language_code' => $langCode,
                 'title' => $request[$langCode . '_title'],
+                'description' => $request[$langCode . '_description'],
             ];
         }, $languages);
 
-        $testimonial->contents()->createMany($content);
+        $category->contents()->createMany($content);
     }
 
     /**
      * Get edited data
      */
-    public function getEditData(CauseCategory $caseStudyCategory): array
+    public function getEditData(CauseCategory $causeCategory): array
     {
         $languages = json_decode(Setting::pull('languages'), true);
+
+        $causeCategory->load('contents');
+
         $data = [
-            'id' => $caseStudyCategory->id,
-            'created_at' => $caseStudyCategory->created_at,
+            'id' => $causeCategory->id,
+            'thumbnail_image' => $causeCategory->thumbnail_image,
+            'meta_title' => $causeCategory->meta_title,
+            'meta_description' => $causeCategory->meta_description,
+            'meta_tags' => $causeCategory->meta_tags,
+            'created_at' => $causeCategory->created_at,
         ];
 
         foreach ($languages as $language) {
-            $langCode = $language['code'];
-            $data[$langCode . '_title'] = '';
+            $lang = $language['code'];
+            $data[$lang . '_title'] = '';
+            $data[$lang . '_description'] = '';
         }
 
-        foreach ($caseStudyCategory->contents as $content) {
-            $langCode = $content->language_code;
-            $data[$langCode . '_title'] = $content->title;
+        foreach ($causeCategory->contents as $content) {
+            $lang = $content->language_code;
+            $data[$lang . '_title'] = $content->title;
+            $data[$lang . '_description'] = $content->description;
         }
 
         return $data;
     }
 
+
     /**
      * Update category
      */
-    public function update(CauseCategory $caseStudyCategory, CauseCategoryUpdateRequest $request): void
+    public function update(CauseCategory $causeCategory, CauseCategoryUpdateRequest $request): void
     {
+        $causeCategory->update([
+            'thumbnail_image' => $request->thumbnail_image,
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'meta_tags' => $request->meta_tags,
+        ]);
+
         $languages = json_decode(Setting::pull('languages'), true);
         foreach ($languages as $language) {
             $langCode = $language['code'];
 
-            $caseStudyCategory->contents()->updateOrCreate(
+            $causeCategory->contents()->updateOrCreate(
                 ['language_code' => $langCode],
                 [
                     'title' => $request[$langCode . '_title'],
@@ -123,9 +142,10 @@ class CauseCategoryRepository
      *
      * @throws \Exception
      */
-    public function destroy(CauseCategory $caseStudyCategory): void
+    public function destroy(CauseCategory $causeCategory): void
     {
-        $caseStudyCategory->delete();
+        $causeCategory->contents()->delete();
+        $causeCategory->delete();
     }
 
     /**
@@ -134,6 +154,7 @@ class CauseCategoryRepository
     public function bulkDelete($ids): void
     {
         $idArray = explode(',', $ids);
+        CauseCategoryContent::whereIn('cause_category_id', $idArray)->delete();
         $this->model->destroy($idArray);
     }
 }

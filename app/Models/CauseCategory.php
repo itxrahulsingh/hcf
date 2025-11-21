@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CauseCategory extends Model
 {
+
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     protected $appends = ['cause_count'];
@@ -16,7 +17,7 @@ class CauseCategory extends Model
      */
     public function contents(): HasMany
     {
-        return $this->hasMany(CauseCategoryContent::class);
+        return $this->hasMany(CauseCategoryContent::class, 'cause_category_id', 'id');
     }
 
     /**
@@ -24,7 +25,7 @@ class CauseCategory extends Model
      */
     public function content(): mixed
     {
-        return $this->hasOne(CauseCategoryContent::class)->where('language_code', app()->getLocale());
+        return $this->hasOne(CauseCategoryContent::class, 'cause_category_id', 'id')->where('language_code', app()->getLocale());
     }
 
     /**

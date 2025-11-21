@@ -30,6 +30,14 @@ class RolePermissionSeeder extends Seeder
             'title' => 'Manage comments',
             'action' => ['index' => 1, 'delete' => 1, 'approve' => 1, 'unApprove' => 1],
         ],
+        'causes' => [
+            'title' => 'Manage causes',
+            'action' => ['index' => 1, 'delete' => 1, 'edit' => 1, 'create' => 1, 'show' => 1],
+        ],
+        'cause_categories' => [
+            'title' => 'Manage cause categories',
+            'action' => ['index' => 1, 'delete' => 1, 'edit' => 1, 'create' => 1],
+        ],
         'products' => [
             'title' => 'Manage products',
             'action' => ['index' => 1, 'delete' => 1, 'edit' => 1, 'create' => 1, 'show' => 1],

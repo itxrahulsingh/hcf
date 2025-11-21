@@ -24,7 +24,7 @@ export default function Index({ categories, sort, filtered_lang, languages }) {
     // handle search sort
     const getResults = (search, lang) => {
         router.get(
-            route("admin.product.categories.index", {
+            route("admin.cause.categories.index", {
                 search: search ?? setSearchQuery,
                 sort: sort,
                 filter: {
@@ -67,7 +67,7 @@ export default function Index({ categories, sort, filtered_lang, languages }) {
 
         if (selectedOption === "Delete") {
             confirmMessage = `${translate("You want to delete selected categories")}?`
-            action = "admin.product.categories.bulk.delete"
+            action = "admin.cause.categories.bulk.delete"
         }
         setIsMarkAll([])
         showAlert(`${translate("Are you sure")}?`, confirmMessage, selectedOption + "!", () => {
@@ -172,8 +172,8 @@ export default function Index({ categories, sort, filtered_lang, languages }) {
                                                     <IonIcon icon={search} />
                                                 </button>
                                             </div>
-                                            {hasPermission("product_categories.create") && (
-                                                <Link href={route("admin.product.categories.create")} className="btn btn-success btn-sm yoo-table-btn1">
+                                            {hasPermission("cause_categories.create") && (
+                                                <Link href={route("admin.cause.categories.create")} className="btn btn-success btn-sm yoo-table-btn1">
                                                     <span className="yoo-add">+</span> {translate("Create New")}
                                                 </Link>
                                             )}
@@ -198,7 +198,7 @@ export default function Index({ categories, sort, filtered_lang, languages }) {
                                                     <ThSortable width="15%" sort={sort} onSorted={() => getResults(searchQuery)} column="created_at">
                                                         {translate("Date")}
                                                     </ThSortable>
-                                                    {(hasPermission("product_categories.edit") || hasPermission("product_categories.delete")) && (
+                                                    {(hasPermission("cause_categories.edit") || hasPermission("cause_categories.delete")) && (
                                                         <th style={{ width: "1%" }} className="sorting">
                                                             {translate("Action")}
                                                         </th>
@@ -215,11 +215,11 @@ export default function Index({ categories, sort, filtered_lang, languages }) {
                                                             />
                                                         </td>
                                                         <td>
-                                                            <img src={category?.category_image} alt={category?.content?.title} style={{ width: "80px" }} />
+                                                            <img src={category?.thumbnail_image} alt={category?.content?.title} style={{ width: "80px" }} />
                                                         </td>
                                                         <td>{category?.content?.title}</td>
                                                         <td>{moment(category.created_at).format("ll")}</td>
-                                                        {(hasPermission("product_categories.edit") || hasPermission("product_categories.delete")) && (
+                                                        {(hasPermission("cause_categories.edit") || hasPermission("cause_categories.delete")) && (
                                                             <td>
                                                                 <div
                                                                     className="d-flex"
@@ -227,9 +227,9 @@ export default function Index({ categories, sort, filtered_lang, languages }) {
                                                                         gap: "5px"
                                                                     }}
                                                                 >
-                                                                    {hasPermission("product_categories.edit") && (
+                                                                    {hasPermission("cause_categories.edit") && (
                                                                         <Link
-                                                                            href={route("admin.product.categories.edit", category)}
+                                                                            href={route("admin.cause.categories.edit", category)}
                                                                             className="badge badge-primary"
                                                                         >
                                                                             <IonIcon
@@ -241,8 +241,8 @@ export default function Index({ categories, sort, filtered_lang, languages }) {
                                                                             />
                                                                         </Link>
                                                                     )}
-                                                                    {hasPermission("product_categories.delete") && (
-                                                                        <DeleteButton href={route("admin.product.categories.destroy", category)} />
+                                                                    {hasPermission("cause_categories.delete") && (
+                                                                        <DeleteButton href={route("admin.cause.categories.destroy", category)} />
                                                                     )}
                                                                 </div>
                                                             </td>

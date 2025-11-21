@@ -20,7 +20,7 @@ export default function Edit({ category, default_lang, languages }) {
     // Handle update submission
     const handleUpdate = (e) => {
         e.preventDefault()
-        put(route("admin.product.categories.update", category))
+        put(route("admin.cause.categories.update", category))
     }
 
     useEffect(() => {
@@ -47,7 +47,7 @@ export default function Edit({ category, default_lang, languages }) {
                 </div>
                 <div className="yoo-height-b20 yoo-height-lg-b20"></div>
                 <form className="row" onSubmit={handleUpdate}>
-                    <div className="col-lg-8">
+                    <div className="col-lg-7">
                         <div className="yoo-card yoo-style1">
                             <div className="yoo-card-heading">
                                 <div className="yoo-card-heading-left">
@@ -77,20 +77,20 @@ export default function Edit({ category, default_lang, languages }) {
                                             onSelected={(e) => {
                                                 setData(
                                                     produce((draft) => {
-                                                        draft.category_image = e
+                                                        draft.thumbnail_image = e
                                                     })
                                                 )
                                             }}
                                             handleRemoved={() =>
                                                 setData(
                                                     produce((draft) => {
-                                                        draft.category_image = ""
+                                                        draft.thumbnail_image = ""
                                                     })
                                                 )
                                             }
-                                            defaultValue={data.category_image}
+                                            defaultValue={data.thumbnail_image}
                                         />
-                                        <FormValidationError message={errors?.category_image} />
+                                        <FormValidationError message={errors?.thumbnail_image} />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="title">
@@ -105,12 +105,75 @@ export default function Edit({ category, default_lang, languages }) {
                                             onChange={(e) => setData(`${selectedLang}_title`, e.target.value)}
                                         />
                                     </div>
-                                    <SuccessButton isLoading={processing}>{translate("Update Category")}</SuccessButton>
+                                    <div className="form-group">
+                                        <label htmlFor="description">
+                                            {translate("Description")} ({languages[selectedLang].name}) *
+                                        </label>
+                                        <TextInput
+                                            title={`${translate("Enter category description")} *`}
+                                            type="text"
+                                            id="description"
+                                            error={errors[`${selectedLang}_description`]}
+                                            value={data[`${selectedLang}_description`]}
+                                            onChange={(e) => setData(`${selectedLang}_description`, e.target.value)}
+                                        />
+                                    </div>
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
                                 </div>
                             </div>
                         </div>
                         <div className="yoo-height-b20 yoo-height-lg-b20"></div>
+                    </div>
+                    <div className="col-lg-5">
+                        <div className="yoo-card yoo-style1">
+                            <div className="yoo-card-heading">
+                                <div className="yoo-card-heading-left d-flex">
+                                    <h2 className="yoo-card-title mr-5">{translate("SEO Details")}</h2>
+                                </div>
+                            </div>
+                            <div className="yoo-card-body">
+                                <div className="yoo-padd-lr-20">
+                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <label htmlFor="meta_title">{translate("SEO Title")}</label>
+                                            <TextInput
+                                                title="Enter SEO Title"
+                                                type="text"
+                                                id="meta_title"
+                                                error={errors.meta_title}
+                                                value={data.meta_title}
+                                                onChange={(e) => setData("meta_title", e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-md-12">
+                                            <label htmlFor="meta_description">{translate("SEO Description")}</label>
+                                            <TextInput
+                                                title="Enter SEO Description"
+                                                type="text"
+                                                id="meta_description"
+                                                error={errors.meta_description}
+                                                value={data.meta_description}
+                                                onChange={(e) => setData("meta_description", e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-md-12">
+                                            <label htmlFor="meta_tags">{translate("SEO Keywords")}</label>
+                                            <TextInput
+                                                title="Enter SEO Keywords"
+                                                type="text"
+                                                id="meta_tags"
+                                                error={errors.meta_tags}
+                                                value={data.meta_tags}
+                                                onChange={(e) => setData("meta_tags", e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                     <SuccessButton isLoading={processing}>{translate("Update Category")}</SuccessButton>
+                                    <div className="yoo-height-b10 yoo-height-lg-b10" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>

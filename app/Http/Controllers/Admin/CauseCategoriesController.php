@@ -26,18 +26,13 @@ class CauseCategoriesController extends Controller
     }
     public function index(Request $request, CauseCategoryRepository $repository): Response
     {
-        if (Setting::pull("is_enabled_case_study") === "0") {
-            abort(404);
-        }
-
         $data['search'] = $request->search ?: '';
         $data['sort']['column'] = $request->sort['column'] ?? 'id';
         $data['sort']['order'] = $request->sort['order'] ?? 'desc';
         $data['filtered_lang'] = $request->filter['lang'] ?? Setting::pull('default_lang');
         $data['languages'] = json_decode(Setting::pull('languages'));
         $data['categories'] = $repository->paginateSearchResult($data['search'], $data['sort']);
-
-        return Inertia::render('Cause/Categories/Index', $data);
+        return Inertia::render('Causes/Categories/Index', $data);
     }
 
     /**
@@ -47,22 +42,26 @@ class CauseCategoriesController extends Controller
     {
         $data['default_lang'] = Setting::pull('default_lang');
         $data['languages'] = json_decode(Setting::pull('languages'));
-        return Inertia::render('Cause/Categories/Create', $data);
+        return Inertia::render('Causes/Categories/Create', $data);
     }
 
     /**
-     * Edit portfolio
+     * Store category
+     */
+    public function store(CauseCategoryStoreRequest $request, CauseCategoryRepository $repository): RedirectResponse
+    {
+        $repository->store($request);
+        return redirect()->route('admin.cause.categories.index')->with('success', 'Category successfully created');
+    }
+    /**
+     * Edit category
      */
     public function edit(CauseCategory $causeCategory, CauseCategoryRepository $repository): Response
     {
-        if (Setting::pull("is_enabled_case_study") === "0") {
-            abort(404);
-        }
-
         $data['default_lang'] = Setting::pull('default_lang');
         $data['languages'] = json_decode(Setting::pull('languages'));
         $data['category'] = $repository->getEditData($causeCategory);
-        return Inertia::render('Cause/Categories/Edit', $data);
+        return Inertia::render('Causes/Categories/Edit', $data);
     }
 
     /**
@@ -76,15 +75,6 @@ class CauseCategoriesController extends Controller
         } catch (\Exception $exception) {
             return back()->with('error', $exception->getMessage());
         }
-    }
-
-    /**
-     * Store category
-     */
-    public function store(CauseCategoryStoreRequest $request, CauseCategoryRepository $repository): RedirectResponse
-    {
-        $repository->store($request);
-        return redirect()->route('admin.cause.categories.index')->with('success', 'Category successfully created');
     }
 
     /**

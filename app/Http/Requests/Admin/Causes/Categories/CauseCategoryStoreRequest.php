@@ -23,7 +23,7 @@ class CauseCategoryStoreRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'category_image' => 'required|max:5000'
+            'thumbnail_image' => 'required|max:5000'
         ];
 
         // Append language-specific validation rules
@@ -31,6 +31,7 @@ class CauseCategoryStoreRequest extends FormRequest
         foreach ($languages as $language) {
             $langCode = $language->code;
             $rules[$langCode . '_title'] = 'required|max:255';
+            $rules[$langCode . '_description'] = 'nullable|max:255';
         }
 
         return $rules;

@@ -200,6 +200,13 @@ export default function Sidebar() {
                                                 </Link>
                                             </li>
                                         )}
+                                        <li className={`${route().current("admin.gifts.*") && "active"}`}>
+                                            <Link href={route("admin.gifts.index")}>
+                                                <span className="yoo-sidebar-link-title">
+                                                    <span className="yoo-sidebar-link-text">{translate("Gifts")}</span>
+                                                </span>
+                                            </Link>
+                                        </li>
                                     </ul>
                                 </li>
                             )}

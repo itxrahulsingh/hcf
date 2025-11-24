@@ -233,6 +233,7 @@ class ProductRepository
      */
     public function destroy(Product $product)
     {
+        $product->detachTags($product->tags);
         $product->delete();
     }
 

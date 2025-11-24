@@ -8,11 +8,13 @@ import { useState, useEffect } from "react"
 import Editor from "@/Admin/Components/Inputs/Editor"
 import SingleMediaUploader from "@/Admin/Components/Media/SingleMediaUploader"
 import MultipleMediaUploader from "@/Admin/Components/Media/MultipleMediaUploader"
+import CustomMultiSelect from "@/Admin/Components/Inputs/CustomMultiSelect"
 import { produce } from "immer"
 import AdminLayouts from "@/Admin/Layouts/AdminLayouts"
 import translate from "@/utils/translate"
+import { gift } from "ionicons/icons"
 
-export default function Create({ languages, cause_categories, default_lang, brands }) {
+export default function Create({ languages, cause_categories, default_lang, gifts }) {
     const [selectedLang, setSelectedLang] = useState(default_lang)
     const [tempLang, setTempLang] = useState(selectedLang)
     const languageArr = Object.entries(languages)
@@ -32,12 +34,12 @@ export default function Create({ languages, cause_categories, default_lang, bran
         banner_image: "",
         gallery_images: [],
         have_gift: "0",
+        gift_ids: [],
         have_product: "0",
-        custom_donation_amounts: "2100|5100|11000",
+        custom_donation_amounts: "2100,5100,11000",
         video_url: "",
         raised_amount: "",
         goal_amount: "",
-        // deadline_date (YYYY-MM-DD) stored from right column
         deadline_date: "",
         status: "1",
         meta_image: "",
@@ -49,7 +51,7 @@ export default function Create({ languages, cause_categories, default_lang, bran
             acc[code + "_title"] = ""
             acc[code + "_content"] = ""
             acc[code + "_projects"] = ""
-            acc[code + "_faq"] = "" // JSON output stored here per-language
+            acc[code + "_faq"] = ""
             acc[code + "_updates"] = ""
             return acc
         }, {})
@@ -157,6 +159,24 @@ export default function Create({ languages, cause_categories, default_lang, bran
                                                 value={data.goal_amount}
                                                 onChange={(e) => setData("goal_amount", e.target.value)}
                                             />
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <label htmlFor="custom_donation_amounts">
+                                                {translate("Custom Donation Amounts")} ({props.currency?.currency_code || "INR"}) *
+                                            </label>
+                                            <TextInput
+                                                title="Enter Raised Amount"
+                                                type="text"
+                                                step="0.01"
+                                                id="custom_donation_amounts"
+                                                error={errors?.custom_donation_amounts}
+                                                value={data.custom_donation_amounts}
+                                                onChange={(e) => setData("custom_donation_amounts", e.target.value)}
+                                            />
+                                            <small>comma seperated amounts like (100,500,1000)</small>
                                         </div>
                                     </div>
 
@@ -375,7 +395,14 @@ export default function Create({ languages, cause_categories, default_lang, bran
                                         <label className="mb-0">{translate("Have Gift")}:</label>
                                         <div
                                             className={`yoo-switch ${data.have_gift === "1" ? "active" : ""}`}
-                                            onClick={() => setData("have_gift", data.have_gift === "1" ? "0" : "1")}
+                                            onClick={() => {
+                                                const state = data.have_gift === "1" ? "0" : "1";
+                                                setData("have_gift", state);
+
+                                                if (state === "0") {
+                                                    setData("gift_ids", []);
+                                                }
+                                            }}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
@@ -411,41 +438,30 @@ export default function Create({ languages, cause_categories, default_lang, bran
                             </div>
                         </div>
 
-                        {/* BRAND */}
-                        <div className="yoo-card yoo-style1 mt-4">
-                            <div className="yoo-card-heading">
-                                <div className="yoo-card-heading-left">
-                                    <h2 className="yoo-card-title">{translate("Brands")}</h2>
+                        {data.have_gift === "1" && (
+                            <div className="yoo-card yoo-style1 mt-4">
+                                <div className="yoo-card-heading">
+                                    <h2 className="yoo-card-title">{translate("Gifts")}</h2>
                                 </div>
-                            </div>
 
-                            <div className="yoo-card-body">
-                                <div className="yoo-padd-lr-20">
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                    <div className="form-group form-group-md">
-                                        <div className="yoo-select">
-                                            <select
-                                                className="form-control"
-                                                id="brand"
-                                                error={errors?.brand}
-                                                onChange={(e) => setData("brand", e.target.value)}
-                                                value={data.brand}
-                                            >
-                                                <option value="">{translate("Select Brand")}</option>
-                                                {brands &&
-                                                    brands.map((brand) => (
-                                                        <option key={`brand_${brand.id}`} value={brand.id}>
-                                                            {brand?.content?.title}
-                                                        </option>
-                                                    ))}
-                                            </select>
-                                            <FormValidationError message={errors.brand} />
-                                        </div>
+                                <div className="yoo-card-body">
+                                    <div className="yoo-padd-lr-20">
+                                        <div className="yoo-height-b20 yoo-height-lg-b20" />
+                                        <CustomMultiSelect
+                                            options={gifts.map(g => ({
+                                                value: g.id,
+                                                label: g?.content?.title || "Untitled Gift"
+                                            }))}
+                                            value={data.gift_ids}
+                                            placeholder="Select Gifts"
+                                            onChange={(selected) => setData("gift_ids", selected)}
+                                        />
+                                        <FormValidationError message={errors.gift_ids} />
+                                        <div className="yoo-height-b20 yoo-height-lg-b20" />
                                     </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
                                 </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* IMAGES */}
                         <div className="yoo-card yoo-style1 mt-4">

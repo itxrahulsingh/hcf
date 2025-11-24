@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Causes\CauseStoreRequest;
 use App\Http\Requests\Admin\Causes\CauseUpdateRequest;
 use App\Models\Cause;
 use App\Models\CauseCategory;
+use App\Models\Gift;
 use App\Models\Setting;
 use App\Repositories\Admin\CauseRepository;
 use Illuminate\Http\Request;
@@ -43,6 +44,7 @@ class CauseController extends Controller
         $data['default_lang'] = Setting::pull('default_lang');
         $data['languages'] = json_decode(Setting::pull('languages'));
         $data['cause_categories'] = CauseCategory::with('content')->get();
+        $data['gifts'] = Gift::with('content')->where('status', 1)->get();
 
         return Inertia::render('Causes/Create', $data);
     }
@@ -66,6 +68,7 @@ class CauseController extends Controller
         $data['languages'] = json_decode(Setting::pull('languages'));
         $data['cause'] = $repository->getEditedData($cause);
         $data['cause_categories'] = CauseCategory::with('content')->get();
+        $data['gifts'] = Gift::with('content')->where('status', 1)->get();
 
         return Inertia::render('Causes/Edit', $data);
     }

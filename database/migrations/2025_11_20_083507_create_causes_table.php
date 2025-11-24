@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('banner_image', 100)->nullable();
             $table->string('gallery_images', 100)->nullable();
             $table->boolean('have_gift')->default(false)->comment('Whether the cause has gift option');
+            $table->string('gift_ids', 100)->nullable();
             $table->boolean('have_product')->default(false)->comment('Whether the cause has product option');
             $table->string('custom_donation_amounts', 100)->nullable();
             $table->string('video_url', 255)->nullable();

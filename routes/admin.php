@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\CustomizeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EditorImageUploaderController;
 use App\Http\Controllers\Admin\FormResponseController;
+use App\Http\Controllers\Admin\GiftController;
 use App\Http\Controllers\Admin\LanguagesController;
 use App\Http\Controllers\Admin\ManualPaymentGatewayController;
 use App\Http\Controllers\Admin\MediaController;
@@ -418,6 +419,18 @@ Route::group(['prefix' => 'causes', 'as' => 'causes.'], function () {
     Route::delete('/destroy/{cause}', [CauseController::class, 'destroy'])->name('destroy')->can('causes.delete');
     Route::delete('/bulk-delete', [CauseController::class, 'bulkDelete'])->name('bulk.delete')->can('causes.delete');
 });
+
+// Cause Gift Routes
+Route::group(['prefix' => 'gifts', 'as' => 'gifts.'], function () {
+    Route::get('/', [GiftController::class, 'index'])->name('index');
+    Route::get('/create', [GiftController::class, 'create'])->name('create');
+    Route::post('/store', [GiftController::class, 'store'])->name('store');
+    Route::get('/edit/{gift}', [GiftController::class, 'edit'])->name('edit');
+    Route::put('/update/{gift}', [GiftController::class, 'update'])->name('update');
+    Route::delete('/destroy/{gift}', [GiftController::class, 'destroy'])->name('destroy');
+    Route::delete('/bulk-delete', [GiftController::class, 'bulkDelete'])->name('bulk.delete');
+});
+
 
 /** Coupon routes **/
 Route::group(['prefix' => 'coupons', 'as' => 'coupons.'], function () {

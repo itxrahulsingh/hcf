@@ -42,19 +42,19 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
             setMarkItems([])
             setIsMarkAll(false)
         } else {
-            const items = causes.data.map((product) => product.id)
+            const items = causes.data.map((cause) => cause.id)
             setMarkItems(items)
             setIsMarkAll(true)
         }
     }
 
-    const handleMark = (productId) => {
-        const existsMark = markItems.some((item) => item === productId)
+    const handleMark = (causeId) => {
+        const existsMark = markItems.some((item) => item === causeId)
         if (existsMark) {
-            const removeItem = markItems.filter((item) => item !== productId)
+            const removeItem = markItems.filter((item) => item !== causeId)
             setMarkItems(removeItem)
         } else {
-            const addedItem = [...markItems, productId]
+            const addedItem = [...markItems, causeId]
             setMarkItems(addedItem)
         }
     }
@@ -75,11 +75,11 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
 
     return (
         <AdminLayouts>
-            <Head title="All Products" />
+            <Head title="All Causes" />
             <div className="yoo-height-b30 yoo-height-lg-b30" />
             <div className="container-fluid">
                 <div className="yoo-uikits-heading">
-                    <h2 className="yoo-uikits-title">{translate("All Products")}</h2>
+                    <h2 className="yoo-uikits-title">{translate("All Causes")}</h2>
                 </div>
                 <div className="yoo-height-b20 yoo-height-lg-b20"></div>
                 <div className="yoo-card yoo-style1">
@@ -95,7 +95,7 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                         }}
                                     />
                                 </span>
-                                {translate("Products")}
+                                {translate("Causes")}
                             </h2>
                         </div>
                     </div>
@@ -200,30 +200,30 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {causes.data.map((product, index) => (
+                                            {causes.data.map((cause, index) => (
                                                 <tr className="odd" key={index}>
-                                                    <td className="sorting_1" onClick={() => handleMark(product.id)}>
+                                                    <td className="sorting_1" onClick={() => handleMark(cause.id)}>
                                                         <div
-                                                            className={`yoo-check-mark ${markItems.some((item) => item === product.id) ? "active" : ""
+                                                            className={`yoo-check-mark ${markItems.some((item) => item === cause.id) ? "active" : ""
                                                                 }`}
                                                         >
                                                             <span className="yoo-first" />
                                                             <span className="yoo-last" />
                                                         </div>
                                                     </td>
-                                                    <td className="sorting_1">{product?.content?.title}</td>
-                                                    <td>{product?.category?.content?.title}</td>
+                                                    <td className="sorting_1">{cause?.content?.title}</td>
+                                                    <td>{cause?.category?.content?.title}</td>
 
                                                     <td>
-                                                        {product.status === 1 && <span className="badge badge-success">Active</span>}
-                                                        {product.status === 0 && <span className="badge badge-warning">Inactive</span>}
+                                                        {cause.status === 1 && <span className="badge badge-success">Active</span>}
+                                                        {cause.status === 0 && <span className="badge badge-warning">Inactive</span>}
                                                     </td>
                                                     {(hasPermission("causes.edit") || hasPermission("causes.delete")) && (
                                                         <td>
                                                             <div className="yoo-group-btn">
                                                                 {hasPermission("causes.edit") && (
                                                                     <Link
-                                                                        href={route("admin.causes.edit", product)}
+                                                                        href={route("admin.causes.edit", cause)}
                                                                         className="badge badge-primary"
                                                                     >
                                                                         <IonIcon
@@ -237,7 +237,7 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                                 )}
                                                                 {hasPermission("causes.show") && (
                                                                     <a
-                                                                        href={route("shop.show", product.slug)}
+                                                                        href={route("shop.show", cause.slug)}
                                                                         target="_blank"
                                                                         className="badge badge-secondary"
                                                                     >
@@ -251,7 +251,7 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                                     </a>
                                                                 )}
                                                                 {hasPermission("causes.delete") && (
-                                                                    <DeleteButton href={route("admin.causes.destroy", product)} />
+                                                                    <DeleteButton href={route("admin.causes.destroy", cause)} />
                                                                 )}
                                                             </div>
                                                         </td>

@@ -36,7 +36,7 @@ export default function Edit({ languages, product_categories, default_lang, prod
 
     const handleUpdate = (e) => {
         e.preventDefault()
-        put(route("admin.products.update", product.id))
+        put(route("admin.causes.update", product.id))
     }
     useEffect(() => {
         setSelectedLang(tempLang)

@@ -236,6 +236,7 @@ class CauseRepository
      */
     public function destroy(Cause $cause)
     {
+        $cause->contents()->delete();
         $cause->delete();
     }
 
@@ -245,6 +246,7 @@ class CauseRepository
     public function bulkDelete(string $ids)
     {
         $ids = explode(',', $ids);
+        CauseContent::whereIn('cause_id', $ids)->delete();
         $this->model->whereIn('id', $ids)->delete();
     }
 }

@@ -131,8 +131,8 @@ const Show = ({ product, categories, tags, meta_title, meta_description, meta_im
                                                             avgRating >= star
                                                                 ? "fa6-solid:star"
                                                                 : avgRating >= star - 0.5
-                                                                    ? "fa6-solid:star-half-stroke"
-                                                                    : "fa6-regular:star"
+                                                                ? "fa6-solid:star-half-stroke"
+                                                                : "fa6-regular:star"
                                                         }
                                                         className="cs_star_icon"
                                                     />
@@ -153,14 +153,20 @@ const Show = ({ product, categories, tags, meta_title, meta_description, meta_im
                                 <div className="cs_quantity_and_btn">
                                     <div className="cs_quantity">
                                         <button
-                                            onClick={() => (cartItem ? dispatch(increaseCart(product.id)) : dispatch(addCart(product)))}
+                                            onClick={() => {
+                                                if (cartItem) {
+                                                    dispatch(increaseCart({ id: product.id, type: "product" }))
+                                                } else {
+                                                    dispatch(addCart({ id: product.id, type: "product", content: product }))
+                                                }
+                                            }}
                                             className="cs_quantity_button cs_increment"
                                         >
                                             <Icon icon="fa6-solid:angle-up" />
                                         </button>
                                         <span className="cs_quantity_input">{quantity}</span>
                                         <button
-                                            onClick={() => dispatch(decreaseCart(product.id))}
+                                            onClick={() => dispatch(decreaseCart({ id: product.id, type: "product" }))}
                                             disabled={!cartItem || quantity === 1}
                                             className="cs_quantity_button cs_decrement"
                                         >
@@ -169,9 +175,7 @@ const Show = ({ product, categories, tags, meta_title, meta_description, meta_im
                                     </div>
                                     <a
                                         href="javascript:void(0)"
-                                        onClick={() => {
-                                            dispatch(addCart(product))
-                                        }}
+                                        onClick={() => dispatch(addCart({ id: product.id, type: "product", content: product }))}
                                         className="cs_product_btn cs_semi_bold"
                                     >
                                         {translate("Add to cart")}
@@ -239,8 +243,8 @@ const Show = ({ product, categories, tags, meta_title, meta_description, meta_im
                                                                                 ratingValue >= star
                                                                                     ? "fa6-solid:star"
                                                                                     : ratingValue >= star - 0.5
-                                                                                        ? "fa6-solid:star-half-stroke"
-                                                                                        : "fa6-regular:star"
+                                                                                    ? "fa6-solid:star-half-stroke"
+                                                                                    : "fa6-regular:star"
                                                                             }
                                                                             className="cs_star_icon"
                                                                         />

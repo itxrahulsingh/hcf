@@ -40,7 +40,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
         video_url: "",
         raised_amount: "",
         goal_amount: "",
-        deadline_date: "",
+        deadline: "",
         status: "1",
         meta_image: "",
         meta_title: "",
@@ -237,10 +237,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                                 <div key={index} className="p-3 mb-3 border rounded">
                                                     <div className="form-group mb-2">
                                                         <label>{translate("Question Title")}</label>
-                                                        <input
-                                                            type="text"
-                                                            className="form-control"
-                                                            value={item.title}
+                                                        <input type="text" className="form-control" value={item.title}
                                                             onChange={(e) => {
                                                                 const updated = [...faqs[selectedLang]]
                                                                 updated[index].title = e.target.value
@@ -251,10 +248,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
 
                                                     <div className="form-group mb-2">
                                                         <label>{translate("Answer (Text Only)")}</label>
-                                                        <textarea
-                                                            className="form-control"
-                                                            rows="3"
-                                                            value={item.content}
+                                                        <input type="text" className="form-control" value={item.content}
                                                             onChange={(e) => {
                                                                 const updated = [...faqs[selectedLang]]
                                                                 updated[index].content = e.target.value
@@ -395,14 +389,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         <label className="mb-0">{translate("Have Gift")}:</label>
                                         <div
                                             className={`yoo-switch ${data.have_gift === "1" ? "active" : ""}`}
-                                            onClick={() => {
-                                                const state = data.have_gift === "1" ? "0" : "1";
-                                                setData("have_gift", state);
-
-                                                if (state === "0") {
-                                                    setData("gift_ids", []);
-                                                }
-                                            }}
+                                             onClick={() => setData("have_gift", data.have_gift === "1" ? "0" : "1")}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
@@ -422,15 +409,15 @@ export default function Create({ languages, cause_categories, default_lang, gift
 
                                     {/* Deadline date field added inside Product Status card */}
                                     <div className="form-group mt-3">
-                                        <label htmlFor="deadline_date">{translate("Deadline Date")}</label>
+                                        <label htmlFor="deadline">{translate("Deadline")}</label>
                                         <input
                                             type="date"
-                                            id="deadline_date"
+                                            id="deadline"
                                             className="form-control"
-                                            value={data.deadline_date}
-                                            onChange={(e) => setData("deadline_date", e.target.value)}
+                                            value={data.deadline}
+                                            onChange={(e) => setData("deadline", e.target.value)}
                                         />
-                                        <FormValidationError message={errors.deadline_date} />
+                                        <FormValidationError message={errors.deadline} />
                                     </div>
 
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
@@ -514,8 +501,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         />
                                     </div>
                                     <FormValidationError message={errors?.gallery_images} />
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                    <div className="mb-5">
+                                    <div className="mb-2">
                                         <button type="submit" className="btn btn-success">
                                             {translate("Publish")}
                                         </button>

@@ -1,9 +1,8 @@
 import FrontendLayout from "@/Frontend/Layouts/FrontendLayout"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import React, { useState } from "react"
 import axios from "axios"
 import { Icon } from "@iconify/react"
-import { useDispatch } from "react-redux"
 import { decreaseCart, increaseCart, removeCart, setCoupon } from "@/Redux/features/Cart/cart"
 import { Link } from "@inertiajs/react"
 import translate from "@/utils/translate"
@@ -13,6 +12,7 @@ import PageHeading from "@/Frontend/Components/PageHeading"
 
 const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_description, meta_image, shop_slug }) => {
     SeoMeta(meta_title ?? title, meta_title, meta_tags, meta_description, meta_image, site_name)
+
     const { carts, coupon } = useSelector((state) => state.carts)
     const dispatch = useDispatch()
 
@@ -28,6 +28,8 @@ const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_descript
             { label: title, url: null }
         ]
     }
+
+    // Cart calculations
     const subtotal = carts.reduce((total, cartItem) => total + cartItem.price * cartItem.quantity, 0)
     let discount = 0
     if (coupon) {
@@ -40,9 +42,7 @@ const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_descript
         setCouponApplying(true)
         dispatch(setCoupon(""))
         axios
-            .post(route("apply.coupon"), {
-                code: couponCode
-            })
+            .post(route("apply.coupon"), { code: couponCode })
             .then((res) => {
                 setCouponErrMsg("")
                 dispatch(setCoupon(res.data.coupon))
@@ -54,6 +54,7 @@ const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_descript
                 setCouponApplying(false)
             })
     }
+
     return (
         <FrontendLayout cart={true}>
             <>
@@ -61,83 +62,83 @@ const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_descript
                     <PageHeading
                         data={pageHeaderData}
                         is_show_breadcrumb={true}
-                        bgSrc={breadcrumb_image ? breadcrumb_image : "/static/page_heading.jpeg"}
+                        bgSrc={breadcrumb_image || "/static/page_heading.jpeg"}
                         variant="cs_type_1"
                     />
                 )}
 
-                {/* Start Cart  */}
+                {/* Start Cart */}
                 <div className="cs_height_100 cs_height_lg_80" />
                 <div className="container">
                     <div className="row cs_gap_y_30">
                         <div className="col-xl-8">
-                            <div className="table-responsive">
-                                <table className="cs_cart_table">
-                                    <thead>
-                                        <tr>
-                                            <th>{translate("Product")}</th>
-                                            <th>{translate("Price")}</th>
-                                            <th>{translate("Quantity")}</th>
-                                            <th>{translate("Subtotal")}</th>
-                                            <th />
-                                        </tr>
-                                    </thead>
-                                    {carts.map((cartItem) => (
-                                        <tbody>
-                                            <tr key={cartItem.id}>
-                                                <td>
-                                                    <div className="cs_cart_table_media">
-                                                        <img src={cartItem.thumbnail_image} alt="Thumb" />
-                                                        <h3>{cartItem.title}</h3>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <Amount amount={cartItem.price} />
-                                                </td>
-                                                <td>
-                                                    <div className="cs_quantity">
-                                                        <button
-                                                            onClick={() => dispatch(increaseCart(cartItem.id))}
-                                                            className="cs_quantity_button cs_increment"
-                                                        >
-                                                            <Icon icon="fa6-solid:angle-up" />
-                                                        </button>
-                                                        <span className="cs_quantity_input">{cartItem.quantity}</span>
-                                                        <button
-                                                            onClick={() => dispatch(decreaseCart(cartItem.id))}
-                                                            disabled={cartItem.quantity === 1}
-                                                            className="cs_quantity_button cs_decrement"
-                                                        >
-                                                            <Icon icon="fa6-solid:angle-down" />{" "}
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <Amount amount={(cartItem.price * cartItem.quantity).toFixed(2)} />
-                                                </td>
-                                                <td className="text-center">
-                                                    <button onClick={() => dispatch(removeCart(cartItem.id))} className="cs_cart-table-close">
-                                                        <Icon icon="mdi:cancel-bold" />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    ))}
-                                </table>
-                            </div>
-                            <div className="cs_height_5 cs_height_lg_5" />
                             {carts.length > 0 ? (
-                                <div className="cs_cart-offer" style={{ alignItems: "start" }}>
-                                    <div>
+                                <div className="table-responsive">
+                                    <table className="cs_cart_table">
+                                        <thead>
+                                            <tr>
+                                                <th>{translate("Item")}</th>
+                                                <th>{translate("Price")}</th>
+                                                <th>{translate("Quantity")}</th>
+                                                <th>{translate("Subtotal")}</th>
+                                                <th />
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {carts.map((cartItem, index) => (
+                                                <tr key={`${cartItem.id}-${cartItem.type}-${index}`}>
+                                                    <td>
+                                                        <div className="cs_cart_table_media">
+                                                            <img
+                                                                src={cartItem.image || cartItem.thumbnail_image}
+                                                                alt={cartItem.name || cartItem.title}
+                                                            />
+                                                            <h3>{cartItem.name || cartItem.title}</h3>
+                                                            <small className="text-muted">
+                                                                {cartItem.type.split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+                                                            </small>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <Amount amount={cartItem.price} />
+                                                    </td>
+                                                    <td>
+                                                        <div className="cs_quantity">
+                                                            <button
+                                                                onClick={() => dispatch(increaseCart({ id: cartItem.id, type: cartItem.type }))}
+                                                                className="cs_quantity_button cs_increment"
+                                                            >
+                                                                <Icon icon="fa6-solid:angle-up" />
+                                                            </button>
+                                                            <span className="cs_quantity_input">{cartItem.quantity}</span>
+                                                            <button
+                                                                onClick={() => dispatch(decreaseCart({ id: cartItem.id, type: cartItem.type }))}
+                                                                disabled={cartItem.quantity === 1}
+                                                                className="cs_quantity_button cs_decrement"
+                                                            >
+                                                                <Icon icon="fa6-solid:angle-down" />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <Amount amount={(cartItem.price * cartItem.quantity).toFixed(2)} />
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <button
+                                                            onClick={() => dispatch(removeCart({ id: cartItem.id, type: cartItem.type }))}
+                                                            className="cs_cart-table-close"
+                                                        >
+                                                            <Icon icon="mdi:cancel-bold" />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    <div className="cs_height_5 cs_height_lg_5" />
+                                    <div className="cs_cart-offer" style={{ alignItems: "start" }}>
                                         <form onSubmit={handleApplyCoupon} className="cs_coupon-doce-form">
-                                            <input
-                                                required
-                                                type="text"
-                                                placeholder={translate("Coupon Code")}
-                                                value={couponCode}
-                                                onChange={(e) => setCouponCode(e.target.value)}
-                                            />
-
+                                            <input required type="text" placeholder={translate("Coupon Code")} value={couponCode} onChange={(e) => setCouponCode(e.target.value)} />
                                             <button disabled={couponApplying} type="submit" className="cs_product_btn cs_color1 cs_semi_bold">
                                                 {translate("Apply Coupon")}
                                             </button>
@@ -146,7 +147,7 @@ const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_descript
                                         {coupon && (
                                             <span className="text-success">
                                                 {translate("Coupon applied")} <span className="badge bg-success">{coupon.code}</span>
-                                                <span onClick={() => dispatch(setCoupon(""))} role="button" className="text-danger">
+                                                <span onClick={() => dispatch(setCoupon(""))} role="button" className="text-danger" style={{ marginLeft: "5px" }}>
                                                     <Icon icon="mdi:cancel-bold" />
                                                 </span>
                                             </span>
@@ -157,13 +158,12 @@ const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_descript
                                 <div>
                                     {translate("No products in cart!")}{" "}
                                     <strong>
-                                        <Link className="" href={route("pages.show", { slug: shop_slug })}>
-                                            {translate("Shop Now")}
-                                        </Link>
-                                    </strong>{" "}
+                                        <Link href={route("pages.show", { slug: shop_slug })}>{translate("Shop Now")}</Link>
+                                    </strong>
                                 </div>
                             )}
                         </div>
+
                         <div className="col-xl-4">
                             <div className="cs_shop-side-spacing">
                                 <div className="cs_shop-card">
@@ -197,7 +197,7 @@ const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_descript
                                         href={route("checkout.index")}
                                         className={`cs_product_btn cs_semi_bold w-100 ${carts?.length === 0 ? "cs_disable" : ""}`}
                                     >
-                                        {translate("Procced To Checkout")}
+                                        {translate("Proceed To Checkout")}
                                     </Link>
                                 </div>
                             </div>
@@ -205,7 +205,7 @@ const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_descript
                     </div>
                 </div>
                 <div className="cs_height_100 cs_height_lg_80" />
-                {/* End Cart  */}
+                {/* End Cart */}
             </>
         </FrontendLayout>
     )

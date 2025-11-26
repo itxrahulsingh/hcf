@@ -26,6 +26,7 @@ export default function Show({ order }) {
         receipt_file_url,
         receipt_file
     } = order
+
     const { data, setData, errors, put } = useForm({
         status: status,
         payment_status: payment_status
@@ -40,13 +41,14 @@ export default function Show({ order }) {
         <AdminLayouts>
             <Head title="Order Information" />
             <div className="yoo-height-b30 yoo-height-lg-b30" />
-
             <div className="container-fluid">
                 <div className="yoo-uikits-heading">
                     <h2 className="yoo-uikits-title">{translate("Order Information")}</h2>
                 </div>
                 <div className="yoo-height-b20 yoo-height-lg-b20"></div>
+
                 <div className="row">
+                    {/* Left Column */}
                     <div className="col-lg-8">
                         <div className="yoo-card yoo-style1">
                             <div className="yoo-card-heading">
@@ -56,12 +58,12 @@ export default function Show({ order }) {
                             </div>
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-30">
-                                    <div className="yoo-height-b20 yoo-height-lg-b20"></div>
+                                    {/* Customer Info */}
                                     <div className="row">
                                         <div className="col-md-4">
                                             <div className="invoice-title">{translate("Placed On")}</div>
                                             <div className="invoice-content">{moment(created_at).format("lll")}</div>
-                                        </div>{" "}
+                                        </div>
                                         <div className="col-md-4">
                                             <div className="invoice-title">{translate("Order Id")}</div>
                                             <div className="invoice-content">#{order_number}</div>
@@ -71,12 +73,12 @@ export default function Show({ order }) {
                                             <div className="invoice-content">{customer_name}</div>
                                         </div>
                                     </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20"></div>
-                                    <div className="row">
+
+                                    <div className="row mt-3">
                                         <div className="col-md-4">
                                             <div className="invoice-title">{translate("Email")}</div>
                                             <div className="invoice-content">
-                                                <a style={{ color: "#2e70c3" }} href={`mailto:${customer_email}`}>
+                                                <a href={`mailto:${customer_email}`} style={{ color: "#2e70c3" }}>
                                                     {customer_email}
                                                 </a>
                                             </div>
@@ -84,7 +86,7 @@ export default function Show({ order }) {
                                         <div className="col-md-4">
                                             <div className="invoice-title">{translate("Phone")}</div>
                                             <div className="invoice-content">
-                                                <a style={{ color: "#2e70c3" }} href={`tel:${customer_phone}`}>
+                                                <a href={`tel:${customer_phone}`} style={{ color: "#2e70c3" }}>
                                                     {customer_phone}
                                                 </a>
                                             </div>
@@ -95,74 +97,60 @@ export default function Show({ order }) {
                                         </div>
                                     </div>
 
+                                    {/* Order Items */}
+                                    {/* Order Items */}
                                     <h5 className="mt-5 mb-1">{translate("Order Items")}</h5>
                                     <div className="yoo-height-b20 yoo-height-lg-b20"></div>
-                                    <div id="yooDataTable_wrapper" className="dataTables_wrapper no-footer">
-                                        <table id="yooDataTable" className="display dataTable no-footer" style={{ width: "100%" }}>
-                                            <thead>
-                                                <tr role="row" style={{ borderLeft: "1px solid #e5e5e5" }}>
-                                                    <th width="25%">{translate("Image")}</th>
-                                                    <th width="25%">{translate("Product Name")}</th>
-                                                    <th width="15%">{translate("Quantity")}</th>
-                                                    <th width="15%">{translate("Unit Price")}</th>
-                                                    <th width="20%">{translate("Total")}</th>
+                                    <table className="display dataTable" style={{ width: "100%" }}>
+                                        <thead>
+                                            <tr>
+                                                <th>{translate("Image")}</th>
+                                                <th>{translate("Item Name")}</th>
+                                                <th>{translate("Type")}</th>
+                                                <th>{translate("Quantity")}</th>
+                                                <th>{translate("Unit Price")}</th>
+                                                <th>{translate("Total")}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {orderitems?.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        {item.item_image && (
+                                                            <img src={item.item_image} alt={item.item_name} style={{ width: "100px" }} />
+                                                        )}
+                                                    </td>
+                                                    <td>{item.item_name}</td>
+                                                    <td>{item.item_type || "Product"}</td>
+                                                    <td>{item.quantity}</td>
+                                                    <td><Amount amount={item.item_price} /></td>
+                                                    <td><Amount amount={item.total_price} /></td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                {orderitems?.map((item, index) => (
-                                                    <tr
-                                                        className="odd"
-                                                        key={index}
-                                                        style={{ borderBottom: "1px solid #e5e5e5", borderLeft: "1px solid #e5e5e5" }}
-                                                    >
-                                                        <td>
-                                                            <img
-                                                                style={{
-                                                                    width: "150px"
-                                                                }}
-                                                                src={item.product_image}
-                                                                alt=""
-                                                            />
-                                                        </td>
-                                                        <td>{item.product_name}</td>
-                                                        <td>{item.quantity}</td>
-                                                        <td>
-                                                            <Amount amount={item.product_price} />
-                                                        </td>
-                                                        <td>
-                                                            <Amount amount={item.total_price} />
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                        <div className="clear" />
-                                    </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20"></div>
+                                            ))}
+                                        </tbody>
+                                    </table>
 
-                                    <div className="row">
+                                    {/* Totals */}
+                                    <div className="row mt-4">
                                         <div className="col-md-4">
                                             <div className="invoice-title">{translate("Subtotal")}</div>
                                             <div className="invoice-content">
-                                                <Amount amount={parseInt(total_price) + parseInt(discount)} />
+                                                <Amount amount={parseFloat(total_price) + parseFloat(discount || 0)} />
                                             </div>
                                         </div>
-
                                         <div className="col-md-4">
                                             <div className="invoice-title">{translate("Discount Amount")}</div>
                                             <div className="invoice-content">
-                                                <Amount amount={discount || "N/A"} />
+                                                <Amount amount={discount || 0} />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="invoice-title">{translate("Applied Coupon")}</div>
-                                            <div className="invoice-content">
-                                                <span>{coupon_code ? coupon_code : ""}</span>
-                                            </div>
+                                            <div className="invoice-content">{coupon_code || "N/A"}</div>
                                         </div>
                                     </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20"></div>
-                                    <div className="row">
+
+                                    <div className="row mt-3">
                                         <div className="col-md-4">
                                             <div className="invoice-title">{translate("Grand Total")}</div>
                                             <div className="invoice-content">
@@ -170,66 +158,18 @@ export default function Show({ order }) {
                                             </div>
                                         </div>
                                         <div className="col-md-4">
-                                            <div className="invoice-title">{translate("Order Number")}</div>
-                                            <div className="invoice-content">#{order_number}</div>
-                                        </div>
-                                        <div className="col-md-4">
                                             <div className="invoice-title">{translate("Order Notes")}</div>
                                             <div className="invoice-content">{order_notes || "N/A"}</div>
                                         </div>
-                                    </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20"></div>
-                                    <div className="row">
                                         <div className="col-md-4">
                                             <div className="invoice-title">{translate("Payment Method")}</div>
                                             <div className="invoice-content">{payment_method}</div>
                                         </div>
-                                        <div className="col-md-4">
-                                            <div className="invoice-title">{translate("Status")}</div>
-                                            <div className="invoice-content">
-                                                <span
-                                                    className={`badge ${status === "initialize"
-                                                        ? "badge-secondary"
-                                                        : status === "pending"
-                                                            ? "badge-warning"
-                                                            : status === "confirmed"
-                                                                ? "badge-success"
-                                                                : status === "canceled"
-                                                                    ? "badge-danger"
-                                                                    : "badge-info"
-                                                        }`}
-                                                >
-                                                    {status?.charAt(0)?.toUpperCase() + status?.slice(1)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-4">
-                                            <div className="invoice-title">{translate("Payment Status")}</div>
-                                            <div className="invoice-content">
-                                                <span
-                                                    className={`badge ${payment_status === "0"
-                                                        ? "badge-secondary"
-                                                        : payment_status === "1"
-                                                            ? "badge-warning"
-                                                            : payment_status === "2"
-                                                                ? "badge-success"
-                                                                : "badge-danger"
-                                                        }`}
-                                                >
-                                                    {payment_status === "0"
-                                                        ? "Initialize"
-                                                        : payment_status === "1"
-                                                            ? "Awaiting Payment"
-                                                            : payment_status === "2"
-                                                                ? "Success"
-                                                                : "Canceled"}
-                                                </span>
-                                            </div>
-                                        </div>
                                     </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20"></div>
+
+                                    {/* Transaction / Receipt */}
                                     {(transaction_id || receipt_file) && (
-                                        <div className="row">
+                                        <div className="row mt-3">
                                             {transaction_id && (
                                                 <div className="col-md-4">
                                                     <div className="invoice-title">{translate("Transaction ID")}</div>
@@ -238,70 +178,30 @@ export default function Show({ order }) {
                                             )}
                                             {receipt_file && (
                                                 <div className="col-md-8">
-                                                    <div className="invoice-title">{translate("Preview URL")}</div>
-                                                    <a href={receipt_file_url} className="invoice-content" target="_blank">{receipt_file_url}</a>
+                                                    <div className="invoice-title">{translate("Receipt URL")}</div>
+                                                    <a href={receipt_file_url} target="_blank" className="invoice-content">
+                                                        {receipt_file_url}
+                                                    </a>
                                                 </div>
                                             )}
                                         </div>
                                     )}
-                                    {/* Invoice buttons */}
+
+                                    {/* Invoice Buttons */}
                                     <div className="btn-list mt-4 mb-3">
-                                        <a
-                                            href={route("admin.orders.show.invoice", order)}
-                                            type="button"
-                                            className="btn btn-outline-secondary mr-3"
-                                            target="_blank"
-                                        >
-                                            <svg
-                                                className="icon icon-left svg-icon-ti-ti-printer"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            >
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
-                                                <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
-                                                <path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z"></path>
-                                            </svg>
+                                        <a href={route("admin.orders.show.invoice", order)} target="_blank" className="btn btn-outline-secondary mr-3">
                                             {translate("View Invoice")}
                                         </a>
-                                        <a
-                                            href={route("admin.orders.download.invoice", order)}
-                                            type="button"
-                                            className="btn btn-outline-secondary"
-                                            download
-                                        >
-                                            <svg
-                                                className="icon icon-left svg-icon-ti-ti-download"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            >
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
-                                                <path d="M7 11l5 5l5 -5"></path>
-                                                <path d="M12 4l0 12"></path>
-                                            </svg>
+                                        <a href={route("admin.orders.download.invoice", order)} download className="btn btn-outline-secondary">
                                             {translate("Download Invoice")}
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="yoo-height-b20 yoo-height-lg-b20"></div>
                     </div>
+
+                    {/* Right Column - Status Form */}
                     <div className="col-md-4">
                         <form onSubmit={handleSubmit}>
                             <div className="yoo-card yoo-style1">
@@ -312,8 +212,7 @@ export default function Show({ order }) {
                                 </div>
                                 <div className="yoo-card-body">
                                     <div className="yoo-padd-lr-20">
-                                        <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                        <label htmlFor="status">{translate("Order Status")} *</label>
+                                        <label className="pt-2" htmlFor="status">{translate("Order Status")} *</label>
                                         <div className="form-group form-group-md">
                                             <div className="yoo-select">
                                                 <select
@@ -323,30 +222,28 @@ export default function Show({ order }) {
                                                     onChange={(e) => setData("status", e.target.value)}
                                                 >
                                                     <option value="pending">{translate("Pending")}</option>
-                                                    <option value="confirmed">Confirmed</option>
-                                                    <option value="completed">Completed</option>
-                                                    <option value="canceled">Canceled</option>
+                                                    <option value="confirmed">{translate("Confirmed")}</option>
+                                                    <option value="completed">{translate("Completed")}</option>
+                                                    <option value="canceled">{translate("Canceled")}</option>
                                                 </select>
                                             </div>
                                             <FromValidationError message={errors.status} />
                                         </div>
+
                                         <label htmlFor="payment_status">{translate("Payment Status")} *</label>
                                         <div className="form-group form-group-md">
                                             <div className="yoo-select">
-                                                <select
-                                                    id="payment_status"
-                                                    value={data.payment_status}
-                                                    className="form-control"
-                                                    onChange={(e) => setData("payment_status", e.target.value)}
-                                                >
-                                                    <option value="1">Awaiting payment</option>
-                                                    <option value="2">Success</option>
-                                                    <option value="3">Cancel</option>
+                                                <select id="payment_status" value={data.payment_status} className="form-control" onChange={(e) => setData("payment_status", e.target.value)}>
+                                                    <option value="0">{translate("Initialize")}</option>
+                                                    <option value="1">{translate("Awaiting Payment")}</option>
+                                                    <option value="2">{translate("Success")}</option>
+                                                    <option value="3">{translate("Canceled")}</option>
                                                 </select>
                                             </div>
                                             <FromValidationError message={errors.payment_status} />
                                         </div>
-                                        <button type="submit" className="btn btn-success mb-3">
+
+                                        <button type="submit" className="btn btn-success mt-2 mb-3">
                                             {translate("Update")}
                                         </button>
                                     </div>

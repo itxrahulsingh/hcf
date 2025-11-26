@@ -18,11 +18,18 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    protected static function booted()
+    {
+        static::deleting(function ($order) {
+            $order->orderitems()->delete();
+        });
+    }
+
     /**
-     * Get receipt file url
+     * Accessor: Return full URL of receipt
      */
     public function getReceiptFileUrlAttribute(): string
     {
-        return asset($this->receipt_file);
+        return $this->receipt_file ? asset($this->receipt_file) : '';
     }
 }

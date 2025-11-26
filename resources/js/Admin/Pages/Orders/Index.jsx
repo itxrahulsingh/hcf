@@ -249,110 +249,69 @@ export default function Index({ orders, sort, filter }) {
                                                             <span className="yoo-last" />
                                                         </div>
                                                     </th>
-                                                    <ThSortable
-                                                        width="10%"
-                                                        sort={sort}
-                                                        onSorted={() => getResults(searchQuery)}
-                                                        column="order_number"
-                                                    >
+                                                    <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="order_number" >
                                                         {translate("Order ID")}
                                                     </ThSortable>
-                                                    <ThSortable
-                                                        width="15%"
-                                                        sort={sort}
-                                                        onSorted={() => getResults(searchQuery)}
-                                                        column="customer_name"
-                                                    >
+                                                    <ThSortable width="15%" sort={sort} onSorted={() => getResults(searchQuery)} column="customer_name">
                                                         {translate("Customer Name (email)")}
                                                     </ThSortable>
-                                                    <ThSortable
-                                                        width="15%"
-                                                        sort={sort}
-                                                        onSorted={() => getResults(searchQuery)}
-                                                        column="customer_phone"
-                                                    >
+                                                    <ThSortable width="15%" sort={sort} onSorted={() => getResults(searchQuery)} column="customer_phone">
                                                         {translate("Phone")}
                                                     </ThSortable>
                                                     <ThSortable width="15%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
-                                                        Product
+                                                        Items
                                                     </ThSortable>
                                                     <ThSortable width="8%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
                                                         Amount
                                                     </ThSortable>
-                                                    <ThSortable
-                                                        width="10%"
-                                                        sort={sort}
-                                                        onSorted={() => getResults(searchQuery)}
-                                                        column="payment_method"
-                                                    >
+                                                    <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="payment_method">
                                                         {translate("Payment Method")}
                                                     </ThSortable>
-                                                    <ThSortable
-                                                        width="10%"
-                                                        sort={sort}
-                                                        onSorted={() => getResults(searchQuery)}
-                                                        column="payment_method"
-                                                    >
+                                                    <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="payment_status">
                                                         {translate("Payment Status")}
                                                     </ThSortable>
                                                     <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="status">
                                                         {translate("Status")}
                                                     </ThSortable>
                                                     {(hasPermission("orders.show") || hasPermission("orders.delete")) && (
-                                                        <th style={{ width: "1%" }} className="sorting">
-                                                            {translate("Action")}
-                                                        </th>
+                                                        <th style={{ width: "1%" }}>{translate("Action")}</th>
                                                     )}
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {orders.data.map((order, index) => (
-                                                    <tr key={index}>
+                                                    <tr key={order.id || index}>
                                                         <td className="sorting_1" onClick={() => handleMark(order.id)}>
-                                                            <div
-                                                                className={`yoo-check-mark ${
-                                                                    markItems.some((item) => item === order.id) && "active"
-                                                                }`}
-                                                            />
+                                                            <div className={`yoo-check-mark ${markItems.includes(order.id) && "active"}`} />
                                                         </td>
                                                         <td>
                                                             <div className="yoo-table-medias yoo-style1">
-                                                                <Link href={route("admin.orders.show", order)}>#{order?.order_number}</Link>
+                                                                <Link href={route("admin.orders.show", order)}>#{order.order_number}</Link>
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            {order?.customer_name} (
-                                                            <a
-                                                                href={`mailto:${order?.customer_email}`}
-                                                                style={{ color: "#007aff", textDecoration: "underline" }}
-                                                            >
-                                                                {order?.customer_email}
+                                                            {order.customer_name} (
+                                                            <a href={`mailto:${order.customer_email}`} style={{ color: "#007aff", textDecoration: "underline" }}>
+                                                                {order.customer_email}
                                                             </a>
                                                             )
                                                         </td>
 
                                                         <td>
-                                                            <a
-                                                                href={`tel:${order?.customer_phone}`}
-                                                                style={{ color: "#007aff", textDecoration: "underline" }}
-                                                            >
-                                                                {order?.customer_phone}
+                                                            <a href={`tel:${order.customer_phone}`} style={{ color: "#007aff", textDecoration: "underline" }}>
+                                                                {order.customer_phone}
                                                             </a>
                                                         </td>
 
                                                         <td>
                                                             <div className="yoo-table-medias yoo-style1">
-                                                                {order?.orderitems?.map((item) => item.product_name).join(", ")}
+                                                                {order.orderitems ?.map((item) => `${item.item_name} (${item.item_type || "product"})`).join(", ")}
                                                             </div>
                                                         </td>
-
+                                                        <td><Amount amount={order.total_price} /></td>
+                                                        <td>{order.payment_method}</td>
                                                         <td>
-                                                            <Amount amount={order?.total_price} />
-                                                        </td>
-                                                        <td>{order?.payment_method}</td>
-                                                        <td>
-                                                            <span
-                                                                className={`badge ${
+                                                            <span className={`badge ${
                                                                     order.payment_status === "0"
                                                                         ? "badge-secondary"
                                                                         : order.payment_status === "1"
@@ -388,26 +347,16 @@ export default function Index({ orders, sort, filter }) {
                                                                 {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                                                             </span>
                                                         </td>
+
                                                         {(hasPermission("orders.show") || hasPermission("orders.delete")) && (
                                                             <td>
-                                                                <div
-                                                                    className="d-flex"
-                                                                    style={{
-                                                                        gap: "5px"
-                                                                    }}
-                                                                >
+                                                                <div className="d-flex" style={{ gap: "5px" }}>
                                                                     {hasPermission("orders.show") && (
                                                                         <Link
                                                                             href={route("admin.orders.show", order)}
                                                                             className="badge badge-secondary"
                                                                         >
-                                                                            <IonIcon
-                                                                                icon={eyeOutline}
-                                                                                style={{
-                                                                                    height: "16px",
-                                                                                    width: "16px"
-                                                                                }}
-                                                                            />
+                                                                            <IonIcon icon={eyeOutline} style={{ height: "16px", width: "16px" }} />
                                                                         </Link>
                                                                     )}
                                                                     {hasPermission("orders.delete") && (
@@ -421,8 +370,7 @@ export default function Index({ orders, sort, filter }) {
                                             </tbody>
                                         </table>
                                         {!orders.data.length && (
-                                            <div
-                                                className="no-data-found"
+                                            <div className="no-data-found"
                                                 style={{
                                                     textAlign: "center",
                                                     padding: "50px"
@@ -443,9 +391,7 @@ export default function Index({ orders, sort, filter }) {
                             <ul className="pagination">
                                 {orders.links.map((link, index) => (
                                     <li className={`page-item ${link.active ? "active" : ""}`} key={`pagination_${index}`}>
-                                        <Link
-                                            href={link.url}
-                                            className="page-link"
+                                        <Link href={link.url} className="page-link"
                                             dangerouslySetInnerHTML={{
                                                 __html: link.label
                                             }}

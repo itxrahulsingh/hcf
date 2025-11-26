@@ -14,47 +14,76 @@ const cartSlice = createSlice({
     name: "carts",
     initialState,
     reducers: {
+        // Add item to cart (product, gift, or cause)
         addCart(state, action) {
-            const cartIndex = state.carts.findIndex((c) => c.id === action.payload.id)
+            const { id, type, content, quantity = 1 } = action.payload
+
+            // Find existing item with same id + type
+            const cartIndex = state.carts.findIndex(
+                (c) => c.id === id && c.type === type
+            )
+
             if (cartIndex === -1) {
                 state.carts.push({
-                    id: action.payload.id,
-                    title: action.payload.content.title,
-                    price: action.payload.discount_price ?? action.payload.price,
-                    thumbnail_image: action.payload.thumbnail_image,
-                    quantity: 1
+                    id,
+                    type,                  // product, gift, or cause
+                    title: content.content?.title || content.content?.name,
+                    price: content.discount_price ?? content.price,
+                    thumbnail_image: content.thumbnail_image || content.gift_image || null,
+                    quantity,
+                    sku: content.sku ?? null
                 })
             } else {
-                state.carts[cartIndex].quantity += 1
+                state.carts[cartIndex].quantity += quantity
             }
+
             saveToLocalStorage(state.carts)
         },
 
+        // Remove item from cart
         removeCart(state, action) {
-            state.carts = state.carts.filter((c) => c.id !== action.payload)
+            const { id, type } = action.payload
+            state.carts = state.carts.filter((c) => !(c.id === id && c.type === type))
             saveToLocalStorage(state.carts)
         },
 
+        // Clear entire cart
         clearCart(state) {
             state.carts = []
             localStorage.removeItem("carts")
         },
 
+        // Increase quantity
         increaseCart(state, action) {
-            const cartIndex = state.carts.findIndex((c) => c.id === action.payload)
-            state.carts[cartIndex].quantity += 1
-            saveToLocalStorage(state.carts)
+            const { id, type } = action.payload
+            const cartIndex = state.carts.findIndex((c) => c.id === id && c.type === type)
+            if (cartIndex !== -1) {
+                state.carts[cartIndex].quantity += 1
+                saveToLocalStorage(state.carts)
+            }
         },
+
+        // Decrease quantity
         decreaseCart(state, action) {
-            const cartIndex = state.carts.findIndex((c) => c.id === action.payload)
-            state.carts[cartIndex].quantity -= 1
-            saveToLocalStorage(state.carts)
+            const { id, type } = action.payload
+            const cartIndex = state.carts.findIndex((c) => c.id === id && c.type === type)
+            if (cartIndex !== -1) {
+                state.carts[cartIndex].quantity -= 1
+                if (state.carts[cartIndex].quantity <= 0) {
+                    state.carts.splice(cartIndex, 1)
+                }
+                saveToLocalStorage(state.carts)
+            }
         },
+
+        // Set coupon
         setCoupon(state, action) {
             state.coupon = action.payload
             localStorage.setItem("coupon", JSON.stringify(action.payload))
         },
-        removeCoupon(state, action) {
+
+        // Remove coupon
+        removeCoupon(state) {
             state.coupon = ""
             localStorage.removeItem("coupon")
         }

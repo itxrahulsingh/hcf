@@ -105,6 +105,20 @@ export default function AddSection({ setIsAddSection, addSection }) {
             sectionId: ""
         },
         {
+            type: "Cause",
+            title: "Cause",
+            icon: "lucide:grid-2x2",
+            data: {},
+            advanced: {
+                backgroundImage: "",
+                backgroundColor: "",
+                is_section_dark: false,
+                classes: [],
+                padding: { top: { lg: 0, md: 0 }, bottom: { lg: 0, md: 0 } }
+            },
+            sectionId: ""
+        },
+        {
             type: "CoreValue",
             title: "Core Value",
             icon: "lucide:cpu",

@@ -27,6 +27,7 @@
     $meta_description = \App\Models\Setting::pull('meta_description');
     $meta_image = asset(\App\Models\Setting::pull('meta_image'));
     $blogs = app(\App\Repositories\Frontend\BlogRepository::class)->getPublishedBlogs();
+    $causes = app(\App\Repositories\Frontend\CauseRepository::class)->getPublishedCauses();
     $popular_products = app(\App\Repositories\Frontend\ProductRepository::class)->getPopularProducts();
     $trending_products = app(\App\Repositories\Frontend\ProductRepository::class)->getTrendingProducts();
 
@@ -69,11 +70,12 @@
         localStorage.setItem('is_enabled_ecommerce', JSON.stringify(@json($is_enabled_ecommerce)));
         localStorage.setItem('useful_links', JSON.stringify(@json($useful_links)));
         localStorage.setItem('blogs', JSON.stringify(@json($blogs)));
+        localStorage.setItem('causes', JSON.stringify(@json($causes)));
 
         localStorage.setItem('recent_post', JSON.stringify(@json($recent_post)));
         localStorage.setItem('categories', JSON.stringify(@json($categories)));
         localStorage.setItem('tags', JSON.stringify(@json($tags)));
-        
+
         localStorage.setItem('popular_products', JSON.stringify(@json($popular_products)));
         localStorage.setItem('trending_products', JSON.stringify(@json($trending_products)));
 

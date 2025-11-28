@@ -18,16 +18,16 @@ class CauseStoreRequest extends FormRequest
         $rules = [
             'category' => ['required'],
             'banner_image' => ['required', 'max:2048'],
-            'gallery_images' => ['required', 'array', 'min:1'],
+            'gallery_images' => ['nullable', 'array'],
             'gallery_images.*' => ['max:2048'],
-            'status' => ['required', 'boolean'],
+            'status' => ['required'],
         ];
 
         // Append language-specific validation rules
         $languages = json_decode(Setting::pull('languages'));
         foreach ($languages as $language) {
             $langCode = $language->code;
-            $rules[$langCode . '_name'] = 'required|max:255';
+            $rules[$langCode . '_title'] = 'required|max:255';
             $rules[$langCode . '_content'] = 'nullable';
             $rules[$langCode . '_projects'] = 'nullable';
             $rules[$langCode . '_faq'] = 'nullable';

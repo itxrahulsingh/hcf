@@ -10,6 +10,7 @@ import VideoSection from "@/Frontend/Components/Sections/VideoSection"
 import TeamSection from "@/Frontend/Components/Sections/TeamSection"
 import TestimonialSection from "@/Frontend/Components/Sections/TestimonialSection"
 import BlogSection from "@/Frontend/Components/Sections/BlogSection"
+import CauseSection from "@/Frontend/Components/Sections/CauseSection"
 import MarqueeSection from "@/Frontend/Components/Sections/MarqueeSection"
 import PartnerSection from "@/Frontend/Components/Sections/PartnerSection"
 import CTASection from "@/Frontend/Components/Sections/CTASection"
@@ -59,6 +60,7 @@ export default function Page() {
         Team: TeamSection,
         Testimonial: TestimonialSection,
         Blog: BlogSection,
+        Cause: CauseSection,
         Marquee: MarqueeSection,
         Partner: PartnerSection,
         CTA: CTASection,

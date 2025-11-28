@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('slug', 255);
             $table->unsignedTinyInteger('user_id')->comment('User Id, Who published the cause');
             $table->unsignedInteger('category_id');
-            $table->string('banner_image', 100)->nullable();
-            $table->string('gallery_images', 100)->nullable();
+            $table->string('thumbnail_image', 255)->nullable();
+            $table->string('banner_image', 255)->nullable();
+            $table->string('gallery_images', 512)->nullable();
             $table->boolean('have_gift')->default(false)->comment('Whether the cause has gift option');
             $table->string('gift_ids', 100)->nullable();
             $table->boolean('have_product')->default(false)->comment('Whether the cause has product option');

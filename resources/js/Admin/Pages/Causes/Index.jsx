@@ -182,6 +182,9 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                         <span className="yoo-last" />
                                                     </div>
                                                 </th>
+                                                <ThSortable width="20%" sort={sort} onSorted={() => getResults(searchQuery)} column="thumbnail_image">
+                                                    {translate("Thumbnail")}
+                                                </ThSortable>
                                                 <ThSortable width="20%" sort={sort} onSorted={() => getResults(searchQuery)} column="title">
                                                     {translate("Title")}
                                                 </ThSortable>
@@ -210,6 +213,9 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                             <span className="yoo-first" />
                                                             <span className="yoo-last" />
                                                         </div>
+                                                    </td>
+                                                    <td>
+                                                        <img src={cause?.thumbnail_image || 'static/no-image.jpg'} alt={cause?.content?.title} style={{ width: "80px" }} />
                                                     </td>
                                                     <td className="sorting_1">{cause?.content?.title}</td>
                                                     <td>{cause?.category?.content?.title}</td>

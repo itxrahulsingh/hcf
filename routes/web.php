@@ -5,6 +5,7 @@
 use App\Http\Controllers\DebugController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\CaseStudyController;
+use App\Http\Controllers\Frontend\CauseController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\FormResponseController;
@@ -58,6 +59,9 @@ Route::middleware('auth')->group(function () {
 // frontend blog routes
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::post('/blog/comment', [BlogController::class, 'comment'])->name('blog.comment');
+
+// frontend Cause routes
+Route::get('/donation/{slug}', [CauseController::class, 'show'])->name('cause.show');
 
 // services routes
 Route::get('/service/{slug}', [ServiceController::class, 'show'])->name('service.show');

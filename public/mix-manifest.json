@@ -1,6 +1,6 @@
 {
-    "/js/frontend/app.js": "/js/frontend/app.js?id=46a34d0d4e1f8dbdd83de2444a86c8bc",
-    "/js/admin/app.js": "/js/admin/app.js?id=a2654d00621bfcf45172b5683e91996f",
+    "/js/frontend/app.js": "/js/frontend/app.js?id=4e3044b5deed42435aaa815c88c08ee3",
+    "/js/admin/app.js": "/js/admin/app.js?id=d7ec3a52ce417fb1c524f7c15a9d26a4",
     "/css/frontend/globals.css": "/css/frontend/globals.css?id=ec98f46ee02a5f8f13f8f3d3937f15b1",
     "/css/frontend/bootstrap.min.css": "/css/frontend/bootstrap.min.css?id=cc8edb486677fe39b9b12de243590837",
     "/css/admin/all.css": "/css/admin/all.css?id=c7c1fc54d547affc89bf2219b0b1ed26",
@@ -24,6 +24,7 @@
     "/static/images/media/spreadsheet.png": "/static/images/media/spreadsheet.png?id=de1d998cea50ac47b4ccd507b2bd993f",
     "/static/images/media/text.png": "/static/images/media/text.png?id=a24694782ef7cc792ab85217fbbd40a1",
     "/static/images/media/video.png": "/static/images/media/video.png?id=d7a4c954b58af3dc013877c4ec516388",
+    "/static/no-image.jpg": "/static/no-image.jpg?id=862631d00a07532b08cf7cd180abba30",
     "/static/page_heading.jpeg": "/static/page_heading.jpeg?id=b50f4d1a6caceab70cee148ca51a4901",
     "/static/sections/about/about_style_1.jpg": "/static/sections/about/about_style_1.jpg?id=c15cdaf4f8ce20c870aa145613d5a738",
     "/static/sections/about/about_style_2.jpg": "/static/sections/about/about_style_2.jpg?id=d0d53b88a26b7bdce60aa0335ac38d3d",

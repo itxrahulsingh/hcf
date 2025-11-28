@@ -87,7 +87,7 @@ class CauseRepository
         $languages = json_decode(Setting::pull('languages'), true);
         $defaultLang = Setting::pull('default_lang');
         $defaultTitle = '';
-        $generatedSlug = Str::slug($request->input($defaultLang . '_name'));
+        $generatedSlug = Str::slug($request->input($defaultLang . '_title'));
 
         if (Cause::where('slug', $generatedSlug)->exists()) {
             $generatedSlug = $generatedSlug . '-' . Carbon::now()->timestamp;
@@ -97,7 +97,9 @@ class CauseRepository
         $cause = $this->model->create([
             'slug' => $generatedSlug,
             'category_id' => $request->input('category'),
-            'banner_image' => $request->input('thumbnail_image'),
+            'user_id' => auth()->id(),
+            // 'thumbnail_image' => $request->input('thumbnail_image'),
+            'banner_image' => $request->input('banner_image'),
             'gallery_images' => json_encode($request->input('gallery_images')),
             'have_gift' => $request->input('have_gift'),
             'have_product' => $request->input('have_product'),
@@ -107,12 +109,16 @@ class CauseRepository
             'goal_amount' => $request->input('goal_amount'),
             'deadline' => $request->input('deadline'),
             'status' => $request->input('status'),
+            'meta_image' => $request->input('meta_image'),
+            'meta_title' => $request->input('meta_title'),
+            'meta_tags' => $request->input('meta_tags'),
+            'meta_description' => $request->input('meta_description'),
         ]);
 
         // Prepare content data
         $content = array_map(function ($language) use ($request, $defaultLang, &$defaultTitle) {
             $langCode = $language['code'];
-            $title = $request[$langCode . '_name'];
+            $title = $request[$langCode . '_title'];
 
             // Store the default language title for slug generation
             if ($langCode === $defaultLang) {
@@ -126,9 +132,6 @@ class CauseRepository
                 'projects' => $request[$langCode . '_projects'],
                 'faq' => $request[$langCode . '_faq'],
                 'updates' => $request[$langCode . '_updates'],
-                'meta_title' => $request[$langCode . '_meta_title'],
-                'meta_tags' => $request[$langCode . '_meta_tags'],
-                'meta_description' => $request[$langCode . '_meta_description'],
             ];
         }, $languages);
 

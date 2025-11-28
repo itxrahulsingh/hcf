@@ -31,6 +31,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
     const { data, setData, errors, post } = useForm({
         category: "",
         slug: "",
+        thumbnail_image: "",
         banner_image: "",
         gallery_images: [],
         have_gift: "0",
@@ -457,6 +458,28 @@ export default function Create({ languages, cause_categories, default_lang, gift
                             </div>
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
+                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
+                                        <div className="form-group">
+                                        <label>{translate("Upload Thumbnail image")} *</label>
+                                        <SingleMediaUploader
+                                            onSelected={(e) => {
+                                                setData(
+                                                    produce((draft) => {
+                                                        draft.thumbnail_image = e
+                                                    })
+                                                )
+                                            }}
+                                            handleRemoved={() =>
+                                                setData(
+                                                    produce((draft) => {
+                                                        draft.thumbnail_image = ""
+                                                    })
+                                                )
+                                            }
+                                            defaultValue={data.thumbnail_image}
+                                        />
+                                    </div>
+                                    <FormValidationError message={errors?.thumbnail_image} />
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
                                     <div className="form-group">
                                         <label>{translate("Upload Banner image")} *</label>

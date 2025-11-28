@@ -187,7 +187,7 @@ export default function Index({ gifts, sort, filtered_lang, languages }) {
                                                             <span className="yoo-last" />
                                                         </div>
                                                     </th>
-                                                    <ThSortable width="20%" sort={sort} onSorted={() => getResults(searchQuery)} column="title">
+                                                    <ThSortable width="20%" sort={sort} onSorted={() => getResults(searchQuery)} column="image">
                                                         {translate("Image")}
                                                     </ThSortable>
                                                     <ThSortable width="40%" sort={sort} onSorted={() => getResults(searchQuery)} column="title">
@@ -211,7 +211,7 @@ export default function Index({ gifts, sort, filtered_lang, languages }) {
                                                             />
                                                         </td>
                                                         <td>
-                                                            <img src={gift?.gift_image} alt={gift?.content?.title} style={{ width: "80px" }} />
+                                                            <img src={gift?.gift_image || 'static/no-image.jpg'} alt={gift?.content?.title} style={{ width: "80px" }} />
                                                         </td>
                                                         <td>{gift?.content?.title}</td>
                                                         <td>{moment(gift.created_at).format("ll")}</td>

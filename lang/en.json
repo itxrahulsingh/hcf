@@ -1,6 +1,7 @@
 {
     "Home": "Home",
     "Blog": "Blog",
+    "Cause": "Cause",
     "Search Results for": "Search Results for",
     "Nothing Found": "Nothing Found",
     "Sorry, but nothing matched your search terms. Please try again with some different keywords.": "Sorry, but nothing matched your search terms. Please try again with some different keywords.",
@@ -273,6 +274,7 @@
     "Select Default Home Page": "Select Default Home Page",
     "Select Home Page": "Select Home Page",
     "Select Blog Page": "Select Blog Page",
+    "Select Cause Page": "Select Cause Page",
     "All Languages": "All Languages",
     "Direction": "Direction",
     "Is Default": "Is Default",
@@ -311,6 +313,7 @@
     "No.": "No.",
     "Is Opened": "Is Opened",
     "Show Blog Sidebar": "Show Blog Sidebar",
+    "Show Cause Sidebar": "Show Cause Sidebar",
     "Show Breadcrumb": "Show Breadcrumb",
     "Edit": "Edit",
     "Invoice Settings": "Invoice Settings",

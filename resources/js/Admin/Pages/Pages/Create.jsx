@@ -11,6 +11,7 @@ import AditionalFeatureSectionCustomize from "@/Admin/Components/SectionCustomiz
 import VideoSectionCustomize from "@/Admin/Components/SectionCustomize/VideoSectionCustomize"
 import TeamSectionCustomize from "@/Admin/Components/SectionCustomize/TeamSectionCustomize"
 import BlogSectionCustomize from "@/Admin/Components/SectionCustomize/BlogSectionCustomize"
+import CauseSectionCustomize from "@/Admin/Components/SectionCustomize/CauseSectionCustomize"
 import MarqueeSectionCustomize from "@/Admin/Components/SectionCustomize/MarqueeSectionCustomize"
 import PartnerSectionCustomize from "@/Admin/Components/SectionCustomize/PartnerSectionCustomize"
 import CTASectionCustomize from "@/Admin/Components/SectionCustomize/CTASectionCustomize"
@@ -255,6 +256,9 @@ export default function Create() {
             break
         case "Blog":
             customizeSection = <BlogSectionCustomize index={sectionIndex.toString()} />
+            break
+        case "Cause":
+            customizeSection = <CauseSectionCustomize index={sectionIndex.toString()} />
             break
         case "Marquee":
             customizeSection = <MarqueeSectionCustomize index={sectionIndex.toString()} />

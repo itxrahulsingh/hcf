@@ -45,6 +45,12 @@ class Cause extends Model
         return $this->hasOne(CauseCategory::class, 'id', 'category_id');
     }
 
+    public function gifts()
+    {
+        return null;
+        return $this->gift_ids ? Gift::whereIn('id', $this->gift_ids) : null;
+    }
+
     /**
      * Get user
      */

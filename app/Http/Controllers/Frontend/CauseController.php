@@ -28,7 +28,7 @@ class CauseController extends Controller
         $data['page'] = Page::where('rendered_page', 'causes')->with('content')->first();
 
         $current_page_url = request()->url();
-        $meta_title = $cause?->content->meta_title ?? $cause?->content->title;
+        $meta_title = $cause?->meta_title ?? $cause?->content->title;
         $meta_description = $cause?->content->meta_description;
         $meta_tags = $cause?->content->meta_tags;
         $site_name = Setting::pull('site_name');

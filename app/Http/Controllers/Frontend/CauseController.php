@@ -8,6 +8,7 @@ use App\Models\Cause;
 use App\Models\CauseCategory;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Tag;
 use App\Repositories\Frontend\CauseRepository;
@@ -15,6 +16,7 @@ use Artesaos\SEOTools\Facades\OpenGraph;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\TwitterCard;
 use Inertia\Inertia;
+use App\Models\ManualPaymentGateway;
 
 class CauseController extends Controller
 {
@@ -24,6 +26,7 @@ class CauseController extends Controller
         $data['recent_post'] = Cause::where('status', '1')->with(['content', 'user'])->latest()->take(4)->get();
         $cause = $repository->show($slug);
         $data['cause'] = $cause;
+        $data['products'] = Product::where('status', '1')->with('content')->latest()->get();
         $data['slug'] = Page::where('rendered_page', 'causes')->first()->slug;
         $data['page'] = Page::where('rendered_page', 'causes')->with('content')->first();
 
@@ -34,6 +37,21 @@ class CauseController extends Controller
         $site_name = Setting::pull('site_name');
         $tagline = $cause?->content->title;
         $meta_image = $cause->thumbnail_image_url;
+
+        $data['payment_gateway'] = [
+            'is_paypal_active' => Setting::pull('paypal_is_active') == '1',
+            'is_stripe_active' => Setting::pull('stripe_is_active') == '1',
+            'is_sslcz_active' => Setting::pull('sslcz_is_active') == '1',
+            'is_flutterwave_active' => Setting::pull('flutterwave_is_active') == '1',
+            'is_razorpay_active' => Setting::pull('razorpay_is_active') == '1',
+            'is_cod_active' => Setting::pull('cod_is_active') == '1',
+        ];
+
+        $data['manual_payment_gateways'] = ManualPaymentGateway::where('status', '1')->with('content')->get();
+
+        $terms_condition_page_id = Setting::pull('default_terms_and_conditions_page');
+        $page = Page::find($terms_condition_page_id);
+        $data['terms_condition_url'] = route('pages.show', $page->slug);
         SEOMeta::setTitle($meta_title);
         SEOMeta::setDescription($meta_description);
         SEOMeta::setCanonical($current_page_url);

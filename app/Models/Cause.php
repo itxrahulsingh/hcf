@@ -19,7 +19,7 @@ class Cause extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    protected $appends = ['banner_image_url'];
+    protected $appends = ['banner_image_url', 'gifts'];
 
     /**
      * Get Cause contents
@@ -45,10 +45,9 @@ class Cause extends Model
         return $this->hasOne(CauseCategory::class, 'id', 'category_id');
     }
 
-    public function gifts()
+    public function getGiftsAttribute()
     {
-        return null;
-        return $this->gift_ids ? Gift::whereIn('id', $this->gift_ids) : null;
+        return $this->gift_ids ? Gift::with('content')->whereIn('id', $this->gift_ids)->where('status', 1)->get() : collect();
     }
 
     /**
@@ -66,4 +65,8 @@ class Cause extends Model
     {
         return asset($this->banner_image);
     }
+
+    protected $casts = [
+        'gift_ids' => 'array',
+    ];
 }

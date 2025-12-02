@@ -16,8 +16,6 @@ export default function CauseLayout({
     const { breadcrumb_image, is_show_breadcrumb } = JSON.parse(localStorage.getItem("page_settings")) || {}
     const { categories, tags, recent_post, slug } = usePage().props
 
-    console.log("Banner Image URL:", causeDetailsBannerImageUrl)
-
     // categories
     const customizedCategories = categories?.map((item) => {
         return {
@@ -47,11 +45,12 @@ export default function CauseLayout({
             {causeDetails ? <div className="cs_height_100 cs_height_lg_80"></div> : <div className="cs_height_150 cs_height_lg_80"></div>}
 
             <div className={`container cs_cause_section${causeDetails ? " cs_cause_details_content_section" : ""}`}>
+                {children}
                 <div className="row position-relative cs_gap_y_65">
-                    <div className="col-lg-8">{children}</div>
+                    {/* <div className="col-lg-8">{children}</div>
                     <div className="col-lg-4">
                         <CauseSidebar recent_post={recent_post} customizedCategories={customizedCategories} />
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="cs_height_150 cs_height_lg_80"></div>

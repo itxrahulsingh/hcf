@@ -93,7 +93,7 @@ class CheckoutRepository
             ];
         }, $request->items);
 
-        $order->items()->createMany($order_items);
+        $order->orderitems()->createMany($order_items);
 
         // Handle manual payments or COD
         $manualPayment = ManualPaymentGateway::whereHas('content', function ($query) use ($request) {

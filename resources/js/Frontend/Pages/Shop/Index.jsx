@@ -302,7 +302,7 @@ const Index = ({
                                                     <a
                                                         href="javascript:void(0)"
                                                         onClick={() => {
-                                                            dispatch(addCart(product))
+                                                            dispatch(addCart({ id: product.id, type: "product", content: product }))
                                                         }}
                                                     >
                                                         <svg

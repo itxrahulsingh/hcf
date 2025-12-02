@@ -95,7 +95,7 @@ const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_descript
                                                             />
                                                             <h3>{cartItem.name || cartItem.title}</h3>
                                                             <small className="text-muted">
-                                                                {cartItem.type.split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+                                                                {cartItem.type }
                                                             </small>
                                                         </div>
                                                     </td>

@@ -23,12 +23,21 @@ const cartSlice = createSlice({
                 (c) => c.id === id && c.type === type
             )
 
+            let itemPrice = 0
+            if (type === "product") {
+                itemPrice = Number(content.discount_price ?? content.price ?? 0)
+            } else if (type === "gift") {
+                itemPrice = Number(content.amount ?? 0)
+            } else if (type === "cause") {
+                itemPrice = Number(content.price ?? 0)
+            }
+
             if (cartIndex === -1) {
                 state.carts.push({
                     id,
                     type,                  // product, gift, or cause
                     title: content.content?.title || content.content?.name,
-                    price: content.discount_price ?? content.price,
+                    price: itemPrice,
                     thumbnail_image: content.thumbnail_image || content.gift_image || null,
                     quantity,
                     sku: content.sku ?? null

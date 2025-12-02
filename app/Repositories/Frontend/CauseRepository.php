@@ -41,7 +41,6 @@ class CauseRepository
     public function show($slug): mixed
     {
         $cause = $this->model->with(['content', 'category.content', 'user'])->where('slug', $slug)->first();
-        $cause->gifts = $cause->gifts();
         if (! $cause) {
             abort(404);
         }

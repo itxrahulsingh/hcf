@@ -14,9 +14,7 @@ const Index = ({ payment_gateway, meta_tags, tagline, site_name, terms_condition
     const { carts, coupon } = useSelector((state) => state.carts)
     const { breadcrumb_image, is_show_breadcrumb } = JSON.parse(localStorage.getItem("page_settings")) || {}
     const captchaSiteKey = localStorage.getItem("google_captcha_site_key") ? JSON.parse(localStorage.getItem("google_captcha_site_key")) : []
-    const is_active_google_captcha = localStorage.getItem("is_active_google_captcha")
-        ? JSON.parse(localStorage.getItem("is_active_google_captcha"))
-        : []
+    const is_active_google_captcha = localStorage.getItem("is_active_google_captcha") ? JSON.parse(localStorage.getItem("is_active_google_captcha")) : []
     const [captchaVerified, setCaptchaVerified] = useState(false)
     const [captchaError, setCaptchaError] = useState(null)
     const [isCheckouting, setIsCheckouting] = useState(false)
@@ -151,13 +149,7 @@ const Index = ({ payment_gateway, meta_tags, tagline, site_name, terms_condition
                         <h2 className="cs_checkout-title">{translate("Additional information")}</h2>
                         <div className="cs_height_30 cs_height_lg_30" />
                         <label className="cs_shop-label">{`${translate("Order notes")} (${translate("optional")})`}</label>
-                        <textarea
-                            cols={30}
-                            rows={6}
-                            onChange={(e) => setData("orderNotes", e.target.value)}
-                            value={data.orderNotes}
-                            className="cs_shop-input"
-                        />
+                        <textarea cols={30} rows={6} onChange={(e) => setData("orderNotes", e.target.value)} value={data.orderNotes} className="cs_shop-input"/>
                         <div className="cs_height_30 cs_height_lg_30" />
                     </div>
                     <div className="col-xl-5">

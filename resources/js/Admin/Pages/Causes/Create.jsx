@@ -34,15 +34,16 @@ export default function Create({ languages, cause_categories, default_lang, gift
         thumbnail_image: "",
         banner_image: "",
         gallery_images: [],
-        have_gift: "0",
+        have_gift: 0,
+        is_special: 0,
         gift_ids: [],
-        have_product: "0",
+        have_product: 0,
         custom_donation_amounts: "2100,5100,11000",
         video_url: "",
         raised_amount: "",
         goal_amount: "",
         deadline: "",
-        status: "1",
+        status: 1,
         meta_image: "",
         meta_title: "",
         meta_tags: "",
@@ -238,7 +239,10 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                                 <div key={index} className="p-3 mb-3 border rounded">
                                                     <div className="form-group mb-2">
                                                         <label>{translate("Question Title")}</label>
-                                                        <input type="text" className="form-control" value={item.title}
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            value={item.title}
                                                             onChange={(e) => {
                                                                 const updated = [...faqs[selectedLang]]
                                                                 updated[index].title = e.target.value
@@ -249,7 +253,10 @@ export default function Create({ languages, cause_categories, default_lang, gift
 
                                                     <div className="form-group mb-2">
                                                         <label>{translate("Answer (Text Only)")}</label>
-                                                        <input type="text" className="form-control" value={item.content}
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            value={item.content}
                                                             onChange={(e) => {
                                                                 const updated = [...faqs[selectedLang]]
                                                                 updated[index].content = e.target.value
@@ -378,8 +385,18 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                     <div className="form-group form-group-md d-flex align-items-center justify-content-between">
                                         <label className="mb-0">{translate("Is Active")}:</label>
                                         <div
-                                            className={`yoo-switch ${data.status === "1" ? "active" : ""}`}
-                                            onClick={() => setData("status", data.status === "1" ? "0" : "1")}
+                                            className={`yoo-switch ${data.status === 1 ? "active" : ""}`}
+                                            onClick={() => setData("status", data.status === 1 ? 0 : 1)}
+                                            style={{ cursor: "pointer" }}
+                                        >
+                                            <div className="yoo-switch-in"></div>
+                                        </div>
+                                    </div>
+                                    <div className="form-group form-group-md d-flex align-items-center justify-content-between">
+                                        <label className="mb-0">{translate("Is Birthday")}:</label>
+                                        <div
+                                            className={`yoo-switch ${data.is_special === 1 ? "active" : ""}`}
+                                            onClick={() => setData("is_special", data.is_special === 1 ? 0 : 1)}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
@@ -389,8 +406,8 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                     <div className="form-group form-group-md d-flex align-items-center justify-content-between">
                                         <label className="mb-0">{translate("Have Gift")}:</label>
                                         <div
-                                            className={`yoo-switch ${data.have_gift === "1" ? "active" : ""}`}
-                                             onClick={() => setData("have_gift", data.have_gift === "1" ? "0" : "1")}
+                                            className={`yoo-switch ${data.have_gift === 1 ? "active" : ""}`}
+                                            onClick={() => setData("have_gift", data.have_gift === 1 ? 0 : 1)}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
@@ -400,8 +417,8 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                     <div className="form-group form-group-md d-flex align-items-center justify-content-between">
                                         <label className="mb-0">{translate("Have Product")}:</label>
                                         <div
-                                            className={`yoo-switch ${data.have_product === "1" ? "active" : ""}`}
-                                            onClick={() => setData("have_product", data.have_product === "1" ? "0" : "1")}
+                                            className={`yoo-switch ${data.have_product === 1 ? "active" : ""}`}
+                                            onClick={() => setData("have_product", data.have_product === 1 ? 0 : 1)}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
@@ -426,7 +443,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                             </div>
                         </div>
 
-                        {data.have_gift === "1" && (
+                        {data.have_gift === 1 && (
                             <div className="yoo-card yoo-style1 mt-4">
                                 <div className="yoo-card-heading">
                                     <h2 className="yoo-card-title">{translate("Gifts")}</h2>
@@ -436,7 +453,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                     <div className="yoo-padd-lr-20">
                                         <div className="yoo-height-b20 yoo-height-lg-b20" />
                                         <CustomMultiSelect
-                                            options={gifts.map(g => ({
+                                            options={gifts.map((g) => ({
                                                 value: g.id,
                                                 label: g?.content?.title || "Untitled Gift"
                                             }))}
@@ -459,7 +476,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                        <div className="form-group">
+                                    <div className="form-group">
                                         <label>{translate("Upload Thumbnail image")} *</label>
                                         <SingleMediaUploader
                                             onSelected={(e) => {

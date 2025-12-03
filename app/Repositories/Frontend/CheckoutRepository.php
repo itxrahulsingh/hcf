@@ -20,7 +20,7 @@ class CheckoutRepository
 {
     public function checkout(CheckoutRequest $request)
     {
-        $currency_code = Setting::pull('currency_code') ?? 'USD';
+        $currency_code = Setting::pull('currency_code') ?? 'INR';
 
         // Calculate subtotal
         $subtotal = array_reduce(
@@ -48,7 +48,14 @@ class CheckoutRepository
         if ($request->hasFile('receiptFile')) {
             $file = $request->file('receiptFile');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $receiptFilePath = $file->storeAs('receipts', $filename, 'public');
+            $receiptFilePath = $file->storeAs('receipts', $filename, config('filesystems.default'));
+        }
+        // Handle receipt file upload
+        $specialFilePath = null;
+        if ($request->hasFile('special_image')) {
+            $file = $request->file('special_image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $specialFilePath = $file->storeAs('special_image', $filename, config('filesystems.default'));
         }
 
         // Create Order
@@ -68,6 +75,10 @@ class CheckoutRepository
             'order_notes' => $request->orderNotes,
             'transaction_id' => $request->transactionId ?? null,
             'receipt_file' => $receiptFilePath,
+            'special_message' => $request->special_message ?? null,
+            'special_image' => $specialFilePath,
+            'special_video' => $request->special_video ?? null,
+            'special_date' => $request->special_date ?? null,
         ]);
 
         // Prepare order items for polymorphic table

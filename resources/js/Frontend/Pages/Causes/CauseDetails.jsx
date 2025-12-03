@@ -57,6 +57,7 @@ export default function CauseDetails({
 
     const [selectedGateway, setSelectedGateway] = useState(null)
     const [receiptFile, setReceiptFile] = useState(null)
+    const [special_image, setSpecialImage] = useState(null)
     const { states } = useStatesByCountry("IN")
 
     const { data, setData, post, errors, processing } = useForm({
@@ -73,7 +74,11 @@ export default function CauseDetails({
         is_80g: false,
         paymentMethod: "",
         transactionId: "",
-        receiptFile: null
+        receiptFile: null,
+        special_message: "",
+        special_image: null,
+        special_video: "",
+        special_date: ""
     })
 
     useEffect(() => {
@@ -104,6 +109,24 @@ export default function CauseDetails({
         const file = e.target.files[0]
         setReceiptFile(file)
         setData("receiptFile", file)
+    }
+    const handleSFileChange = (e) => {
+        const file = e.target.files[0]
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert(translate("File size should be less than 5MB"))
+                e.target.value = null
+                return
+            }
+            const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
+            if (!allowedTypes.includes(file.type)) {
+                alert(translate("Only images files are allowed"))
+                e.target.value = null
+                return
+            }
+            setSpecialImage(file)
+            setData("special_image", file)
+        }
     }
 
     const handlePlaceOrder = (e) => {
@@ -483,7 +506,11 @@ export default function CauseDetails({
                                 </tbody>
                             </table>
 
-                            <a className={`cs_product_btn w-100 ${carts.length === 0 ? "cs_disable" : ""}`} style={{cursor: "pointer"}} onClick={() => setShowDonateModal(true)}>
+                            <a
+                                className={`cs_product_btn w-100 ${carts.length === 0 ? "cs_disable" : ""}`}
+                                style={{ cursor: "pointer" }}
+                                onClick={() => setShowDonateModal(true)}
+                            >
                                 {translate("Donate Now")}
                             </a>
                         </div>
@@ -581,6 +608,76 @@ export default function CauseDetails({
                                         </select>
                                         {errors.state && <span className="text-danger small">{errors.state}</span>}
                                     </div>
+
+                                    {!!cause?.is_special && (
+                                        <div className="p-4 border rounded bg-light">
+                                            <h5 className="text-primary mb-3">Special Dedication (Optional)</h5>
+                                            <div className="mb-3">
+                                                <label className="cs_shop-label">{translate("Special Message")}</label>
+                                                <textarea
+                                                    className="form-control form-control-sm"
+                                                    rows="2"
+                                                    placeholder={translate("In memory of..., Happy Birthday..., With love from...")}
+                                                    value={data.special_message}
+                                                    onChange={(e) => setData("special_message", e.target.value)}
+                                                />
+                                            </div>
+
+                                            {/* Special Image Upload */}
+                                            <div className="mb-3">
+                                                <label className="cs_shop-label">{translate("Upload Image (Optional)")}</label>
+                                                <input
+                                                    type="file"
+                                                    accept="image/*,.pdf"
+                                                    className="form-control form-control-sm"
+                                                    onChange={handleSFileChange}
+                                                />
+                                                {special_image && (
+                                                    <div className="mt-2 d-flex align-items-center gap-2 flex-wrap">
+                                                        <span className="badge bg-success fs-6">{special_image.name}</span>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-danger"
+                                                            onClick={() => {
+                                                                setSpecialImage(null)
+                                                                setData("special_image", null)
+                                                                const input = document.querySelector('input[type="file"]')
+                                                                if (input) input.value = ""
+                                                            }}
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    </div>
+                                                )}
+                                                {errors.special_image && <div className="text-danger small mt-1">{errors.special_image}</div>}
+                                            </div>
+
+                                            {/* Special Video URL */}
+                                            <div className="mb-3">
+                                                <label className="cs_shop-label">{translate("Special Video URL (YouTube)")}</label>
+                                                <input
+                                                    type="url"
+                                                    className="form-control form-control-sm"
+                                                    placeholder="https://youtube.com/watch?v=..."
+                                                    value={data.special_video}
+                                                    onChange={(e) => setData("special_video", e.target.value)}
+                                                />
+                                            </div>
+
+                                            {/* Special Date */}
+                                            <div className="mb-3">
+                                                <label className="cs_shop-label">
+                                                    {translate("Special Date (Birthday, Anniversary, etc.)")}
+                                                </label>
+                                                <input
+                                                    type="date"
+                                                    className="form-control form-control-sm"
+                                                    value={data.special_date}
+                                                    onChange={(e) => setData("special_date", e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div className="form-check ms-3 mt-2">
                                         <input

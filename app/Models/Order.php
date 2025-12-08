@@ -22,6 +22,7 @@ class Order extends Model
     {
         static::deleting(function ($order) {
             $order->orderitems()->delete();
+            // $order->invoice()->delete();
         });
     }
 
@@ -31,5 +32,10 @@ class Order extends Model
     public function getReceiptFileUrlAttribute(): string
     {
         return $this->receipt_file ? asset($this->receipt_file) : '';
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
     }
 }

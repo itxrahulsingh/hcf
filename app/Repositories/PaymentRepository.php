@@ -45,7 +45,7 @@ class PaymentRepository
 
             case 'flutterwave':
                 if ($request->status == 'cancelled') {
-                    return redirect()->route('payment.cancel', ['method' => 'flutterwave', 'identifier' => $paymentHistory]);
+                    return redirect()->route('payment.cancel', ['method' => 'flutterwave', 'identifier' => $request->identifier]);
                 } else {
                     $flutterwave = new FlutterWave;
                     $response = $flutterwave->verifyPayment($request->transaction_id);
@@ -63,7 +63,7 @@ class PaymentRepository
                 ];
                 $razorpay->verifyPayment($data);
 
-                return $this->updateSuccessPaymentData($paymentType, $request->identifier);
+                return $this->updateSuccessPaymentData($paymentType ?? 'donation', $request->identifier);
         }
     }
 
@@ -76,6 +76,14 @@ class PaymentRepository
             case 'flutterwave':
             case 'razorpay':
                 if ($request->type == 'product') {
+                    $order = Order::find($request->identifier);
+                    $order->payment_status = '3';
+                    $order->save();
+
+                    return redirect()->route('payment.cancel.page');
+                }
+
+                if ($request->type == 'donation') {
                     $order = Order::find($request->identifier);
                     $order->payment_status = '3';
                     $order->save();
@@ -100,6 +108,14 @@ class PaymentRepository
             ]);
 
             return redirect()->route('payment.success.page', $order);
+        } else if ($type == 'donation') {
+            $order = Order::find($identifier);
+            $order->update([
+                'payment_status' => '2',
+                'status' => 'completed'
+            ]);
+
+            return redirect()->route('donation.success.page', ['order_id' => $order->order_number]);
         } else {
             $paymentHistory = PaymentHistory::find($identifier);
             $paymentHistory->update([

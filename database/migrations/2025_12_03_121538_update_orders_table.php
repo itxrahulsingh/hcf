@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('special_image')->nullable()->after('special_message');
             $table->string('special_video')->nullable()->after('special_image');
             $table->date('special_date')->nullable()->after('special_video');
+            $table->string('state')->nullable();
+            $table->boolean('is_80g')->default(false);
+            $table->string('pancard', 20)->nullable();
         });
     }
 
@@ -30,6 +33,9 @@ return new class extends Migration
                 'special_image',
                 'special_video',
                 'special_date',
+                'state',
+                'is_80g',
+                'pancard',
             ]);
         });
     }

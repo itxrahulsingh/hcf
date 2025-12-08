@@ -1,7 +1,7 @@
 @extends('installation.installation')
 @section('content')
     <div class="mar-ver pad-btm text-center">
-        <h1 class="h3">Installation | Shared by <a style='color:red;' href='https://www.vuinsider.com'>VUINSIDER.COM</a></h1>
+        <h1 class="h3">Installation</h1>
         <p>You will need to know the following items before proceeding.</p>
     </div>
     <ol class="list-group">

@@ -18,7 +18,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    'installed' => env('IS_INSTALLED', false),
+    'installed' => env('IS_INSTALLED', true),
     'is_demo' => env('IS_DEMO', false),
     'twiiter_username' => env('TWITTER_USERNAME', '@test'),
 

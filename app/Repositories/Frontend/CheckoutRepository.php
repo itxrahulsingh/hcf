@@ -65,6 +65,7 @@ class CheckoutRepository
             'customer_email' => $request->email,
             'customer_phone' => $request->phone,
             'shipping_address' => $request->address,
+            'state' => $request->state,
             'coupon_code' => $request->coupon['code'] ?? null,
             'order_number' => date('Ymd') . mt_rand(1000, 9999),
             'total_price' => $total,
@@ -79,6 +80,8 @@ class CheckoutRepository
             'special_image' => $specialFilePath,
             'special_video' => $request->special_video ?? null,
             'special_date' => $request->special_date ?? null,
+            'is_80g' => $request->is_80g,
+            'pancard' => $request->pancard
         ]);
 
         // Prepare order items for polymorphic table
@@ -194,12 +197,12 @@ class CheckoutRepository
             case 'razorpay':
                 $razorpay = new Razorpay;
                 $data = [
-                    'receipt' => 'R-' . rand(100000, 999999),
+                    'receipt' => $order->order_number,
                     'amount' => (int) $total * 100,
                     'currency' => $currency_code,
                 ];
                 $order_id = $razorpay->initilizePatment($data);
-                $url = route('payment.razorpay.pay', ['order_id' => $order_id, 'payment_id' => $order->id]);
+                $url = route('payment.razorpay.pay', ['order_id' => $order_id, 'payment_id' => $order->id, 'type' => 'donation']);
                 return Inertia::location($url);
         }
     }

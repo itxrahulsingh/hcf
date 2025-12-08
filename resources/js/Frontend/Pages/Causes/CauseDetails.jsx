@@ -1,7 +1,7 @@
 import { Link, useForm } from "@inertiajs/react"
 import moment from "moment"
 import CauseLayout from "@/Frontend/Layouts/CauseLayout"
-import { addCart, decreaseCart, increaseCart, removeCart } from "@/Redux/features/Cart/cart"
+import { addCart, decreaseCart, increaseCart, removeCart, clearCart } from "@/Redux/features/Cart/cart"
 import limitString from "@/utils/limitString.js"
 import removeHTMLTags from "@/utils/removeHTMLTags.js"
 import SeoMeta from "@/utils/SeoMeta"
@@ -666,9 +666,7 @@ export default function CauseDetails({
 
                                             {/* Special Date */}
                                             <div className="mb-3">
-                                                <label className="cs_shop-label">
-                                                    {translate("Special Date (Birthday, Anniversary, etc.)")}
-                                                </label>
+                                                <label className="cs_shop-label">{translate("Special Date (Birthday, Anniversary, etc.)")}</label>
                                                 <input
                                                     type="date"
                                                     className="form-control form-control-sm"
@@ -794,7 +792,6 @@ export default function CauseDetails({
                                                                 name="paymentMethod"
                                                                 value="razorpay"
                                                                 id="razorpay"
-                                                                checked={true}
                                                                 onChange={(e) => setData("paymentMethod", e.target.value)}
                                                             />
                                                             <label className="form-check-label m-0 cs_semi_bold" htmlFor="razorpay">

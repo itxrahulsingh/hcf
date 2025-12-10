@@ -33,6 +33,7 @@ return new class extends Migration
             $table->decimal('total_price', 10, 2);
             $table->string('payment_method')->nullable();
             $table->timestamp('payment_date')->nullable();
+            $table->string('type')->default('normal');
 
             $table->enum('status', ['draft', 'paid', 'cancelled'])->default('draft');
             $table->timestamps();

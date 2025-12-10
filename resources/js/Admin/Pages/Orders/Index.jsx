@@ -16,6 +16,7 @@ export default function Index({ orders, sort, filter }) {
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedOption, setSelectedOption] = useState("Bulk Action")
     const [selectedStatus, setSelectedStatus] = useState(filter?.status || "All Order Status")
+    const [selectedType, setSelectedType] = useState(filter?.type || "All")
     const [selectedPaymentStatus, setSelectedPaymentStatus] = useState(filter?.payment_status || "All Payment Status")
     const [isMarkAll, setIsMarkAll] = useState(false)
     const [markItems, setMarkItems] = useState([])
@@ -36,6 +37,7 @@ export default function Index({ orders, sort, filter }) {
                 sort: sort,
                 filter: {
                     status: selectedStatus,
+                    type: selectedType,
                     payment_status: selectedPaymentStatus
                 }
             }),
@@ -178,6 +180,40 @@ export default function Index({ orders, sort, filter }) {
                                                         </DropDownButton>
                                                     </div>
                                                 </div>
+                                                <div className="">
+                                                    <div className="position-relative">
+                                                        <DropDownButton selectedOption={selectedType}>
+                                                            <a
+                                                                onClick={() => setSelectedType("All")}
+                                                                className={`dropdown-item ${selectedType === "All" ? "active" : ""}`}
+                                                                href="#"
+                                                            >
+                                                                {translate("All Types")}
+                                                            </a>
+                                                            <a
+                                                                onClick={() => setSelectedType("Birthday")}
+                                                                className={`dropdown-item ${selectedType === "birthday" ? "active" : ""}`}
+                                                                href="#"
+                                                            >
+                                                                Birthday
+                                                            </a>
+                                                            <a
+                                                                onClick={() => setSelectedType("Aniversary")}
+                                                                className={`dropdown-item ${selectedType === "aniversary" ? "active" : ""}`}
+                                                                href="#"
+                                                            >
+                                                                {translate("Aniversary")}
+                                                            </a>
+                                                            <a
+                                                                onClick={() => setSelectedType("Special Day")}
+                                                                className={`dropdown-item ${selectedType === "special_day" ? "active" : ""}`}
+                                                                href="#"
+                                                            >
+                                                                {translate("Special Day")}
+                                                            </a>
+                                                        </DropDownButton>
+                                                    </div>
+                                                </div>
                                                 <div className="yoo-group-btn">
                                                     <div className="position-relative">
                                                         <DropDownButton selectedOption={paymentStatusOptions[selectedPaymentStatus]}>
@@ -249,13 +285,28 @@ export default function Index({ orders, sort, filter }) {
                                                             <span className="yoo-last" />
                                                         </div>
                                                     </th>
-                                                    <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="order_number" >
+                                                    <ThSortable
+                                                        width="10%"
+                                                        sort={sort}
+                                                        onSorted={() => getResults(searchQuery)}
+                                                        column="order_number"
+                                                    >
                                                         {translate("Order ID")}
                                                     </ThSortable>
-                                                    <ThSortable width="15%" sort={sort} onSorted={() => getResults(searchQuery)} column="customer_name">
+                                                    <ThSortable
+                                                        width="15%"
+                                                        sort={sort}
+                                                        onSorted={() => getResults(searchQuery)}
+                                                        column="customer_name"
+                                                    >
                                                         {translate("Customer Name (email)")}
                                                     </ThSortable>
-                                                    <ThSortable width="15%" sort={sort} onSorted={() => getResults(searchQuery)} column="customer_phone">
+                                                    <ThSortable
+                                                        width="15%"
+                                                        sort={sort}
+                                                        onSorted={() => getResults(searchQuery)}
+                                                        column="customer_phone"
+                                                    >
                                                         {translate("Phone")}
                                                     </ThSortable>
                                                     <ThSortable width="15%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
@@ -264,10 +315,20 @@ export default function Index({ orders, sort, filter }) {
                                                     <ThSortable width="8%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
                                                         Amount
                                                     </ThSortable>
-                                                    <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="payment_method">
+                                                    <ThSortable
+                                                        width="10%"
+                                                        sort={sort}
+                                                        onSorted={() => getResults(searchQuery)}
+                                                        column="payment_method"
+                                                    >
                                                         {translate("Payment Method")}
                                                     </ThSortable>
-                                                    <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="payment_status">
+                                                    <ThSortable
+                                                        width="10%"
+                                                        sort={sort}
+                                                        onSorted={() => getResults(searchQuery)}
+                                                        column="payment_status"
+                                                    >
                                                         {translate("Payment Status")}
                                                     </ThSortable>
                                                     <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="status">
@@ -291,27 +352,38 @@ export default function Index({ orders, sort, filter }) {
                                                         </td>
                                                         <td>
                                                             {order.customer_name} (
-                                                            <a href={`mailto:${order.customer_email}`} style={{ color: "#007aff", textDecoration: "underline" }}>
+                                                            <a
+                                                                href={`mailto:${order.customer_email}`}
+                                                                style={{ color: "#007aff", textDecoration: "underline" }}
+                                                            >
                                                                 {order.customer_email}
                                                             </a>
                                                             )
                                                         </td>
 
                                                         <td>
-                                                            <a href={`tel:${order.customer_phone}`} style={{ color: "#007aff", textDecoration: "underline" }}>
+                                                            <a
+                                                                href={`tel:${order.customer_phone}`}
+                                                                style={{ color: "#007aff", textDecoration: "underline" }}
+                                                            >
                                                                 {order.customer_phone}
                                                             </a>
                                                         </td>
 
                                                         <td>
                                                             <div className="yoo-table-medias yoo-style1">
-                                                                {order.orderitems ?.map((item) => `${item.item_name} (${item.item_type || "product"})`).join(", ")}
+                                                                {order.orderitems
+                                                                    ?.map((item) => `${item.item_name} (${item.item_type || "product"})`)
+                                                                    .join(", ")}
                                                             </div>
                                                         </td>
-                                                        <td><Amount amount={order.total_price} /></td>
+                                                        <td>
+                                                            <Amount amount={order.total_price} />
+                                                        </td>
                                                         <td>{order.payment_method}</td>
                                                         <td>
-                                                            <span className={`badge ${
+                                                            <span
+                                                                className={`badge ${
                                                                     order.payment_status === "0"
                                                                         ? "badge-secondary"
                                                                         : order.payment_status === "1"
@@ -370,7 +442,8 @@ export default function Index({ orders, sort, filter }) {
                                             </tbody>
                                         </table>
                                         {!orders.data.length && (
-                                            <div className="no-data-found"
+                                            <div
+                                                className="no-data-found"
                                                 style={{
                                                     textAlign: "center",
                                                     padding: "50px"
@@ -391,7 +464,9 @@ export default function Index({ orders, sort, filter }) {
                             <ul className="pagination">
                                 {orders.links.map((link, index) => (
                                     <li className={`page-item ${link.active ? "active" : ""}`} key={`pagination_${index}`}>
-                                        <Link href={link.url} className="page-link"
+                                        <Link
+                                            href={link.url}
+                                            className="page-link"
                                             dangerouslySetInnerHTML={{
                                                 __html: link.label
                                             }}

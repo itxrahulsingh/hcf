@@ -33,6 +33,7 @@ class OrderController extends Controller
         $data['sort']['column'] = $request->sort['column'] ?? 'id';
         $data['sort']['order'] = $request->sort['order'] ?? 'desc';
         $data['filter']['status'] = $request->filter['status'] ?? 'All Order Status';
+        $data['filter']['type'] = $request->filter['type'] ?? 'All Order Types';
         $data['filter']['payment_status'] = $request->filter['payment_status'] ?? 'All Payment Status';
         $data['orders'] = $repository->paginateSearchResult($data['search'], $data['sort'], $data['filter']);
 

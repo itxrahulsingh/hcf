@@ -38,6 +38,10 @@ class RolePermissionSeeder extends Seeder
             'title' => 'Manage cause categories',
             'action' => ['index' => 1, 'delete' => 1, 'edit' => 1, 'create' => 1],
         ],
+        'invoices' => [
+            'title' => 'Manage invoices',
+            'action' => ['index' => 1, 'show' => 1, 'create' => 1, 'edit' => 1, 'delete' => 1],
+        ],
         'products' => [
             'title' => 'Manage products',
             'action' => ['index' => 1, 'delete' => 1, 'edit' => 1, 'create' => 1, 'show' => 1],

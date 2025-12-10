@@ -15,6 +15,7 @@ import translate from "@/utils/translate"
 export default function Index({ causes = { data: [], total: 0, links: [] }, sort = {}, filtered_lang, languages = {} }) {
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedLang, setSelectedLang] = useState(filtered_lang)
+    const [selectedType, setSelectedType] = useState("all")
     const [selectedOption, setSelectedOption] = useState("Bulk Action")
     const [isMarkAll, setIsMarkAll] = useState(false)
     const [markItems, setMarkItems] = useState([])
@@ -25,7 +26,8 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                 search: search ?? searchQuery,
                 sort: sort,
                 filter: {
-                    lang: lang ?? selectedLang
+                    lang: lang ?? selectedLang,
+                    type: selectedType
                 }
             }),
             {},
@@ -146,6 +148,28 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                 {translate("Change language")}
                                             </button>
                                         </div>
+                                        <div className="yoo-group-btn">
+                                            <div className="position-relative">
+                                                <DropDownButton selectedOption={selectedType}>
+                                                    {["all", "birthday", "anniversary", "special_day"].map((type) => (
+                                                        <a
+                                                            onClick={() => setSelectedType(type)}
+                                                            className={`dropdown-item ${selectedType === type ? "active" : ""}`}
+                                                            href="#"
+                                                            key={type}
+                                                        >
+                                                            {translate(type.charAt(0).toUpperCase() + type.slice(1).replace("_", " "))}
+                                                        </a>
+                                                    ))}
+                                                </DropDownButton>
+                                            </div>
+                                            <button
+                                                onClick={() => getResults(searchQuery, selectedLang, selectedType)}
+                                                className="btn btn-success btn-sm"
+                                            >
+                                                {translate("Apply Type")}
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="dataTables_heading_right">
                                         <div id="yooDataTable_filter" className="dataTables_filter">
@@ -191,7 +215,9 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                 <ThSortable width="20%" sort={sort} onSorted={() => getResults(searchQuery)} column="category">
                                                     {translate("Category")}
                                                 </ThSortable>
-
+                                                <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="type">
+                                                    {translate("Type")}
+                                                </ThSortable>
                                                 <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="status">
                                                     {translate("Status")}
                                                 </ThSortable>
@@ -207,19 +233,24 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                 <tr className="odd" key={index}>
                                                     <td className="sorting_1" onClick={() => handleMark(cause.id)}>
                                                         <div
-                                                            className={`yoo-check-mark ${markItems.some((item) => item === cause.id) ? "active" : ""
-                                                                }`}
+                                                            className={`yoo-check-mark ${
+                                                                markItems.some((item) => item === cause.id) ? "active" : ""
+                                                            }`}
                                                         >
                                                             <span className="yoo-first" />
                                                             <span className="yoo-last" />
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <img src={cause?.thumbnail_image || 'static/no-image.jpg'} alt={cause?.content?.title} style={{ width: "80px" }} />
+                                                        <img
+                                                            src={cause?.thumbnail_image || "static/no-image.jpg"}
+                                                            alt={cause?.content?.title}
+                                                            style={{ width: "80px" }}
+                                                        />
                                                     </td>
                                                     <td className="sorting_1">{cause?.content?.title}</td>
                                                     <td>{cause?.category?.content?.title}</td>
-
+                                                    <td>{cause.type == null ? "Normal" : cause.type}</td>
                                                     <td>
                                                         {cause.status === 1 && <span className="badge badge-success">Active</span>}
                                                         {cause.status === 0 && <span className="badge badge-warning">Inactive</span>}
@@ -228,10 +259,7 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                         <td>
                                                             <div className="yoo-group-btn">
                                                                 {hasPermission("causes.edit") && (
-                                                                    <Link
-                                                                        href={route("admin.causes.edit", cause)}
-                                                                        className="badge badge-primary"
-                                                                    >
+                                                                    <Link href={route("admin.causes.edit", cause)} className="badge badge-primary">
                                                                         <IonIcon
                                                                             icon={createOutline}
                                                                             style={{

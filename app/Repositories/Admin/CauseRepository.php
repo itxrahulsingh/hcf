@@ -33,7 +33,7 @@ class CauseRepository
     /**
      * Get search result with pagination
      */
-    public function paginateSearchResult($search, array $sort = []): LengthAwarePaginator
+    public function paginateSearchResult($search, array $sort = [], ?string $type = null): LengthAwarePaginator
     {
         $query = $this->model->with([
             'content',
@@ -47,6 +47,11 @@ class CauseRepository
             })->orWhereHas('category.contents', function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%");
             });
+        }
+
+        // Apply type filter if provided
+        if ($type && $type !== 'all') {
+            $query->where('type', $type);
         }
 
         if (isset($sort['column']) && isset($sort['order'])) {
@@ -108,6 +113,7 @@ class CauseRepository
             'video_url' => $request->input('video_url'),
             'raised_amount' => $request->input('raised_amount'),
             'goal_amount' => $request->input('goal_amount'),
+            'type' => $request->input('type'),
             'deadline' => $request->input('deadline'),
             'status' => $request->input('status'),
             'meta_image' => $request->input('meta_image'),
@@ -161,6 +167,7 @@ class CauseRepository
             'custom_donation_amounts' => $cause->custom_donation_amounts,
             'video_url' => $cause->video_url,
             'raised_amount' => $cause->raised_amount,
+            'type' => $cause->type,
             'goal_amount' => $cause->goal_amount,
             'deadline' => $cause->deadline,
             'status' => $cause->status,
@@ -209,6 +216,7 @@ class CauseRepository
             'custom_donation_amounts' => $request->custom_donation_amounts,
             'raised_amount' => $request->input('raised_amount'),
             'goal_amount' => $request->input('goal_amount'),
+            'type' => $request->input('type'),
             'deadline' => $request->input('deadline'),
             'status' => $request->status,
             'meta_image' => $request->meta_image,

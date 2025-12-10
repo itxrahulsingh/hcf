@@ -81,7 +81,8 @@ class CheckoutRepository
             'special_video' => $request->special_video ?? null,
             'special_date' => $request->special_date ?? null,
             'is_80g' => $request->is_80g,
-            'pancard' => $request->pancard
+            'pancard' => $request->pancard,
+            'type' => $request->type ?? 'normal',
         ]);
 
         // Prepare order items for polymorphic table

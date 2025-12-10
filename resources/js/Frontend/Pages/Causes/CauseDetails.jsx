@@ -611,13 +611,21 @@ export default function CauseDetails({
 
                                     {!!cause?.is_special && (
                                         <div className="p-4 border rounded bg-light">
-                                            <h5 className="text-primary mb-3">Special Dedication (Optional)</h5>
+                                            {!!cause?.type === "birthday" && (
+                                                <h5 className="text-primary mb-3">{translate("Birthday Dedication")}</h5>
+                                            )}
+                                            {!!cause?.type === "anniversary" && (
+                                                <h5 className="text-primary mb-3">{translate("Anniversary Dedication")}</h5>
+                                            )}
+                                            {!!cause?.type === "special_day" && (
+                                                <h5 className="text-primary mb-3">{translate("Special Day Dedication")}</h5>
+                                            )}
                                             <div className="mb-3">
-                                                <label className="cs_shop-label">{translate("Special Message")}</label>
+                                                <label className="cs_shop-label">{translate("Message")}</label>
                                                 <textarea
                                                     className="form-control form-control-sm"
                                                     rows="2"
-                                                    placeholder={translate("In memory of..., Happy Birthday..., With love from...")}
+                                                    placeholder={translate("With love from...")}
                                                     value={data.special_message}
                                                     onChange={(e) => setData("special_message", e.target.value)}
                                                 />
@@ -654,7 +662,7 @@ export default function CauseDetails({
 
                                             {/* Special Video URL */}
                                             <div className="mb-3">
-                                                <label className="cs_shop-label">{translate("Special Video URL (YouTube)")}</label>
+                                                <label className="cs_shop-label">{translate("Video URL (YouTube)")}</label>
                                                 <input
                                                     type="url"
                                                     className="form-control form-control-sm"
@@ -666,7 +674,7 @@ export default function CauseDetails({
 
                                             {/* Special Date */}
                                             <div className="mb-3">
-                                                <label className="cs_shop-label">{translate("Special Date (Birthday, Anniversary, etc.)")}</label>
+                                                <label className="cs_shop-label">{translate("Date")}</label>
                                                 <input
                                                     type="date"
                                                     className="form-control form-control-sm"

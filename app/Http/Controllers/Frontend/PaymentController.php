@@ -155,6 +155,7 @@ class PaymentController extends Controller
             'financial_year_end'    => $endYear,
             'total_price'           => $order->total_price,
             'payment_method'        => $order->payment_method,
+            'type'                  => $order->type,
             'payment_date'          => now(),
             'status'                => 'paid',
         ]);

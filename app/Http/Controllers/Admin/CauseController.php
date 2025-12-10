@@ -27,10 +27,11 @@ class CauseController extends Controller
     public function index(Request $request, CauseRepository $repository)
     {
         $data['search'] = $request->search ?: '';
+        $data['type'] = $request->filter['type'] ?? 'all';
         $data['sort']['column'] = $request->sort['column'] ?? 'id';
         $data['sort']['order'] = $request->sort['order'] ?? 'desc';
         $data['filtered_lang'] = $request->filter['lang'] ?? Setting::pull('default_lang');
-        $data['causes'] = $repository->paginateSearchResult($data['search'], $data['sort']);
+        $data['causes'] = $repository->paginateSearchResult($data['search'], $data['sort'], $data['type']);
         $data['languages'] = json_decode(Setting::pull('languages'));
 
         return Inertia::render('Causes/Index', $data);

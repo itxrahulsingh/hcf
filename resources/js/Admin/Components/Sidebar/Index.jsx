@@ -386,6 +386,64 @@ export default function Sidebar() {
                                                         </span>
                                                     </Link>
                                                 </li>
+
+                                                <li className={`${route().current("admin.orders.index", {
+                                                        filter: {
+                                                            type: "birthday"
+                                                        }
+                                                    }) && "active"
+                                                        }`}
+                                                >
+                                                    <Link
+                                                        href={route("admin.orders.index", {
+                                                            filter: {
+                                                                type: "birthday"
+                                                            }
+                                                        })}
+                                                    >
+                                                        <span className="yoo-sidebar-link-title">
+                                                            <span className="yoo-sidebar-link-text">{translate("Birthday Orders")}</span>
+                                                        </span>
+                                                    </Link>
+                                                </li>
+                                                <li className={`${route().current("admin.orders.index", {
+                                                        filter: {
+                                                            type: "aniversary"
+                                                        }
+                                                    }) && "active"
+                                                        }`}
+                                                >
+                                                    <Link
+                                                        href={route("admin.orders.index", {
+                                                            filter: {
+                                                                type: "aniversary"
+                                                            }
+                                                        })}
+                                                    >
+                                                        <span className="yoo-sidebar-link-title">
+                                                            <span className="yoo-sidebar-link-text">{translate("Aniversary Orders")}</span>
+                                                        </span>
+                                                    </Link>
+                                                </li>
+                                                <li className={`${route().current("admin.orders.index", {
+                                                        filter: {
+                                                            type: "special_day"
+                                                        }
+                                                    }) && "active"
+                                                        }`}
+                                                >
+                                                    <Link
+                                                        href={route("admin.orders.index", {
+                                                            filter: {
+                                                                type: "special_day"
+                                                            }
+                                                        })}
+                                                    >
+                                                        <span className="yoo-sidebar-link-title">
+                                                            <span className="yoo-sidebar-link-text">{translate("Special Day Orders")}</span>
+                                                        </span>
+                                                    </Link>
+                                                </li>
                                             </ul>
                                         </li>
                                     )}

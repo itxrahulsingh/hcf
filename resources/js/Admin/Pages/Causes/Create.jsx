@@ -1,6 +1,3 @@
-// Full updated Create component with multi-language JSON FAQ support
-// (React + Inertia version)
-
 import { useForm, Head, usePage } from "@inertiajs/react"
 import TextInput from "@/Admin/Components/Inputs/TextInput"
 import FormValidationError from "@/Admin/Components/Validation/FromValidationError"
@@ -9,10 +6,10 @@ import Editor from "@/Admin/Components/Inputs/Editor"
 import SingleMediaUploader from "@/Admin/Components/Media/SingleMediaUploader"
 import MultipleMediaUploader from "@/Admin/Components/Media/MultipleMediaUploader"
 import CustomMultiSelect from "@/Admin/Components/Inputs/CustomMultiSelect"
+import CustomSelect from "@/Admin/Components/Inputs/CustomSelect"
 import { produce } from "immer"
 import AdminLayouts from "@/Admin/Layouts/AdminLayouts"
 import translate from "@/utils/translate"
-import { gift } from "ionicons/icons"
 
 export default function Create({ languages, cause_categories, default_lang, gifts }) {
     const [selectedLang, setSelectedLang] = useState(default_lang)
@@ -42,6 +39,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
         video_url: "",
         raised_amount: "",
         goal_amount: "",
+        type: "",
         deadline: "",
         status: 1,
         meta_image: "",
@@ -392,16 +390,42 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                             <div className="yoo-switch-in"></div>
                                         </div>
                                     </div>
+
                                     <div className="form-group form-group-md d-flex align-items-center justify-content-between">
-                                        <label className="mb-0">{translate("Is Birthday")}:</label>
+                                        <label className="mb-0">{translate("Is Special")}:</label>
                                         <div
                                             className={`yoo-switch ${data.is_special === 1 ? "active" : ""}`}
-                                            onClick={() => setData("is_special", data.is_special === 1 ? 0 : 1)}
+                                            onClick={() => {
+                                                const newValue = data.is_special === 1 ? 0 : 1
+                                                setData({ is_special: newValue, ...(newValue === 0 && { type: "" }) })
+                                            }}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
                                         </div>
                                     </div>
+
+                                    {/* Special Type Select — Only shows when Is Special = ON */}
+                                    {data.is_special === 1 && (
+                                        <div className="form-group mt-4">
+                                            <label className="mb-2 d-block">
+                                                {translate("Special Occasion Type")} <span className="text-danger">*</span>
+                                            </label>
+
+                                            <CustomSelect
+                                                options={[
+                                                    { value: "birthday", label: translate("Birthday") },
+                                                    { value: "anniversary", label: translate("Anniversary") },
+                                                    { value: "special_day", label: translate("Special Day") }
+                                                ]}
+                                                value={data.type}
+                                                placeholder={translate("Choose occasion...")}
+                                                onSelect={(value) => setData("type", value)}
+                                            />
+
+                                            <FormValidationError message={errors.type} />
+                                        </div>
+                                    )}
 
                                     <div className="form-group form-group-md d-flex align-items-center justify-content-between">
                                         <label className="mb-0">{translate("Have Gift")}:</label>

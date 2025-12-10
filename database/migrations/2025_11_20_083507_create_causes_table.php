@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('video_url', 255)->nullable();
             $table->decimal('raised_amount', 14, 2)->default(0)->comment('Total raised amount for the cause');
             $table->decimal('goal_amount', 14, 2)->default(0)->comment('Goal amount for the cause');
+            $table->string('type', 50)->nullable()->comment('Type of the cause, e.g., birthday etc.');
             $table->date('deadline')->nullable();
             $table->enum('status', [0, 1])->comment('0 means unpublished, 1 means published')->default(0);
             $table->string('meta_image', 255)->nullable();

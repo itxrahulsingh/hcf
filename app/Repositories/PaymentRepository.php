@@ -110,10 +110,16 @@ class PaymentRepository
             return redirect()->route('payment.success.page', $order);
         } else if ($type == 'donation') {
             $order = Order::find($identifier);
-            $order->update([
-                'payment_status' => '2',
-                'status' => 'completed'
-            ]);
+            if (!$order) {
+                return;
+            }
+            $data = [
+                'payment_status' => '2'
+            ];
+            if ($order->type === 'normal') {
+                $data['status'] = 'completed';
+            }
+            $order->update($data);
 
             return redirect()->route('donation.success.page', ['order_id' => $order->order_number]);
         } else {

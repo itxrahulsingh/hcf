@@ -1,6 +1,8 @@
 import FrontendLayout from "@/Frontend/Layouts/FrontendLayout"
 import PageHeading from "@/Frontend/Components/PageHeading"
-import React from "react"
+import { clearCart } from "@/Redux/features/Cart/cart"
+import React, { useEffect } from "react"
+import { useDispatch } from "react-redux"
 import Lottie from "lottie-react"
 import SuccessAnimation from "../../Lottie/success.json"
 import translate from "@/utils/translate"
@@ -8,14 +10,20 @@ import { Link } from "@inertiajs/react"
 import SeoMeta from "@/utils/SeoMeta"
 
 export default function DonationSuccess({ order, meta_tags, tagline, site_name }) {
-    SeoMeta(tagline, "", meta_tags, "", "", site_name)
+    const dispatch = useDispatch()
 
+    useEffect(() => {
+        dispatch(clearCart())
+        localStorage.removeItem("coupon")
+    }, [dispatch])
+
+    SeoMeta(tagline, "", meta_tags, "", "", site_name)
     // page header data
-    let pageHeaderData = {
-        title: "Donation Success",
+    const pageHeaderData = {
+        title: translate("Donation Success"),
         breadcrumb: [
-            { label: "Home", url: "/" },
-            { label: "Donation Success", url: null }
+            { label: translate("Home"), url: "/", key: "home" },
+            { label: translate("Donation Success"), url: null, key: "success" }
         ]
     }
 
@@ -39,25 +47,39 @@ export default function DonationSuccess({ order, meta_tags, tagline, site_name }
 
                                 <div className="text-start mt-4">
                                     {order.name && (
-                                        <p><strong>{translate("Donor Name")}:</strong> {order.name}</p>
+                                        <p>
+                                            <strong>{translate("Donor Name")}:</strong> {order.name}
+                                        </p>
                                     )}
                                     {order.amount && (
-                                        <p><strong>{translate("Donation Amount")}:</strong> ₹{order.amount}</p>
+                                        <p>
+                                            <strong>{translate("Donation Amount")}:</strong> ₹{order.amount}
+                                        </p>
                                     )}
                                     {order.payment_method && (
-                                        <p><strong>{translate("Payment Method")}:</strong> {order.payment_method}</p>
+                                        <p>
+                                            <strong>{translate("Payment Method")}:</strong> {order.payment_method}
+                                        </p>
                                     )}
                                     {order.address && (
-                                        <p><strong>{translate("Address")}:</strong> {order.address}</p>
+                                        <p>
+                                            <strong>{translate("Address")}:</strong> {order.address}
+                                        </p>
                                     )}
                                     {order.city && (
-                                        <p><strong>{translate("City")}:</strong> {order.city}</p>
+                                        <p>
+                                            <strong>{translate("City")}:</strong> {order.city}
+                                        </p>
                                     )}
                                     {order.status && (
-                                        <p><strong>{translate("Status")}:</strong> {order.status}</p>
+                                        <p>
+                                            <strong>{translate("Status")}:</strong> {order.status}
+                                        </p>
                                     )}
                                     {order.created_at && (
-                                        <p><strong>{translate("Donation Date")}:</strong> {new Date(order.created_at).toLocaleString()}</p>
+                                        <p>
+                                            <strong>{translate("Donation Date")}:</strong> {new Date(order.created_at).toLocaleString()}
+                                        </p>
                                     )}
                                 </div>
 
@@ -65,9 +87,7 @@ export default function DonationSuccess({ order, meta_tags, tagline, site_name }
                                     {translate("Go to Homepage")}
                                 </Link>
 
-                                <p className="text-muted small mt-3">
-                                    {translate("You will receive a confirmation email shortly.")}
-                                </p>
+                                <p className="text-muted small mt-3">{translate("You will receive a confirmation email shortly.")}</p>
                             </div>
                         </div>
                     </div>

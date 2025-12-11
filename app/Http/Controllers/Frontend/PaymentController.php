@@ -130,10 +130,7 @@ class PaymentController extends Controller
         * GET SAFE AUTO-INCREMENT PER FINANCIAL YEAR
         * ---------------------------------------------------------- */
         $invoiceCount = DB::transaction(function () use ($startYear) {
-            $last = Invoice::where('financial_year_start', $startYear)
-                ->lockForUpdate()
-                ->max('invoice_count');
-
+            $last = Invoice::where('financial_year_start', $startYear)->lockForUpdate()->max('invoice_count');
             return ($last ?? 0) + 1;
         });
 

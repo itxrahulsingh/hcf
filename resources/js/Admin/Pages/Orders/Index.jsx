@@ -188,7 +188,7 @@ export default function Index({ orders, sort, filter }) {
                                                                 className={`dropdown-item ${selectedType === "All" ? "active" : ""}`}
                                                                 href="#"
                                                             >
-                                                                {translate("All Types")}
+                                                                {translate("All")}
                                                             </a>
                                                             <a
                                                                 onClick={() => setSelectedType("Birthday")}
@@ -299,7 +299,7 @@ export default function Index({ orders, sort, filter }) {
                                                         onSorted={() => getResults(searchQuery)}
                                                         column="customer_name"
                                                     >
-                                                        {translate("Customer Name (email)")}
+                                                        {translate("Customer (email)")}
                                                     </ThSortable>
                                                     <ThSortable
                                                         width="15%"
@@ -360,7 +360,6 @@ export default function Index({ orders, sort, filter }) {
                                                             </a>
                                                             )
                                                         </td>
-
                                                         <td>
                                                             <a
                                                                 href={`tel:${order.customer_phone}`}
@@ -369,7 +368,6 @@ export default function Index({ orders, sort, filter }) {
                                                                 {order.customer_phone}
                                                             </a>
                                                         </td>
-
                                                         <td>
                                                             <div className="yoo-table-medias yoo-style1">
                                                                 {order.orderitems

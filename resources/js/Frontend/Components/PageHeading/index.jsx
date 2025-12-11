@@ -14,8 +14,8 @@ export default function PageHeading({ data, bgSrc, variant }) {
                     <div className="cs_section_heading cs_style_1">
                         {data.title && <h1 className="cs_section_title cs_fs_53 cs_normal mb-0 cs_white_color">{data.title}</h1>}
                         <ol className="breadcrumb cs_white_color">
-                            {data?.breadcrumb?.map((item) => (
-                                <li className="breadcrumb-item">
+                            {data?.breadcrumb?.map((item, index) => (
+                                <li key={item.key || index} className="breadcrumb-item">
                                     {item.url ? <Link href={item.url}>{item.label}</Link> : <span className="search current-item">{item.label}</span>}
                                 </li>
                             ))}

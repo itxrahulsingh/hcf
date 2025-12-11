@@ -78,7 +78,8 @@ export default function CauseDetails({
         special_message: "",
         special_image: null,
         special_video: "",
-        special_date: ""
+        special_date: "",
+        type: cause?.type || "",
     })
 
     useEffect(() => {
@@ -112,21 +113,28 @@ export default function CauseDetails({
     }
     const handleSFileChange = (e) => {
         const file = e.target.files[0]
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert(translate("File size should be less than 5MB"))
-                e.target.value = null
-                return
-            }
-            const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
-            if (!allowedTypes.includes(file.type)) {
-                alert(translate("Only images files are allowed"))
-                e.target.value = null
-                return
-            }
-            setSpecialImage(file)
-            setData("special_image", file)
+        if (!file) {
+            setSpecialImage(null)
+            setData("special_image", null)
+            return
         }
+        if (file.size > 5 * 1024 * 1024) {
+            alert(translate("File size should be less than 5MB"))
+            e.target.value = null
+            setSpecialImage(null)
+            setData("special_image", null)
+            return
+        }
+        const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
+        if (!allowedTypes.includes(file.type)) {
+            alert(translate("Only images files are allowed"))
+            e.target.value = null
+            setSpecialImage(null)
+            setData("special_image", null)
+            return
+        }
+        setSpecialImage(file)
+        setData("special_image", file)
     }
 
     const handlePlaceOrder = (e) => {
@@ -610,50 +618,66 @@ export default function CauseDetails({
                                     </div>
 
                                     {!!cause?.is_special && (
-                                        <div className="p-4 border rounded bg-light">
-                                            {!!cause?.type === "birthday" && (
-                                                <h5 className="text-primary mb-3">{translate("Birthday Dedication")}</h5>
-                                            )}
-                                            {!!cause?.type === "anniversary" && (
-                                                <h5 className="text-primary mb-3">{translate("Anniversary Dedication")}</h5>
-                                            )}
-                                            {!!cause?.type === "special_day" && (
-                                                <h5 className="text-primary mb-3">{translate("Special Day Dedication")}</h5>
-                                            )}
+                                        <div className="p-4 border rounded bg-light mt-3">
+                                            {/* DYNAMIC HEADING */}
+                                            <h5 className="text-primary mb-3">
+                                                {cause.type === "birthday" && translate("Birthday Dedication")}
+                                                {cause.type === "anniversary" && translate("Anniversary Dedication")}
+                                                {cause.type === "special_day" && translate("Special Day Dedication")}
+                                                {(!cause.type || !["birthday", "anniversary", "special_day"].includes(cause.type)) &&
+                                                    translate("Special Dedication")}
+                                            </h5>
+
+                                            {/* Special Message */}
                                             <div className="mb-3">
-                                                <label className="cs_shop-label">{translate("Message")}</label>
+                                                <label className="cs_shop-label">
+                                                    {cause.type === "birthday" &&
+                                                        translate("Birthday Message (e.g. Happy Birthday dear John from Mom & Dad)")}
+                                                    {cause.type === "anniversary" &&
+                                                        translate("Anniversary Message (e.g. Happy 25th Anniversary from children)")}
+                                                    {cause.type === "special_day" &&
+                                                        translate("Special Day Message (e.g. Best wishes on your special day)")}
+                                                    {(!cause.type || !["birthday", "anniversary", "special_day"].includes(cause.type)) &&
+                                                        translate("Your Special Message")}
+                                                </label>
                                                 <textarea
                                                     className="form-control form-control-sm"
-                                                    rows="2"
+                                                    rows="3"
                                                     placeholder={translate("With love from...")}
                                                     value={data.special_message}
                                                     onChange={(e) => setData("special_message", e.target.value)}
                                                 />
+                                                {errors.special_message && <div className="text-danger small mt-1">{errors.special_message}</div>}
                                             </div>
 
                                             {/* Special Image Upload */}
                                             <div className="mb-3">
-                                                <label className="cs_shop-label">{translate("Upload Image (Optional)")}</label>
+                                                <label className="cs_shop-label">
+                                                    {translate("Upload Image (Optional)")}{" "}
+                                                    <span className="text-muted small">(Max 5MB - JPG, PNG, GIF, WEBP)</span>
+                                                </label>
                                                 <input
                                                     type="file"
-                                                    accept="image/*,.pdf"
+                                                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                                                     className="form-control form-control-sm"
                                                     onChange={handleSFileChange}
                                                 />
                                                 {special_image && (
                                                     <div className="mt-2 d-flex align-items-center gap-2 flex-wrap">
-                                                        <span className="badge bg-success fs-6">{special_image.name}</span>
+                                                        <span className="badge bg-success fs-6">
+                                                            {special_image.name} ({(special_image.size / 1024 / 1024).toFixed(2)} MB)
+                                                        </span>
                                                         <button
                                                             type="button"
                                                             className="btn btn-sm btn-outline-danger"
                                                             onClick={() => {
                                                                 setSpecialImage(null)
                                                                 setData("special_image", null)
-                                                                const input = document.querySelector('input[type="file"]')
+                                                                const input = document.querySelector('input[type="file"][accept*="image"]')
                                                                 if (input) input.value = ""
                                                             }}
                                                         >
-                                                            Remove
+                                                            {translate("Remove")}
                                                         </button>
                                                     </div>
                                                 )}
@@ -662,7 +686,7 @@ export default function CauseDetails({
 
                                             {/* Special Video URL */}
                                             <div className="mb-3">
-                                                <label className="cs_shop-label">{translate("Video URL (YouTube)")}</label>
+                                                <label className="cs_shop-label">{translate("Video URL (YouTube) - Optional")}</label>
                                                 <input
                                                     type="url"
                                                     className="form-control form-control-sm"
@@ -674,7 +698,13 @@ export default function CauseDetails({
 
                                             {/* Special Date */}
                                             <div className="mb-3">
-                                                <label className="cs_shop-label">{translate("Date")}</label>
+                                                <label className="cs_shop-label">
+                                                    {cause.type === "birthday" && translate("Date of Birth")}
+                                                    {cause.type === "anniversary" && translate("Anniversary Date")}
+                                                    {cause.type === "special_day" && translate("Special Date")}
+                                                    {(!cause.type || !["birthday", "anniversary", "special_day"].includes(cause.type)) &&
+                                                        translate("Date")}
+                                                </label>
                                                 <input
                                                     type="date"
                                                     className="form-control form-control-sm"

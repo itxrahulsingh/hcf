@@ -143,8 +143,8 @@ export default function Index({ orders, sort, filter }) {
                                                     <div className="position-relative">
                                                         <DropDownButton selectedOption={selectedStatus}>
                                                             <a
-                                                                onClick={() => setSelectedStatus("All Order Status")}
-                                                                className={`dropdown-item ${selectedStatus === "All Order Status" ? "active" : ""}`}
+                                                                onClick={() => setSelectedStatus("All")}
+                                                                className={`dropdown-item ${selectedStatus === "All" ? "active" : ""}`}
                                                                 href="#"
                                                             >
                                                                 {translate("All Order Status")}
@@ -188,7 +188,7 @@ export default function Index({ orders, sort, filter }) {
                                                                 className={`dropdown-item ${selectedType === "All" ? "active" : ""}`}
                                                                 href="#"
                                                             >
-                                                                {translate("All")}
+                                                                {translate("All Order Types")}
                                                             </a>
                                                             <a
                                                                 onClick={() => setSelectedType("Birthday")}
@@ -309,14 +309,14 @@ export default function Index({ orders, sort, filter }) {
                                                     >
                                                         {translate("Phone")}
                                                     </ThSortable>
-                                                    <ThSortable width="15%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
+                                                    <ThSortable width="20%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
                                                         Items
                                                     </ThSortable>
                                                     <ThSortable width="8%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
                                                         Amount
                                                     </ThSortable>
                                                     <ThSortable
-                                                        width="10%"
+                                                        width="8%"
                                                         sort={sort}
                                                         onSorted={() => getResults(searchQuery)}
                                                         column="payment_method"
@@ -324,14 +324,14 @@ export default function Index({ orders, sort, filter }) {
                                                         {translate("Payment Method")}
                                                     </ThSortable>
                                                     <ThSortable
-                                                        width="10%"
+                                                        width="8%"
                                                         sort={sort}
                                                         onSorted={() => getResults(searchQuery)}
                                                         column="payment_status"
                                                     >
                                                         {translate("Payment Status")}
                                                     </ThSortable>
-                                                    <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="status">
+                                                    <ThSortable width="9%" sort={sort} onSorted={() => getResults(searchQuery)} column="status">
                                                         {translate("Status")}
                                                     </ThSortable>
                                                     {(hasPermission("orders.show") || hasPermission("orders.delete")) && (
@@ -369,11 +369,13 @@ export default function Index({ orders, sort, filter }) {
                                                             </a>
                                                         </td>
                                                         <td>
-                                                            <div className="yoo-table-medias yoo-style1">
-                                                                {order.orderitems
-                                                                    ?.map((item) => `${item.item_name} (${item.item_type || "product"})`)
-                                                                    .join(", ")}
-                                                            </div>
+                                                            <ul>
+                                                                {order.orderitems?.map((item, index) => (
+                                                                <li key={index}>
+                                                                    {item.item_name} ({item.type_name || "product"})
+                                                                </li>
+                                                                ))}
+                                                            </ul>
                                                         </td>
                                                         <td>
                                                             <Amount amount={order.total_price} />

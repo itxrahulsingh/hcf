@@ -11,6 +11,7 @@ import AdminLayouts from "@/Admin/Layouts/AdminLayouts"
 import ThSortable from "@/Admin/Components/Table/ThSortable"
 import hasPermission from "@/Admin/Utils/hasPermission"
 import translate from "@/utils/translate"
+import Amount from "@/Components/Amount"
 
 export default function Index({ causes = { data: [], total: 0, links: [] }, sort = {}, filtered_lang, languages = {} }) {
     const [searchQuery, setSearchQuery] = useState("")
@@ -218,6 +219,17 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                 <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="type">
                                                     {translate("Type")}
                                                 </ThSortable>
+                                                <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_orders">
+                                                    {translate("Donations")}
+                                                </ThSortable>
+                                                <ThSortable
+                                                    width="10%"
+                                                    sort={sort}
+                                                    onSorted={() => getResults(searchQuery)}
+                                                    column="total_order_amount"
+                                                >
+                                                    {translate("Revenue")}
+                                                </ThSortable>
                                                 <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="status">
                                                     {translate("Status")}
                                                 </ThSortable>
@@ -251,9 +263,13 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                     <td className="sorting_1">{cause?.content?.title}</td>
                                                     <td>{cause?.category?.content?.title}</td>
                                                     <td>{cause.type == null ? "Normal" : cause.type}</td>
+                                                    <td className="sorting_1">{cause?.total_orders}</td>
+                                                    <td className="sorting_1">
+                                                        <Amount amount={Number(cause?.total_order_amount || 0).toFixed(2)} />
+                                                    </td>
                                                     <td>
-                                                        {cause.status === 1 && <span className="badge badge-success">Active</span>}
-                                                        {cause.status === 0 && <span className="badge badge-warning">Inactive</span>}
+                                                        {Number(cause.status) === 1 && <span className="badge badge-success">Active</span>}
+                                                        {Number(cause.status) === 0 && <span className="badge badge-warning">Inactive</span>}
                                                     </td>
                                                     {(hasPermission("causes.edit") || hasPermission("causes.delete")) && (
                                                         <td>

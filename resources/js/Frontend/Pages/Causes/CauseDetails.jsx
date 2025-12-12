@@ -80,6 +80,7 @@ export default function CauseDetails({
         special_video: "",
         special_date: "",
         type: cause?.type || "",
+        cause_id: cause?.id || null,
     })
 
     useEffect(() => {
@@ -148,8 +149,8 @@ export default function CauseDetails({
 
         post(route("checkout.store"), {
             onSuccess: () => {
-                dispatch(clearCart())
-                dispatch(removeCoupon())
+                // dispatch(clearCart())
+                // dispatch(removeCoupon())
             }
         })
     }

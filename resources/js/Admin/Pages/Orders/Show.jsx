@@ -22,6 +22,7 @@ export default function Show({ order }) {
         status,
         total_price,
         orderitems,
+        invoice,
         transaction_id,
         receipt_file_url,
         receipt_file
@@ -60,6 +61,10 @@ export default function Show({ order }) {
                                 <div className="yoo-padd-lr-30">
                                     {/* Customer Info */}
                                     <div className="row">
+                                        <div className="col-md-12 pb-2">
+                                            <div className="invoice-title">{translate("Invoice Number")}</div>
+                                            <div className="invoice-content"><b>{invoice?.invoice_number}</b></div>
+                                        </div>
                                         <div className="col-md-4">
                                             <div className="invoice-title">{translate("Placed On")}</div>
                                             <div className="invoice-content">{moment(created_at).format("lll")}</div>
@@ -98,7 +103,6 @@ export default function Show({ order }) {
                                     </div>
 
                                     {/* Order Items */}
-                                    {/* Order Items */}
                                     <h5 className="mt-5 mb-1">{translate("Order Items")}</h5>
                                     <div className="yoo-height-b20 yoo-height-lg-b20"></div>
                                     <table className="display dataTable" style={{ width: "100%" }}>
@@ -121,10 +125,14 @@ export default function Show({ order }) {
                                                         )}
                                                     </td>
                                                     <td>{item.item_name}</td>
-                                                    <td>{item.item_type || "Product"}</td>
+                                                    <td>{item.type_name || "Product"}</td>
                                                     <td>{item.quantity}</td>
-                                                    <td><Amount amount={item.item_price} /></td>
-                                                    <td><Amount amount={item.total_price} /></td>
+                                                    <td>
+                                                        <Amount amount={item.item_price} />
+                                                    </td>
+                                                    <td>
+                                                        <Amount amount={item.total_price} />
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -189,7 +197,11 @@ export default function Show({ order }) {
 
                                     {/* Invoice Buttons */}
                                     <div className="btn-list mt-4 mb-3">
-                                        <a href={route("admin.orders.show.invoice", order)} target="_blank" className="btn btn-outline-secondary mr-3">
+                                        <a
+                                            href={route("admin.orders.show.invoice", order)}
+                                            target="_blank"
+                                            className="btn btn-outline-secondary mr-3"
+                                        >
                                             {translate("View Invoice")}
                                         </a>
                                         <a href={route("admin.orders.download.invoice", order)} download className="btn btn-outline-secondary">
@@ -212,7 +224,9 @@ export default function Show({ order }) {
                                 </div>
                                 <div className="yoo-card-body">
                                     <div className="yoo-padd-lr-20">
-                                        <label className="pt-2" htmlFor="status">{translate("Order Status")} *</label>
+                                        <label className="pt-2" htmlFor="status">
+                                            {translate("Order Status")} *
+                                        </label>
                                         <div className="form-group form-group-md">
                                             <div className="yoo-select">
                                                 <select
@@ -233,7 +247,12 @@ export default function Show({ order }) {
                                         <label htmlFor="payment_status">{translate("Payment Status")} *</label>
                                         <div className="form-group form-group-md">
                                             <div className="yoo-select">
-                                                <select id="payment_status" value={data.payment_status} className="form-control" onChange={(e) => setData("payment_status", e.target.value)}>
+                                                <select
+                                                    id="payment_status"
+                                                    value={data.payment_status}
+                                                    className="form-control"
+                                                    onChange={(e) => setData("payment_status", e.target.value)}
+                                                >
                                                     <option value="0">{translate("Initialize")}</option>
                                                     <option value="1">{translate("Awaiting Payment")}</option>
                                                     <option value="2">{translate("Success")}</option>

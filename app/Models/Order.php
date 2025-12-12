@@ -38,4 +38,9 @@ class Order extends Model
     {
         return $this->hasOne(Invoice::class);
     }
+
+    public function cause()
+    {
+        return $this->belongsTo(Cause::class);
+    }
 }

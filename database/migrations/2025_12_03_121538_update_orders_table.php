@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('is_80g')->default(false)->after('state');
             $table->string('pancard', 20)->nullable()->after('is_80g');
             $table->string('type')->default('normal')->after('pancard');
+            $table->bigInteger('cause_id')->nullable()->after('type');
         });
     }
 
@@ -38,6 +39,7 @@ return new class extends Migration
                 'is_80g',
                 'pancard',
                 'type',
+                'cause_id',
             ]);
         });
     }

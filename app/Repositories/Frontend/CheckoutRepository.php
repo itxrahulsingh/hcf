@@ -83,6 +83,7 @@ class CheckoutRepository
             'is_80g' => $request->is_80g,
             'pancard' => $request->pancard,
             'type' => $request->type ?? 'normal',
+            'cause_id' => $request->cause_id ?? null,
         ]);
 
         // Prepare order items for polymorphic table

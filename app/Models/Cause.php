@@ -19,7 +19,7 @@ class Cause extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    protected $appends = ['banner_image_url', 'gifts'];
+    protected $appends = ['banner_image_url', 'gifts', 'total_orders', 'total_order_amount'];
 
     /**
      * Get Cause contents
@@ -64,6 +64,27 @@ class Cause extends Model
     public function getBannerImageUrlAttribute(): string
     {
         return asset($this->banner_image);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'cause_id', 'id');
+    }
+
+    /**
+     * Get the total number of successful orders for this cause.
+     */
+    public function getTotalOrdersAttribute(): int
+    {
+        return $this->orders->where('payment_status', 2)->count();
+    }
+
+    /**
+     * Get the total amount of successful orders for this cause.
+     */
+    public function getTotalOrderAmountAttribute(): float
+    {
+        return (float) $this->orders->where('payment_status', 2)->sum('total_price');
     }
 
     protected $casts = [

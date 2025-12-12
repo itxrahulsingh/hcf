@@ -159,7 +159,7 @@
         <!-- Order Details -->
         <div class="booking-details">
             <h2>@lang('Order Details')</h2>
-            <div class="detail"><label>@lang('Invoice Number')</label> #{{ $order->invoice->invoice_number }}</div>
+            <div class="detail"><label>@lang('Order Number')</label> #{{ $order->order_number }}</div>
             <div class="detail"><label>@lang('Customer Name')</label> {{ $order->customer_name }}</div>
         </div>
 

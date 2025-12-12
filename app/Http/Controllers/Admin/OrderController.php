@@ -33,7 +33,7 @@ class OrderController extends Controller
         $data['sort']['column'] = $request->sort['column'] ?? 'id';
         $data['sort']['order'] = $request->sort['order'] ?? 'desc';
         $data['filter']['status'] = $request->filter['status'] ?? 'All Order Status';
-        $data['filter']['type'] = $request->filter['type'] ?? 'All Order Types';
+        $data['filter']['type'] = $request->filter['type'] ?? null;
         $data['filter']['payment_status'] = $request->filter['payment_status'] ?? 'All Payment Status';
         $data['orders'] = $repository->paginateSearchResult($data['search'], $data['sort'], $data['filter']);
 
@@ -49,7 +49,7 @@ class OrderController extends Controller
             abort(404);
         }
 
-        $data['order'] = $order->load('orderitems');
+        $data['order'] = $order->load('orderitems', 'invoice');
         return Inertia::render('Orders/Show', $data);
     }
 
@@ -81,7 +81,7 @@ class OrderController extends Controller
         $data['font_family'] = $repository->getInvoiceFrontName();
         $data['direction'] = $repository->getInvoiceDirection();
         $data['text_align'] = $data['direction'] == 'ltr' ? 'left' : 'right';
-        $data['order'] = $order->load('orderitems');
+        $data['order'] = $order->load('orderitems', 'invoice');
         $pdf = PDF::loadView('invoice', $data);
 
         return $pdf->stream("invoice-{$order->order_number}.pdf");
@@ -103,7 +103,7 @@ class OrderController extends Controller
         $data['font_family'] = $repository->getInvoiceFrontName();
         $data['direction'] = $repository->getInvoiceDirection();
         $data['text_align'] = $data['direction'] == 'ltr' ? 'left' : 'right';
-        $data['order'] = $order->load('orderitems');
+        $data['order'] = $order->load('orderitems', 'invoice');
         $pdf = PDF::loadView('invoice', $data);
 
         return $pdf->download("invoice-{$order->order_number}.pdf");

@@ -17,14 +17,14 @@ class DebugController extends Controller
     {
         $main_menu = Setting::pull('main_menu');
         $newDomain = request()->getHost();
-        $this->replaceDomainPaths(json_decode($main_menu, true), "bione-laravel.laralink.com", $newDomain);
+        $this->replaceDomainPaths(json_decode($main_menu, true), "hcf.test", $newDomain);
 
         // update page
         Page::with('contents')->each(function ($page) {
             $page->contents->each(function ($content) {
                 $contentData = $content->toArray();
                 $newDomain = request()->getHost();
-                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "bione-laravel.laralink.com", $newDomain);
+                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "hcf.test", $newDomain);
                 $content->update($contentData);
             });
         });
@@ -34,7 +34,7 @@ class DebugController extends Controller
             $portfolio->contents->each(function ($content) {
                 $contentData = $content->toArray();
                 $newDomain = request()->getHost();
-                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "bione-laravel.laralink.com", $newDomain);
+                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "hcf.test", $newDomain);
                 $content->update($contentData);
             });
         });
@@ -44,7 +44,7 @@ class DebugController extends Controller
             $service->contents->each(function ($content) {
                 $contentData = $content->toArray();
                 $newDomain = request()->getHost();
-                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "bione-laravel.laralink.com", $newDomain);
+                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "hcf.test", $newDomain);
                 $content->update($contentData);
             });
         });
@@ -54,7 +54,7 @@ class DebugController extends Controller
             $caseStudy->contents->each(function ($content) {
                 $contentData = $content->toArray();
                 $newDomain = request()->getHost();
-                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "bione-laravel.laralink.com", $newDomain);
+                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "hcf.test", $newDomain);
                 $content->update($contentData);
             });
         });
@@ -64,7 +64,7 @@ class DebugController extends Controller
             $team->contents->each(function ($content) {
                 $contentData = $content->toArray();
                 $newDomain = request()->getHost();
-                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "bione-laravel.laralink.com", $newDomain);
+                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "hcf.test", $newDomain);
                 $content->update($contentData);
             });
         });

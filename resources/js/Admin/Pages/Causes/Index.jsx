@@ -13,22 +13,29 @@ import hasPermission from "@/Admin/Utils/hasPermission"
 import translate from "@/utils/translate"
 import Amount from "@/Components/Amount"
 
-export default function Index({ causes = { data: [], total: 0, links: [] }, sort = {}, filtered_lang, languages = {} }) {
+// Added cause_types to props
+export default function Index({ causes = { data: [], total: 0, links: [] }, sort = {}, filtered_lang, languages = {}, cause_types = {} }) {
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedLang, setSelectedLang] = useState(filtered_lang)
-    const [selectedType, setSelectedType] = useState("all")
+
+    // Check if URL has a type filter, otherwise default to 'all'
+    const { url } = usePage()
+    const urlParams = new URLSearchParams(url.split('?')[1])
+    const [selectedType, setSelectedType] = useState(urlParams.get('filter[type]') || "all")
+
     const [selectedOption, setSelectedOption] = useState("Bulk Action")
     const [isMarkAll, setIsMarkAll] = useState(false)
     const [markItems, setMarkItems] = useState([])
 
-    const getResults = (search, lang) => {
+    // Updated to accept type argument
+    const getResults = (search, lang, type) => {
         router.get(
             route("admin.causes.index", {
                 search: search ?? searchQuery,
                 sort: sort,
                 filter: {
                     lang: lang ?? selectedLang,
-                    type: selectedType
+                    type: type ?? selectedType // Use argument or state
                 }
             }),
             {},
@@ -76,6 +83,12 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
         })
     }
 
+    // Helper to get Label for selected type
+    const getSelectedTypeLabel = () => {
+        if(selectedType === 'all') return translate('All Types');
+        return cause_types[selectedType] || selectedType;
+    }
+
     return (
         <AdminLayouts>
             <Head title="All Causes" />
@@ -108,6 +121,8 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                             <div className="yooDataTableWrap">
                                 <div className="dataTables_heading">
                                     <div className="dataTables_heading_left">
+
+                                        {/* BULK ACTION */}
                                         <div className="yoo-group-btn">
                                             <div className="position-relative">
                                                 <DropDownButton selectedOption={selectedOption} disabled={!markItems.length}>
@@ -128,6 +143,8 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                 {translate("Apply")}
                                             </button>
                                         </div>
+
+                                        {/* LANGUAGE FILTER */}
                                         <div className="yoo-group-btn">
                                             <div className="position-relative">
                                                 <DropDownButton selectedOption={languages[selectedLang]?.name || selectedLang}>
@@ -146,20 +163,29 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                 </DropDownButton>
                                             </div>
                                             <button onClick={() => getResults(searchQuery)} className="btn btn-success btn-sm">
-                                                {translate("Change language")}
+                                                {translate("Change Lang")}
                                             </button>
                                         </div>
+
+                                        {/* CAUSE TYPE FILTER */}
                                         <div className="yoo-group-btn">
                                             <div className="position-relative">
-                                                <DropDownButton selectedOption={selectedType}>
-                                                    {["all", "birthday", "anniversary", "special_day"].map((type) => (
+                                                <DropDownButton selectedOption={getSelectedTypeLabel()}>
+                                                    <a
+                                                        onClick={() => setSelectedType("all")}
+                                                        className={`dropdown-item ${selectedType === "all" ? "active" : ""}`}
+                                                        href="#"
+                                                    >
+                                                        {translate("All Types")}
+                                                    </a>
+                                                    {Object.entries(cause_types).map(([key, label]) => (
                                                         <a
-                                                            onClick={() => setSelectedType(type)}
-                                                            className={`dropdown-item ${selectedType === type ? "active" : ""}`}
+                                                            onClick={() => setSelectedType(key)}
+                                                            className={`dropdown-item ${selectedType === key ? "active" : ""}`}
                                                             href="#"
-                                                            key={type}
+                                                            key={key}
                                                         >
-                                                            {translate(type.charAt(0).toUpperCase() + type.slice(1).replace("_", " "))}
+                                                            {label}
                                                         </a>
                                                     ))}
                                                 </DropDownButton>
@@ -168,9 +194,10 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                 onClick={() => getResults(searchQuery, selectedLang, selectedType)}
                                                 className="btn btn-success btn-sm"
                                             >
-                                                {translate("Apply Type")}
+                                                {translate("Filter")}
                                             </button>
                                         </div>
+
                                     </div>
                                     <div className="dataTables_heading_right">
                                         <div id="yooDataTable_filter" className="dataTables_filter">
@@ -192,7 +219,7 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                         </div>
                                         {hasPermission("causes.create") && (
                                             <Link href={route("admin.causes.create")} className="btn btn-success btn-sm yoo-table-btn1">
-                                                <span className="yoo-add">+</span> {translate("Create New")}
+                                                <span className="yoo-add">+</span> {translate("Create")}
                                             </Link>
                                         )}
                                     </div>
@@ -262,7 +289,10 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                     </td>
                                                     <td className="sorting_1">{cause?.content?.title}</td>
                                                     <td>{cause?.category?.content?.title}</td>
-                                                    <td>{cause.type == null ? "Normal" : cause.type}</td>
+                                                    <td>
+                                                        {/* Fix: Show readable label instead of raw key */}
+                                                        {cause_types[cause.type] || cause.type || "General"}
+                                                    </td>
                                                     <td className="sorting_1">{cause?.total_orders}</td>
                                                     <td className="sorting_1">
                                                         <Amount amount={Number(cause?.total_order_amount || 0).toFixed(2)} />
@@ -287,7 +317,7 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                                 )}
                                                                 {hasPermission("causes.show") && (
                                                                     <a
-                                                                        href={route("shop.show", cause.slug)}
+                                                                        href={route("cause.show", cause.slug)}
                                                                         target="_blank"
                                                                         className="badge badge-secondary"
                                                                     >

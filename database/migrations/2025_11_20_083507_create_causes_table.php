@@ -22,14 +22,14 @@ return new class extends Migration
             $table->boolean('have_gift')->default(false)->comment('Whether the cause has gift option');
             $table->string('gift_ids', 100)->nullable();
             $table->boolean('have_product')->default(false)->comment('Whether the cause has product option');
-            $table->boolean('is_birthday')->default(false);
+            $table->boolean('is_special')->default(false);
             $table->string('custom_donation_amounts', 100)->nullable();
             $table->string('video_url', 255)->nullable();
             $table->decimal('raised_amount', 14, 2)->default(0)->comment('Total raised amount for the cause');
             $table->decimal('goal_amount', 14, 2)->default(0)->comment('Goal amount for the cause');
             $table->string('type', 50)->nullable()->comment('Type of the cause, e.g., birthday etc.');
             $table->date('deadline')->nullable();
-            $table->enum('status', [0, 1])->comment('0 means unpublished, 1 means published')->default(0);
+            $table->boolean('status')->comment('0 means unpublished, 1 means published')->default(0);
             $table->string('meta_image', 255)->nullable();
             $table->string('meta_title', 255)->nullable()->comment('meta title for seo');
             $table->string('meta_tags', 255)->nullable();

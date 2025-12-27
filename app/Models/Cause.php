@@ -21,6 +21,19 @@ class Cause extends Model
 
     protected $appends = ['banner_image_url', 'gifts', 'total_orders', 'total_order_amount'];
 
+    public static $causeTypes = [
+        'normal' => 'Normal',
+        'valentine_day' => 'Valentine Day',
+        'birthday' => 'Birthday',
+        'anniversary' => 'Anniversary',
+        'in_memory' => 'Death Anniversary / Remebrance Day',
+        'sadhu_seva' => 'Vrindavan Sadhu Seva',
+        'tiffin_seva' => 'Tiffin Seva',
+        'gau_seva' => 'Cow Seva / Gau Seva on Sharadh',
+        'pitru_paksha' => 'Pitru Paksha',
+        'homeless_needy' => 'Homeless Needy'
+    ];
+
     /**
      * Get Cause contents
      */
@@ -89,5 +102,10 @@ class Cause extends Model
 
     protected $casts = [
         'gift_ids' => 'array',
+        'have_gift' => 'integer',
+        'have_product' => 'integer',
+        'is_special' => 'integer',
+        'status' => 'integer',
+        'gallery_images' => 'array',
     ];
 }

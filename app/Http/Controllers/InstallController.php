@@ -157,7 +157,7 @@ class InstallController extends Controller
             $page->contents->each(function ($content) {
                 $contentData = $content->toArray();
                 $newDomain = request()->getHost();
-                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "bione-laravel.laralink.com", $newDomain);
+                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "hcf.test", $newDomain);
                 $content->update($contentData);
             });
         });
@@ -167,7 +167,7 @@ class InstallController extends Controller
             $portfolio->contents->each(function ($content) {
                 $contentData = $content->toArray();
                 $newDomain = request()->getHost();
-                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "bione-laravel.laralink.com", $newDomain);
+                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "hcf.test", $newDomain);
                 $content->update($contentData);
             });
         });
@@ -177,7 +177,7 @@ class InstallController extends Controller
             $service->contents->each(function ($content) {
                 $contentData = $content->toArray();
                 $newDomain = request()->getHost();
-                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "bione-laravel.laralink.com", $newDomain);
+                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "hcf.test", $newDomain);
                 $content->update($contentData);
             });
         });
@@ -187,7 +187,7 @@ class InstallController extends Controller
             $caseStudy->contents->each(function ($content) {
                 $contentData = $content->toArray();
                 $newDomain = request()->getHost();
-                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "bione-laravel.laralink.com", $newDomain);
+                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "hcf.test", $newDomain);
                 $content->update($contentData);
             });
         });
@@ -197,7 +197,7 @@ class InstallController extends Controller
             $team->contents->each(function ($content) {
                 $contentData = $content->toArray();
                 $newDomain = request()->getHost();
-                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "bione-laravel.laralink.com", $newDomain);
+                $contentData['sections_data'] = $this->replaceDomainPaths($contentData['sections_data'], "hcf.test", $newDomain);
                 $content->update($contentData);
             });
         });
@@ -207,11 +207,11 @@ class InstallController extends Controller
         $footer_menu = Setting::pull('footer_menu');
         $resources_menu = Setting::pull('resources_menu');
         $useful_links = Setting::pull('useful_links');
-        $main_menu = $this->replaceDomainPaths(json_decode($main_menu, true), "bione-laravel.laralink.com", $newDomain);
-        $service_menu = $this->replaceDomainPaths(json_decode($service_menu, true), "bione-laravel.laralink.com", $newDomain);
-        $footer_menu = $this->replaceDomainPaths(json_decode($footer_menu, true), "bione-laravel.laralink.com", $newDomain);
-        $resources_menu = $this->replaceDomainPaths(json_decode($resources_menu, true), "bione-laravel.laralink.com", $newDomain);
-        $useful_links = $this->replaceDomainPaths(json_decode($useful_links, true), "bione-laravel.laralink.com", $newDomain);
+        $main_menu = $this->replaceDomainPaths(json_decode($main_menu, true), "hcf.test", $newDomain);
+        $service_menu = $this->replaceDomainPaths(json_decode($service_menu, true), "hcf.test", $newDomain);
+        $footer_menu = $this->replaceDomainPaths(json_decode($footer_menu, true), "hcf.test", $newDomain);
+        $resources_menu = $this->replaceDomainPaths(json_decode($resources_menu, true), "hcf.test", $newDomain);
+        $useful_links = $this->replaceDomainPaths(json_decode($useful_links, true), "hcf.test", $newDomain);
         $settingRepository->updateSettingByGroup('menu_settings', [
             'main_menu' => $main_menu,
             'services_menu' => $service_menu,

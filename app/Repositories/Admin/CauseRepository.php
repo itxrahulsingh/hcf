@@ -17,30 +17,17 @@ class CauseRepository
 {
     use ModelRepositoryTraits;
 
-    /**
-     * Object model will be used to modify cause table
-     */
     protected Cause $model;
 
-    /**
-     * Constructor for cause repository
-     */
     public function __construct(Cause $cause)
     {
         $this->model = $cause;
     }
 
-    /**
-     * Get search result with pagination
-     */
     public function paginateSearchResult($search, array $sort = [], ?string $type = null): LengthAwarePaginator
     {
-        $query = $this->model->with([
-            'content',
-            'category.content',
-        ])->newQuery();
+        $query = $this->model->with(['content', 'category.content'])->newQuery();
 
-        // Apply search filters if necessary
         if ($search) {
             $query->whereHas('contents', function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%");
@@ -49,71 +36,48 @@ class CauseRepository
             });
         }
 
-        // Apply type filter if provided
         if ($type && $type !== 'all') {
             $query->where('type', $type);
         }
 
         if (isset($sort['column']) && isset($sort['order'])) {
-            $column = $sort['column'];
-            $order = $sort['order'];
-
-            if ($column === 'title') {
-                $query->orderBy(CauseContent::select($sort['column'])
-                    ->whereColumn('causes.id', 'cause_contents.cause_id')
-                    ->where('language_code', app()->getLocale()), $sort['order']);
-            } elseif ($column === 'category' || $column === 'category_title') {
-                $query->orderBy(
-                    CauseCategoryContent::select('title')
-                        ->whereColumn('cause_category_contents.category_id', 'causes.category_id')
-                        ->where('language_code', app()->getLocale()),
-                    $order
-                );
-            } else {
-                $query->orderBy($column, $order);
-            }
+             $query->orderBy($sort['column'], $sort['order']);
+        } else {
+             $query->orderBy('id', 'desc');
         }
 
-        // Paginate the results
-        return $query->paginate(30)
-            ->appends(array_filter([
-                'search' => $search,
-                'sort' => $sort,
-                'lang' => app()->getLocale(),
-            ]));
+        return $query->paginate(30)->appends(array_filter(['search' => $search, 'sort' => $sort, 'lang' => app()->getLocale()]));
     }
 
-    /**
-     * Create a new cause
-     */
     public function create(Request $request): void
     {
-        // Get languages from settings
         $languages = json_decode(Setting::pull('languages'), true);
         $defaultLang = Setting::pull('default_lang');
-        $defaultTitle = '';
         $generatedSlug = Str::slug($request->input($defaultLang . '_title'));
 
         if (Cause::where('slug', $generatedSlug)->exists()) {
             $generatedSlug = $generatedSlug . '-' . Carbon::now()->timestamp;
         }
 
-        // Create a new cause instance
+        // FIX: Extract only IDs if the frontend sends Objects
+        $cleanGiftIds = $this->sanitizeGiftIds($request->input('gift_ids', []));
+
         $cause = $this->model->create([
             'slug' => $generatedSlug,
             'category_id' => $request->input('category'),
             'user_id' => auth()->id(),
             'thumbnail_image' => $request->input('thumbnail_image'),
             'banner_image' => $request->input('banner_image'),
-            'gallery_images' => json_encode($request->input('gallery_images')),
-            'have_gift' => $request->input('have_gift'),
-            'have_product' => $request->input('have_product'),
-            'is_special' => $request->input('is_special'),
+            'gallery_images' => $request->input('gallery_images', []),
+            'have_gift' => (int) $request->input('have_gift', 0),
+            'have_product' => (int) $request->input('have_product', 0),
+            'is_special' => (int) $request->input('is_special', 0),
+            'gift_ids' => $cleanGiftIds, // Use cleaned IDs
             'custom_donation_amounts' => $request->input('custom_donation_amounts'),
             'video_url' => $request->input('video_url'),
             'raised_amount' => $request->input('raised_amount'),
             'goal_amount' => $request->input('goal_amount'),
-            'type' => $request->input('type'),
+            'type' => $request->input('type') ?? 'general',
             'deadline' => $request->input('deadline'),
             'status' => $request->input('status'),
             'meta_image' => $request->input('meta_image'),
@@ -122,139 +86,158 @@ class CauseRepository
             'meta_description' => $request->input('meta_description'),
         ]);
 
-        // Prepare content data
-        $content = array_map(function ($language) use ($request, $defaultLang, &$defaultTitle) {
+        $content = array_map(function ($language) use ($request) {
             $langCode = $language['code'];
-            $title = $request[$langCode . '_title'];
-
-            // Store the default language title for slug generation
-            if ($langCode === $defaultLang) {
-                $defaultTitle = $title;
-            }
-
             return [
                 'language_code' => $langCode,
-                'title' => $title,
+                'title' => $request[$langCode . '_title'],
                 'content' => $request[$langCode . '_content'],
                 'projects' => $request[$langCode . '_projects'],
-                'faq' => $request[$langCode . '_faq'],
+                'faq' => $this->parseFaq($request[$langCode . '_faq']),
                 'updates' => $request[$langCode . '_updates'],
             ];
         }, $languages);
 
-        // Create cause contents
         $cause->contents()->createMany($content);
-
         Cache::forget('max_cause_price');
     }
 
-    /**
-     * Get featured room
-     */
     public function getEditedData(Cause $cause): array
     {
-        $causeData = $cause->load('contents');
+        $cause->load('contents');
         $languages = json_decode(Setting::pull('languages'), true);
+
+        // Force decode gallery_images
+        $gallery = $cause->gallery_images;
+        if (is_string($gallery)) {
+            $gallery = json_decode($gallery, true);
+        }
+        if (!is_array($gallery)) {
+            $gallery = [];
+        }
 
         $data = [
             'id' => $cause->id,
             'slug' => $cause->slug,
             'category' => $cause->category_id,
+            'thumbnail_image' => $cause->thumbnail_image,
             'banner_image' => $cause->banner_image,
-            'gallery_images' => is_string($cause->gallery_images) ? json_decode($cause->gallery_images) : $cause->gallery_images,
+            'gallery_images' => $gallery,
             'have_gift' => $cause->have_gift,
             'have_product' => $cause->have_product,
+            'is_special' => $cause->is_special,
+            'gift_ids' => $cause->gift_ids ?? [],
             'custom_donation_amounts' => $cause->custom_donation_amounts,
             'video_url' => $cause->video_url,
             'raised_amount' => $cause->raised_amount,
-            'type' => $cause->type,
             'goal_amount' => $cause->goal_amount,
+            'type' => $cause->type,
             'deadline' => $cause->deadline,
             'status' => $cause->status,
             'meta_image' => $cause->meta_image,
+            'meta_title' => $cause->meta_title,
+            'meta_tags' => $cause->meta_tags,
+            'meta_description' => $cause->meta_description,
         ];
 
         foreach ($languages as $language) {
-            $langCode = $language['code'];
-            $data[$langCode . '_name'] = '';
-            $data[$langCode . 'content'] = '';
-            $data[$langCode . 'projects'] = '';
-            $data[$langCode . 'faq'] = '';
-            $data[$langCode . 'updates'] = '';
-            $data[$langCode . 'meta_title'] = '';
-            $data[$langCode . 'meta_tags'] = '';
-            $data[$langCode . 'meta_description'] = '';
+            $code = $language['code'];
+            $data["{$code}_title"] = '';
+            $data["{$code}_content"] = '';
+            $data["{$code}_projects"] = '';
+            $data["{$code}_faq"] = [];
+            $data["{$code}_updates"] = '';
         }
 
         foreach ($cause->contents as $content) {
-            $langCode = $content->language_code;
-            $data[$langCode . '_name'] = $content->title;
-            $data[$langCode . 'content'] = $content->content;
-            $data[$langCode . 'projects'] = $content->projects;
-            $data[$langCode . 'faq'] = $content->faq;
-            $data[$langCode . 'updates'] = $content->updates;
-            $data[$langCode . 'meta_title'] = $content->meta_title;
-            $data[$langCode . 'meta_tags'] = $content->meta_tags;
-            $data[$langCode . 'meta_description'] = $content->meta_description;
+            $code = $content->language_code;
+            $data["{$code}_title"] = $content->title;
+            $data["{$code}_content"] = $content->content;
+            $data["{$code}_projects"] = $content->projects;
+            $data["{$code}_faq"] = $content->faq;
+            $data["{$code}_updates"] = $content->updates;
         }
 
         return $data;
     }
 
-    /**
-     * Update cause
-     */
-    public function update(Request $request, Cause $cause)
+    public function update(Request $request, Cause $cause): void
     {
-        // Update the cause
+        // FIX: Extract only IDs if the frontend sends Objects
+        $cleanGiftIds = $this->sanitizeGiftIds($request->input('gift_ids', []));
+
         $cause->update([
             'category_id' => $request->category,
+            'thumbnail_image' => $request->thumbnail_image,
             'banner_image' => $request->banner_image,
-            'gallery_images' => json_encode($request->input('gallery_images')),
-            'have_gift' => $request->input('have_gift'),
-            'have_product' => $request->input('have_product'),
+            'gallery_images' => $request->gallery_images ?? [],
+            'have_gift' => $request->have_gift,
+            'have_product' => $request->have_product,
+            'is_special' => $request->is_special,
+            'gift_ids' => $cleanGiftIds, // Use cleaned IDs
             'custom_donation_amounts' => $request->custom_donation_amounts,
-            'raised_amount' => $request->input('raised_amount'),
-            'goal_amount' => $request->input('goal_amount'),
-            'type' => $request->input('type'),
-            'deadline' => $request->input('deadline'),
+            'video_url' => $request->video_url,
+            'raised_amount' => $request->raised_amount,
+            'goal_amount' => $request->goal_amount,
+            'type' => $request->type,
+            'deadline' => $request->deadline,
             'status' => $request->status,
             'meta_image' => $request->meta_image,
+            'meta_title' => $request->meta_title,
+            'meta_tags' => $request->meta_tags,
+            'meta_description' => $request->meta_description,
         ]);
 
-        // First update the content
         $languages = json_decode(Setting::pull('languages'), true);
+
         foreach ($languages as $language) {
-            $langCode = $language['code'];
+            $code = $language['code'];
+
             $cause->contents()->updateOrCreate(
-                ['language_code' => $langCode],
+                ['language_code' => $code],
                 [
-                    'title' => $request[$langCode . '_name'],
-                    'content' => $request[$langCode . '_content'],
-                    'projects' => $request[$langCode . '_projects'],
-                    'faq' => $request[$langCode . '_faq'],
-                    'updates' => $request[$langCode . '_updates'],
-                    'meta_title' => $request[$langCode . '_meta_title'],
-                    'meta_tags' => $request[$langCode . '_meta_tags'],
-                    'meta_description' => $request[$langCode . '_meta_description'],
-                ],
+                    'title' => $request["{$code}_title"],
+                    'content' => $request["{$code}_content"],
+                    'projects' => $request["{$code}_projects"],
+                    'faq' => $this->parseFaq($request["{$code}_faq"]),
+                    'updates' => $request["{$code}_updates"],
+                ]
             );
         }
+
         Cache::forget('max_cause_price');
     }
 
     /**
-     * delete cause
+     * Helper to extract IDs from gift objects
      */
+    private function sanitizeGiftIds($gifts)
+    {
+        if (!is_array($gifts)) return [];
+
+        return array_map(function($item) {
+            if (is_array($item) && isset($item['value'])) {
+                return $item['value'];
+            }
+            return $item;
+        }, $gifts);
+    }
+
+    private function parseFaq($data)
+    {
+        if (is_string($data)) {
+            $decoded = json_decode($data, true);
+            return is_array($decoded) ? $decoded : [];
+        }
+        return is_array($data) ? $data : [];
+    }
+
     public function destroy(Cause $cause)
     {
         $cause->contents()->delete();
         $cause->delete();
     }
 
-    /**
-     * bulk delete cause
-     */
     public function bulkDelete(string $ids)
     {
         $ids = explode(',', $ids);

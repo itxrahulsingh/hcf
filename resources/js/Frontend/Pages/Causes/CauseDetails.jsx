@@ -34,9 +34,9 @@ export default function CauseDetails({
 }) {
     const dispatch = useDispatch()
     const { carts, coupon } = useSelector((state) => state.carts)
-    // Cart totals
-    const subtotal = carts.reduce((total, item) => total + Number(item.price || 0) * (item.quantity || 1), 0)
 
+    // Calculate Totals
+    const subtotal = carts.reduce((total, item) => total + Number(item.price || 0) * (item.quantity || 1), 0)
     let discount = 0
     if (coupon) {
         const value = Number(coupon.discount_value || 0)
@@ -47,6 +47,7 @@ export default function CauseDetails({
     const page_settings = JSON.parse(localStorage.getItem("page_settings")) || {}
     const { is_show_cause_details_sidebar } = page_settings
 
+    // Captcha Settings
     const captchaSiteKey = localStorage.getItem("google_captcha_site_key") ? JSON.parse(localStorage.getItem("google_captcha_site_key")) : []
     const is_active_google_captcha = localStorage.getItem("is_active_google_captcha")
         ? JSON.parse(localStorage.getItem("is_active_google_captcha"))
@@ -55,11 +56,20 @@ export default function CauseDetails({
     const [captchaError, setCaptchaError] = useState(null)
     const [isCheckouting, setIsCheckouting] = useState(false)
 
+    // Form States
     const [selectedGateway, setSelectedGateway] = useState(null)
     const [receiptFile, setReceiptFile] = useState(null)
     const [special_image, setSpecialImage] = useState(null)
     const { states } = useStatesByCountry("IN")
+    const [showDonateModal, setShowDonateModal] = useState(false)
 
+    // FAQ Accordion State
+    const [openFaqIndex, setOpenFaqIndex] = useState(null)
+    const toggleFaq = (index) => {
+        setOpenFaqIndex(openFaqIndex === index ? null : index)
+    }
+
+    // Main Form Hook
     const { data, setData, post, errors, processing } = useForm({
         name: "",
         email: "",
@@ -75,13 +85,85 @@ export default function CauseDetails({
         paymentMethod: "",
         transactionId: "",
         receiptFile: null,
-        special_message: "",
-        special_image: null,
-        special_video: "",
-        special_date: "",
+
+        // Special Dynamic Fields
+        special_name: "",    // Entry Field 1 (Name / Sponsored By)
+        special_date: "",    // Entry Field 2 (Date)
+        special_image: null, // Entry Field 3 (Photo)
+        special_message: "", // Entry Field 4 (Message)
+
         type: cause?.type || "",
         cause_id: cause?.id || null,
     })
+
+    // --- DYNAMIC CONFIGURATION LOGIC ---
+    const getSpecialConfig = () => {
+        const type = cause?.type;
+
+        // Default / Fallback Config
+        let config = {
+            title: "Special Dedication Details",
+            showName: true, nameLabel: "Name",
+            showDate: true, dateLabel: "Date",
+            showImage: true, imageLabel: "Upload Photo",
+            showMessage: true, messageLabel: "Message"
+        };
+
+        switch (type) {
+            // 1. Celebration Types (All 4 Fields)
+            case 'valentine_day':
+                config = {
+                    title: "Valentine Day Details",
+                    showName: true, nameLabel: "Valentine's Name / Person Name",
+                    showDate: true, dateLabel: "Date of Celebration",
+                    showImage: true, imageLabel: "Upload Photo",
+                    showMessage: true, messageLabel: "Special Message from Children"
+                };
+                break;
+            case 'birthday':
+                config = {
+                    title: "Birthday Details",
+                    showName: true, nameLabel: "Birthday Boy/Girl Name",
+                    showDate: true, dateLabel: "Date of Celebration",
+                    showImage: true, imageLabel: "Upload Photo",
+                    showMessage: true, messageLabel: "Special Message"
+                };
+                break;
+            case 'anniversary':
+                config = {
+                    title: "Anniversary Details",
+                    showName: true, nameLabel: "Couple Name",
+                    showDate: true, dateLabel: "Date of Celebration",
+                    showImage: true, imageLabel: "Upload Photo",
+                    showMessage: true, messageLabel: "Special Message"
+                };
+                break;
+
+            // 2. Seva / Remembrance Types (Date + Name Only)
+            case 'in_memory': // Death Anniversary
+            case 'sadhu_seva':
+            case 'tiffin_seva':
+            case 'gau_seva':
+            case 'pitru_paksha':
+            case 'homeless_needy':
+                config = {
+                    title: "Seva / Distribution Details",
+                    showName: true, nameLabel: "Sponsored By Name", // Entry Field 2 in your table
+                    showDate: true, dateLabel: "Date of Distribution", // Entry Field 1 in your table
+                    showImage: false, imageLabel: "",
+                    showMessage: false, messageLabel: ""
+                };
+                break;
+
+            case 'normal':
+            default:
+                break;
+        }
+        return config;
+    };
+
+    const specialConfig = getSpecialConfig();
+    // -----------------------------------
 
     useEffect(() => {
         if (data.paymentMethod) {
@@ -112,6 +194,7 @@ export default function CauseDetails({
         setReceiptFile(file)
         setData("receiptFile", file)
     }
+
     const handleSFileChange = (e) => {
         const file = e.target.files[0]
         if (!file) {
@@ -149,13 +232,12 @@ export default function CauseDetails({
 
         post(route("checkout.store"), {
             onSuccess: () => {
-                // dispatch(clearCart())
-                // dispatch(removeCoupon())
+                // Handle success (e.g. redirect or show message)
             }
         })
     }
 
-    // Gallery list fix
+    // Helper: Safe Parse JSON
     const galleryImages = (() => {
         try {
             if (Array.isArray(cause?.gallery_images)) return cause.gallery_images
@@ -165,7 +247,6 @@ export default function CauseDetails({
         }
     })()
 
-    // FAQ fix
     const faqItems = (() => {
         try {
             if (Array.isArray(cause?.content?.faq)) return cause.content.faq
@@ -175,6 +256,7 @@ export default function CauseDetails({
         }
     })()
 
+    // SEO
     SeoMeta(
         cause?.content?.title ?? cause?.meta_title,
         meta_title ?? cause?.meta_title,
@@ -204,13 +286,10 @@ export default function CauseDetails({
         if (!url) return ""
         const normal = url.match(/v=([^&]+)/)
         if (normal) return `https://www.youtube.com/embed/${normal[1]}`
-
         const short = url.match(/youtu\.be\/([^?]+)/)
         if (short) return `https://www.youtube.com/embed/${short[1]}`
         return url
     }
-
-    const [showDonateModal, setShowDonateModal] = useState(false)
 
     return (
         <FrontendLayout>
@@ -226,12 +305,12 @@ export default function CauseDetails({
             >
                 <div className="row">
                     <div className="col-md-8">
-                        {/* Title */}
+                        {/* Title Section */}
                         <div className="cs_cause_details_wrap">
                             <h1 className="cs_cause_details_title">{cause?.content?.title}</h1>
                         </div>
 
-                        {/* Gallery */}
+                        {/* Gallery Section */}
                         {galleryImages.length > 0 && (
                             <div className="cs_cause_details_wrap">
                                 <Swiper
@@ -262,11 +341,10 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* Gifts */}
+                        {/* Gifts Section */}
                         {cause?.have_gift == 1 && cause?.gifts?.length > 0 && (
                             <div className="cs_cause_details_wrap mt-4">
                                 <h3>Gifts</h3>
-
                                 <div className="row g-3">
                                     {cause.gifts.map((gift, idx) => {
                                         const cartItem = carts.find((i) => i.id === gift.id && i.type === "gift")
@@ -314,7 +392,7 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* Products */}
+                        {/* Products Section */}
                         {cause?.have_product == 1 && products?.length > 0 && (
                             <div className="mt-5">
                                 <h3>Products</h3>
@@ -322,7 +400,6 @@ export default function CauseDetails({
                                     {products.map((product, idx) => {
                                         const cartItem = carts.find((i) => i.id === product.id && i.type === "product")
                                         const quantity = cartItem ? cartItem.quantity : 1
-
                                         const finalPrice = Number(product.discount_price || product.price || 0)
 
                                         return (
@@ -391,7 +468,7 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* Content Sections */}
+                        {/* Content & Projects */}
                         <div className="cs_cause_details_wrap">
                             <h3>Content</h3>
                             <div className="cs_cause_details" dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.content || "") }} />
@@ -400,36 +477,33 @@ export default function CauseDetails({
                             <div className="cs_cause_details" dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.projects || "") }} />
                         </div>
 
-                        {/* FAQ */}
+                        {/* FAQ Section */}
                         {faqItems.length > 0 && (
                             <div className="cs_cause_details_wrap">
                                 <h3 className="mb-4">FAQ's</h3>
-
                                 <div className="accordion" id="faqAccordion">
                                     {faqItems.map((item, idx) => {
                                         const headingId = `faq-heading-${idx}`
                                         const collapseId = `faq-collapse-${idx}`
+                                        const isOpen = openFaqIndex === idx
 
                                         return (
                                             <div className="accordion-item mb-3 shadow-sm border rounded-3" key={idx}>
                                                 <h2 className="accordion-header" id={headingId}>
                                                     <button
-                                                        className="accordion-button collapsed fw-semibold"
+                                                        className={`accordion-button fw-semibold ${isOpen ? "" : "collapsed"}`}
                                                         type="button"
-                                                        data-bs-toggle="collapse"
-                                                        data-bs-target={`#${collapseId}`}
-                                                        aria-expanded="false"
+                                                        onClick={() => toggleFaq(idx)}
+                                                        aria-expanded={isOpen}
                                                         aria-controls={collapseId}
                                                     >
                                                         {item.title}
                                                     </button>
                                                 </h2>
-
                                                 <div
                                                     id={collapseId}
-                                                    className="accordion-collapse collapse"
+                                                    className={`accordion-collapse collapse ${isOpen ? "show" : ""}`}
                                                     aria-labelledby={headingId}
-                                                    data-bs-parent="#faqAccordion"
                                                 >
                                                     <div className="accordion-body fs-6 text-secondary">
                                                         <div
@@ -446,6 +520,7 @@ export default function CauseDetails({
                             </div>
                         )}
 
+                        {/* Updates Section */}
                         <div className="cs_cause_details_wrap">
                             <h3>Updates</h3>
                             <div className="cs_cause_details" dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.updates || "") }} />
@@ -454,11 +529,10 @@ export default function CauseDetails({
 
                     {/* Sidebar */}
                     <div className="col-xl-4">
-                        {/* Custom Donation */}
+                        {/* Custom Donation Amounts */}
                         {cause?.custom_donation_amounts && (
                             <div className="cs_shop-card mt-4">
                                 <h3>Custom Donation</h3>
-
                                 <div className="d-flex flex-wrap gap-2">
                                     {(Array.isArray(cause.custom_donation_amounts)
                                         ? cause.custom_donation_amounts
@@ -486,6 +560,7 @@ export default function CauseDetails({
                             </div>
                         )}
 
+                        {/* Cart Totals */}
                         <div className="cs_shop-card mt-2">
                             <h2>{translate("Totals")}</h2>
                             <table>
@@ -523,11 +598,11 @@ export default function CauseDetails({
                                 {translate("Donate Now")}
                             </a>
                         </div>
-                        {/* Video Section */}
+
+                        {/* Sidebar Video */}
                         {cause?.video_url && (
                             <div className="cs_shop-card mt-2">
                                 <h2>{translate("Video")}</h2>
-
                                 <div className="ratio ratio-16x9">
                                     <iframe
                                         src={convertYouTube(cause.video_url)}
@@ -543,8 +618,7 @@ export default function CauseDetails({
                     </div>
                 </div>
 
-                {/* Donate Modal */}
-                {/* Backdrop */}
+                {/* --- DONATION MODAL --- */}
                 {showDonateModal && <div className="modal-backdrop fade show"></div>}
                 <div className={`modal fade ${showDonateModal ? "show d-block" : ""}`} tabIndex="-1" role="dialog">
                     <div className="modal-dialog modal-dialog-centered" role="document">
@@ -556,6 +630,7 @@ export default function CauseDetails({
 
                             <div className="modal-body">
                                 <div className="row">
+                                    {/* Standard Fields */}
                                     <div className="col-lg-12 mb-2">
                                         <label className="cs_shop-label">{translate("Name")} *</label>
                                         <input
@@ -589,7 +664,7 @@ export default function CauseDetails({
                                         {errors.phone && <span className="text-danger small">{errors.phone}</span>}
                                     </div>
 
-                                    <div className="col-lg-12 mb-2">
+                                    <div className="col-lg-12">
                                         <label className="cs_shop-label">{translate("Full Address")} *</label>
                                         <input
                                             type="text"
@@ -618,104 +693,84 @@ export default function CauseDetails({
                                         {errors.state && <span className="text-danger small">{errors.state}</span>}
                                     </div>
 
+                                    {/* --- DYNAMIC SPECIAL FIELDS SECTION --- */}
                                     {!!cause?.is_special && (
-                                        <div className="p-4 border rounded bg-light mt-3">
-                                            {/* DYNAMIC HEADING */}
-                                            <h5 className="text-primary mb-3">
-                                                {cause.type === "birthday" && translate("Birthday Dedication")}
-                                                {cause.type === "anniversary" && translate("Anniversary Dedication")}
-                                                {cause.type === "special_day" && translate("Special Day Dedication")}
-                                                {(!cause.type || !["birthday", "anniversary", "special_day"].includes(cause.type)) &&
-                                                    translate("Special Dedication")}
-                                            </h5>
+                                        <div className="p-2 border rounded bg-light mt-2">
+                                            <h5 className="text-primary mb-3">{translate(specialConfig.title)}</h5>
 
-                                            {/* Special Message */}
-                                            <div className="mb-3">
-                                                <label className="cs_shop-label">
-                                                    {cause.type === "birthday" &&
-                                                        translate("Birthday Message (e.g. Happy Birthday dear John from Mom & Dad)")}
-                                                    {cause.type === "anniversary" &&
-                                                        translate("Anniversary Message (e.g. Happy 25th Anniversary from children)")}
-                                                    {cause.type === "special_day" &&
-                                                        translate("Special Day Message (e.g. Best wishes on your special day)")}
-                                                    {(!cause.type || !["birthday", "anniversary", "special_day"].includes(cause.type)) &&
-                                                        translate("Your Special Message")}
-                                                </label>
-                                                <textarea
-                                                    className="form-control form-control-sm"
-                                                    rows="3"
-                                                    placeholder={translate("With love from...")}
-                                                    value={data.special_message}
-                                                    onChange={(e) => setData("special_message", e.target.value)}
-                                                />
-                                                {errors.special_message && <div className="text-danger small mt-1">{errors.special_message}</div>}
-                                            </div>
+                                            {specialConfig.showName && (
+                                                <div className="mb-3">
+                                                    <label className="cs_shop-label">{translate(specialConfig.nameLabel)}</label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control form-control-sm"
+                                                        value={data.special_name}
+                                                        onChange={(e) => setData("special_name", e.target.value)}
+                                                    />
+                                                </div>
+                                            )}
 
-                                            {/* Special Image Upload */}
-                                            <div className="mb-3">
-                                                <label className="cs_shop-label">
-                                                    {translate("Upload Image (Optional)")}{" "}
-                                                    <span className="text-muted small">(Max 5MB - JPG, PNG, GIF, WEBP)</span>
-                                                </label>
-                                                <input
-                                                    type="file"
-                                                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                                                    className="form-control form-control-sm"
-                                                    onChange={handleSFileChange}
-                                                />
-                                                {special_image && (
-                                                    <div className="mt-2 d-flex align-items-center gap-2 flex-wrap">
-                                                        <span className="badge bg-success fs-6">
-                                                            {special_image.name} ({(special_image.size / 1024 / 1024).toFixed(2)} MB)
-                                                        </span>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-sm btn-outline-danger"
-                                                            onClick={() => {
-                                                                setSpecialImage(null)
-                                                                setData("special_image", null)
-                                                                const input = document.querySelector('input[type="file"][accept*="image"]')
-                                                                if (input) input.value = ""
-                                                            }}
-                                                        >
-                                                            {translate("Remove")}
-                                                        </button>
-                                                    </div>
-                                                )}
-                                                {errors.special_image && <div className="text-danger small mt-1">{errors.special_image}</div>}
-                                            </div>
+                                            {/* Entry Field 2: Date */}
+                                            {specialConfig.showDate && (
+                                                <div className="mb-3">
+                                                    <label className="cs_shop-label">{translate(specialConfig.dateLabel)}</label>
+                                                    <input
+                                                        type="date"
+                                                        className="form-control form-control-sm"
+                                                        value={data.special_date}
+                                                        onChange={(e) => setData("special_date", e.target.value)}
+                                                    />
+                                                </div>
+                                            )}
 
-                                            {/* Special Video URL */}
-                                            <div className="mb-3">
-                                                <label className="cs_shop-label">{translate("Video URL (YouTube) - Optional")}</label>
-                                                <input
-                                                    type="url"
-                                                    className="form-control form-control-sm"
-                                                    placeholder="https://youtube.com/watch?v=..."
-                                                    value={data.special_video}
-                                                    onChange={(e) => setData("special_video", e.target.value)}
-                                                />
-                                            </div>
+                                            {/* Entry Field 3: Image */}
+                                            {specialConfig.showImage && (
+                                                <div className="mb-3">
+                                                    <label className="cs_shop-label">
+                                                        {translate(specialConfig.imageLabel)} <span className="text-muted small">(Max 5MB)</span>
+                                                    </label>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        className="form-control form-control-sm"
+                                                        onChange={handleSFileChange}
+                                                    />
+                                                    {special_image && (
+                                                        <div className="mt-2 d-flex align-items-center gap-2 flex-wrap">
+                                                            <span className="badge bg-success">{special_image.name}</span>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-sm btn-outline-danger"
+                                                                onClick={() => {
+                                                                    setSpecialImage(null)
+                                                                    setData("special_image", null)
+                                                                    const input = document.querySelector('input[type="file"][accept*="image"]')
+                                                                    if (input) input.value = ""
+                                                                }}
+                                                            >
+                                                                {translate("Remove")}
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
 
-                                            {/* Special Date */}
-                                            <div className="mb-3">
-                                                <label className="cs_shop-label">
-                                                    {cause.type === "birthday" && translate("Date of Birth")}
-                                                    {cause.type === "anniversary" && translate("Anniversary Date")}
-                                                    {cause.type === "special_day" && translate("Special Date")}
-                                                    {(!cause.type || !["birthday", "anniversary", "special_day"].includes(cause.type)) &&
-                                                        translate("Date")}
-                                                </label>
-                                                <input
-                                                    type="date"
-                                                    className="form-control form-control-sm"
-                                                    value={data.special_date}
-                                                    onChange={(e) => setData("special_date", e.target.value)}
-                                                />
-                                            </div>
+                                            {/* Entry Field 4: Message */}
+                                            {specialConfig.showMessage && (
+                                                <div className="mb-3">
+                                                    <label className="cs_shop-label">{translate(specialConfig.messageLabel)}</label>
+                                                    <textarea
+                                                        className="form-control form-control-sm"
+                                                        rows="3"
+                                                        value={data.special_message}
+                                                        onChange={(e) => setData("special_message", e.target.value)}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     )}
 
+                                    {/* 80G Certificate */}
                                     <div className="form-check ms-3 mt-2">
                                         <input
                                             className="form-check-input"
@@ -757,7 +812,7 @@ export default function CauseDetails({
                                     )}
                                 </div>
 
-                                {/* Form */}
+                                {/* Payment Form */}
                                 <form onSubmit={handlePlaceOrder}>
                                     <table className="mb-0">
                                         <tbody>

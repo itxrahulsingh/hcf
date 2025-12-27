@@ -16,25 +16,41 @@ class CauseUpdateRequest extends FormRequest
     {
         $rules = [
             'category' => ['required'],
-            'banner_image' => ['sometimes', 'max:2048'],
-            'gallery_images' => ['sometimes', 'array', 'min:1'],
-            'gallery_images.*' => ['max:2048'],
-            'status' => ['required', 'boolean'],
+            'thumbnail_image' => ['required'],
+            'banner_image' => ['required'],
+            'gallery_images' => ['nullable', 'array'],
+            'gallery_images.*' => ['string'],
+            'have_gift' => ['required', 'integer'],
+            'have_product' => ['required', 'integer'],
+            'is_special' => ['required', 'integer'],
+            'status' => ['required', 'integer'],
+            'custom_donation_amounts' => ['nullable', 'string'],
+            'raised_amount' => ['nullable', 'numeric'],
+            'goal_amount' => ['nullable', 'numeric'],
+            'deadline' => ['nullable', 'date'],
+            'type' => ['nullable', 'string'],
+            'video_url' => ['nullable', 'string'],
+            'meta_image' => ['nullable', 'string'],
+            'meta_title' => ['nullable', 'string'],
+            'meta_tags' => ['nullable', 'string'],
+            'meta_description' => ['nullable', 'string'],
         ];
 
-        // Append language-specific validation rules
         $languages = json_decode(Setting::pull('languages'));
+
         foreach ($languages as $language) {
-            $langCode = $language->code;
-            $rules[$langCode . '_name'] = 'required|max:255';
-            $rules[$langCode . '_content'] = 'nullable';
-            $rules[$langCode . '_projects'] = 'nullable';
-            $rules[$langCode . '_faq'] = 'nullable';
-            $rules[$langCode . '_updates'] = 'nullable';
+            $code = $language->code;
+
+            $rules["{$code}_title"] = ['required', 'string', 'max:255'];
+            $rules["{$code}_content"] = ['nullable', 'string'];
+            $rules["{$code}_projects"] = ['nullable', 'string'];
+            $rules["{$code}_faq"] = ['nullable', 'string'];
+            $rules["{$code}_updates"] = ['nullable', 'string'];
         }
 
         return $rules;
     }
+
 
     public function messages()
     {

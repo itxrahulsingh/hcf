@@ -33,6 +33,7 @@ class CauseController extends Controller
         $data['filtered_lang'] = $request->filter['lang'] ?? Setting::pull('default_lang');
         $data['causes'] = $repository->paginateSearchResult($data['search'], $data['sort'], $data['type']);
         $data['languages'] = json_decode(Setting::pull('languages'));
+        $data['cause_types'] = Cause::$causeTypes;
 
         return Inertia::render('Causes/Index', $data);
     }
@@ -46,6 +47,7 @@ class CauseController extends Controller
         $data['languages'] = json_decode(Setting::pull('languages'));
         $data['cause_categories'] = CauseCategory::with('content')->get();
         $data['gifts'] = Gift::with('content')->where('status', 1)->get();
+        $data['cause_types'] = Cause::$causeTypes;
 
         return Inertia::render('Causes/Create', $data);
     }
@@ -70,6 +72,7 @@ class CauseController extends Controller
         $data['cause'] = $repository->getEditedData($cause);
         $data['cause_categories'] = CauseCategory::with('content')->get();
         $data['gifts'] = Gift::with('content')->where('status', 1)->get();
+        $data['cause_types'] = Cause::$causeTypes;
 
         return Inertia::render('Causes/Edit', $data);
     }

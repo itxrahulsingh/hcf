@@ -11,19 +11,24 @@ import { produce } from "immer"
 import AdminLayouts from "@/Admin/Layouts/AdminLayouts"
 import translate from "@/utils/translate"
 
-export default function Create({ languages, cause_categories, default_lang, gifts }) {
+export default function Create({ languages, cause_categories, default_lang, gifts, cause_types }) {
     const [selectedLang, setSelectedLang] = useState(default_lang)
     const [tempLang, setTempLang] = useState(selectedLang)
     const languageArr = Object.entries(languages)
     const { props } = usePage()
 
-    // Multi-language FAQ state: simple text entries (no rich editor)
+    // Multi-language FAQ state: simple text entries
     const [faqs, setFaqs] = useState(
         Object.keys(languages).reduce((acc, code) => {
             acc[code] = [{ title: "", content: "" }]
             return acc
         }, {})
     )
+
+    const typeOptions = cause_types ? Object.entries(cause_types).map(([key, label]) => ({
+        value: key,
+        label: label
+    })) : []
 
     const { data, setData, errors, post } = useForm({
         category: "",
@@ -46,7 +51,6 @@ export default function Create({ languages, cause_categories, default_lang, gift
         meta_title: "",
         meta_tags: "",
         meta_description: "",
-
         ...Object.keys(languages).reduce((acc, code) => {
             acc[code + "_title"] = ""
             acc[code + "_content"] = ""
@@ -60,17 +64,22 @@ export default function Create({ languages, cause_categories, default_lang, gift
     const handlePublish = (e) => {
         e.preventDefault()
 
-        // Convert FAQ arrays → JSON strings per language (simple text)
-        Object.keys(languages).forEach((lang) => {
-            // ensure we don't send editor values accidentally
-            const cleaned = faqs[lang].map((f) => ({
-                title: (f.title || "").toString(),
-                content: (f.content || "").toString()
-            }))
-            setData(`${lang}_faq`, JSON.stringify(cleaned))
-        })
+        post(route("admin.causes.store"), {
+            // FIX: Use transform to modify data right before sending
+            transform: (data) => {
+                const transformedData = { ...data }
 
-        post(route("admin.causes.store"))
+                Object.keys(languages).forEach((lang) => {
+                    const cleaned = faqs[lang].map((f) => ({
+                        title: (f.title || "").toString(),
+                        content: (f.content || "").toString()
+                    }))
+                    transformedData[`${lang}_faq`] = JSON.stringify(cleaned)
+                })
+
+                return transformedData
+            }
+        })
     }
 
     useEffect(() => setSelectedLang(tempLang), [tempLang])
@@ -168,9 +177,8 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                                 {translate("Custom Donation Amounts")} ({props.currency?.currency_code || "INR"}) *
                                             </label>
                                             <TextInput
-                                                title="Enter Raised Amount"
+                                                title="Enter Custom Amounts"
                                                 type="text"
-                                                step="0.01"
                                                 id="custom_donation_amounts"
                                                 error={errors?.custom_donation_amounts}
                                                 value={data.custom_donation_amounts}
@@ -188,7 +196,6 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                                     <select
                                                         className="form-control"
                                                         id="category"
-                                                        error={errors?.category}
                                                         onChange={(e) => setData("category", e.target.value)}
                                                         value={data.category}
                                                     >
@@ -210,7 +217,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         <div className="col-md-12">
                                             <label htmlFor="content">{translate("Content")}</label>
                                             <Editor
-                                                onChange={(value) => setData(`${tempLang}_content`, value)}
+                                                onChange={(value) => setData(`${selectedLang}_content`, value)}
                                                 value={data[`${selectedLang}_content`]}
                                             />
                                         </div>
@@ -221,14 +228,14 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         <div className="col-md-12">
                                             <label htmlFor="projects">{translate("Projects")}</label>
                                             <Editor
-                                                onChange={(value) => setData(`${tempLang}_projects`, value)}
+                                                onChange={(value) => setData(`${selectedLang}_projects`, value)}
                                                 value={data[`${selectedLang}_projects`]}
                                             />
                                         </div>
                                     </div>
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
 
-                                    {/* MULTI FAQ - plain text inputs (no Editor) */}
+                                    {/* MULTI FAQ */}
                                     <div className="row">
                                         <div className="col-md-12">
                                             <label htmlFor="faq">{translate("FAQ")}</label>
@@ -304,7 +311,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         <div className="col-md-12">
                                             <label htmlFor="updates">{translate("Updates")}</label>
                                             <Editor
-                                                onChange={(value) => setData(`${tempLang}_updates`, value)}
+                                                onChange={(value) => setData(`${selectedLang}_updates`, value)}
                                                 value={data[`${selectedLang}_updates`]}
                                             />
                                         </div>
@@ -395,11 +402,15 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         <label className="mb-0">{translate("Is Special")}:</label>
                                         <div
                                             className={`yoo-switch ${data.is_special === 1 ? "active" : ""}`}
-                                            onClick={() => {
-                                                const newValue = data.is_special === 1 ? 0 : 1
-                                                setData({ is_special: newValue, ...(newValue === 0 && { type: "" }) })
-                                            }}
                                             style={{ cursor: "pointer" }}
+                                            onClick={() => {
+                                                // FIX: Use functional update to preserve other fields
+                                                setData((prevData) => ({
+                                                    ...prevData,
+                                                    is_special: prevData.is_special === 1 ? 0 : 1,
+                                                    type: prevData.is_special === 1 ? "" : prevData.type
+                                                }))
+                                            }}
                                         >
                                             <div className="yoo-switch-in"></div>
                                         </div>
@@ -413,11 +424,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                             </label>
 
                                             <CustomSelect
-                                                options={[
-                                                    { value: "birthday", label: translate("Birthday") },
-                                                    { value: "anniversary", label: translate("Anniversary") },
-                                                    { value: "special_day", label: translate("Special Day") }
-                                                ]}
+                                                options={typeOptions}
                                                 value={data.type}
                                                 placeholder={translate("Choose occasion...")}
                                                 onSelect={(value) => setData("type", value)}
@@ -449,7 +456,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         </div>
                                     </div>
 
-                                    {/* Deadline date field added inside Product Status card */}
+                                    {/* Deadline date field */}
                                     <div className="form-group mt-3">
                                         <label htmlFor="deadline">{translate("Deadline")}</label>
                                         <input

@@ -44,7 +44,7 @@ class CauseUpdateRequest extends FormRequest
             $rules["{$code}_title"] = ['required', 'string', 'max:255'];
             $rules["{$code}_content"] = ['nullable', 'string'];
             $rules["{$code}_projects"] = ['nullable', 'string'];
-            $rules["{$code}_faq"] = ['nullable', 'string'];
+            $rules["{$code}_faq"] = ['nullable'];
             $rules["{$code}_updates"] = ['nullable', 'string'];
         }
 

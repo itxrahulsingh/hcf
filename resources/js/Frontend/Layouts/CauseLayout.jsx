@@ -33,7 +33,7 @@ export default function CauseLayout({
                 <>
                     <div className="cs_page_heading cs_style_2 cs_bg_filed" style={{ backgroundImage: `url(${causeDetailsBannerImageUrl})` }}>
                         <div className="container">
-                            <h1 className="cs_page_heading_title cs_fs_120 cs_white_color cs_normal">{causeDetailsTitle}</h1>
+                            <h1 className="cs_page_heading_title cs_fs_120 cs_white_color cs_normal"></h1>
                         </div>
                     </div>
                 </>

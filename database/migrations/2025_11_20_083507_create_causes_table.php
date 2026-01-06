@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('is_special')->default(false);
             $table->string('custom_donation_amounts', 100)->nullable();
             $table->string('video_url', 255)->nullable();
-            $table->decimal('raised_amount', 14, 2)->default(0)->comment('Total raised amount for the cause');
+            $table->decimal('min_amount', 14, 2)->default(0)->comment('Minimum donation amount for the cause');
             $table->decimal('goal_amount', 14, 2)->default(0)->comment('Goal amount for the cause');
             $table->string('type', 50)->nullable()->comment('Type of the cause, e.g., birthday etc.');
             $table->date('deadline')->nullable();

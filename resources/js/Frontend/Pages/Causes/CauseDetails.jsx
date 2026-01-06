@@ -4,6 +4,7 @@ import CauseLayout from "@/Frontend/Layouts/CauseLayout"
 import { addCart, decreaseCart, increaseCart, removeCart, clearCart } from "@/Redux/features/Cart/cart"
 import limitString from "@/utils/limitString.js"
 import removeHTMLTags from "@/utils/removeHTMLTags.js"
+import { Icon } from "@iconify/react"
 import SeoMeta from "@/utils/SeoMeta"
 import { useDispatch, useSelector } from "react-redux"
 import ProcessContent from "@/utils/ProcessContent"
@@ -87,82 +88,102 @@ export default function CauseDetails({
         receiptFile: null,
 
         // Special Dynamic Fields
-        special_name: "",    // Entry Field 1 (Name / Sponsored By)
-        special_date: "",    // Entry Field 2 (Date)
+        special_name: "", // Entry Field 1 (Name / Sponsored By)
+        special_date: "", // Entry Field 2 (Date)
         special_image: null, // Entry Field 3 (Photo)
         special_message: "", // Entry Field 4 (Message)
 
         type: cause?.type || "",
-        cause_id: cause?.id || null,
+        cause_id: cause?.id || null
     })
 
     // --- DYNAMIC CONFIGURATION LOGIC ---
     const getSpecialConfig = () => {
-        const type = cause?.type;
+        const type = cause?.type
 
         // Default / Fallback Config
         let config = {
             title: "Special Dedication Details",
-            showName: true, nameLabel: "Name",
-            showDate: true, dateLabel: "Date",
-            showImage: true, imageLabel: "Upload Photo",
-            showMessage: true, messageLabel: "Message"
-        };
+            showName: true,
+            nameLabel: "Name",
+            showDate: true,
+            dateLabel: "Date",
+            showImage: true,
+            imageLabel: "Upload Photo",
+            showMessage: true,
+            messageLabel: "Message"
+        }
 
         switch (type) {
             // 1. Celebration Types (All 4 Fields)
-            case 'valentine_day':
+            case "valentine_day":
                 config = {
                     title: "Valentine Day Details",
-                    showName: true, nameLabel: "Valentine's Name / Person Name",
-                    showDate: true, dateLabel: "Date of Celebration",
-                    showImage: true, imageLabel: "Upload Photo",
-                    showMessage: true, messageLabel: "Special Message from Children"
-                };
-                break;
-            case 'birthday':
+                    showName: true,
+                    nameLabel: "Valentine's Name / Person Name",
+                    showDate: true,
+                    dateLabel: "Date of Celebration",
+                    showImage: true,
+                    imageLabel: "Upload Photo",
+                    showMessage: true,
+                    messageLabel: "Special Message from Children"
+                }
+                break
+            case "birthday":
                 config = {
                     title: "Birthday Details",
-                    showName: true, nameLabel: "Birthday Boy/Girl Name",
-                    showDate: true, dateLabel: "Date of Celebration",
-                    showImage: true, imageLabel: "Upload Photo",
-                    showMessage: true, messageLabel: "Special Message"
-                };
-                break;
-            case 'anniversary':
+                    showName: true,
+                    nameLabel: "Birthday Boy/Girl Name",
+                    showDate: true,
+                    dateLabel: "Date of Celebration",
+                    showImage: true,
+                    imageLabel: "Upload Photo",
+                    showMessage: true,
+                    messageLabel: "Special Message"
+                }
+                break
+            case "anniversary":
                 config = {
                     title: "Anniversary Details",
-                    showName: true, nameLabel: "Couple Name",
-                    showDate: true, dateLabel: "Date of Celebration",
-                    showImage: true, imageLabel: "Upload Photo",
-                    showMessage: true, messageLabel: "Special Message"
-                };
-                break;
+                    showName: true,
+                    nameLabel: "Couple Name",
+                    showDate: true,
+                    dateLabel: "Date of Celebration",
+                    showImage: true,
+                    imageLabel: "Upload Photo",
+                    showMessage: true,
+                    messageLabel: "Special Message"
+                }
+                break
 
             // 2. Seva / Remembrance Types (Date + Name Only)
-            case 'in_memory': // Death Anniversary
-            case 'sadhu_seva':
-            case 'tiffin_seva':
-            case 'gau_seva':
-            case 'pitru_paksha':
-            case 'homeless_needy':
+            case "in_memory": // Death Anniversary
+            case "sadhu_seva":
+            case "tiffin_seva":
+            case "gau_seva":
+            case "pitru_paksha":
+            case "homeless_needy":
                 config = {
                     title: "Seva / Distribution Details",
-                    showName: true, nameLabel: "Sponsored By Name", // Entry Field 2 in your table
-                    showDate: true, dateLabel: "Date of Distribution", // Entry Field 1 in your table
-                    showImage: false, imageLabel: "",
-                    showMessage: false, messageLabel: ""
-                };
-                break;
+                    showName: true,
+                    nameLabel: "Sponsored By Name", // Entry Field 2 in your table
+                    showDate: true,
+                    dateLabel: "Date of Distribution", // Entry Field 1 in your table
+                    showImage: false,
+                    imageLabel: "",
+                    showMessage: false,
+                    messageLabel: ""
+                }
+                break
 
-            case 'normal':
+            case "normal":
             default:
-                break;
+                break
         }
-        return config;
-    };
+        return config
+    }
 
-    const specialConfig = getSpecialConfig();
+    const specialConfig = getSpecialConfig()
     // -----------------------------------
 
     useEffect(() => {
@@ -304,11 +325,11 @@ export default function CauseDetails({
                 is_show_cause_details_sidebar={is_show_cause_details_sidebar}
             >
                 <div className="row">
-                    <div className="col-md-8">
+                    <div className={`${cause.type === "birthday" ? "col-md-12" : "col-md-8"}`}>
                         {/* Title Section */}
-                        <div className="cs_cause_details_wrap">
+                        {/* <div className="cs_cause_details_wrap">
                             <h1 className="cs_cause_details_title">{cause?.content?.title}</h1>
-                        </div>
+                        </div> */}
 
                         {/* Gallery Section */}
                         {galleryImages.length > 0 && (
@@ -348,9 +369,9 @@ export default function CauseDetails({
                                 <div className="row g-3">
                                     {cause.gifts.map((gift, idx) => {
                                         const cartItem = carts.find((i) => i.id === gift.id && i.type === "gift")
-
+                                        const quantity = cartItem ? cartItem.quantity : 0
                                         return (
-                                            <div key={idx} className="col-6 col-sm-4 col-md-3 col-lg-2">
+                                            <div key={idx} className="col-6 col-sm-4 col-md-3 col-lg-3">
                                                 <div className="card h-100 shadow-sm">
                                                     {gift.gift_image && (
                                                         <img
@@ -367,22 +388,33 @@ export default function CauseDetails({
                                                         <span className="fw-bold text-primary">
                                                             <Amount amount={Number(gift.amount || 0).toFixed(2)} />
                                                         </span>
-
-                                                        {!cartItem ? (
+                                                        <div className="d-flex align-items-center mb-2">
                                                             <button
-                                                                className="btn btn-primary btn-sm rounded-pill mt-2 w-100"
-                                                                onClick={() => dispatch(addCart({ id: gift.id, type: "gift", content: gift }))}
+                                                                className="btn btn-outline-secondary btn-sm"
+                                                                disabled={!cartItem || quantity === 0}
+                                                                onClick={() => dispatch(decreaseCart({ id: gift.id, type: "gift" }))}
                                                             >
-                                                                Add
+                                                                –
                                                             </button>
-                                                        ) : (
+                                                            <span className="mx-2">{quantity}</span>
                                                             <button
-                                                                className="btn btn-danger btn-sm rounded-pill mt-2 w-100"
-                                                                onClick={() => dispatch(removeCart({ id: gift.id, type: "gift" }))}
+                                                                className="btn btn-outline-secondary btn-sm"
+                                                                onClick={() =>
+                                                                    cartItem
+                                                                        ? dispatch(increaseCart({ id: gift.id, type: "gift" }))
+                                                                        : dispatch(
+                                                                              addCart({
+                                                                                  id: gift.id,
+                                                                                  type: "gift",
+                                                                                  content: gift,
+                                                                                  quantity: gift.min_qty || 1
+                                                                              })
+                                                                          )
+                                                                }
                                                             >
-                                                                Remove
+                                                                +
                                                             </button>
-                                                        )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -403,7 +435,7 @@ export default function CauseDetails({
                                         const finalPrice = Number(product.discount_price || product.price || 0)
 
                                         return (
-                                            <div key={idx} className="col-6 col-sm-4 col-md-3 col-lg-2">
+                                            <div key={idx} className="col-6 col-md-4">
                                                 <div className="card h-100">
                                                     {product.thumbnail_image && (
                                                         <img
@@ -417,11 +449,10 @@ export default function CauseDetails({
                                                     <div className="card-body p-2 d-flex flex-column">
                                                         <h6 className="text-truncate">{product.content?.title}</h6>
 
-                                                        <p className="fw-bold text-primary">
-                                                            <Amount amount={finalPrice.toFixed(2)} /> Amount
-                                                        </p>
-
                                                         <div className="d-flex align-items-center mb-2">
+                                                            <p className="fw-bold text-primary">
+                                                                <Amount amount={finalPrice.toFixed(2)} /> / Unit
+                                                            </p>
                                                             <button
                                                                 className="btn btn-outline-secondary btn-sm"
                                                                 disabled={!cartItem || quantity === 1}
@@ -440,24 +471,38 @@ export default function CauseDetails({
                                                             >
                                                                 +
                                                             </button>
+                                                            {!cartItem ? (
+                                                                <button
+                                                                    className="btn btn-primary btn-sm rounded-pill mt-auto"
+                                                                    onClick={() =>
+                                                                        dispatch(addCart({ id: product.id, type: "product", content: product }))
+                                                                    }
+                                                                >
+                                                                    Add
+                                                                </button>
+                                                            ) : (
+                                                                <button
+                                                                    className="btn btn-danger btn-sm rounded-pill mt-auto"
+                                                                    onClick={() => dispatch(removeCart({ id: product.id, type: "product" }))}
+                                                                >
+                                                                    Remove
+                                                                </button>
+                                                            )}
                                                         </div>
+                                                        <div
+                                                            dangerouslySetInnerHTML={{
+                                                                __html: ProcessContent(product?.content?.short_description || "")
+                                                            }}
+                                                        />
 
-                                                        {!cartItem ? (
-                                                            <button
-                                                                className="btn btn-primary btn-sm rounded-pill mt-auto"
-                                                                onClick={() =>
-                                                                    dispatch(addCart({ id: product.id, type: "product", content: product }))
-                                                                }
+                                                        {["birthday"].includes(cause.type) && (
+                                                            <a
+                                                                className={`cs_product_btn w-100 ${carts.length === 0 ? "cs_disable" : ""}`}
+                                                                style={{ cursor: "pointer" }}
+                                                                onClick={() => setShowDonateModal(true)}
                                                             >
-                                                                Add
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                className="btn btn-danger btn-sm rounded-pill mt-auto"
-                                                                onClick={() => dispatch(removeCart({ id: product.id, type: "product" }))}
-                                                            >
-                                                                Remove
-                                                            </button>
+                                                                {translate("Donate Now")}
+                                                            </a>
                                                         )}
                                                     </div>
                                                 </div>
@@ -528,7 +573,7 @@ export default function CauseDetails({
                     </div>
 
                     {/* Sidebar */}
-                    <div className="col-xl-4">
+                    <div className={`col-xl-4 ${cause.type === "birthday" ? "d-none" : ""}`}>
                         {/* Custom Donation Amounts */}
                         {cause?.custom_donation_amounts && (
                             <div className="cs_shop-card mt-4">

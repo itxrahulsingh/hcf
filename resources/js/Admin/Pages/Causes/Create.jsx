@@ -17,7 +17,8 @@ export default function Create({ languages, cause_categories, default_lang, gift
     const languageArr = Object.entries(languages)
     const { props } = usePage()
 
-    // Multi-language FAQ state: simple text entries
+    // --- 1. FAQ STATE INITIALIZATION ---
+    // Initialize with one empty FAQ per language
     const [faqs, setFaqs] = useState(
         Object.keys(languages).reduce((acc, code) => {
             acc[code] = [{ title: "", content: "" }]
@@ -25,12 +26,14 @@ export default function Create({ languages, cause_categories, default_lang, gift
         }, {})
     )
 
+    // Prepare options for "Special Occasion Type" dropdown
     const typeOptions = cause_types ? Object.entries(cause_types).map(([key, label]) => ({
         value: key,
         label: label
     })) : []
 
-    const { data, setData, errors, post } = useForm({
+    // --- 2. FORM INITIALIZATION ---
+    const { data, setData, errors, post, processing } = useForm({
         category: "",
         slug: "",
         thumbnail_image: "",
@@ -42,15 +45,16 @@ export default function Create({ languages, cause_categories, default_lang, gift
         have_product: 0,
         custom_donation_amounts: "2100,5100,11000",
         video_url: "",
-        raised_amount: "",
+        min_amount: "",
         goal_amount: "",
-        type: "",
+        type: "normal", // Default type
         deadline: "",
         status: 1,
         meta_image: "",
         meta_title: "",
         meta_tags: "",
         meta_description: "",
+        // Initialize multi-language fields
         ...Object.keys(languages).reduce((acc, code) => {
             acc[code + "_title"] = ""
             acc[code + "_content"] = ""
@@ -61,29 +65,64 @@ export default function Create({ languages, cause_categories, default_lang, gift
         }, {})
     })
 
+    // --- 3. FAQ HANDLERS (FIXED: Immutable Updates) ---
+
+    // Add a new empty FAQ row
+    const addFaq = () => {
+        setFaqs(prev => ({
+            ...prev,
+            [selectedLang]: [...(prev[selectedLang] || []), { title: "", content: "" }]
+        }))
+    }
+
+    // Remove a FAQ row
+    const removeFaq = (index) => {
+        setFaqs(prev => ({
+            ...prev,
+            [selectedLang]: (prev[selectedLang] || []).filter((_, i) => i !== index)
+        }))
+    }
+
+    // Update specific FAQ field (title or content)
+    // We create a NEW object for the item to ensure React detects the change
+    const updateFaq = (index, field, value) => {
+        setFaqs(prev => {
+            const list = [...(prev[selectedLang] || [])]
+            list[index] = { ...list[index], [field]: value }
+            return {
+                ...prev,
+                [selectedLang]: list
+            }
+        })
+    }
+
+    // --- 4. SUBMIT HANDLER ---
     const handlePublish = (e) => {
         e.preventDefault()
 
         post(route("admin.causes.store"), {
-            // FIX: Use transform to modify data right before sending
-            transform: (data) => {
-                const transformedData = { ...data }
+            // Transform data before sending to backend
+            transform: (currData) => {
+                const transformed = { ...currData }
 
+                // STRINGIFY FAQs: Convert the array state to a JSON string for the backend
                 Object.keys(languages).forEach((lang) => {
-                    const cleaned = faqs[lang].map((f) => ({
+                    const currentLangFaqs = faqs[lang] || []
+                    const cleaned = currentLangFaqs.map(f => ({
                         title: (f.title || "").toString(),
                         content: (f.content || "").toString()
                     }))
-                    transformedData[`${lang}_faq`] = JSON.stringify(cleaned)
+                    transformed[`${lang}_faq`] = JSON.stringify(cleaned)
                 })
 
-                return transformedData
+                return transformed
             }
         })
     }
 
     useEffect(() => setSelectedLang(tempLang), [tempLang])
 
+    // Error handling to switch tabs automatically
     useEffect(() => {
         if (Object.keys(errors).length > 0) {
             const firstErrorField = Object.keys(errors)[0]
@@ -96,26 +135,21 @@ export default function Create({ languages, cause_categories, default_lang, gift
     return (
         <AdminLayouts>
             <Head title="Create Cause" />
-
             <div className="container-fluid">
                 <div className="yoo-uikits-heading">
                     <h2 className="yoo-uikits-title">{translate("Create Cause")}</h2>
                 </div>
+                <div className="yoo-height-b20" />
 
                 <form className="row" onSubmit={handlePublish}>
                     {/* LEFT COLUMN */}
                     <div className="col-lg-8">
                         <div className="yoo-card yoo-style1">
                             <div className="yoo-card-heading">
-                                <ul className="nav nav-tabs" id="myTab">
+                                <ul className="nav nav-tabs">
                                     {Object.entries(languages).map(([code, language]) => (
                                         <li className="nav-item" key={code}>
-                                            <button
-                                                type="button"
-                                                onClick={() => setTempLang(code)}
-                                                className={`nav-link ${selectedLang === code && "active"}`}
-                                                style={{ outline: "none" }}
-                                            >
+                                            <button type="button" onClick={() => setTempLang(code)} className={`nav-link ${selectedLang === code && "active"}`}>
                                                 {language.name}
                                             </button>
                                         </li>
@@ -125,87 +159,47 @@ export default function Create({ languages, cause_categories, default_lang, gift
 
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
+                                    <div className="yoo-height-b20" />
+
+                                    {/* Name */}
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <label htmlFor="name_translation">{translate("Cause Name")} *</label>
-                                            <TextInput
-                                                title="Enter Cause Name"
-                                                type="text"
-                                                id="name_translation"
-                                                error={errors[`${selectedLang}_title`]}
-                                                value={data[`${selectedLang}_title`]}
-                                                onChange={(e) => setData(`${selectedLang}_title`, e.target.value)}
-                                            />
+                                            <label>{translate("Cause Name")} *</label>
+                                            <TextInput type="text" error={errors[`${selectedLang}_title`]} value={data[`${selectedLang}_title`]} onChange={(e) => setData(`${selectedLang}_title`, e.target.value)} />
                                         </div>
                                     </div>
 
+                                    {/* Amounts */}
                                     <div className="row">
                                         <div className="col-md-6">
-                                            <label htmlFor="raised_amount">
-                                                {translate("Raised Amount")} ({props.currency?.currency_code || "INR"}) *
-                                            </label>
-                                            <TextInput
-                                                title="Enter Raised Amount"
-                                                type="number"
-                                                step="0.01"
-                                                id="raised_amount"
-                                                error={errors?.raised_amount}
-                                                value={data.raised_amount}
-                                                onChange={(e) => setData("raised_amount", e.target.value)}
-                                            />
+                                            <label>{translate("Minimum Amount")} ({props.currency?.currency_code || "INR"}) *</label>
+                                            <TextInput type="number" step="0.01" value={data.min_amount} onChange={(e) => setData("min_amount", e.target.value)} error={errors.min_amount} />
                                         </div>
                                         <div className="col-md-6">
-                                            <label htmlFor="goal_amount">
-                                                {translate("Goal Amount")} ({props.currency?.currency_code || "INR"}) *
-                                            </label>
-                                            <TextInput
-                                                title="Enter Goal Amount"
-                                                type="number"
-                                                step="0.01"
-                                                id="goal_amount"
-                                                error={errors?.goal_amount}
-                                                value={data.goal_amount}
-                                                onChange={(e) => setData("goal_amount", e.target.value)}
-                                            />
+                                            <label>{translate("Goal Amount")} ({props.currency?.currency_code || "INR"}) *</label>
+                                            <TextInput type="number" step="0.01" value={data.goal_amount} onChange={(e) => setData("goal_amount", e.target.value)} error={errors.goal_amount} />
                                         </div>
                                     </div>
 
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <label htmlFor="custom_donation_amounts">
-                                                {translate("Custom Donation Amounts")} ({props.currency?.currency_code || "INR"}) *
-                                            </label>
-                                            <TextInput
-                                                title="Enter Custom Amounts"
-                                                type="text"
-                                                id="custom_donation_amounts"
-                                                error={errors?.custom_donation_amounts}
-                                                value={data.custom_donation_amounts}
-                                                onChange={(e) => setData("custom_donation_amounts", e.target.value)}
-                                            />
+                                            <label>{translate("Custom Donation Amounts")} ({props.currency?.currency_code || "INR"}) *</label>
+                                            <TextInput type="text" value={data.custom_donation_amounts} onChange={(e) => setData("custom_donation_amounts", e.target.value)} />
                                             <small>comma seperated amounts like (100,500,1000)</small>
                                         </div>
                                     </div>
 
+                                    {/* Category */}
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <label htmlFor="category">{translate("Category")} *</label>
+                                            <label>{translate("Category")} *</label>
                                             <div className="form-group form-group-md">
                                                 <div className="yoo-select">
-                                                    <select
-                                                        className="form-control"
-                                                        id="category"
-                                                        onChange={(e) => setData("category", e.target.value)}
-                                                        value={data.category}
-                                                    >
+                                                    <select className="form-control" onChange={(e) => setData("category", e.target.value)} value={data.category}>
                                                         <option value="">{translate("Select Category")}</option>
-                                                        {cause_categories &&
-                                                            cause_categories.map((category) => (
-                                                                <option key={`category_${category.id}`} value={category.id}>
-                                                                    {category?.content?.title}
-                                                                </option>
-                                                            ))}
+                                                        {cause_categories?.map((category) => (
+                                                            <option key={`category_${category.id}`} value={category.id}>{category?.content?.title}</option>
+                                                        ))}
                                                     </select>
                                                     <FormValidationError message={errors.category} />
                                                 </div>
@@ -213,161 +207,51 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         </div>
                                     </div>
 
+                                    {/* Editors */}
+                                    <div className="row"><div className="col-md-12"><label>{translate("Content")}</label><Editor onChange={(value) => setData(`${selectedLang}_content`, value)} value={data[`${selectedLang}_content`]} /></div></div>
+                                    <div className="yoo-height-b20" />
+                                    <div className="row"><div className="col-md-12"><label>{translate("Projects")}</label><Editor onChange={(value) => setData(`${selectedLang}_projects`, value)} value={data[`${selectedLang}_projects`]} /></div></div>
+                                    <div className="yoo-height-b20" />
+
+                                    {/* --- FAQ SECTION (FIXED) --- */}
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <label htmlFor="content">{translate("Content")}</label>
-                                            <Editor
-                                                onChange={(value) => setData(`${selectedLang}_content`, value)}
-                                                value={data[`${selectedLang}_content`]}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                            <label htmlFor="projects">{translate("Projects")}</label>
-                                            <Editor
-                                                onChange={(value) => setData(`${selectedLang}_projects`, value)}
-                                                value={data[`${selectedLang}_projects`]}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-
-                                    {/* MULTI FAQ */}
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                            <label htmlFor="faq">{translate("FAQ")}</label>
-
-                                            {faqs[selectedLang].map((item, index) => (
+                                            <label>{translate("FAQ")}</label>
+                                            {(faqs[selectedLang] || []).map((item, index) => (
                                                 <div key={index} className="p-3 mb-3 border rounded">
-                                                    <div className="form-group mb-2">
-                                                        <label>{translate("Question Title")}</label>
-                                                        <input
-                                                            type="text"
-                                                            className="form-control"
-                                                            value={item.title}
-                                                            onChange={(e) => {
-                                                                const updated = [...faqs[selectedLang]]
-                                                                updated[index].title = e.target.value
-                                                                setFaqs((prev) => ({ ...prev, [selectedLang]: updated }))
-                                                            }}
-                                                        />
+                                                    <div className="mb-2">
+                                                        <input type="text" className="form-control" placeholder="Question" value={item.title} onChange={(e) => updateFaq(index, 'title', e.target.value)} />
                                                     </div>
-
-                                                    <div className="form-group mb-2">
-                                                        <label>{translate("Answer (Text Only)")}</label>
-                                                        <input
-                                                            type="text"
-                                                            className="form-control"
-                                                            value={item.content}
-                                                            onChange={(e) => {
-                                                                const updated = [...faqs[selectedLang]]
-                                                                updated[index].content = e.target.value
-                                                                setFaqs((prev) => ({ ...prev, [selectedLang]: updated }))
-                                                            }}
-                                                        />
+                                                    <div className="mb-2">
+                                                        <input type="text" className="form-control" placeholder="Answer" value={item.content} onChange={(e) => updateFaq(index, 'content', e.target.value)} />
                                                     </div>
-
-                                                    <div className="d-flex justify-content-end">
-                                                        {faqs[selectedLang].length > 1 && (
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-danger btn-sm"
-                                                                onClick={() => {
-                                                                    const updated = faqs[selectedLang].filter((_, i) => i !== index)
-                                                                    setFaqs((prev) => ({ ...prev, [selectedLang]: updated }))
-                                                                }}
-                                                            >
-                                                                {translate("Remove FAQ")}
-                                                            </button>
-                                                        )}
+                                                    <div className="text-right">
+                                                        {(faqs[selectedLang] || []).length > 1 && <button type="button" className="btn btn-danger btn-sm" onClick={() => removeFaq(index)}>{translate("Remove")}</button>}
                                                     </div>
                                                 </div>
                                             ))}
-
-                                            <div className="mt-2">
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-primary btn-sm"
-                                                    onClick={() =>
-                                                        setFaqs((prev) => ({
-                                                            ...prev,
-                                                            [selectedLang]: [...prev[selectedLang], { title: "", content: "" }]
-                                                        }))
-                                                    }
-                                                >
-                                                    + {translate("Add FAQ")}
-                                                </button>
-                                            </div>
-
-                                            <FormValidationError message={errors[`${selectedLang}_faq`]} />
+                                            <button type="button" className="btn btn-primary btn-sm mt-2" onClick={addFaq}>+ {translate("Add FAQ")}</button>
                                         </div>
                                     </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
 
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                            <label htmlFor="updates">{translate("Updates")}</label>
-                                            <Editor
-                                                onChange={(value) => setData(`${selectedLang}_updates`, value)}
-                                                value={data[`${selectedLang}_updates`]}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
+                                    <div className="yoo-height-b20" />
+                                    <div className="row"><div className="col-md-12"><label>{translate("Updates")}</label><Editor onChange={(value) => setData(`${selectedLang}_updates`, value)} value={data[`${selectedLang}_updates`]} /></div></div>
                                 </div>
                             </div>
                         </div>
 
                         {/* SEO CARD */}
                         <div className="yoo-card yoo-style1 mt-4">
-                            <div className="yoo-card-heading">
-                                <h2 className="yoo-card-title">{translate("SEO Details")}</h2>
-                            </div>
-
+                            <div className="yoo-card-heading"><h2 className="yoo-card-title">{translate("SEO Details")}</h2></div>
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
+                                    <div className="yoo-height-b20" />
                                     <div className="row">
-                                        <div className="col-md-6">
-                                            <label>{translate("SEO Title")}</label>
-                                            <TextInput
-                                                title="Enter SEO Title"
-                                                type="text"
-                                                id="meta_title"
-                                                error={errors.meta_title}
-                                                value={data.meta_title}
-                                                onChange={(e) => setData("meta_title", e.target.value)}
-                                            />
-                                        </div>
-
-                                        <div className="col-md-6">
-                                            <label>{translate("SEO Description")}</label>
-                                            <TextInput
-                                                title="Enter SEO Description"
-                                                type="text"
-                                                id="meta_description"
-                                                error={errors.meta_description}
-                                                value={data.meta_description}
-                                                onChange={(e) => setData("meta_description", e.target.value)}
-                                            />
-                                        </div>
-
-                                        <div className="col-md-12 mt-2">
-                                            <label>{translate("SEO Tags")}</label>
-                                            <TextInput
-                                                title="Enter SEO Tags"
-                                                type="text"
-                                                id="meta_tags"
-                                                error={errors.meta_tags}
-                                                value={data.meta_tags}
-                                                onChange={(e) => setData("meta_tags", e.target.value)}
-                                            />
-                                        </div>
+                                        <div className="col-md-6"><label>{translate("SEO Title")}</label><TextInput type="text" value={data.meta_title} onChange={(e) => setData("meta_title", e.target.value)} /></div>
+                                        <div className="col-md-6"><label>{translate("SEO Description")}</label><TextInput type="text" value={data.meta_description} onChange={(e) => setData("meta_description", e.target.value)} /></div>
+                                        <div className="col-md-12 mt-2"><label>{translate("SEO Tags")}</label><TextInput type="text" value={data.meta_tags} onChange={(e) => setData("meta_tags", e.target.value)} /></div>
                                     </div>
-                                    <div className="yoo-height-b10 yoo-height-lg-b10" />
+                                    <div className="yoo-height-b20" />
                                 </div>
                             </div>
                         </div>
@@ -375,208 +259,81 @@ export default function Create({ languages, cause_categories, default_lang, gift
 
                     {/* RIGHT COLUMN */}
                     <div className="col-md-4">
-                        {/* STATUS CARD */}
                         <div className="yoo-card yoo-style1">
-                            <div className="yoo-card-heading">
-                                <div className="yoo-card-heading-left">
-                                    <h2 className="yoo-card-title">{translate("Cause Status")}</h2>
-                                </div>
-                            </div>
-
+                            <div className="yoo-card-heading"><h2 className="yoo-card-title">{translate("Cause Status")}</h2></div>
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
+                                    <div className="yoo-height-b20" />
 
-                                    <div className="form-group form-group-md d-flex align-items-center justify-content-between">
+                                    <div className="form-group d-flex justify-content-between align-items-center mb-3">
                                         <label className="mb-0">{translate("Is Active")}:</label>
-                                        <div
-                                            className={`yoo-switch ${data.status === 1 ? "active" : ""}`}
-                                            onClick={() => setData("status", data.status === 1 ? 0 : 1)}
-                                            style={{ cursor: "pointer" }}
-                                        >
-                                            <div className="yoo-switch-in"></div>
-                                        </div>
+                                        <div className={`yoo-switch ${data.status === 1 ? "active" : ""}`} onClick={() => setData("status", data.status === 1 ? 0 : 1)} style={{ cursor: "pointer" }}><div className="yoo-switch-in"></div></div>
                                     </div>
 
-                                    <div className="form-group form-group-md d-flex align-items-center justify-content-between">
+                                    <div className="form-group d-flex justify-content-between align-items-center mb-3">
                                         <label className="mb-0">{translate("Is Special")}:</label>
-                                        <div
-                                            className={`yoo-switch ${data.is_special === 1 ? "active" : ""}`}
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() => {
-                                                // FIX: Use functional update to preserve other fields
-                                                setData((prevData) => ({
-                                                    ...prevData,
-                                                    is_special: prevData.is_special === 1 ? 0 : 1,
-                                                    type: prevData.is_special === 1 ? "" : prevData.type
-                                                }))
-                                            }}
-                                        >
-                                            <div className="yoo-switch-in"></div>
-                                        </div>
+                                        <div className={`yoo-switch ${data.is_special === 1 ? "active" : ""}`} onClick={() => setData(prev => ({...prev, is_special: prev.is_special === 1 ? 0 : 1}))} style={{ cursor: "pointer" }}><div className="yoo-switch-in"></div></div>
                                     </div>
 
-                                    {/* Special Type Select — Only shows when Is Special = ON */}
                                     {data.is_special === 1 && (
-                                        <div className="form-group mt-4">
-                                            <label className="mb-2 d-block">
-                                                {translate("Special Occasion Type")} <span className="text-danger">*</span>
-                                            </label>
-
-                                            <CustomSelect
-                                                options={typeOptions}
-                                                value={data.type}
-                                                placeholder={translate("Choose occasion...")}
-                                                onSelect={(value) => setData("type", value)}
-                                            />
-
+                                        <div className="form-group mt-3">
+                                            <label>{translate("Special Occasion Type")} *</label>
+                                            <CustomSelect options={typeOptions} value={data.type} onSelect={(value) => setData("type", value)} />
                                             <FormValidationError message={errors.type} />
                                         </div>
                                     )}
 
-                                    <div className="form-group form-group-md d-flex align-items-center justify-content-between">
+                                    <div className="form-group d-flex justify-content-between align-items-center mb-3">
                                         <label className="mb-0">{translate("Have Gift")}:</label>
-                                        <div
-                                            className={`yoo-switch ${data.have_gift === 1 ? "active" : ""}`}
-                                            onClick={() => setData("have_gift", data.have_gift === 1 ? 0 : 1)}
-                                            style={{ cursor: "pointer" }}
-                                        >
-                                            <div className="yoo-switch-in"></div>
-                                        </div>
+                                        <div className={`yoo-switch ${data.have_gift === 1 ? "active" : ""}`} onClick={() => setData("have_gift", data.have_gift === 1 ? 0 : 1)} style={{ cursor: "pointer" }}><div className="yoo-switch-in"></div></div>
                                     </div>
 
-                                    <div className="form-group form-group-md d-flex align-items-center justify-content-between">
+                                    <div className="form-group d-flex justify-content-between align-items-center mb-3">
                                         <label className="mb-0">{translate("Have Product")}:</label>
-                                        <div
-                                            className={`yoo-switch ${data.have_product === 1 ? "active" : ""}`}
-                                            onClick={() => setData("have_product", data.have_product === 1 ? 0 : 1)}
-                                            style={{ cursor: "pointer" }}
-                                        >
-                                            <div className="yoo-switch-in"></div>
-                                        </div>
+                                        <div className={`yoo-switch ${data.have_product === 1 ? "active" : ""}`} onClick={() => setData("have_product", data.have_product === 1 ? 0 : 1)} style={{ cursor: "pointer" }}><div className="yoo-switch-in"></div></div>
                                     </div>
 
-                                    {/* Deadline date field */}
                                     <div className="form-group mt-3">
-                                        <label htmlFor="deadline">{translate("Deadline")}</label>
-                                        <input
-                                            type="date"
-                                            id="deadline"
-                                            className="form-control"
-                                            value={data.deadline}
-                                            onChange={(e) => setData("deadline", e.target.value)}
-                                        />
-                                        <FormValidationError message={errors.deadline} />
+                                        <label>{translate("Deadline")}</label>
+                                        <input type="date" className="form-control" value={data.deadline} onChange={(e) => setData("deadline", e.target.value)} />
                                     </div>
-
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
                                 </div>
                             </div>
                         </div>
 
                         {data.have_gift === 1 && (
                             <div className="yoo-card yoo-style1 mt-4">
-                                <div className="yoo-card-heading">
-                                    <h2 className="yoo-card-title">{translate("Gifts")}</h2>
-                                </div>
-
+                                <div className="yoo-card-heading"><h2 className="yoo-card-title">{translate("Gifts")}</h2></div>
                                 <div className="yoo-card-body">
                                     <div className="yoo-padd-lr-20">
-                                        <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                        <CustomMultiSelect
-                                            options={gifts.map((g) => ({
-                                                value: g.id,
-                                                label: g?.content?.title || "Untitled Gift"
-                                            }))}
-                                            value={data.gift_ids}
-                                            placeholder="Select Gifts"
-                                            onChange={(selected) => setData("gift_ids", selected)}
-                                        />
+                                        <div className="yoo-height-b20" />
+                                        <CustomMultiSelect options={gifts.map((g) => ({ value: g.id, label: g?.content?.title || "Untitled Gift" }))} value={data.gift_ids} placeholder="Select Gifts" onChange={(selected) => setData("gift_ids", selected)} />
                                         <FormValidationError message={errors.gift_ids} />
-                                        <div className="yoo-height-b20 yoo-height-lg-b20" />
+                                        <div className="yoo-height-b20" />
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        {/* IMAGES */}
                         <div className="yoo-card yoo-style1 mt-4">
-                            <div className="yoo-card-heading">
-                                <h2 className="yoo-card-title mr-5">{translate("Cause Images")}</h2>
-                            </div>
+                            <div className="yoo-card-heading"><h2 className="yoo-card-title">{translate("Images")}</h2></div>
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                    <div className="form-group">
-                                        <label>{translate("Upload Thumbnail image")} *</label>
-                                        <SingleMediaUploader
-                                            onSelected={(e) => {
-                                                setData(
-                                                    produce((draft) => {
-                                                        draft.thumbnail_image = e
-                                                    })
-                                                )
-                                            }}
-                                            handleRemoved={() =>
-                                                setData(
-                                                    produce((draft) => {
-                                                        draft.thumbnail_image = ""
-                                                    })
-                                                )
-                                            }
-                                            defaultValue={data.thumbnail_image}
-                                        />
-                                    </div>
+                                    <div className="yoo-height-b20" />
+
+                                    <label>{translate("Thumbnail")} *</label>
+                                    <SingleMediaUploader onSelected={(e) => setData(produce(d => { d.thumbnail_image = e }))} defaultValue={data.thumbnail_image} handleRemoved={() => setData(produce(d => { d.thumbnail_image = "" }))} />
                                     <FormValidationError message={errors?.thumbnail_image} />
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                    <div className="form-group">
-                                        <label>{translate("Upload Banner image")} *</label>
-                                        <SingleMediaUploader
-                                            onSelected={(e) => {
-                                                setData(
-                                                    produce((draft) => {
-                                                        draft.banner_image = e
-                                                    })
-                                                )
-                                            }}
-                                            handleRemoved={() =>
-                                                setData(
-                                                    produce((draft) => {
-                                                        draft.banner_image = ""
-                                                    })
-                                                )
-                                            }
-                                            defaultValue={data.banner_image}
-                                        />
-                                    </div>
+
+                                    <label className="mt-3">{translate("Banner")} *</label>
+                                    <SingleMediaUploader onSelected={(e) => setData(produce(d => { d.banner_image = e }))} defaultValue={data.banner_image} handleRemoved={() => setData(produce(d => { d.banner_image = "" }))} />
                                     <FormValidationError message={errors?.banner_image} />
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
-                                    <div className="form-group">
-                                        <label>{translate("Upload Gallery images")} *</label>
-                                        <MultipleMediaUploader
-                                            onSelected={(e) => {
-                                                setData(
-                                                    produce((draft) => {
-                                                        draft.gallery_images = e
-                                                    })
-                                                )
-                                            }}
-                                            handleRemoved={(d) =>
-                                                setData(
-                                                    produce((draft) => {
-                                                        draft.gallery_images = d
-                                                    })
-                                                )
-                                            }
-                                            defaultValue={data.gallery_images}
-                                        />
-                                    </div>
+
+                                    <label className="mt-3">{translate("Gallery")} *</label>
+                                    <MultipleMediaUploader onSelected={(e) => setData(produce(d => { d.gallery_images = e }))} handleRemoved={(d) => setData(produce(draft => { draft.gallery_images = d }))} defaultValue={data.gallery_images} />
                                     <FormValidationError message={errors?.gallery_images} />
-                                    <div className="mb-2">
-                                        <button type="submit" className="btn btn-success">
-                                            {translate("Publish")}
-                                        </button>
-                                    </div>
+
+                                    <div className="mt-4"><button type="submit" disabled={processing} className="btn btn-success">{translate("Publish")}</button></div>
                                 </div>
                             </div>
                         </div>

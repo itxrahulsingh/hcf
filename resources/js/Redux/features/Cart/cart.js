@@ -14,11 +14,9 @@ const cartSlice = createSlice({
     name: "carts",
     initialState,
     reducers: {
-        // Add item to cart (product, gift, or cause)
         addCart(state, action) {
             const { id, type, content, quantity = 1 } = action.payload
 
-            // Find existing item with same id + type
             const cartIndex = state.carts.findIndex(
                 (c) => c.id === id && c.type === type
             )

@@ -12,14 +12,16 @@ class Cause extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     protected $appends = ['banner_image_url', 'gifts', 'total_orders', 'total_order_amount'];
+
+    protected $casts = [
+        'have_gift' => 'integer',
+        'have_product' => 'integer',
+        'is_special' => 'integer',
+        'status' => 'boolean',
+    ];
 
     public static $causeTypes = [
         'normal' => 'Normal',
@@ -34,25 +36,16 @@ class Cause extends Model
         'homeless_needy' => 'Homeless Needy'
     ];
 
-    /**
-     * Get Cause contents
-     */
     public function contents(): HasMany
     {
         return $this->hasMany(CauseContent::class);
     }
 
-    /**
-     * Get Cause content
-     */
     public function content(): mixed
     {
         return $this->hasOne(CauseContent::class)->where('language_code', app()->getLocale());
     }
 
-    /**
-     * Get Cause category
-     */
     public function category(): HasOne
     {
         return $this->hasOne(CauseCategory::class, 'id', 'category_id');
@@ -60,23 +53,27 @@ class Cause extends Model
 
     public function getGiftsAttribute()
     {
-        return $this->gift_ids ? Gift::with('content')->whereIn('id', $this->gift_ids)->where('status', 1)->get() : collect();
+        $ids = $this->gift_ids;
+
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        if (empty($ids) || !is_array($ids)) {
+            return collect();
+        }
+
+        return Gift::with('content')->whereIn('id', $ids)->where('status', 1)->get();
     }
 
-    /**
-     * Get user
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get meta image url
-     */
     public function getBannerImageUrlAttribute(): string
     {
-        return asset($this->banner_image);
+        return $this->banner_image ? asset($this->banner_image) : '';
     }
 
     public function orders(): HasMany
@@ -84,28 +81,13 @@ class Cause extends Model
         return $this->hasMany(Order::class, 'cause_id', 'id');
     }
 
-    /**
-     * Get the total number of successful orders for this cause.
-     */
     public function getTotalOrdersAttribute(): int
     {
         return $this->orders->where('payment_status', 2)->count();
     }
 
-    /**
-     * Get the total amount of successful orders for this cause.
-     */
     public function getTotalOrderAmountAttribute(): float
     {
         return (float) $this->orders->where('payment_status', 2)->sum('total_price');
     }
-
-    protected $casts = [
-        'gift_ids' => 'array',
-        'have_gift' => 'integer',
-        'have_product' => 'integer',
-        'is_special' => 'integer',
-        'status' => 'integer',
-        'gallery_images' => 'array',
-    ];
 }

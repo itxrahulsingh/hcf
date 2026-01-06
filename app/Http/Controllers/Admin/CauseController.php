@@ -17,7 +17,6 @@ class CauseController extends Controller
 {
     public function __construct()
     {
-        // for demo mood
         $this->middleware('demo', ['only' => ['destroy', 'store', 'update', 'bulkDelete']]);
     }
 

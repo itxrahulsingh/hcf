@@ -12,4 +12,13 @@ class CauseContent extends Model
     protected $guarded = [];
 
     protected $table = 'cause_contents';
+
+    protected $casts = [
+        'faq' => 'array',
+    ];
+
+    public function cause()
+    {
+        return $this->belongsTo(Cause::class);
+    }
 }

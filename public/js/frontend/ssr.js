@@ -20639,6 +20639,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function CauseLayout(_ref) {
+  var _causeDetails$content;
   var children = _ref.children,
     pageHeaderData = _ref.pageHeaderData,
     causeDetails = _ref.causeDetails,
@@ -20673,16 +20674,11 @@ function CauseLayout(_ref) {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
     children: [causeDetails ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-        className: "cs_page_heading cs_style_2 cs_bg_filed",
-        style: {
-          backgroundImage: "url(".concat(causeDetailsBannerImageUrl, ")")
-        },
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-          className: "container",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h1", {
-            className: "cs_page_heading_title cs_fs_120 cs_white_color cs_normal",
-            children: causeDetailsTitle
-          })
+        className: "cause-banner-wrapper",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
+          src: causeDetailsBannerImageUrl,
+          alt: (causeDetails === null || causeDetails === void 0 || (_causeDetails$content = causeDetails.content) === null || _causeDetails$content === void 0 ? void 0 : _causeDetails$content.title) || "Cause Banner",
+          className: "cause-banner-image"
         })
       })
     }) : is_show_breadcrumb === "1" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_Frontend_Components_PageHeading__WEBPACK_IMPORTED_MODULE_0__["default"], {
@@ -22956,30 +22952,42 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/Redux/features/Cart/cart */ "./resources/js/Redux/features/Cart/cart.js");
 /* harmony import */ var _utils_limitString_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/utils/limitString.js */ "./resources/js/utils/limitString.js");
 /* harmony import */ var _utils_removeHTMLTags_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/utils/removeHTMLTags.js */ "./resources/js/utils/removeHTMLTags.js");
-/* harmony import */ var _utils_SeoMeta__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/utils/SeoMeta */ "./resources/js/utils/SeoMeta.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-redux */ "react-redux");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _utils_ProcessContent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/utils/ProcessContent */ "./resources/js/utils/ProcessContent.js");
-/* harmony import */ var _utils_translate__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/utils/translate */ "./resources/js/utils/translate.js");
-/* harmony import */ var _Frontend_Layouts_FrontendLayout__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/Frontend/Layouts/FrontendLayout */ "./resources/js/Frontend/Layouts/FrontendLayout.jsx");
-/* harmony import */ var swiper_react__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! swiper/react */ "swiper/react");
-/* harmony import */ var swiper_react__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(swiper_react__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var swiper_modules__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! swiper/modules */ "swiper/modules");
-/* harmony import */ var swiper_modules__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(swiper_modules__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var react_google_recaptcha__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react-google-recaptcha */ "react-google-recaptcha");
-/* harmony import */ var react_google_recaptcha__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(react_google_recaptcha__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var _Components_Amount__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @/Components/Amount */ "./resources/js/Components/Amount.jsx");
-/* harmony import */ var _hooks_useStatesByCountry__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @/hooks/useStatesByCountry */ "./resources/js/hooks/useStatesByCountry.jsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var _iconify_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @iconify/react */ "@iconify/react");
+/* harmony import */ var _iconify_react__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_iconify_react__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _utils_SeoMeta__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/utils/SeoMeta */ "./resources/js/utils/SeoMeta.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-redux */ "react-redux");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _utils_ProcessContent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/utils/ProcessContent */ "./resources/js/utils/ProcessContent.js");
+/* harmony import */ var _utils_translate__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/utils/translate */ "./resources/js/utils/translate.js");
+/* harmony import */ var _Frontend_Layouts_FrontendLayout__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/Frontend/Layouts/FrontendLayout */ "./resources/js/Frontend/Layouts/FrontendLayout.jsx");
+/* harmony import */ var swiper_react__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! swiper/react */ "swiper/react");
+/* harmony import */ var swiper_react__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(swiper_react__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var swiper_modules__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! swiper/modules */ "swiper/modules");
+/* harmony import */ var swiper_modules__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(swiper_modules__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var swiper_css__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! swiper/css */ "swiper/css");
+/* harmony import */ var swiper_css__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(swiper_css__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var swiper_css_pagination__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! swiper/css/pagination */ "swiper/css/pagination");
+/* harmony import */ var swiper_css_pagination__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(swiper_css_pagination__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var swiper_css_navigation__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! swiper/css/navigation */ "swiper/css/navigation");
+/* harmony import */ var swiper_css_navigation__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(swiper_css_navigation__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var react_google_recaptcha__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! react-google-recaptcha */ "react-google-recaptcha");
+/* harmony import */ var react_google_recaptcha__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(react_google_recaptcha__WEBPACK_IMPORTED_MODULE_18__);
+/* harmony import */ var _Components_Amount__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @/Components/Amount */ "./resources/js/Components/Amount.jsx");
+/* harmony import */ var _hooks_useStatesByCountry__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @/hooks/useStatesByCountry */ "./resources/js/hooks/useStatesByCountry.jsx");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -23004,8 +23012,12 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
+
+
+
+
 function CauseDetails(_ref) {
-  var _cause$content$title, _cause$content3, _cause$content4, _cause$category, _cause$category2, _cause$content5, _cause$content6, _cause$category3, _cause$user, _cause$content7, _cause$gifts, _cause$content8, _cause$content9, _cause$content10, _selectedGateway$cont;
+  var _cause$content$title, _cause$content3, _cause$content4, _cause$category, _cause$category2, _cause$content5, _cause$content6, _cause$category3, _cause$user, _cause$gifts, _cause$content7, _cause$content8, _cause$content9, _cause$content10, _cause$content11, _cause$content12, _selectedGateway$cont;
   var cause = _ref.cause,
     categories = _ref.categories,
     recent_post = _ref.recent_post,
@@ -23020,8 +23032,8 @@ function CauseDetails(_ref) {
     meta_image = _ref.meta_image,
     site_name = _ref.site_name,
     tagline = _ref.tagline;
-  var dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useDispatch)();
-  var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useSelector)(function (state) {
+  var dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_8__.useDispatch)();
+  var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_8__.useSelector)(function (state) {
       return state.carts;
     }),
     carts = _useSelector.carts,
@@ -23043,41 +23055,41 @@ function CauseDetails(_ref) {
   // Captcha Settings
   var captchaSiteKey = localStorage.getItem("google_captcha_site_key") ? JSON.parse(localStorage.getItem("google_captcha_site_key")) : [];
   var is_active_google_captcha = localStorage.getItem("is_active_google_captcha") ? JSON.parse(localStorage.getItem("is_active_google_captcha")) : [];
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_13__.useState)(false),
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(false),
     _useState2 = _slicedToArray(_useState, 2),
     captchaVerified = _useState2[0],
     setCaptchaVerified = _useState2[1];
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_13__.useState)(null),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(null),
     _useState4 = _slicedToArray(_useState3, 2),
     captchaError = _useState4[0],
     setCaptchaError = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_13__.useState)(false),
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(false),
     _useState6 = _slicedToArray(_useState5, 2),
     isCheckouting = _useState6[0],
     setIsCheckouting = _useState6[1];
 
   // Form States
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_13__.useState)(null),
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(null),
     _useState8 = _slicedToArray(_useState7, 2),
     selectedGateway = _useState8[0],
     setSelectedGateway = _useState8[1];
-  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_13__.useState)(null),
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(null),
     _useState10 = _slicedToArray(_useState9, 2),
     receiptFile = _useState10[0],
     setReceiptFile = _useState10[1];
-  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_13__.useState)(null),
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(null),
     _useState12 = _slicedToArray(_useState11, 2),
     special_image = _useState12[0],
     setSpecialImage = _useState12[1];
-  var _useStatesByCountry = (0,_hooks_useStatesByCountry__WEBPACK_IMPORTED_MODULE_16__["default"])("IN"),
+  var _useStatesByCountry = (0,_hooks_useStatesByCountry__WEBPACK_IMPORTED_MODULE_20__["default"])("IN"),
     states = _useStatesByCountry.states;
-  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_13__.useState)(false),
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(false),
     _useState14 = _slicedToArray(_useState13, 2),
     showDonateModal = _useState14[0],
     setShowDonateModal = _useState14[1];
 
   // FAQ Accordion State
-  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_13__.useState)(null),
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(null),
     _useState16 = _slicedToArray(_useState15, 2),
     openFaqIndex = _useState16[0],
     setOpenFaqIndex = _useState16[1];
@@ -23103,14 +23115,9 @@ function CauseDetails(_ref) {
       receiptFile: null,
       // Special Dynamic Fields
       special_name: "",
-      // Entry Field 1 (Name / Sponsored By)
       special_date: "",
-      // Entry Field 2 (Date)
       special_image: null,
-      // Entry Field 3 (Photo)
       special_message: "",
-      // Entry Field 4 (Message)
-
       type: (cause === null || cause === void 0 ? void 0 : cause.type) || "",
       cause_id: (cause === null || cause === void 0 ? void 0 : cause.id) || null
     }),
@@ -23138,7 +23145,7 @@ function CauseDetails(_ref) {
     };
     switch (type) {
       // 1. Celebration Types (All 4 Fields)
-      case 'valentine_day':
+      case "valentine_day":
         config = {
           title: "Valentine Day Details",
           showName: true,
@@ -23151,7 +23158,7 @@ function CauseDetails(_ref) {
           messageLabel: "Special Message from Children"
         };
         break;
-      case 'birthday':
+      case "birthday":
         config = {
           title: "Birthday Details",
           showName: true,
@@ -23164,7 +23171,7 @@ function CauseDetails(_ref) {
           messageLabel: "Special Message"
         };
         break;
-      case 'anniversary':
+      case "anniversary":
         config = {
           title: "Anniversary Details",
           showName: true,
@@ -23179,36 +23186,32 @@ function CauseDetails(_ref) {
         break;
 
       // 2. Seva / Remembrance Types (Date + Name Only)
-      case 'in_memory': // Death Anniversary
-      case 'sadhu_seva':
-      case 'tiffin_seva':
-      case 'gau_seva':
-      case 'pitru_paksha':
-      case 'homeless_needy':
+      case "in_memory": // Death Anniversary
+      case "sadhu_seva":
+      case "tiffin_seva":
+      case "gau_seva":
+      case "pitru_paksha":
+      case "homeless_needy":
         config = {
           title: "Seva / Distribution Details",
           showName: true,
           nameLabel: "Sponsored By Name",
-          // Entry Field 2 in your table
           showDate: true,
           dateLabel: "Date of Distribution",
-          // Entry Field 1 in your table
           showImage: false,
           imageLabel: "",
           showMessage: false,
           messageLabel: ""
         };
         break;
-      case 'normal':
+      case "normal":
       default:
         break;
     }
     return config;
   };
   var specialConfig = getSpecialConfig();
-  // -----------------------------------
-
-  (0,react__WEBPACK_IMPORTED_MODULE_13__.useEffect)(function () {
+  (0,react__WEBPACK_IMPORTED_MODULE_17__.useEffect)(function () {
     if (data.paymentMethod) {
       var gateway = manual_payment_gateways.find(function (gateway) {
         var _gateway$content;
@@ -23246,7 +23249,7 @@ function CauseDetails(_ref) {
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      alert((0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("File size should be less than 5MB"));
+      alert((0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("File size should be less than 5MB"));
       e.target.value = null;
       setSpecialImage(null);
       setData("special_image", null);
@@ -23254,7 +23257,7 @@ function CauseDetails(_ref) {
     }
     var allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
-      alert((0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Only images files are allowed"));
+      alert((0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Only images files are allowed"));
       e.target.value = null;
       setSpecialImage(null);
       setData("special_image", null);
@@ -23267,7 +23270,7 @@ function CauseDetails(_ref) {
     setIsCheckouting(true);
     e.preventDefault();
     if (!captchaVerified && is_active_google_captcha === "1") {
-      setCaptchaError((0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Please complete the captcha verification"));
+      setCaptchaError((0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Please complete the captcha verification"));
       return;
     }
     post(route("checkout.store"), {
@@ -23276,12 +23279,35 @@ function CauseDetails(_ref) {
       }
     });
   };
-
-  // Helper: Safe Parse JSON
-  var galleryImages = function () {
+  var galleryItems = function () {
     try {
-      if (Array.isArray(cause === null || cause === void 0 ? void 0 : cause.gallery_images)) return cause.gallery_images;
-      return JSON.parse((cause === null || cause === void 0 ? void 0 : cause.gallery_images) || "[]");
+      var items = [];
+      if (Array.isArray(cause === null || cause === void 0 ? void 0 : cause.gallery_images)) {
+        items = _toConsumableArray(cause.gallery_images);
+      } else if (cause !== null && cause !== void 0 && cause.gallery_images) {
+        items = _toConsumableArray(JSON.parse(cause.gallery_images));
+      }
+      return items.map(function (url) {
+        if (url.includes("youtube.com") || url.includes("youtu.be")) {
+          var _url$match;
+          var id = (_url$match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/)([^&?]+))/)) === null || _url$match === void 0 ? void 0 : _url$match[1];
+          return {
+            type: "youtube",
+            url: "https://www.youtube.com/embed/".concat(id, "?enablejsapi=1&rel=0"),
+            thumb: "https://img.youtube.com/vi/".concat(id, "/mqdefault.jpg")
+          };
+        } else if (url.match(/\.(mp4|webm|ogg)$/i)) {
+          return {
+            type: "video",
+            url: url
+          };
+        } else {
+          return {
+            type: "image",
+            url: url
+          };
+        }
+      });
     } catch (_unused) {
       return [];
     }
@@ -23297,14 +23323,14 @@ function CauseDetails(_ref) {
   }();
 
   // SEO
-  (0,_utils_SeoMeta__WEBPACK_IMPORTED_MODULE_6__["default"])((_cause$content$title = cause === null || cause === void 0 || (_cause$content3 = cause.content) === null || _cause$content3 === void 0 ? void 0 : _cause$content3.title) !== null && _cause$content$title !== void 0 ? _cause$content$title : cause === null || cause === void 0 ? void 0 : cause.meta_title, meta_title !== null && meta_title !== void 0 ? meta_title : cause === null || cause === void 0 ? void 0 : cause.meta_title, cause === null || cause === void 0 ? void 0 : cause.meta_tags, meta_description !== null && meta_description !== void 0 ? meta_description : (0,_utils_limitString_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,_utils_removeHTMLTags_js__WEBPACK_IMPORTED_MODULE_5__["default"])(cause === null || cause === void 0 ? void 0 : cause.meta_description), 150), meta_image !== null && meta_image !== void 0 ? meta_image : cause === null || cause === void 0 ? void 0 : cause.thumbnail_image, site_name);
+  (0,_utils_SeoMeta__WEBPACK_IMPORTED_MODULE_7__["default"])((_cause$content$title = cause === null || cause === void 0 || (_cause$content3 = cause.content) === null || _cause$content3 === void 0 ? void 0 : _cause$content3.title) !== null && _cause$content$title !== void 0 ? _cause$content$title : cause === null || cause === void 0 ? void 0 : cause.meta_title, meta_title !== null && meta_title !== void 0 ? meta_title : cause === null || cause === void 0 ? void 0 : cause.meta_title, cause === null || cause === void 0 ? void 0 : cause.meta_tags, meta_description !== null && meta_description !== void 0 ? meta_description : (0,_utils_limitString_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,_utils_removeHTMLTags_js__WEBPACK_IMPORTED_MODULE_5__["default"])(cause === null || cause === void 0 ? void 0 : cause.meta_description), 150), meta_image !== null && meta_image !== void 0 ? meta_image : cause === null || cause === void 0 ? void 0 : cause.thumbnail_image, site_name);
   var pageHeaderData = {
     title: (_cause$content4 = cause.content) === null || _cause$content4 === void 0 ? void 0 : _cause$content4.title,
     breadcrumb: [{
-      label: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Home"),
+      label: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Home"),
       url: "/"
     }, {
-      label: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Cause"),
+      label: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Cause"),
       url: route("pages.show", slug)
     }, {
       label: cause === null || cause === void 0 || (_cause$category = cause.category) === null || _cause$category === void 0 || (_cause$category = _cause$category.content) === null || _cause$category === void 0 ? void 0 : _cause$category.title,
@@ -23327,8 +23353,43 @@ function CauseDetails(_ref) {
     if (_short) return "https://www.youtube.com/embed/".concat(_short[1]);
     return url;
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_Frontend_Layouts_FrontendLayout__WEBPACK_IMPORTED_MODULE_10__["default"], {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_Frontend_Layouts_CauseLayout__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(""),
+    _useState18 = _slicedToArray(_useState17, 2),
+    localAmount = _useState18[0],
+    setLocalAmount = _useState18[1];
+  (0,react__WEBPACK_IMPORTED_MODULE_17__.useEffect)(function () {
+    var cartItem = carts.find(function (i) {
+      return i.id === cause.id && i.type === "cause";
+    });
+    if (cartItem) {
+      setLocalAmount(cartItem.price);
+    }
+  }, []);
+  var handleDonationChange = function handleDonationChange(value) {
+    setLocalAmount(value);
+    var numericVal = parseFloat(value);
+    if (!value || isNaN(numericVal)) {
+      dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
+        id: cause.id,
+        type: "cause"
+      }));
+    } else {
+      dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
+        id: cause.id,
+        type: "cause"
+      }));
+      dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+        id: cause.id,
+        type: "cause",
+        content: _objectSpread(_objectSpread({}, cause), {}, {
+          price: numericVal
+        }),
+        quantity: 1
+      }));
+    }
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Frontend_Layouts_FrontendLayout__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_Frontend_Layouts_CauseLayout__WEBPACK_IMPORTED_MODULE_2__["default"], {
       pageHeaderData: pageHeaderData,
       causeDetails: true,
       causeDetailsTitle: cause === null || cause === void 0 || (_cause$content6 = cause.content) === null || _cause$content6 === void 0 ? void 0 : _cause$content6.title,
@@ -23337,234 +23398,278 @@ function CauseDetails(_ref) {
       causeDetailsDate: moment__WEBPACK_IMPORTED_MODULE_1___default()(cause === null || cause === void 0 ? void 0 : cause.created_at).format("ll"),
       causeDetailsUser: cause === null || cause === void 0 || (_cause$user = cause.user) === null || _cause$user === void 0 ? void 0 : _cause$user.name,
       is_show_cause_details_sidebar: is_show_cause_details_sidebar,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
         className: "row",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-          className: "col-md-8",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-            className: "cs_cause_details_wrap",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h1", {
-              className: "cs_cause_details_title",
-              children: cause === null || cause === void 0 || (_cause$content7 = cause.content) === null || _cause$content7 === void 0 ? void 0 : _cause$content7.title
-            })
-          }), galleryImages.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-            className: "cs_cause_details_wrap",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(swiper_react__WEBPACK_IMPORTED_MODULE_11__.Swiper, {
-              slidesPerView: 1,
-              spaceBetween: 20,
-              pagination: {
-                clickable: true
-              },
-              speed: 700,
-              loop: true,
-              modules: [swiper_modules__WEBPACK_IMPORTED_MODULE_12__.Pagination],
-              breakpoints: {
-                575: {
-                  slidesPerView: 2
-                },
-                991: {
-                  slidesPerView: 3
-                },
-                1400: {
-                  slidesPerView: 4
-                }
-              },
-              children: galleryImages.map(function (img, idx) {
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(swiper_react__WEBPACK_IMPORTED_MODULE_11__.SwiperSlide, {
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                    className: "p-2",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("img", {
-                      src: img,
-                      alt: "Gallery ".concat(idx),
-                      className: "w-full h-[220px] object-cover rounded-xl shadow-md"
-                    })
-                  })
-                }, idx);
-              })
-            })
-          }), (cause === null || cause === void 0 ? void 0 : cause.have_gift) == 1 && (cause === null || cause === void 0 || (_cause$gifts = cause.gifts) === null || _cause$gifts === void 0 ? void 0 : _cause$gifts.length) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-            className: "cs_cause_details_wrap mt-4",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h3", {
-              children: "Gifts"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-              className: "row g-3",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+          className: "".concat(cause.type === "birthday" ? "col-md-12" : "col-md-8"),
+          children: [(cause === null || cause === void 0 ? void 0 : cause.have_gift) == 1 && (cause === null || cause === void 0 || (_cause$gifts = cause.gifts) === null || _cause$gifts === void 0 ? void 0 : _cause$gifts.length) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+            className: "cs_cause_details_wrap mt-5",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h3", {
+              className: "mb-4",
+              children: "Select a Gift"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "row g-4",
               children: cause.gifts.map(function (gift, idx) {
-                var _gift$content, _gift$content2;
+                var _gift$content, _gift$content2, _gift$content3;
                 var cartItem = carts.find(function (i) {
                   return i.id === gift.id && i.type === "gift";
                 });
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                  className: "col-6 col-sm-4 col-md-3 col-lg-2",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                    className: "card h-100 shadow-sm",
-                    children: [gift.gift_image && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("img", {
-                      src: gift.gift_image,
-                      alt: (_gift$content = gift.content) === null || _gift$content === void 0 ? void 0 : _gift$content.title,
-                      className: "card-img-top",
-                      style: {
-                        height: "140px",
-                        objectFit: "cover"
-                      }
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                      className: "card-body p-2",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h6", {
-                        className: "text-truncate",
-                        children: (_gift$content2 = gift.content) === null || _gift$content2 === void 0 ? void 0 : _gift$content2.title
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                        className: "fw-bold text-primary",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_15__["default"], {
-                          amount: Number(gift.amount || 0).toFixed(2)
+                var quantity = cartItem ? cartItem.quantity : 0;
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                  className: "col-6 col-sm-4 col-md-3",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "cause-card h-100 d-flex flex-column shadow-sm",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "cause-card-img-wrapper",
+                      children: gift.gift_image ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("img", {
+                        src: gift.gift_image,
+                        alt: (_gift$content = gift.content) === null || _gift$content === void 0 ? void 0 : _gift$content.title
+                      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "d-flex align-items-center justify-content-center h-100 bg-light text-muted",
+                        children: "No Image"
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "card-body p-3 d-flex flex-column",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "cause-card-title",
+                        title: (_gift$content2 = gift.content) === null || _gift$content2 === void 0 ? void 0 : _gift$content2.title,
+                        children: (_gift$content3 = gift.content) === null || _gift$content3 === void 0 ? void 0 : _gift$content3.title
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "d-flex justify-content-between align-items-center mb-3",
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                          className: "cause-card-price",
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                            amount: Number(gift.amount || 0).toFixed(2)
+                          })
                         })
-                      }), !cartItem ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                        className: "btn btn-primary btn-sm rounded-pill mt-2 w-100",
-                        onClick: function onClick() {
-                          return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
-                            id: gift.id,
-                            type: "gift",
-                            content: gift
-                          }));
-                        },
-                        children: "Add"
-                      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                        className: "btn btn-danger btn-sm rounded-pill mt-2 w-100",
-                        onClick: function onClick() {
-                          return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
-                            id: gift.id,
-                            type: "gift"
-                          }));
-                        },
-                        children: "Remove"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "mt-auto",
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                          className: "qty-control d-flex justify-content-between align-items-center w-100",
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("button", {
+                            className: "qty-btn",
+                            disabled: !cartItem || quantity === 0,
+                            onClick: function onClick() {
+                              return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.decreaseCart)({
+                                id: gift.id,
+                                type: "gift"
+                              }));
+                            },
+                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                              icon: "ic:round-minus"
+                            })
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                            className: "fw-bold mx-2",
+                            children: quantity
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("button", {
+                            className: "qty-btn",
+                            onClick: function onClick() {
+                              return cartItem ? dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.increaseCart)({
+                                id: gift.id,
+                                type: "gift"
+                              })) : dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+                                id: gift.id,
+                                type: "gift",
+                                content: gift,
+                                quantity: gift.min_qty || 1
+                              }));
+                            },
+                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                              icon: "ic:round-plus"
+                            })
+                          })]
+                        })
                       })]
                     })]
                   })
                 }, idx);
               })
             })]
-          }), (cause === null || cause === void 0 ? void 0 : cause.have_product) == 1 && (products === null || products === void 0 ? void 0 : products.length) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+          }), (cause === null || cause === void 0 ? void 0 : cause.have_product) == 1 && (products === null || products === void 0 ? void 0 : products.length) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
             className: "mt-5",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h3", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h3", {
+              className: "mb-4",
               children: "Products"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-              className: "row g-3",
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "row g-4",
               children: products.map(function (product, idx) {
-                var _product$content, _product$content2;
+                var _product$content, _product$content2, _product$content3, _product$content4;
                 var cartItem = carts.find(function (i) {
                   return i.id === product.id && i.type === "product";
                 });
                 var quantity = cartItem ? cartItem.quantity : 1;
                 var finalPrice = Number(product.discount_price || product.price || 0);
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                  className: "col-6 col-sm-4 col-md-3 col-lg-2",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                    className: "card h-100",
-                    children: [product.thumbnail_image && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("img", {
-                      src: product.thumbnail_image,
-                      alt: (_product$content = product.content) === null || _product$content === void 0 ? void 0 : _product$content.title,
-                      className: "card-img-top",
-                      style: {
-                        height: "150px",
-                        objectFit: "cover"
-                      }
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                      className: "card-body p-2 d-flex flex-column",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h6", {
-                        className: "text-truncate",
-                        children: (_product$content2 = product.content) === null || _product$content2 === void 0 ? void 0 : _product$content2.title
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("p", {
-                        className: "fw-bold text-primary",
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_15__["default"], {
-                          amount: finalPrice.toFixed(2)
-                        }), " Amount"]
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                        className: "d-flex align-items-center mb-2",
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                          className: "btn btn-outline-secondary btn-sm",
-                          disabled: !cartItem || quantity === 1,
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                  className: "col-12 col-sm-6 col-md-4",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "cause-card h-100 d-flex flex-column shadow-sm",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "cause-card-img-wrapper",
+                      children: product.thumbnail_image ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("img", {
+                        src: product.thumbnail_image,
+                        alt: (_product$content = product.content) === null || _product$content === void 0 ? void 0 : _product$content.title
+                      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "d-flex align-items-center justify-content-center h-100 bg-light text-muted",
+                        children: "No Image"
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "card-body p-3 d-flex flex-column",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "d-flex justify-content-between align-items-start",
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                          className: "cause-card-title w-100",
+                          title: (_product$content2 = product.content) === null || _product$content2 === void 0 ? void 0 : _product$content2.title,
+                          children: (_product$content3 = product.content) === null || _product$content3 === void 0 ? void 0 : _product$content3.title
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "cause-card-desc",
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                          dangerouslySetInnerHTML: {
+                            __html: (0,_utils_removeHTMLTags_js__WEBPACK_IMPORTED_MODULE_5__["default"])((product === null || product === void 0 || (_product$content4 = product.content) === null || _product$content4 === void 0 ? void 0 : _product$content4.short_description) || "")
+                          }
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                        className: "mt-auto pt-2 border-top",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                          className: "d-flex justify-content-between align-items-center mb-3",
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("span", {
+                            className: "cause-card-price",
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                              amount: finalPrice.toFixed(2)
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                              className: "text-muted fs-6 fw-normal",
+                              children: " / Unit"
+                            })]
+                          })
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                          className: "d-flex gap-2 align-items-center",
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                            className: "qty-control d-flex align-items-center px-1",
+                            style: {
+                              width: "100px"
+                            },
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("button", {
+                              className: "qty-btn",
+                              style: {
+                                width: "24px",
+                                height: "24px"
+                              },
+                              disabled: !cartItem || quantity === 1,
+                              onClick: function onClick() {
+                                return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.decreaseCart)({
+                                  id: product.id,
+                                  type: "product"
+                                }));
+                              },
+                              children: "-"
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                              className: "mx-auto fw-bold small",
+                              children: quantity
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("button", {
+                              className: "qty-btn",
+                              style: {
+                                width: "24px",
+                                height: "24px"
+                              },
+                              onClick: function onClick() {
+                                return cartItem ? dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.increaseCart)({
+                                  id: product.id,
+                                  type: "product"
+                                })) : dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+                                  id: product.id,
+                                  type: "product",
+                                  content: product
+                                }));
+                              },
+                              children: "+"
+                            })]
+                          }), !cartItem ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("button", {
+                            className: "btn btn-primary btn-sm flex-grow-1 rounded-pill",
+                            onClick: function onClick() {
+                              return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+                                id: product.id,
+                                type: "product",
+                                content: product
+                              }));
+                            },
+                            children: "Add to Cart"
+                          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("button", {
+                            className: "btn btn-outline-danger btn-sm flex-grow-1 rounded-pill",
+                            onClick: function onClick() {
+                              return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
+                                id: product.id,
+                                type: "product"
+                              }));
+                            },
+                            children: "Remove"
+                          })]
+                        }), ["birthday"].includes(cause.type) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("button", {
+                          className: "btn btn-dark w-100 mt-2 rounded-pill btn-sm",
+                          disabled: carts.length === 0,
                           onClick: function onClick() {
-                            return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.decreaseCart)({
-                              id: product.id,
-                              type: "product"
-                            }));
+                            return setShowDonateModal(true);
                           },
-                          children: "\u2013"
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                          className: "mx-2",
-                          children: quantity
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                          className: "btn btn-outline-secondary btn-sm",
-                          onClick: function onClick() {
-                            return cartItem ? dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.increaseCart)({
-                              id: product.id,
-                              type: "product"
-                            })) : dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
-                              id: product.id,
-                              type: "product",
-                              content: product
-                            }));
-                          },
-                          children: "+"
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                            icon: "mdi:heart",
+                            className: "me-1"
+                          }), (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Donate Now")]
                         })]
-                      }), !cartItem ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                        className: "btn btn-primary btn-sm rounded-pill mt-auto",
-                        onClick: function onClick() {
-                          return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
-                            id: product.id,
-                            type: "product",
-                            content: product
-                          }));
-                        },
-                        children: "Add"
-                      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                        className: "btn btn-danger btn-sm rounded-pill mt-auto",
-                        onClick: function onClick() {
-                          return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
-                            id: product.id,
-                            type: "product"
-                          }));
-                        },
-                        children: "Remove"
                       })]
                     })]
                   })
                 }, idx);
               })
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-            className: "cs_cause_details_wrap",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h3", {
-              children: "Content"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-              className: "cs_cause_details",
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+            className: "cs_cause_details_wrap mt-5",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "d-flex align-items-center mb-4",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h3", {
+                className: "mb-0 fw-bold",
+                children: "Content"
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "rich-content bg-white",
               dangerouslySetInnerHTML: {
-                __html: (0,_utils_ProcessContent__WEBPACK_IMPORTED_MODULE_8__["default"])((cause === null || cause === void 0 || (_cause$content8 = cause.content) === null || _cause$content8 === void 0 ? void 0 : _cause$content8.content) || "")
-              }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h3", {
-              children: "Project"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-              className: "cs_cause_details",
-              dangerouslySetInnerHTML: {
-                __html: (0,_utils_ProcessContent__WEBPACK_IMPORTED_MODULE_8__["default"])((cause === null || cause === void 0 || (_cause$content9 = cause.content) === null || _cause$content9 === void 0 ? void 0 : _cause$content9.projects) || "")
+                __html: (0,_utils_ProcessContent__WEBPACK_IMPORTED_MODULE_9__["default"])((cause === null || cause === void 0 || (_cause$content7 = cause.content) === null || _cause$content7 === void 0 ? void 0 : _cause$content7.content) || "")
               }
             })]
-          }), faqItems.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-            className: "cs_cause_details_wrap",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h3", {
-              className: "mb-4",
-              children: "FAQ's"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-              className: "accordion",
+          }), (cause === null || cause === void 0 || (_cause$content8 = cause.content) === null || _cause$content8 === void 0 ? void 0 : _cause$content8.projects) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+            className: "cs_cause_details_wrap mt-5 pt-4 border-top",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "d-flex align-items-center mb-4",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h3", {
+                className: "mb-0 fw-bold",
+                children: "Project"
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "rich-content bg-white",
+              dangerouslySetInnerHTML: {
+                __html: (0,_utils_ProcessContent__WEBPACK_IMPORTED_MODULE_9__["default"])((cause === null || cause === void 0 || (_cause$content9 = cause.content) === null || _cause$content9 === void 0 ? void 0 : _cause$content9.projects) || "")
+              }
+            })]
+          }), faqItems.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+            className: "cs_cause_details_wrap mt-5 pt-4 border-top",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "d-flex align-items-center mb-4",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h3", {
+                className: "mb-0 fw-bold",
+                children: "Frequently Asked Questions"
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "accordion custom-accordion",
               id: "faqAccordion",
               children: faqItems.map(function (item, idx) {
                 var headingId = "faq-heading-".concat(idx);
                 var collapseId = "faq-collapse-".concat(idx);
                 var isOpen = openFaqIndex === idx;
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "accordion-item mb-3 shadow-sm border rounded-3",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h2", {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                  className: "accordion-item",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h2", {
                     className: "accordion-header",
                     id: headingId,
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                      className: "accordion-button fw-semibold ".concat(isOpen ? "" : "collapsed"),
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("button", {
+                      className: "accordion-button ".concat(isOpen ? "" : "collapsed"),
                       type: "button",
                       onClick: function onClick() {
                         return toggleFaq(idx);
@@ -23573,15 +23678,19 @@ function CauseDetails(_ref) {
                       "aria-controls": collapseId,
                       children: item.title
                     })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
                     id: collapseId,
                     className: "accordion-collapse collapse ".concat(isOpen ? "show" : ""),
                     "aria-labelledby": headingId,
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                      className: "accordion-body fs-6 text-secondary",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "accordion-body",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "rich-content",
+                        style: {
+                          fontSize: "0.95rem"
+                        },
                         dangerouslySetInnerHTML: {
-                          __html: (0,_utils_ProcessContent__WEBPACK_IMPORTED_MODULE_8__["default"])(item.content || "")
+                          __html: (0,_utils_ProcessContent__WEBPACK_IMPORTED_MODULE_9__["default"])(item.content || "")
                         }
                       })
                     })
@@ -23589,611 +23698,733 @@ function CauseDetails(_ref) {
                 }, idx);
               })
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-            className: "cs_cause_details_wrap",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h3", {
-              children: "Updates"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-              className: "cs_cause_details",
-              dangerouslySetInnerHTML: {
-                __html: (0,_utils_ProcessContent__WEBPACK_IMPORTED_MODULE_8__["default"])((cause === null || cause === void 0 || (_cause$content10 = cause.content) === null || _cause$content10 === void 0 ? void 0 : _cause$content10.updates) || "")
-              }
+          }), (cause === null || cause === void 0 || (_cause$content10 = cause.content) === null || _cause$content10 === void 0 ? void 0 : _cause$content10.updates) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+            className: "cs_cause_details_wrap mt-5 pt-4 border-top",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "d-flex align-items-center mb-4",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h3", {
+                className: "mb-0 fw-bold",
+                children: "Latest Updates"
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "p-4 rounded-4 bg-light border border-light-subtle",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                className: "rich-content",
+                dangerouslySetInnerHTML: {
+                  __html: (0,_utils_ProcessContent__WEBPACK_IMPORTED_MODULE_9__["default"])((cause === null || cause === void 0 || (_cause$content11 = cause.content) === null || _cause$content11 === void 0 ? void 0 : _cause$content11.updates) || "")
+                }
+              })
             })]
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-          className: "col-xl-4",
-          children: [(cause === null || cause === void 0 ? void 0 : cause.custom_donation_amounts) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-            className: "cs_shop-card mt-4",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h3", {
-              children: "Custom Donation"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-              className: "d-flex flex-wrap gap-2",
-              children: (Array.isArray(cause.custom_donation_amounts) ? cause.custom_donation_amounts : cause.custom_donation_amounts.split(",")).map(function (val, idx) {
-                var amount = Number(val);
-                var cartItem = carts.find(function (i) {
-                  return i.id === cause.id && i.type === "cause";
-                });
-                var isSelected = (cartItem === null || cartItem === void 0 ? void 0 : cartItem.price) === amount;
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                  className: "btn btn-sm rounded-pill px-3 ".concat(isSelected ? "btn-danger" : "btn-primary"),
-                  onClick: function onClick() {
-                    dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
-                      id: cause.id,
-                      type: "cause"
-                    }));
-                    if (!isSelected) dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
-                      id: cause.id,
-                      type: "cause",
-                      content: _objectSpread(_objectSpread({}, cause), {}, {
-                        price: amount
-                      })
-                    }));
-                  },
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_15__["default"], {
-                    amount: amount.toFixed(2)
+          }), galleryItems.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+            className: "transparency-gallery-section mt-5 p-4 p-lg-5 rounded-4",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+              className: "text-center mb-4",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h3", {
+                className: "fw-bold mb-2 section-title",
+                children: "We Ensure 100% Transparency With Your Donation"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                className: "separator mx-auto"
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(swiper_react__WEBPACK_IMPORTED_MODULE_12__.Swiper, {
+              modules: [swiper_modules__WEBPACK_IMPORTED_MODULE_13__.Pagination, swiper_modules__WEBPACK_IMPORTED_MODULE_13__.Navigation, swiper_modules__WEBPACK_IMPORTED_MODULE_13__.Autoplay],
+              spaceBetween: 24,
+              slidesPerView: 1,
+              navigation: true,
+              pagination: {
+                clickable: true,
+                dynamicBullets: true
+              },
+              autoplay: {
+                delay: 4000,
+                disableOnInteraction: true,
+                pauseOnMouseEnter: true
+              },
+              loop: true,
+              speed: 800,
+              breakpoints: {
+                320: {
+                  slidesPerView: 1
+                },
+                576: {
+                  slidesPerView: 2
+                },
+                992: {
+                  slidesPerView: 3
+                },
+                1200: {
+                  slidesPerView: 4
+                }
+              },
+              className: "pb-5 px-2",
+              children: galleryItems.map(function (item, idx) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(swiper_react__WEBPACK_IMPORTED_MODULE_12__.SwiperSlide, {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                    className: "gallery-card bg-white rounded-3 shadow-sm h-100",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "img-wrapper rounded-2 overflow-hidden position-relative",
+                      style: {
+                        height: "220px"
+                      },
+                      children: [item.type === "youtube" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "ratio ratio-1x1 h-100 w-100",
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("iframe", {
+                          src: item.url,
+                          title: "Gallery Video ".concat(idx),
+                          allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+                          allowFullScreen: true,
+                          style: {
+                            borderRadius: "8px"
+                          }
+                        })
+                      }), item.type === "video" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("video", {
+                        src: item.url,
+                        controls: true,
+                        className: "w-100 h-100 object-fit-cover rounded-2",
+                        style: {
+                          backgroundColor: "#000"
+                        },
+                        autoPlay: true
+                      }), item.type === "image" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.Fragment, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("img", {
+                          src: item.url,
+                          alt: "Transparency Proof ".concat(idx + 1),
+                          className: "w-100 h-100 object-fit-cover",
+                          style: {
+                            transition: "transform 0.5s ease"
+                          }
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                          className: "hover-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center pointer-events-none",
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                            icon: "mdi:eye",
+                            className: "text-white fs-2 opacity-0"
+                          })
+                        })]
+                      })]
+                    })
                   })
                 }, idx);
               })
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-            className: "cs_shop-card mt-2",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h2", {
-              children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Totals")
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("table", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("tbody", {
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("tr", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Subtotal")
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
-                    className: "text-end",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_15__["default"], {
-                      amount: subtotal.toFixed(2)
-                    })
-                  })]
-                }), discount > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("tr", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Discount")
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("td", {
-                    className: "text-end",
-                    children: ["- ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_15__["default"], {
-                      amount: discount.toFixed(2)
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+          className: "col-xl-4 ".concat(cause.type === "birthday" ? "d-none" : ""),
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+            className: "sidebar-sticky-wrapper",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+              className: "donation-card",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                className: "donation-card-header",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h3", {
+                  children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Make a Donation")
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("p", {
+                  className: "text-muted small mb-0",
+                  children: "Your support changes lives."
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                className: "donation-logic-wrapper",
+                children: [(cause === null || cause === void 0 ? void 0 : cause.custom_donation_amounts) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                  className: "amount-grid",
+                  children: (Array.isArray(cause.custom_donation_amounts) ? cause.custom_donation_amounts : cause.custom_donation_amounts.split(",")).map(function (val, idx) {
+                    var btnAmount = Number(val);
+                    // Compare numbers to fix highlighting issue
+                    var isSelected = Number(localAmount) === btnAmount;
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("button", {
+                      type: "button",
+                      className: "amount-btn ".concat(isSelected ? "active" : ""),
+                      onClick: function onClick() {
+                        return handleDonationChange(btnAmount);
+                      },
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                        amount: btnAmount.toFixed(0)
+                      })
+                    }, idx);
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                  className: "mb-3",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("label", {
+                    className: "form-label fw-bold small text-muted mb-1",
+                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Or Enter Custom Amount")
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "input-group input-group-lg border rounded-3 overflow-hidden",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                      className: "input-group-text bg-light border-0 fw-bold text-muted",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                        amount: 0,
+                        showSymbolOnly: true
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                      type: "number",
+                      className: "form-control border-0 fw-bold fs-5 text-dark",
+                      placeholder: "0",
+                      value: localAmount,
+                      onChange: function onChange(e) {
+                        return handleDonationChange(e.target.value);
+                      }
                     })]
-                  })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("tr", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
-                    className: "fw-bold",
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Total")
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
-                    className: "text-end fw-bold",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_15__["default"], {
+                  }), function () {
+                    var numericVal = Number(localAmount);
+                    var minAmount = Number((cause === null || cause === void 0 ? void 0 : cause.min_amount) || 1);
+                    if (numericVal > 0 && numericVal < minAmount) {
+                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                        className: "text-danger small mt-1 d-flex align-items-center animate__animated animate__fadeIn",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                          icon: "mdi:alert-circle-outline",
+                          className: "me-1"
+                        }), "Minimum donation amount is ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                          amount: minAmount
+                        })]
+                      });
+                    }
+                    return null;
+                  }()]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                  className: "d-flex justify-content-between align-items-center mb-3 pt-3 border-top",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                    className: "fw-bold text-secondary",
+                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Total Payable")
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                    className: "fw-bolder fs-4 text-primary",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
                       amount: total.toFixed(2)
                     })
                   })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("button", {
+                  className: "btn-donate-lg ".concat(!localAmount || Number(localAmount) < Number((cause === null || cause === void 0 ? void 0 : cause.min_amount) || 1) ? "disabled" : ""),
+                  disabled: !localAmount || Number(localAmount) < Number((cause === null || cause === void 0 ? void 0 : cause.min_amount) || 1),
+                  onClick: function onClick() {
+                    return setShowDonateModal(true);
+                  },
+                  children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Donate Now")
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                  className: "trust-badges",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "trust-item",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                      icon: "mdi:shield-check",
+                      className: "text-success fs-5"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                      children: "Secure Payment"
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "trust-item",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                      icon: "mdi:tax",
+                      className: "text-primary fs-5"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                      children: "Tax Benefits"
+                    })]
+                  })]
                 })]
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("a", {
-              className: "cs_product_btn w-100 ".concat(carts.length === 0 ? "cs_disable" : ""),
-              style: {
-                cursor: "pointer"
-              },
-              onClick: function onClick() {
-                return setShowDonateModal(true);
-              },
-              children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Donate Now")
-            })]
-          }), (cause === null || cause === void 0 ? void 0 : cause.video_url) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-            className: "cs_shop-card mt-2",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h2", {
-              children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Video")
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-              className: "ratio ratio-16x9",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("iframe", {
-                src: convertYouTube(cause.video_url),
-                title: "Cause Video",
-                frameBorder: "0",
-                allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
-                allowFullScreen: true,
-                className: "w-100 rounded"
+              })]
+            }), (cause === null || cause === void 0 ? void 0 : cause.video_url) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "sidebar-video-card",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                className: "ratio ratio-16x9",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("iframe", {
+                  src: convertYouTube(cause.video_url),
+                  title: "Cause Video",
+                  allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+                  allowFullScreen: true
+                })
               })
             })]
-          })]
+          })
         })]
-      }), showDonateModal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+      }), showDonateModal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
         className: "modal-backdrop fade show"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
         className: "modal fade ".concat(showDonateModal ? "show d-block" : ""),
         tabIndex: "-1",
         role: "dialog",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-          className: "modal-dialog modal-dialog-centered",
+        style: {
+          overflowY: "auto"
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+          className: "modal-dialog modal-dialog-centered modal-lg",
           role: "document",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
             className: "modal-content",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-              className: "modal-header",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h5", {
-                className: "modal-title",
-                children: "Donate Now"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                type: "button",
-                className: "btn-close",
-                "aria-label": "Close",
-                onClick: function onClick() {
-                  return setShowDonateModal(false);
-                }
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-              className: "modal-body",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                className: "row",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "col-lg-12 mb-2",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("label", {
-                    className: "cs_shop-label",
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Name"), " *"]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                    type: "text",
-                    onChange: function onChange(e) {
-                      return setData("name", e.target.value);
-                    },
-                    value: data.name,
-                    className: "form-control form-control-sm"
-                  }), errors.name && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                    className: "text-danger small",
-                    children: errors.name
-                  })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "col-lg-12 mb-2",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("label", {
-                    className: "cs_shop-label",
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Email"), " *"]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                    type: "email",
-                    onChange: function onChange(e) {
-                      return setData("email", e.target.value);
-                    },
-                    value: data.email,
-                    className: "form-control form-control-sm"
-                  }), errors.email && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                    className: "text-danger small",
-                    children: errors.email
-                  })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "col-lg-12 mb-2",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("label", {
-                    className: "cs_shop-label",
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Phone"), " *"]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                    type: "text",
-                    onChange: function onChange(e) {
-                      return setData("phone", e.target.value);
-                    },
-                    value: data.phone,
-                    className: "form-control form-control-sm"
-                  }), errors.phone && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                    className: "text-danger small",
-                    children: errors.phone
-                  })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "col-lg-12",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("label", {
-                    className: "cs_shop-label",
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Full Address"), " *"]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                    type: "text",
-                    onChange: function onChange(e) {
-                      return setData("address", e.target.value);
-                    },
-                    value: data.address,
-                    className: "form-control form-control-sm"
-                  }), errors.address && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                    className: "text-danger small",
-                    children: errors.address
-                  })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "col-lg-12 mt-3 mb-2",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("label", {
-                    className: "cs_shop-label",
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("State"), " *"]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("select", {
-                    className: "form-select form-select-sm",
-                    value: data.state,
-                    onChange: function onChange(e) {
-                      return setData("state", e.target.value);
-                    },
-                    required: true,
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("option", {
-                      value: "",
-                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Select State")
-                    }), states.map(function (state) {
-                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("option", {
-                        value: state,
-                        children: state
-                      }, state);
-                    })]
-                  }), errors.state && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                    className: "text-danger small",
-                    children: errors.state
-                  })]
-                }), !!(cause !== null && cause !== void 0 && cause.is_special) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "p-2 border rounded bg-light mt-2",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h5", {
-                    className: "text-primary mb-3",
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])(specialConfig.title)
-                  }), specialConfig.showName && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                    className: "mb-3",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                      className: "cs_shop-label",
-                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])(specialConfig.nameLabel)
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                      type: "text",
-                      className: "form-control form-control-sm",
-                      value: data.special_name,
-                      onChange: function onChange(e) {
-                        return setData("special_name", e.target.value);
-                      }
-                    })]
-                  }), specialConfig.showDate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                    className: "mb-3",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                      className: "cs_shop-label",
-                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])(specialConfig.dateLabel)
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                      type: "date",
-                      className: "form-control form-control-sm",
-                      value: data.special_date,
-                      onChange: function onChange(e) {
-                        return setData("special_date", e.target.value);
-                      }
-                    })]
-                  }), specialConfig.showImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                    className: "mb-3",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("label", {
-                      className: "cs_shop-label",
-                      children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])(specialConfig.imageLabel), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                        className: "text-muted small",
-                        children: "(Max 5MB)"
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                      type: "file",
-                      accept: "image/*",
-                      className: "form-control form-control-sm",
-                      onChange: handleSFileChange
-                    }), special_image && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                      className: "mt-2 d-flex align-items-center gap-2 flex-wrap",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                        className: "badge bg-success",
-                        children: special_image.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                        type: "button",
-                        className: "btn btn-sm btn-outline-danger",
-                        onClick: function onClick() {
-                          setSpecialImage(null);
-                          setData("special_image", null);
-                          var input = document.querySelector('input[type="file"][accept*="image"]');
-                          if (input) input.value = "";
-                        },
-                        children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Remove")
-                      })]
-                    })]
-                  }), specialConfig.showMessage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                    className: "mb-3",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                      className: "cs_shop-label",
-                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])(specialConfig.messageLabel)
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("textarea", {
-                      className: "form-control form-control-sm",
-                      rows: "3",
-                      value: data.special_message,
-                      onChange: function onChange(e) {
-                        return setData("special_message", e.target.value);
-                      }
-                    })]
-                  })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "form-check ms-3 mt-2",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                    className: "form-check-input",
-                    type: "checkbox",
-                    id: "is_80g",
-                    checked: !!data.is_80g,
-                    onChange: function onChange(e) {
-                      var checked = e.target.checked;
-                      setData(_objectSpread(_objectSpread({}, data), {}, {
-                        is_80g: checked,
-                        pancard: checked ? data.pancard : ""
-                      }));
-                    }
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                    className: "form-check-label cs_semi_bold",
-                    htmlFor: "is_80g",
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("80G Certificate Needed?")
-                  })]
-                }), data.is_80g && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "col-lg-12",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("label", {
-                    className: "cs_shop-label",
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Pancard"), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                      className: "text-danger",
-                      children: "*"
-                    })]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                    type: "text",
-                    className: "form-control form-control-sm",
-                    value: data.pancard || "",
-                    onChange: function onChange(e) {
-                      return setData("pancard", e.target.value.toUpperCase());
-                    },
-                    placeholder: "ABCDE1234D",
-                    pattern: "[A-Z]{5}[0-9]{4}[A-Z]{1}",
-                    title: "Enter valid PAN: 5 letters, 4 numbers, 1 letter (e.g., ABCDE1234F)",
-                    maxLength: "10",
-                    required: true
-                  }), errors.pancard && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                    className: "text-danger small mt-1",
-                    children: errors.pancard
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+              className: "modal-header d-flex align-items-center justify-content-between",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h5", {
+                  className: "modal-title fs-6 fw-bold",
+                  children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Complete Donation")
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("p", {
+                  className: "mb-0 text-muted",
+                  style: {
+                    fontSize: "0.8rem"
+                  },
+                  children: ["Donating", " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                    className: "fw-bold text-primary",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                      amount: total.toFixed(2)
+                    })
+                  }), " ", "to ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                    className: "fw-bold",
+                    children: cause === null || cause === void 0 || (_cause$content12 = cause.content) === null || _cause$content12 === void 0 ? void 0 : _cause$content12.title
                   })]
                 })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("form", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("button", {
+                type: "button",
+                className: "btn-close shadow-none small",
+                onClick: function onClick() {
+                  return setShowDonateModal(false);
+                },
+                "aria-label": "Close"
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+              className: "modal-body",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("form", {
                 onSubmit: handlePlaceOrder,
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("table", {
-                  className: "mb-0",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("tbody", {
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("tr", {
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("td", {
-                        children: [payment_gateway.is_cod_active && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                          className: "form-check",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                            className: "form-check-input",
-                            type: "radio",
-                            name: "paymentMethod",
-                            value: "cod",
-                            id: "cod",
-                            onChange: function onChange(e) {
-                              return setData("paymentMethod", e.target.value);
-                            }
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                            className: "form-check-label m-0 cs_semi_bold",
-                            htmlFor: "cod",
-                            children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Cash On Delivery")
-                          })]
-                        }), payment_gateway.is_paypal_active && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                          className: "form-check",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                            className: "form-check-input",
-                            type: "radio",
-                            name: "paymentMethod",
-                            value: "paypal",
-                            id: "paypal",
-                            onChange: function onChange(e) {
-                              return setData("paymentMethod", e.target.value);
-                            }
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                            className: "form-check-label m-0 cs_semi_bold",
-                            htmlFor: "paypal",
-                            children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Paypal")
-                          })]
-                        }), payment_gateway.is_stripe_active && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                          className: "form-check",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                            className: "form-check-input",
-                            type: "radio",
-                            name: "paymentMethod",
-                            value: "stripe",
-                            id: "stripe",
-                            onChange: function onChange(e) {
-                              return setData("paymentMethod", e.target.value);
-                            }
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                            className: "form-check-label m-0 cs_semi_bold",
-                            htmlFor: "stripe",
-                            children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Stripe")
-                          })]
-                        }), payment_gateway.is_flutterwave_active && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                          className: "form-check",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                            className: "form-check-input",
-                            type: "radio",
-                            name: "paymentMethod",
-                            value: "flutterwave",
-                            id: "flutterwave",
-                            onChange: function onChange(e) {
-                              return setData("paymentMethod", e.target.value);
-                            }
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                            className: "form-check-label m-0 cs_semi_bold",
-                            htmlFor: "flutterwave",
-                            children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Flutterwave")
-                          })]
-                        }), payment_gateway.is_razorpay_active && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                          className: "form-check",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                            className: "form-check-input",
-                            type: "radio",
-                            name: "paymentMethod",
-                            value: "razorpay",
-                            id: "razorpay",
-                            onChange: function onChange(e) {
-                              return setData("paymentMethod", e.target.value);
-                            }
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                            className: "form-check-label m-0 cs_semi_bold",
-                            htmlFor: "razorpay",
-                            children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Razorpay")
-                          })]
-                        }), payment_gateway.is_sslcz_active && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                          className: "form-check",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                            className: "form-check-input",
-                            type: "radio",
-                            name: "paymentMethod",
-                            value: "sslcommerz",
-                            id: "sslcommerz",
-                            onChange: function onChange(e) {
-                              return setData("paymentMethod", e.target.value);
-                            }
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                            className: "form-check-label m-0 cs_semi_bold",
-                            htmlFor: "sslcommerz",
-                            children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Sslcommerz")
-                          })]
-                        }), manual_payment_gateways.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-                          children: manual_payment_gateways === null || manual_payment_gateways === void 0 ? void 0 : manual_payment_gateways.map(function (gateway, index) {
-                            var _gateway$content2, _gateway$content3, _gateway$content4, _gateway$content5;
-                            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                                className: "form-check",
-                                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                                  className: "form-check-input",
-                                  type: "radio",
-                                  name: "paymentMethod",
-                                  value: gateway === null || gateway === void 0 || (_gateway$content2 = gateway.content) === null || _gateway$content2 === void 0 ? void 0 : _gateway$content2.gateway_name,
-                                  id: gateway === null || gateway === void 0 || (_gateway$content3 = gateway.content) === null || _gateway$content3 === void 0 ? void 0 : _gateway$content3.gateway_name,
-                                  onChange: function onChange(e) {
-                                    return setData("paymentMethod", e.target.value);
-                                  }
-                                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                                  className: "form-check-label m-0 cs_semi_bold",
-                                  htmlFor: gateway === null || gateway === void 0 || (_gateway$content4 = gateway.content) === null || _gateway$content4 === void 0 ? void 0 : _gateway$content4.gateway_name,
-                                  children: gateway === null || gateway === void 0 || (_gateway$content5 = gateway.content) === null || _gateway$content5 === void 0 ? void 0 : _gateway$content5.gateway_name
-                                })]
-                              })
-                            }, index);
-                          })
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                  className: "section-label",
+                  children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Personal Details")
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                  className: "row g-2 mb-3",
+                  children: [" ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "col-md-6",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "form-floating",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                        type: "text",
+                        className: "form-control ".concat(errors.name ? "is-invalid" : ""),
+                        id: "donorName",
+                        placeholder: "Name",
+                        value: data.name,
+                        onChange: function onChange(e) {
+                          return setData("name", e.target.value);
+                        }
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("label", {
+                        htmlFor: "donorName",
+                        children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Full Name"), " *"]
+                      })]
+                    }), errors.name && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "text-danger small ms-1",
+                      style: {
+                        fontSize: "0.75rem"
+                      },
+                      children: errors.name
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "col-md-6",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "form-floating",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                        type: "tel",
+                        className: "form-control ".concat(errors.phone ? "is-invalid" : ""),
+                        id: "donorPhone",
+                        placeholder: "Phone",
+                        value: data.phone,
+                        onChange: function onChange(e) {
+                          return setData("phone", e.target.value);
+                        }
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("label", {
+                        htmlFor: "donorPhone",
+                        children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Phone Number"), " *"]
+                      })]
+                    }), errors.phone && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "text-danger small ms-1",
+                      style: {
+                        fontSize: "0.75rem"
+                      },
+                      children: errors.phone
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "col-md-12",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "form-floating",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                        type: "email",
+                        className: "form-control ".concat(errors.email ? "is-invalid" : ""),
+                        id: "donorEmail",
+                        placeholder: "Email",
+                        value: data.email,
+                        onChange: function onChange(e) {
+                          return setData("email", e.target.value);
+                        }
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("label", {
+                        htmlFor: "donorEmail",
+                        children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Email Address"), " *"]
+                      })]
+                    }), errors.email && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "text-danger small ms-1",
+                      style: {
+                        fontSize: "0.75rem"
+                      },
+                      children: errors.email
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "col-md-8",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "form-floating",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                        type: "text",
+                        className: "form-control ".concat(errors.address ? "is-invalid" : ""),
+                        id: "donorAddress",
+                        placeholder: "Address",
+                        value: data.address,
+                        onChange: function onChange(e) {
+                          return setData("address", e.target.value);
+                        }
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("label", {
+                        htmlFor: "donorAddress",
+                        children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Address"), " *"]
+                      })]
+                    }), errors.address && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "text-danger small ms-1",
+                      style: {
+                        fontSize: "0.75rem"
+                      },
+                      children: errors.address
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "col-md-4",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "form-floating",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("select", {
+                        className: "form-select ".concat(errors.state ? "is-invalid" : ""),
+                        id: "donorState",
+                        value: data.state,
+                        onChange: function onChange(e) {
+                          return setData("state", e.target.value);
+                        },
+                        style: {
+                          paddingTop: "0.25rem"
+                        } // Small adjustment for select
+                        ,
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("option", {
+                          value: "",
+                          children: "State"
+                        }), states.map(function (state) {
+                          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("option", {
+                            value: state,
+                            children: state
+                          }, state);
+                        })]
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("label", {
+                        htmlFor: "donorState",
+                        children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("State"), " *"]
+                      })]
+                    }), errors.state && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "text-danger small ms-1",
+                      style: {
+                        fontSize: "0.75rem"
+                      },
+                      children: errors.state
+                    })]
+                  })]
+                }), !!(cause !== null && cause !== void 0 && cause.is_special) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                  className: "bg-light p-3 rounded-2 mb-3 border border-dashed",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "d-flex align-items-center mb-2",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                      icon: "mdi:gift-outline",
+                      className: "text-primary fs-6 me-2"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h6", {
+                      className: "fw-bold mb-0 text-dark small",
+                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])(specialConfig.title)
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "row g-2",
+                    children: [specialConfig.showName && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "col-md-6",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                        className: "form-floating",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                          type: "text",
+                          className: "form-control",
+                          id: "specialName",
+                          placeholder: "Name",
+                          value: data.special_name,
+                          onChange: function onChange(e) {
+                            return setData("special_name", e.target.value);
+                          }
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("label", {
+                          htmlFor: "specialName",
+                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])(specialConfig.nameLabel)
                         })]
                       })
-                    })
+                    }), specialConfig.showDate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "col-md-6",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                        className: "form-floating",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                          type: "date",
+                          className: "form-control",
+                          id: "specialDate",
+                          value: data.special_date,
+                          onChange: function onChange(e) {
+                            return setData("special_date", e.target.value);
+                          }
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("label", {
+                          htmlFor: "specialDate",
+                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])(specialConfig.dateLabel)
+                        })]
+                      })
+                    }), specialConfig.showImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "col-md-12",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                        type: "file",
+                        accept: "image/*",
+                        className: "form-control form-control-sm",
+                        onChange: handleSFileChange
+                      }), special_image && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                        className: "small text-success mt-1 ms-1",
+                        style: {
+                          fontSize: "0.7rem"
+                        },
+                        children: ["Selected: ", special_image.name]
+                      })]
+                    }), specialConfig.showMessage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "col-md-12",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                        className: "form-floating",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("textarea", {
+                          className: "form-control",
+                          placeholder: "Message",
+                          id: "specialMsg",
+                          value: data.special_message,
+                          onChange: function onChange(e) {
+                            return setData("special_message", e.target.value);
+                          }
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("label", {
+                          htmlFor: "specialMsg",
+                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])(specialConfig.messageLabel)
+                        })]
+                      })
+                    })]
+                  })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                  className: "mb-3",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "form-check form-switch",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                      className: "form-check-input",
+                      type: "checkbox",
+                      role: "switch",
+                      id: "is_80g",
+                      checked: !!data.is_80g,
+                      onChange: function onChange(e) {
+                        var checked = e.target.checked;
+                        setData(_objectSpread(_objectSpread({}, data), {}, {
+                          is_80g: checked,
+                          pancard: checked ? data.pancard : ""
+                        }));
+                      }
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("label", {
+                      className: "form-check-label fw-semibold small ms-1",
+                      htmlFor: "is_80g",
+                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("I need 80G Tax Exemption Certificate")
+                    })]
                   })
-                }), selectedGateway && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "manual-payment-details mt-2",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h3", {
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Payment Instructions")
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                    className: "cs_height_15 cs_height_lg_15"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                    className: "payment-instructions mb-1",
+                }), data.is_80g && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                  className: "mb-3 animate__animated animate__fadeIn",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "form-floating",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                      type: "text",
+                      className: "form-control ".concat(errors.pancard ? "is-invalid" : ""),
+                      id: "pancard",
+                      placeholder: "Pancard",
+                      maxLength: "10",
+                      value: data.pancard || "",
+                      onChange: function onChange(e) {
+                        return setData("pancard", e.target.value.toUpperCase());
+                      }
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("label", {
+                      htmlFor: "pancard",
+                      children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("PAN Card Number"), " *"]
+                    })]
+                  }), errors.pancard && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                    className: "text-danger small ms-1",
+                    style: {
+                      fontSize: "0.75rem"
+                    },
+                    children: errors.pancard
+                  })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                  className: "section-label",
+                  children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Payment Method")
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                  className: "payment-grid",
+                  children: [payment_gateway.is_cod_active && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "payment-option-card ".concat(data.paymentMethod === "cod" ? "selected" : ""),
+                    onClick: function onClick() {
+                      return setData("paymentMethod", "cod");
+                    },
+                    children: [data.paymentMethod === "cod" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "payment-check-badge",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                        icon: "mdi:check"
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                      icon: "mdi:cash-multiple",
+                      className: "fs-4 text-secondary mb-1"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                      className: "payment-name",
+                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Cash")
+                    })]
+                  }), payment_gateway.is_stripe_active && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "payment-option-card ".concat(data.paymentMethod === "stripe" ? "selected" : ""),
+                    onClick: function onClick() {
+                      return setData("paymentMethod", "stripe");
+                    },
+                    children: [data.paymentMethod === "stripe" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "payment-check-badge",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                        icon: "mdi:check"
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                      icon: "logos:stripe",
+                      className: "fs-4 mb-1"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                      className: "payment-name",
+                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Stripe")
+                    })]
+                  }), payment_gateway.is_razorpay_active && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "payment-option-card ".concat(data.paymentMethod === "razorpay" ? "selected" : ""),
+                    onClick: function onClick() {
+                      return setData("paymentMethod", "razorpay");
+                    },
+                    children: [data.paymentMethod === "razorpay" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "payment-check-badge",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                        icon: "mdi:check"
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                      icon: "simple-icons:razorpay",
+                      className: "fs-4 text-primary mb-1"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                      className: "payment-name",
+                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Razorpay")
+                    })]
+                  }), manual_payment_gateways.map(function (gateway, index) {
+                    var _gateway$content2, _gateway$content4, _gateway$content5;
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "payment-option-card ".concat(data.paymentMethod === (gateway === null || gateway === void 0 || (_gateway$content2 = gateway.content) === null || _gateway$content2 === void 0 ? void 0 : _gateway$content2.gateway_name) ? "selected" : ""),
+                      onClick: function onClick() {
+                        var _gateway$content3;
+                        return setData("paymentMethod", gateway === null || gateway === void 0 || (_gateway$content3 = gateway.content) === null || _gateway$content3 === void 0 ? void 0 : _gateway$content3.gateway_name);
+                      },
+                      children: [data.paymentMethod === (gateway === null || gateway === void 0 || (_gateway$content4 = gateway.content) === null || _gateway$content4 === void 0 ? void 0 : _gateway$content4.gateway_name) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "payment-check-badge",
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                          icon: "mdi:check"
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                        icon: "mdi:bank",
+                        className: "fs-4 text-success mb-1"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
+                        className: "payment-name text-truncate w-100",
+                        children: gateway === null || gateway === void 0 || (_gateway$content5 = gateway.content) === null || _gateway$content5 === void 0 ? void 0 : _gateway$content5.gateway_name
+                      })]
+                    }, index);
+                  })]
+                }), selectedGateway && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                  className: "bg-light p-3 rounded-2 mb-3 border animate__animated animate__fadeIn",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("h6", {
+                    className: "fw-bold mb-2 small",
+                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Payment Instructions")
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                    className: "small text-muted mb-2",
+                    style: {
+                      fontSize: "0.8rem"
+                    },
                     dangerouslySetInnerHTML: {
                       __html: selectedGateway === null || selectedGateway === void 0 || (_selectedGateway$cont = selectedGateway.content) === null || _selectedGateway$cont === void 0 ? void 0 : _selectedGateway$cont.instructions
                     }
-                  }), (selectedGateway === null || selectedGateway === void 0 ? void 0 : selectedGateway.payment_type) === "bank_payment" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                    className: "bank-info mb-1",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("h4", {
-                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Bank Information")
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                      className: "cs_height_10 cs_height_lg_10"
-                    }), JSON.parse(selectedGateway.bank_information).map(function (bank, idx) {
-                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                        className: "bank-detail p-3 mb-2 border rounded",
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("p", {
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("strong", {
-                            children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Bank Name"), ":"]
-                          }), " ", bank.bank_name]
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("p", {
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("strong", {
-                            children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Account Name"), ":"]
-                          }), " ", bank.account_name]
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("p", {
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("strong", {
-                            children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Account Number"), ":"]
-                          }), " ", bank.account_number]
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("p", {
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("strong", {
-                            children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Routing Number"), ":"]
-                          }), " ", bank.routing_number]
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("p", {
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("strong", {
-                            children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Branch"), ":"]
-                          }), " ", bank.branch_name]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "row g-2",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                      className: "col-7",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                        className: "form-floating",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                          type: "text",
+                          className: "form-control",
+                          id: "txnId",
+                          placeholder: "Txn ID",
+                          value: data.transactionId,
+                          onChange: function onChange(e) {
+                            return setData("transactionId", e.target.value);
+                          },
+                          required: true
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("label", {
+                          htmlFor: "txnId",
+                          children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Transaction ID"), " *"]
                         })]
-                      }, idx);
-                    })]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                    className: "mb-1",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("label", {
-                      className: "cs_shop-label",
-                      children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Transaction ID"), " *"]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                      type: "text",
-                      className: "cs_shop-input",
-                      value: data.transactionId,
-                      onChange: function onChange(e) {
-                        return setData("transactionId", e.target.value);
-                      },
-                      placeholder: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Enter your transaction ID"),
-                      required: true
-                    }), errors.transactionId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                      style: {
-                        color: "red"
-                      },
-                      children: errors.transactionId
-                    })]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                    className: "mb-3",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                      className: "cs_shop-label",
-                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Photo")
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                      type: "file",
-                      className: "form-control",
-                      onChange: handleFileChange,
-                      accept: "image/*,.pdf"
-                    }), receiptFile && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                      className: "mt-2",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                        className: "badge bg-success",
-                        children: receiptFile.name
+                      }), errors.transactionId && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                        className: "text-danger small",
+                        style: {
+                          fontSize: "0.75rem"
+                        },
+                        children: errors.transactionId
+                      })]
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "col-5",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                        type: "file",
+                        className: "form-control form-control-sm",
+                        style: {
+                          height: "45px",
+                          paddingTop: "10px"
+                        },
+                        onChange: handleFileChange,
+                        accept: "image/*,.pdf"
                       })
-                    }), errors.receiptFile && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                      style: {
-                        color: "red"
-                      },
-                      children: errors.receiptFile
                     })]
                   })]
-                }), errors.paymentMethod && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                  style: {
-                    color: "red"
-                  },
-                  children: errors.paymentMethod
-                }), is_active_google_captcha === "1" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)((react_google_recaptcha__WEBPACK_IMPORTED_MODULE_14___default()), {
-                    sitekey: captchaSiteKey,
-                    onChange: handleCaptchaChange
-                  }), captchaError && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                    className: "text-danger mb-3",
-                    children: captchaError
-                  })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                  className: "form-check",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("input", {
-                    className: "form-check-input custom-cursor-default-hover",
-                    type: "checkbox",
-                    id: "agreed",
-                    checked: data.agreed,
-                    onChange: function onChange(e) {
-                      return setData("agreed", e.target.checked);
-                    }
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                    className: "form-check-label m-0 cs_semi_bold custom-cursor-default-hover",
-                    htmlFor: "agreed",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_0__.Link, {
-                      href: terms_condition_url,
-                      children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Accept Terms And Conditions")
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                  className: "mt-3 pt-3 border-top",
+                  children: [is_active_google_captcha === "1" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                    className: "mb-3 d-flex justify-content-center scale-75 origin-center",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)((react_google_recaptcha__WEBPACK_IMPORTED_MODULE_18___default()), {
+                      sitekey: captchaSiteKey,
+                      onChange: handleCaptchaChange
                     })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
+                    className: "form-check mb-3",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("input", {
+                      className: "form-check-input",
+                      type: "checkbox",
+                      id: "agreed",
+                      checked: data.agreed,
+                      onChange: function onChange(e) {
+                        return setData("agreed", e.target.checked);
+                      }
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("label", {
+                      className: "form-check-label small text-muted",
+                      htmlFor: "agreed",
+                      style: {
+                        fontSize: "0.8rem"
+                      },
+                      children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("I agree to the"), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_0__.Link, {
+                        href: terms_condition_url,
+                        className: "text-decoration-underline",
+                        children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Terms & Conditions")
+                      })]
+                    }), errors.agreed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
+                      className: "text-danger small",
+                      style: {
+                        fontSize: "0.75rem"
+                      },
+                      children: errors.agreed
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("button", {
+                    className: "btn btn-primary rounded-pill w-100 fw-bold",
+                    style: {
+                      background: "linear-gradient(45deg, #ff8c00, #ffaa33)",
+                      border: "none",
+                      padding: "10px"
+                    },
+                    disabled: processing || !captchaVerified && is_active_google_captcha === "1",
+                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Complete Donation"), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                      amount: total.toFixed(2)
+                    })]
                   })]
-                }), errors.agreed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                  style: {
-                    color: "red"
-                  },
-                  children: errors.agreed
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                  className: "cs_height_20 cs_height_lg_20"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("button", {
-                  className: "cs_product_btn cs_semi_bold w-100",
-                  disabled: !captchaError && processing,
-                  children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Complete Donation")
                 })]
-              })]
+              })
             })]
           })
         })
@@ -29673,7 +29904,6 @@ var cartSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)({
   name: "carts",
   initialState: initialState,
   reducers: {
-    // Add item to cart (product, gift, or cause)
     addCart: function addCart(state, action) {
       var _action$payload = action.payload,
         id = _action$payload.id,
@@ -29681,8 +29911,6 @@ var cartSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)({
         content = _action$payload.content,
         _action$payload$quant = _action$payload.quantity,
         quantity = _action$payload$quant === void 0 ? 1 : _action$payload$quant;
-
-      // Find existing item with same id + type
       var cartIndex = state.carts.findIndex(function (c) {
         return c.id === id && c.type === type;
       });
@@ -31310,6 +31538,39 @@ module.exports = require("react/jsx-runtime");
 
 "use strict";
 module.exports = require("sweetalert2");
+
+/***/ }),
+
+/***/ "swiper/css":
+/*!*****************************!*\
+  !*** external "swiper/css" ***!
+  \*****************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("swiper/css");
+
+/***/ }),
+
+/***/ "swiper/css/navigation":
+/*!****************************************!*\
+  !*** external "swiper/css/navigation" ***!
+  \****************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("swiper/css/navigation");
+
+/***/ }),
+
+/***/ "swiper/css/pagination":
+/*!****************************************!*\
+  !*** external "swiper/css/pagination" ***!
+  \****************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("swiper/css/pagination");
 
 /***/ }),
 

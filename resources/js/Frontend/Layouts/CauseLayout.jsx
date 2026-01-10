@@ -31,10 +31,8 @@ export default function CauseLayout({
         <>
             {causeDetails ? (
                 <>
-                    <div className="cs_page_heading cs_style_2 cs_bg_filed" style={{ backgroundImage: `url(${causeDetailsBannerImageUrl})` }}>
-                        <div className="container">
-                            <h1 className="cs_page_heading_title cs_fs_120 cs_white_color cs_normal"></h1>
-                        </div>
+                    <div className="cause-banner-wrapper">
+                        <img src={causeDetailsBannerImageUrl} alt={causeDetails?.content?.title || "Cause Banner"} className="cause-banner-image" />
                     </div>
                 </>
             ) : (

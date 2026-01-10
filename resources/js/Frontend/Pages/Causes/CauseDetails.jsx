@@ -11,7 +11,10 @@ import ProcessContent from "@/utils/ProcessContent"
 import translate from "@/utils/translate"
 import FrontendLayout from "@/Frontend/Layouts/FrontendLayout"
 import { Swiper, SwiperSlide } from "swiper/react"
-import { Pagination } from "swiper/modules"
+import { Pagination, Navigation, Autoplay } from "swiper/modules"
+import "swiper/css"
+import "swiper/css/pagination"
+import "swiper/css/navigation"
 import React, { useState, useEffect } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
 import Amount from "@/Components/Amount"
@@ -88,10 +91,10 @@ export default function CauseDetails({
         receiptFile: null,
 
         // Special Dynamic Fields
-        special_name: "", // Entry Field 1 (Name / Sponsored By)
-        special_date: "", // Entry Field 2 (Date)
-        special_image: null, // Entry Field 3 (Photo)
-        special_message: "", // Entry Field 4 (Message)
+        special_name: "",
+        special_date: "",
+        special_image: null,
+        special_message: "",
 
         type: cause?.type || "",
         cause_id: cause?.id || null
@@ -166,9 +169,9 @@ export default function CauseDetails({
                 config = {
                     title: "Seva / Distribution Details",
                     showName: true,
-                    nameLabel: "Sponsored By Name", // Entry Field 2 in your table
+                    nameLabel: "Sponsored By Name",
                     showDate: true,
-                    dateLabel: "Date of Distribution", // Entry Field 1 in your table
+                    dateLabel: "Date of Distribution",
                     showImage: false,
                     imageLabel: "",
                     showMessage: false,
@@ -184,7 +187,6 @@ export default function CauseDetails({
     }
 
     const specialConfig = getSpecialConfig()
-    // -----------------------------------
 
     useEffect(() => {
         if (data.paymentMethod) {
@@ -257,12 +259,28 @@ export default function CauseDetails({
             }
         })
     }
-
-    // Helper: Safe Parse JSON
-    const galleryImages = (() => {
+    const galleryItems = (() => {
         try {
-            if (Array.isArray(cause?.gallery_images)) return cause.gallery_images
-            return JSON.parse(cause?.gallery_images || "[]")
+            let items = []
+            if (Array.isArray(cause?.gallery_images)) {
+                items = [...cause.gallery_images]
+            } else if (cause?.gallery_images) {
+                items = [...JSON.parse(cause.gallery_images)]
+            }
+            return items.map((url) => {
+                if (url.includes("youtube.com") || url.includes("youtu.be")) {
+                    const id = url.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/)([^&?]+))/)?.[1]
+                    return {
+                        type: "youtube",
+                        url: `https://www.youtube.com/embed/${id}?enablejsapi=1&rel=0`,
+                        thumb: `https://img.youtube.com/vi/${id}/mqdefault.jpg`
+                    }
+                } else if (url.match(/\.(mp4|webm|ogg)$/i)) {
+                    return { type: "video", url: url }
+                } else {
+                    return { type: "image", url: url }
+                }
+            })
         } catch {
             return []
         }
@@ -312,6 +330,32 @@ export default function CauseDetails({
         return url
     }
 
+    const [localAmount, setLocalAmount] = useState("")
+    useEffect(() => {
+        const cartItem = carts.find((i) => i.id === cause.id && i.type === "cause")
+        if (cartItem) {
+            setLocalAmount(cartItem.price)
+        }
+    }, [])
+    const handleDonationChange = (value) => {
+        setLocalAmount(value)
+
+        const numericVal = parseFloat(value)
+        if (!value || isNaN(numericVal)) {
+            dispatch(removeCart({ id: cause.id, type: "cause" }))
+        } else {
+            dispatch(removeCart({ id: cause.id, type: "cause" }))
+            dispatch(
+                addCart({
+                    id: cause.id,
+                    type: "cause",
+                    content: { ...cause, price: numericVal },
+                    quantity: 1
+                })
+            )
+        }
+    }
+
     return (
         <FrontendLayout>
             <CauseLayout
@@ -331,89 +375,69 @@ export default function CauseDetails({
                             <h1 className="cs_cause_details_title">{cause?.content?.title}</h1>
                         </div> */}
 
-                        {/* Gallery Section */}
-                        {galleryImages.length > 0 && (
-                            <div className="cs_cause_details_wrap">
-                                <Swiper
-                                    slidesPerView={1}
-                                    spaceBetween={20}
-                                    pagination={{ clickable: true }}
-                                    speed={700}
-                                    loop={true}
-                                    modules={[Pagination]}
-                                    breakpoints={{
-                                        575: { slidesPerView: 2 },
-                                        991: { slidesPerView: 3 },
-                                        1400: { slidesPerView: 4 }
-                                    }}
-                                >
-                                    {galleryImages.map((img, idx) => (
-                                        <SwiperSlide key={idx}>
-                                            <div className="p-2">
-                                                <img
-                                                    src={img}
-                                                    alt={`Gallery ${idx}`}
-                                                    className="w-full h-[220px] object-cover rounded-xl shadow-md"
-                                                />
-                                            </div>
-                                        </SwiperSlide>
-                                    ))}
-                                </Swiper>
-                            </div>
-                        )}
-
                         {/* Gifts Section */}
                         {cause?.have_gift == 1 && cause?.gifts?.length > 0 && (
-                            <div className="cs_cause_details_wrap mt-4">
-                                <h3>Gifts</h3>
-                                <div className="row g-3">
+                            <div className="cs_cause_details_wrap mt-5">
+                                <h3 className="mb-4">Select a Gift</h3>
+                                <div className="row g-4">
                                     {cause.gifts.map((gift, idx) => {
                                         const cartItem = carts.find((i) => i.id === gift.id && i.type === "gift")
                                         const quantity = cartItem ? cartItem.quantity : 0
                                         return (
-                                            <div key={idx} className="col-6 col-sm-4 col-md-3 col-lg-3">
-                                                <div className="card h-100 shadow-sm">
-                                                    {gift.gift_image && (
-                                                        <img
-                                                            src={gift.gift_image}
-                                                            alt={gift.content?.title}
-                                                            className="card-img-top"
-                                                            style={{ height: "140px", objectFit: "cover" }}
-                                                        />
-                                                    )}
+                                            <div key={idx} className="col-6 col-sm-4 col-md-3">
+                                                <div className="cause-card h-100 d-flex flex-column shadow-sm">
+                                                    <div className="cause-card-img-wrapper">
+                                                        {gift.gift_image ? (
+                                                            <img src={gift.gift_image} alt={gift.content?.title} />
+                                                        ) : (
+                                                            <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
+                                                                No Image
+                                                            </div>
+                                                        )}
+                                                    </div>
 
-                                                    <div className="card-body p-2">
-                                                        <h6 className="text-truncate">{gift.content?.title}</h6>
+                                                    <div className="card-body p-3 d-flex flex-column">
+                                                        <div className="cause-card-title" title={gift.content?.title}>
+                                                            {gift.content?.title}
+                                                        </div>
 
-                                                        <span className="fw-bold text-primary">
-                                                            <Amount amount={Number(gift.amount || 0).toFixed(2)} />
-                                                        </span>
-                                                        <div className="d-flex align-items-center mb-2">
-                                                            <button
-                                                                className="btn btn-outline-secondary btn-sm"
-                                                                disabled={!cartItem || quantity === 0}
-                                                                onClick={() => dispatch(decreaseCart({ id: gift.id, type: "gift" }))}
-                                                            >
-                                                                –
-                                                            </button>
-                                                            <span className="mx-2">{quantity}</span>
-                                                            <button
-                                                                className="btn btn-outline-secondary btn-sm"
-                                                                onClick={() =>
-                                                                    cartItem
-                                                                        ? dispatch(increaseCart({ id: gift.id, type: "gift" }))
-                                                                        : dispatch(
-                                                                              addCart({
-                                                                                  id: gift.id,
-                                                                                  type: "gift",
-                                                                                  content: gift,
-                                                                                  quantity: gift.min_qty || 1
-                                                                              })
-                                                                          )
-                                                                }
-                                                            >
-                                                                +
-                                                            </button>
+                                                        <div className="d-flex justify-content-between align-items-center mb-3">
+                                                            <span className="cause-card-price">
+                                                                <Amount amount={Number(gift.amount || 0).toFixed(2)} />
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Bottom Action Area - Pushed to bottom */}
+                                                        <div className="mt-auto">
+                                                            <div className="qty-control d-flex justify-content-between align-items-center w-100">
+                                                                <button
+                                                                    className="qty-btn"
+                                                                    disabled={!cartItem || quantity === 0}
+                                                                    onClick={() => dispatch(decreaseCart({ id: gift.id, type: "gift" }))}
+                                                                >
+                                                                    <Icon icon="ic:round-minus" />
+                                                                </button>
+
+                                                                <span className="fw-bold mx-2">{quantity}</span>
+
+                                                                <button
+                                                                    className="qty-btn"
+                                                                    onClick={() =>
+                                                                        cartItem
+                                                                            ? dispatch(increaseCart({ id: gift.id, type: "gift" }))
+                                                                            : dispatch(
+                                                                                  addCart({
+                                                                                      id: gift.id,
+                                                                                      type: "gift",
+                                                                                      content: gift,
+                                                                                      quantity: gift.min_qty || 1
+                                                                                  })
+                                                                              )
+                                                                    }
+                                                                >
+                                                                    <Icon icon="ic:round-plus" />
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -427,83 +451,113 @@ export default function CauseDetails({
                         {/* Products Section */}
                         {cause?.have_product == 1 && products?.length > 0 && (
                             <div className="mt-5">
-                                <h3>Products</h3>
-                                <div className="row g-3">
+                                <h3 className="mb-4">Products</h3>
+                                <div className="row g-4">
                                     {products.map((product, idx) => {
                                         const cartItem = carts.find((i) => i.id === product.id && i.type === "product")
                                         const quantity = cartItem ? cartItem.quantity : 1
                                         const finalPrice = Number(product.discount_price || product.price || 0)
 
                                         return (
-                                            <div key={idx} className="col-6 col-md-4">
-                                                <div className="card h-100">
-                                                    {product.thumbnail_image && (
-                                                        <img
-                                                            src={product.thumbnail_image}
-                                                            alt={product.content?.title}
-                                                            className="card-img-top"
-                                                            style={{ height: "150px", objectFit: "cover" }}
-                                                        />
-                                                    )}
+                                            <div key={idx} className="col-12 col-sm-6 col-md-4">
+                                                <div className="cause-card h-100 d-flex flex-column shadow-sm">
+                                                    <div className="cause-card-img-wrapper">
+                                                        {product.thumbnail_image ? (
+                                                            <img src={product.thumbnail_image} alt={product.content?.title} />
+                                                        ) : (
+                                                            <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
+                                                                No Image
+                                                            </div>
+                                                        )}
+                                                    </div>
 
-                                                    <div className="card-body p-2 d-flex flex-column">
-                                                        <h6 className="text-truncate">{product.content?.title}</h6>
+                                                    <div className="card-body p-3 d-flex flex-column">
+                                                        <div className="d-flex justify-content-between align-items-start">
+                                                            <div className="cause-card-title w-100" title={product.content?.title}>
+                                                                {product.content?.title}
+                                                            </div>
+                                                        </div>
 
-                                                        <div className="d-flex align-items-center mb-2">
-                                                            <p className="fw-bold text-primary">
-                                                                <Amount amount={finalPrice.toFixed(2)} /> / Unit
-                                                            </p>
-                                                            <button
-                                                                className="btn btn-outline-secondary btn-sm"
-                                                                disabled={!cartItem || quantity === 1}
-                                                                onClick={() => dispatch(decreaseCart({ id: product.id, type: "product" }))}
-                                                            >
-                                                                –
-                                                            </button>
-                                                            <span className="mx-2">{quantity}</span>
-                                                            <button
-                                                                className="btn btn-outline-secondary btn-sm"
-                                                                onClick={() =>
-                                                                    cartItem
-                                                                        ? dispatch(increaseCart({ id: product.id, type: "product" }))
-                                                                        : dispatch(addCart({ id: product.id, type: "product", content: product }))
-                                                                }
-                                                            >
-                                                                +
-                                                            </button>
-                                                            {!cartItem ? (
-                                                                <button
-                                                                    className="btn btn-primary btn-sm rounded-pill mt-auto"
-                                                                    onClick={() =>
-                                                                        dispatch(addCart({ id: product.id, type: "product", content: product }))
-                                                                    }
+                                                        <div className="cause-card-desc">
+                                                            <div
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html: removeHTMLTags(product?.content?.short_description || "")
+                                                                }}
+                                                            />
+                                                        </div>
+
+                                                        {/* Price and Actions - Pushed to Bottom */}
+                                                        <div className="mt-auto pt-2 border-top">
+                                                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                                                <span className="cause-card-price">
+                                                                    <Amount amount={finalPrice.toFixed(2)} />
+                                                                    <span className="text-muted fs-6 fw-normal"> / Unit</span>
+                                                                </span>
+                                                            </div>
+
+                                                            {/* Action Buttons Row */}
+                                                            <div className="d-flex gap-2 align-items-center">
+                                                                {/* Qty Control */}
+                                                                <div
+                                                                    className="qty-control d-flex align-items-center px-1"
+                                                                    style={{ width: "100px" }}
                                                                 >
-                                                                    Add
-                                                                </button>
-                                                            ) : (
+                                                                    <button
+                                                                        className="qty-btn"
+                                                                        style={{ width: "24px", height: "24px" }}
+                                                                        disabled={!cartItem || quantity === 1}
+                                                                        onClick={() => dispatch(decreaseCart({ id: product.id, type: "product" }))}
+                                                                    >
+                                                                        -
+                                                                    </button>
+                                                                    <span className="mx-auto fw-bold small">{quantity}</span>
+                                                                    <button
+                                                                        className="qty-btn"
+                                                                        style={{ width: "24px", height: "24px" }}
+                                                                        onClick={() =>
+                                                                            cartItem
+                                                                                ? dispatch(increaseCart({ id: product.id, type: "product" }))
+                                                                                : dispatch(
+                                                                                      addCart({ id: product.id, type: "product", content: product })
+                                                                                  )
+                                                                        }
+                                                                    >
+                                                                        +
+                                                                    </button>
+                                                                </div>
+
+                                                                {/* Add / Remove Button */}
+                                                                {!cartItem ? (
+                                                                    <button
+                                                                        className="btn btn-primary btn-sm flex-grow-1 rounded-pill"
+                                                                        onClick={() =>
+                                                                            dispatch(addCart({ id: product.id, type: "product", content: product }))
+                                                                        }
+                                                                    >
+                                                                        Add to Cart
+                                                                    </button>
+                                                                ) : (
+                                                                    <button
+                                                                        className="btn btn-outline-danger btn-sm flex-grow-1 rounded-pill"
+                                                                        onClick={() => dispatch(removeCart({ id: product.id, type: "product" }))}
+                                                                    >
+                                                                        Remove
+                                                                    </button>
+                                                                )}
+                                                            </div>
+
+                                                            {/* Birthday Special Donate Button */}
+                                                            {["birthday"].includes(cause.type) && (
                                                                 <button
-                                                                    className="btn btn-danger btn-sm rounded-pill mt-auto"
-                                                                    onClick={() => dispatch(removeCart({ id: product.id, type: "product" }))}
+                                                                    className="btn btn-dark w-100 mt-2 rounded-pill btn-sm"
+                                                                    disabled={carts.length === 0}
+                                                                    onClick={() => setShowDonateModal(true)}
                                                                 >
-                                                                    Remove
+                                                                    <Icon icon="mdi:heart" className="me-1" />
+                                                                    {translate("Donate Now")}
                                                                 </button>
                                                             )}
                                                         </div>
-                                                        <div
-                                                            dangerouslySetInnerHTML={{
-                                                                __html: ProcessContent(product?.content?.short_description || "")
-                                                            }}
-                                                        />
-
-                                                        {["birthday"].includes(cause.type) && (
-                                                            <a
-                                                                className={`cs_product_btn w-100 ${carts.length === 0 ? "cs_disable" : ""}`}
-                                                                style={{ cursor: "pointer" }}
-                                                                onClick={() => setShowDonateModal(true)}
-                                                            >
-                                                                {translate("Donate Now")}
-                                                            </a>
-                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -513,30 +567,50 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* Content & Projects */}
-                        <div className="cs_cause_details_wrap">
-                            <h3>Content</h3>
-                            <div className="cs_cause_details" dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.content || "") }} />
+                        {/* --- Content (Story) Section --- */}
+                        <div className="cs_cause_details_wrap mt-5">
+                            <div className="d-flex align-items-center mb-4">
+                                <h3 className="mb-0 fw-bold">Content</h3>
+                            </div>
 
-                            <h3>Project</h3>
-                            <div className="cs_cause_details" dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.projects || "") }} />
+                            <div
+                                className="rich-content bg-white"
+                                dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.content || "") }}
+                            />
                         </div>
 
-                        {/* FAQ Section */}
+                        {/* --- Project Details Section --- */}
+                        {cause?.content?.projects && (
+                            <div className="cs_cause_details_wrap mt-5 pt-4 border-top">
+                                <div className="d-flex align-items-center mb-4">
+                                    <h3 className="mb-0 fw-bold">Project</h3>
+                                </div>
+
+                                <div
+                                    className="rich-content bg-white"
+                                    dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.projects || "") }}
+                                />
+                            </div>
+                        )}
+
+                        {/* --- FAQ Section --- */}
                         {faqItems.length > 0 && (
-                            <div className="cs_cause_details_wrap">
-                                <h3 className="mb-4">FAQ's</h3>
-                                <div className="accordion" id="faqAccordion">
+                            <div className="cs_cause_details_wrap mt-5 pt-4 border-top">
+                                <div className="d-flex align-items-center mb-4">
+                                    <h3 className="mb-0 fw-bold">Frequently Asked Questions</h3>
+                                </div>
+
+                                <div className="accordion custom-accordion" id="faqAccordion">
                                     {faqItems.map((item, idx) => {
                                         const headingId = `faq-heading-${idx}`
                                         const collapseId = `faq-collapse-${idx}`
                                         const isOpen = openFaqIndex === idx
 
                                         return (
-                                            <div className="accordion-item mb-3 shadow-sm border rounded-3" key={idx}>
+                                            <div className="accordion-item" key={idx}>
                                                 <h2 className="accordion-header" id={headingId}>
                                                     <button
-                                                        className={`accordion-button fw-semibold ${isOpen ? "" : "collapsed"}`}
+                                                        className={`accordion-button ${isOpen ? "" : "collapsed"}`}
                                                         type="button"
                                                         onClick={() => toggleFaq(idx)}
                                                         aria-expanded={isOpen}
@@ -550,8 +624,10 @@ export default function CauseDetails({
                                                     className={`accordion-collapse collapse ${isOpen ? "show" : ""}`}
                                                     aria-labelledby={headingId}
                                                 >
-                                                    <div className="accordion-body fs-6 text-secondary">
+                                                    <div className="accordion-body">
                                                         <div
+                                                            className="rich-content"
+                                                            style={{ fontSize: "0.95rem" }}
                                                             dangerouslySetInnerHTML={{
                                                                 __html: ProcessContent(item.content || "")
                                                             }}
@@ -565,503 +641,606 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* Updates Section */}
-                        <div className="cs_cause_details_wrap">
-                            <h3>Updates</h3>
-                            <div className="cs_cause_details" dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.updates || "") }} />
-                        </div>
-                    </div>
-
-                    {/* Sidebar */}
-                    <div className={`col-xl-4 ${cause.type === "birthday" ? "d-none" : ""}`}>
-                        {/* Custom Donation Amounts */}
-                        {cause?.custom_donation_amounts && (
-                            <div className="cs_shop-card mt-4">
-                                <h3>Custom Donation</h3>
-                                <div className="d-flex flex-wrap gap-2">
-                                    {(Array.isArray(cause.custom_donation_amounts)
-                                        ? cause.custom_donation_amounts
-                                        : cause.custom_donation_amounts.split(",")
-                                    ).map((val, idx) => {
-                                        const amount = Number(val)
-                                        const cartItem = carts.find((i) => i.id === cause.id && i.type === "cause")
-                                        const isSelected = cartItem?.price === amount
-
-                                        return (
-                                            <button
-                                                key={idx}
-                                                className={`btn btn-sm rounded-pill px-3 ${isSelected ? "btn-danger" : "btn-primary"}`}
-                                                onClick={() => {
-                                                    dispatch(removeCart({ id: cause.id, type: "cause" }))
-                                                    if (!isSelected)
-                                                        dispatch(addCart({ id: cause.id, type: "cause", content: { ...cause, price: amount } }))
-                                                }}
-                                            >
-                                                <Amount amount={amount.toFixed(2)} />
-                                            </button>
-                                        )
-                                    })}
+                        {/* --- Updates Section --- */}
+                        {cause?.content?.updates && (
+                            <div className="cs_cause_details_wrap mt-5 pt-4 border-top">
+                                <div className="d-flex align-items-center mb-4">
+                                    <h3 className="mb-0 fw-bold">Latest Updates</h3>
                                 </div>
-                            </div>
-                        )}
 
-                        {/* Cart Totals */}
-                        <div className="cs_shop-card mt-2">
-                            <h2>{translate("Totals")}</h2>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td>{translate("Subtotal")}</td>
-                                        <td className="text-end">
-                                            <Amount amount={subtotal.toFixed(2)} />
-                                        </td>
-                                    </tr>
-
-                                    {discount > 0 && (
-                                        <tr>
-                                            <td>{translate("Discount")}</td>
-                                            <td className="text-end">
-                                                - <Amount amount={discount.toFixed(2)} />
-                                            </td>
-                                        </tr>
-                                    )}
-
-                                    <tr>
-                                        <td className="fw-bold">{translate("Total")}</td>
-                                        <td className="text-end fw-bold">
-                                            <Amount amount={total.toFixed(2)} />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <a
-                                className={`cs_product_btn w-100 ${carts.length === 0 ? "cs_disable" : ""}`}
-                                style={{ cursor: "pointer" }}
-                                onClick={() => setShowDonateModal(true)}
-                            >
-                                {translate("Donate Now")}
-                            </a>
-                        </div>
-
-                        {/* Sidebar Video */}
-                        {cause?.video_url && (
-                            <div className="cs_shop-card mt-2">
-                                <h2>{translate("Video")}</h2>
-                                <div className="ratio ratio-16x9">
-                                    <iframe
-                                        src={convertYouTube(cause.video_url)}
-                                        title="Cause Video"
-                                        frameBorder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        className="w-100 rounded"
+                                <div className="p-4 rounded-4 bg-light border border-light-subtle">
+                                    <div
+                                        className="rich-content"
+                                        dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.updates || "") }}
                                     />
                                 </div>
                             </div>
                         )}
+
+                        {/* Transparency Gallery Section (Mixed Content) */}
+                        {galleryItems.length > 0 && (
+                            <div className="transparency-gallery-section mt-5 p-4 p-lg-5 rounded-4">
+                                <div className="text-center mb-4">
+                                    <h3 className="fw-bold mb-2 section-title">We Ensure 100% Transparency With Your Donation</h3>
+                                    <div className="separator mx-auto"></div>
+                                </div>
+
+                                <Swiper
+                                    modules={[Pagination, Navigation, Autoplay]}
+                                    spaceBetween={24}
+                                    slidesPerView={1}
+                                    navigation={true}
+                                    pagination={{ clickable: true, dynamicBullets: true }}
+                                    autoplay={{
+                                        delay: 4000,
+                                        disableOnInteraction: true,
+                                        pauseOnMouseEnter: true
+                                    }}
+                                    loop={true}
+                                    speed={800}
+                                    breakpoints={{
+                                        320: { slidesPerView: 1 },
+                                        576: { slidesPerView: 2 },
+                                        992: { slidesPerView: 3 },
+                                        1200: { slidesPerView: 4 }
+                                    }}
+                                    className="pb-5 px-2"
+                                >
+                                    {galleryItems.map((item, idx) => (
+                                        <SwiperSlide key={idx}>
+                                            <div className="gallery-card bg-white rounded-3 shadow-sm h-100">
+                                                <div className="img-wrapper rounded-2 overflow-hidden position-relative" style={{ height: "220px" }}>
+                                                    {item.type === "youtube" && (
+                                                        <div className="ratio ratio-1x1 h-100 w-100">
+                                                            <iframe
+                                                                src={item.url}
+                                                                title={`Gallery Video ${idx}`}
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowFullScreen
+                                                                style={{ borderRadius: "8px" }}
+                                                            ></iframe>
+                                                        </div>
+                                                    )}
+                                                    {item.type === "video" && (
+                                                        <video
+                                                            src={item.url}
+                                                            controls
+                                                            className="w-100 h-100 object-fit-cover rounded-2"
+                                                            style={{ backgroundColor: "#000" }}
+                                                            autoPlay={true}
+                                                        />
+                                                    )}
+                                                    {item.type === "image" && (
+                                                        <>
+                                                            <img
+                                                                src={item.url}
+                                                                alt={`Transparency Proof ${idx + 1}`}
+                                                                className="w-100 h-100 object-fit-cover"
+                                                                style={{ transition: "transform 0.5s ease" }}
+                                                            />
+                                                            <div className="hover-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center pointer-events-none">
+                                                                <Icon icon="mdi:eye" className="text-white fs-2 opacity-0" />
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </SwiperSlide>
+                                    ))}
+                                </Swiper>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={`col-xl-4 ${cause.type === "birthday" ? "d-none" : ""}`}>
+                        <div className="sidebar-sticky-wrapper">
+                            <div className="donation-card">
+                                <div className="donation-card-header">
+                                    <h3>{translate("Make a Donation")}</h3>
+                                    <p className="text-muted small mb-0">Your support changes lives.</p>
+                                </div>
+
+                                <div className="donation-logic-wrapper">
+                                    {/* 1. Preset Buttons */}
+                                    {cause?.custom_donation_amounts && (
+                                        <div className="amount-grid">
+                                            {(Array.isArray(cause.custom_donation_amounts)
+                                                ? cause.custom_donation_amounts
+                                                : cause.custom_donation_amounts.split(",")
+                                            ).map((val, idx) => {
+                                                const btnAmount = Number(val)
+                                                // Compare numbers to fix highlighting issue
+                                                const isSelected = Number(localAmount) === btnAmount
+
+                                                return (
+                                                    <button
+                                                        key={idx}
+                                                        type="button"
+                                                        className={`amount-btn ${isSelected ? "active" : ""}`}
+                                                        onClick={() => handleDonationChange(btnAmount)}
+                                                    >
+                                                        <Amount amount={btnAmount.toFixed(0)} />
+                                                    </button>
+                                                )
+                                            })}
+                                        </div>
+                                    )}
+
+                                    {/* 2. Custom Amount Input */}
+                                    <div className="mb-3">
+                                        <label className="form-label fw-bold small text-muted mb-1">{translate("Or Enter Custom Amount")}</label>
+                                        <div className="input-group input-group-lg border rounded-3 overflow-hidden">
+                                            <span className="input-group-text bg-light border-0 fw-bold text-muted">
+                                                <Amount amount={0} showSymbolOnly={true} />
+                                            </span>
+                                            <input
+                                                type="number"
+                                                className="form-control border-0 fw-bold fs-5 text-dark"
+                                                placeholder="0"
+                                                value={localAmount}
+                                                onChange={(e) => handleDonationChange(e.target.value)}
+                                            />
+                                        </div>
+
+                                        {/* Validation Message */}
+                                        {(() => {
+                                            const numericVal = Number(localAmount)
+                                            const minAmount = Number(cause?.min_amount || 1)
+
+                                            if (numericVal > 0 && numericVal < minAmount) {
+                                                return (
+                                                    <div className="text-danger small mt-1 d-flex align-items-center animate__animated animate__fadeIn">
+                                                        <Icon icon="mdi:alert-circle-outline" className="me-1" />
+                                                        Minimum donation amount is <Amount amount={minAmount} />
+                                                    </div>
+                                                )
+                                            }
+                                            return null
+                                        })()}
+                                    </div>
+
+                                    {/* Total Row */}
+                                    <div className="d-flex justify-content-between align-items-center mb-3 pt-3 border-top">
+                                        <span className="fw-bold text-secondary">{translate("Total Payable")}</span>
+                                        <span className="fw-bolder fs-4 text-primary">
+                                            <Amount amount={total.toFixed(2)} />
+                                        </span>
+                                    </div>
+
+                                    {/* Main Action Button */}
+                                    <button
+                                        className={`btn-donate-lg ${
+                                            !localAmount || Number(localAmount) < Number(cause?.min_amount || 1) ? "disabled" : ""
+                                        }`}
+                                        disabled={!localAmount || Number(localAmount) < Number(cause?.min_amount || 1)}
+                                        onClick={() => setShowDonateModal(true)}
+                                    >
+                                        {translate("Donate Now")}
+                                    </button>
+
+                                    <div className="trust-badges">
+                                        <div className="trust-item">
+                                            <Icon icon="mdi:shield-check" className="text-success fs-5" />
+                                            <span>Secure Payment</span>
+                                        </div>
+                                        <div className="trust-item">
+                                            <Icon icon="mdi:tax" className="text-primary fs-5" />
+                                            <span>Tax Benefits</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Video Section */}
+                            {cause?.video_url && (
+                                <div className="sidebar-video-card">
+                                    <div className="ratio ratio-16x9">
+                                        <iframe
+                                            src={convertYouTube(cause.video_url)}
+                                            title="Cause Video"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
                 {/* --- DONATION MODAL --- */}
                 {showDonateModal && <div className="modal-backdrop fade show"></div>}
-                <div className={`modal fade ${showDonateModal ? "show d-block" : ""}`} tabIndex="-1" role="dialog">
-                    <div className="modal-dialog modal-dialog-centered" role="document">
+
+                <div className={`modal fade ${showDonateModal ? "show d-block" : ""}`} tabIndex="-1" role="dialog" style={{ overflowY: "auto" }}>
+                    <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Donate Now</h5>
-                                <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowDonateModal(false)}></button>
+                            {/* Header */}
+                            <div className="modal-header d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h5 className="modal-title fs-6 fw-bold">{translate("Complete Donation")}</h5>
+                                    <p className="mb-0 text-muted" style={{ fontSize: "0.8rem" }}>
+                                        Donating{" "}
+                                        <span className="fw-bold text-primary">
+                                            <Amount amount={total.toFixed(2)} />
+                                        </span>{" "}
+                                        to <span className="fw-bold">{cause?.content?.title}</span>
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="btn-close shadow-none small"
+                                    onClick={() => setShowDonateModal(false)}
+                                    aria-label="Close"
+                                ></button>
                             </div>
 
                             <div className="modal-body">
-                                <div className="row">
-                                    {/* Standard Fields */}
-                                    <div className="col-lg-12 mb-2">
-                                        <label className="cs_shop-label">{translate("Name")} *</label>
-                                        <input
-                                            type="text"
-                                            onChange={(e) => setData("name", e.target.value)}
-                                            value={data.name}
-                                            className="form-control form-control-sm"
-                                        />
-                                        {errors.name && <span className="text-danger small">{errors.name}</span>}
-                                    </div>
-
-                                    <div className="col-lg-12 mb-2">
-                                        <label className="cs_shop-label">{translate("Email")} *</label>
-                                        <input
-                                            type="email"
-                                            onChange={(e) => setData("email", e.target.value)}
-                                            value={data.email}
-                                            className="form-control form-control-sm"
-                                        />
-                                        {errors.email && <span className="text-danger small">{errors.email}</span>}
-                                    </div>
-
-                                    <div className="col-lg-12 mb-2">
-                                        <label className="cs_shop-label">{translate("Phone")} *</label>
-                                        <input
-                                            type="text"
-                                            onChange={(e) => setData("phone", e.target.value)}
-                                            value={data.phone}
-                                            className="form-control form-control-sm"
-                                        />
-                                        {errors.phone && <span className="text-danger small">{errors.phone}</span>}
-                                    </div>
-
-                                    <div className="col-lg-12">
-                                        <label className="cs_shop-label">{translate("Full Address")} *</label>
-                                        <input
-                                            type="text"
-                                            onChange={(e) => setData("address", e.target.value)}
-                                            value={data.address}
-                                            className="form-control form-control-sm"
-                                        />
-                                        {errors.address && <span className="text-danger small">{errors.address}</span>}
-                                    </div>
-
-                                    <div className="col-lg-12 mt-3 mb-2">
-                                        <label className="cs_shop-label">{translate("State")} *</label>
-                                        <select
-                                            className="form-select form-select-sm"
-                                            value={data.state}
-                                            onChange={(e) => setData("state", e.target.value)}
-                                            required
-                                        >
-                                            <option value="">{translate("Select State")}</option>
-                                            {states.map((state) => (
-                                                <option key={state} value={state}>
-                                                    {state}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        {errors.state && <span className="text-danger small">{errors.state}</span>}
-                                    </div>
-
-                                    {/* --- DYNAMIC SPECIAL FIELDS SECTION --- */}
-                                    {!!cause?.is_special && (
-                                        <div className="p-2 border rounded bg-light mt-2">
-                                            <h5 className="text-primary mb-3">{translate(specialConfig.title)}</h5>
-
-                                            {specialConfig.showName && (
-                                                <div className="mb-3">
-                                                    <label className="cs_shop-label">{translate(specialConfig.nameLabel)}</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control form-control-sm"
-                                                        value={data.special_name}
-                                                        onChange={(e) => setData("special_name", e.target.value)}
-                                                    />
-                                                </div>
-                                            )}
-
-                                            {/* Entry Field 2: Date */}
-                                            {specialConfig.showDate && (
-                                                <div className="mb-3">
-                                                    <label className="cs_shop-label">{translate(specialConfig.dateLabel)}</label>
-                                                    <input
-                                                        type="date"
-                                                        className="form-control form-control-sm"
-                                                        value={data.special_date}
-                                                        onChange={(e) => setData("special_date", e.target.value)}
-                                                    />
-                                                </div>
-                                            )}
-
-                                            {/* Entry Field 3: Image */}
-                                            {specialConfig.showImage && (
-                                                <div className="mb-3">
-                                                    <label className="cs_shop-label">
-                                                        {translate(specialConfig.imageLabel)} <span className="text-muted small">(Max 5MB)</span>
-                                                    </label>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        className="form-control form-control-sm"
-                                                        onChange={handleSFileChange}
-                                                    />
-                                                    {special_image && (
-                                                        <div className="mt-2 d-flex align-items-center gap-2 flex-wrap">
-                                                            <span className="badge bg-success">{special_image.name}</span>
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-sm btn-outline-danger"
-                                                                onClick={() => {
-                                                                    setSpecialImage(null)
-                                                                    setData("special_image", null)
-                                                                    const input = document.querySelector('input[type="file"][accept*="image"]')
-                                                                    if (input) input.value = ""
-                                                                }}
-                                                            >
-                                                                {translate("Remove")}
-                                                            </button>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-
-                                            {/* Entry Field 4: Message */}
-                                            {specialConfig.showMessage && (
-                                                <div className="mb-3">
-                                                    <label className="cs_shop-label">{translate(specialConfig.messageLabel)}</label>
-                                                    <textarea
-                                                        className="form-control form-control-sm"
-                                                        rows="3"
-                                                        value={data.special_message}
-                                                        onChange={(e) => setData("special_message", e.target.value)}
-                                                    />
+                                <form onSubmit={handlePlaceOrder}>
+                                    {/* SECTION 1: Personal Details */}
+                                    <span className="section-label">{translate("Personal Details")}</span>
+                                    <div className="row g-2 mb-3">
+                                        {" "}
+                                        <div className="col-md-6">
+                                            <div className="form-floating">
+                                                <input
+                                                    type="text"
+                                                    className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                                                    id="donorName"
+                                                    placeholder="Name"
+                                                    value={data.name}
+                                                    onChange={(e) => setData("name", e.target.value)}
+                                                />
+                                                <label htmlFor="donorName">{translate("Full Name")} *</label>
+                                            </div>
+                                            {errors.name && (
+                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
+                                                    {errors.name}
                                                 </div>
                                             )}
                                         </div>
+                                        <div className="col-md-6">
+                                            <div className="form-floating">
+                                                <input
+                                                    type="tel"
+                                                    className={`form-control ${errors.phone ? "is-invalid" : ""}`}
+                                                    id="donorPhone"
+                                                    placeholder="Phone"
+                                                    value={data.phone}
+                                                    onChange={(e) => setData("phone", e.target.value)}
+                                                />
+                                                <label htmlFor="donorPhone">{translate("Phone Number")} *</label>
+                                            </div>
+                                            {errors.phone && (
+                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
+                                                    {errors.phone}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="col-md-12">
+                                            <div className="form-floating">
+                                                <input
+                                                    type="email"
+                                                    className={`form-control ${errors.email ? "is-invalid" : ""}`}
+                                                    id="donorEmail"
+                                                    placeholder="Email"
+                                                    value={data.email}
+                                                    onChange={(e) => setData("email", e.target.value)}
+                                                />
+                                                <label htmlFor="donorEmail">{translate("Email Address")} *</label>
+                                            </div>
+                                            {errors.email && (
+                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
+                                                    {errors.email}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="col-md-8">
+                                            <div className="form-floating">
+                                                <input
+                                                    type="text"
+                                                    className={`form-control ${errors.address ? "is-invalid" : ""}`}
+                                                    id="donorAddress"
+                                                    placeholder="Address"
+                                                    value={data.address}
+                                                    onChange={(e) => setData("address", e.target.value)}
+                                                />
+                                                <label htmlFor="donorAddress">{translate("Address")} *</label>
+                                            </div>
+                                            {errors.address && (
+                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
+                                                    {errors.address}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="col-md-4">
+                                            <div className="form-floating">
+                                                <select
+                                                    className={`form-select ${errors.state ? "is-invalid" : ""}`}
+                                                    id="donorState"
+                                                    value={data.state}
+                                                    onChange={(e) => setData("state", e.target.value)}
+                                                    style={{ paddingTop: "0.25rem" }} // Small adjustment for select
+                                                >
+                                                    <option value="">State</option>
+                                                    {states.map((state) => (
+                                                        <option key={state} value={state}>
+                                                            {state}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <label htmlFor="donorState">{translate("State")} *</label>
+                                            </div>
+                                            {errors.state && (
+                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
+                                                    {errors.state}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* SECTION 2: Special Dedication */}
+                                    {!!cause?.is_special && (
+                                        <div className="bg-light p-3 rounded-2 mb-3 border border-dashed">
+                                            <div className="d-flex align-items-center mb-2">
+                                                <Icon icon="mdi:gift-outline" className="text-primary fs-6 me-2" />
+                                                <h6 className="fw-bold mb-0 text-dark small">{translate(specialConfig.title)}</h6>
+                                            </div>
+
+                                            <div className="row g-2">
+                                                {specialConfig.showName && (
+                                                    <div className="col-md-6">
+                                                        <div className="form-floating">
+                                                            <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="specialName"
+                                                                placeholder="Name"
+                                                                value={data.special_name}
+                                                                onChange={(e) => setData("special_name", e.target.value)}
+                                                            />
+                                                            <label htmlFor="specialName">{translate(specialConfig.nameLabel)}</label>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {specialConfig.showDate && (
+                                                    <div className="col-md-6">
+                                                        <div className="form-floating">
+                                                            <input
+                                                                type="date"
+                                                                className="form-control"
+                                                                id="specialDate"
+                                                                value={data.special_date}
+                                                                onChange={(e) => setData("special_date", e.target.value)}
+                                                            />
+                                                            <label htmlFor="specialDate">{translate(specialConfig.dateLabel)}</label>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {specialConfig.showImage && (
+                                                    <div className="col-md-12">
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            className="form-control form-control-sm"
+                                                            onChange={handleSFileChange}
+                                                        />
+                                                        {special_image && (
+                                                            <div className="small text-success mt-1 ms-1" style={{ fontSize: "0.7rem" }}>
+                                                                Selected: {special_image.name}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {specialConfig.showMessage && (
+                                                    <div className="col-md-12">
+                                                        <div className="form-floating">
+                                                            <textarea
+                                                                className="form-control"
+                                                                placeholder="Message"
+                                                                id="specialMsg"
+                                                                value={data.special_message}
+                                                                onChange={(e) => setData("special_message", e.target.value)}
+                                                            ></textarea>
+                                                            <label htmlFor="specialMsg">{translate(specialConfig.messageLabel)}</label>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     )}
 
-                                    {/* 80G Certificate */}
-                                    <div className="form-check ms-3 mt-2">
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                                            id="is_80g"
-                                            checked={!!data.is_80g}
-                                            onChange={(e) => {
-                                                const checked = e.target.checked
-                                                setData({
-                                                    ...data,
-                                                    is_80g: checked,
-                                                    pancard: checked ? data.pancard : ""
-                                                })
-                                            }}
-                                        />
-                                        <label className="form-check-label cs_semi_bold" htmlFor="is_80g">
-                                            {translate("80G Certificate Needed?")}
-                                        </label>
+                                    {/* SECTION 3: 80G Certificate */}
+                                    <div className="mb-3">
+                                        <div className="form-check form-switch">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                role="switch"
+                                                id="is_80g"
+                                                checked={!!data.is_80g}
+                                                onChange={(e) => {
+                                                    const checked = e.target.checked
+                                                    setData({ ...data, is_80g: checked, pancard: checked ? data.pancard : "" })
+                                                }}
+                                            />
+                                            <label className="form-check-label fw-semibold small ms-1" htmlFor="is_80g">
+                                                {translate("I need 80G Tax Exemption Certificate")}
+                                            </label>
+                                        </div>
                                     </div>
 
                                     {data.is_80g && (
-                                        <div className="col-lg-12">
-                                            <label className="cs_shop-label">
-                                                {translate("Pancard")} <span className="text-danger">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control form-control-sm"
-                                                value={data.pancard || ""}
-                                                onChange={(e) => setData("pancard", e.target.value.toUpperCase())}
-                                                placeholder="ABCDE1234D"
-                                                pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
-                                                title="Enter valid PAN: 5 letters, 4 numbers, 1 letter (e.g., ABCDE1234F)"
-                                                maxLength="10"
-                                                required
-                                            />
-                                            {errors.pancard && <div className="text-danger small mt-1">{errors.pancard}</div>}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Payment Form */}
-                                <form onSubmit={handlePlaceOrder}>
-                                    <table className="mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    {payment_gateway.is_cod_active && (
-                                                        <div className="form-check">
-                                                            <input
-                                                                className="form-check-input"
-                                                                type="radio"
-                                                                name="paymentMethod"
-                                                                value="cod"
-                                                                id="cod"
-                                                                onChange={(e) => setData("paymentMethod", e.target.value)}
-                                                            />
-                                                            <label className="form-check-label m-0 cs_semi_bold" htmlFor="cod">
-                                                                {translate("Cash On Delivery")}
-                                                            </label>
-                                                        </div>
-                                                    )}
-                                                    {payment_gateway.is_paypal_active && (
-                                                        <div className="form-check">
-                                                            <input
-                                                                className="form-check-input"
-                                                                type="radio"
-                                                                name="paymentMethod"
-                                                                value="paypal"
-                                                                id="paypal"
-                                                                onChange={(e) => setData("paymentMethod", e.target.value)}
-                                                            />
-                                                            <label className="form-check-label m-0 cs_semi_bold" htmlFor="paypal">
-                                                                {translate("Paypal")}
-                                                            </label>
-                                                        </div>
-                                                    )}
-                                                    {payment_gateway.is_stripe_active && (
-                                                        <div className="form-check">
-                                                            <input
-                                                                className="form-check-input"
-                                                                type="radio"
-                                                                name="paymentMethod"
-                                                                value="stripe"
-                                                                id="stripe"
-                                                                onChange={(e) => setData("paymentMethod", e.target.value)}
-                                                            />
-                                                            <label className="form-check-label m-0 cs_semi_bold" htmlFor="stripe">
-                                                                {translate("Stripe")}
-                                                            </label>
-                                                        </div>
-                                                    )}
-                                                    {payment_gateway.is_flutterwave_active && (
-                                                        <div className="form-check">
-                                                            <input
-                                                                className="form-check-input"
-                                                                type="radio"
-                                                                name="paymentMethod"
-                                                                value="flutterwave"
-                                                                id="flutterwave"
-                                                                onChange={(e) => setData("paymentMethod", e.target.value)}
-                                                            />
-                                                            <label className="form-check-label m-0 cs_semi_bold" htmlFor="flutterwave">
-                                                                {translate("Flutterwave")}
-                                                            </label>
-                                                        </div>
-                                                    )}
-                                                    {payment_gateway.is_razorpay_active && (
-                                                        <div className="form-check">
-                                                            <input
-                                                                className="form-check-input"
-                                                                type="radio"
-                                                                name="paymentMethod"
-                                                                value="razorpay"
-                                                                id="razorpay"
-                                                                onChange={(e) => setData("paymentMethod", e.target.value)}
-                                                            />
-                                                            <label className="form-check-label m-0 cs_semi_bold" htmlFor="razorpay">
-                                                                {translate("Razorpay")}
-                                                            </label>
-                                                        </div>
-                                                    )}
-                                                    {payment_gateway.is_sslcz_active && (
-                                                        <div className="form-check">
-                                                            <input
-                                                                className="form-check-input"
-                                                                type="radio"
-                                                                name="paymentMethod"
-                                                                value="sslcommerz"
-                                                                id="sslcommerz"
-                                                                onChange={(e) => setData("paymentMethod", e.target.value)}
-                                                            />
-                                                            <label className="form-check-label m-0 cs_semi_bold" htmlFor="sslcommerz">
-                                                                {translate("Sslcommerz")}
-                                                            </label>
-                                                        </div>
-                                                    )}
-                                                    {manual_payment_gateways.length > 0 && (
-                                                        <>
-                                                            {manual_payment_gateways?.map((gateway, index) => (
-                                                                <div key={index}>
-                                                                    <div className="form-check">
-                                                                        <input
-                                                                            className="form-check-input"
-                                                                            type="radio"
-                                                                            name="paymentMethod"
-                                                                            value={gateway?.content?.gateway_name}
-                                                                            id={gateway?.content?.gateway_name}
-                                                                            onChange={(e) => setData("paymentMethod", e.target.value)}
-                                                                        />
-                                                                        <label
-                                                                            className="form-check-label m-0 cs_semi_bold"
-                                                                            htmlFor={gateway?.content?.gateway_name}
-                                                                        >
-                                                                            {gateway?.content?.gateway_name}
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    {selectedGateway && (
-                                        <div className="manual-payment-details mt-2">
-                                            <h3>{translate("Payment Instructions")}</h3>
-                                            <div className="cs_height_15 cs_height_lg_15" />
-                                            <div
-                                                className="payment-instructions mb-1"
-                                                dangerouslySetInnerHTML={{ __html: selectedGateway?.content?.instructions }}
-                                            />
-                                            {selectedGateway?.payment_type === "bank_payment" && (
-                                                <div className="bank-info mb-1">
-                                                    <h4>{translate("Bank Information")}</h4>
-                                                    <div className="cs_height_10 cs_height_lg_10" />
-                                                    {JSON.parse(selectedGateway.bank_information).map((bank, idx) => (
-                                                        <div key={idx} className="bank-detail p-3 mb-2 border rounded">
-                                                            <p>
-                                                                <strong>{translate("Bank Name")}:</strong> {bank.bank_name}
-                                                            </p>
-                                                            <p>
-                                                                <strong>{translate("Account Name")}:</strong> {bank.account_name}
-                                                            </p>
-                                                            <p>
-                                                                <strong>{translate("Account Number")}:</strong> {bank.account_number}
-                                                            </p>
-                                                            <p>
-                                                                <strong>{translate("Routing Number")}:</strong> {bank.routing_number}
-                                                            </p>
-                                                            <p>
-                                                                <strong>{translate("Branch")}:</strong> {bank.branch_name}
-                                                            </p>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                            <div className="mb-1">
-                                                <label className="cs_shop-label">{translate("Transaction ID")} *</label>
+                                        <div className="mb-3 animate__animated animate__fadeIn">
+                                            <div className="form-floating">
                                                 <input
                                                     type="text"
-                                                    className="cs_shop-input"
-                                                    value={data.transactionId}
-                                                    onChange={(e) => setData("transactionId", e.target.value)}
-                                                    placeholder={translate("Enter your transaction ID")}
-                                                    required
+                                                    className={`form-control ${errors.pancard ? "is-invalid" : ""}`}
+                                                    id="pancard"
+                                                    placeholder="Pancard"
+                                                    maxLength="10"
+                                                    value={data.pancard || ""}
+                                                    onChange={(e) => setData("pancard", e.target.value.toUpperCase())}
                                                 />
-                                                {errors.transactionId && <span style={{ color: "red" }}>{errors.transactionId}</span>}
+                                                <label htmlFor="pancard">{translate("PAN Card Number")} *</label>
                                             </div>
-                                            <div className="mb-3">
-                                                <label className="cs_shop-label">{translate("Photo")}</label>
-                                                <input type="file" className="form-control" onChange={handleFileChange} accept="image/*,.pdf" />
-                                                {receiptFile && (
-                                                    <div className="mt-2">
-                                                        <span className="badge bg-success">{receiptFile.name}</span>
+                                            {errors.pancard && (
+                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
+                                                    {errors.pancard}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* SECTION 4: Payment Methods */}
+                                    <span className="section-label">{translate("Payment Method")}</span>
+
+                                    <div className="payment-grid">
+                                        {payment_gateway.is_cod_active && (
+                                            <div
+                                                className={`payment-option-card ${data.paymentMethod === "cod" ? "selected" : ""}`}
+                                                onClick={() => setData("paymentMethod", "cod")}
+                                            >
+                                                {data.paymentMethod === "cod" && (
+                                                    <div className="payment-check-badge">
+                                                        <Icon icon="mdi:check" />
                                                     </div>
                                                 )}
-                                                {errors.receiptFile && <span style={{ color: "red" }}>{errors.receiptFile}</span>}
+                                                <Icon icon="mdi:cash-multiple" className="fs-4 text-secondary mb-1" />
+                                                <span className="payment-name">{translate("Cash")}</span>
+                                            </div>
+                                        )}
+                                        {payment_gateway.is_stripe_active && (
+                                            <div
+                                                className={`payment-option-card ${data.paymentMethod === "stripe" ? "selected" : ""}`}
+                                                onClick={() => setData("paymentMethod", "stripe")}
+                                            >
+                                                {data.paymentMethod === "stripe" && (
+                                                    <div className="payment-check-badge">
+                                                        <Icon icon="mdi:check" />
+                                                    </div>
+                                                )}
+                                                <Icon icon="logos:stripe" className="fs-4 mb-1" />
+                                                <span className="payment-name">{translate("Stripe")}</span>
+                                            </div>
+                                        )}
+                                        {payment_gateway.is_razorpay_active && (
+                                            <div
+                                                className={`payment-option-card ${data.paymentMethod === "razorpay" ? "selected" : ""}`}
+                                                onClick={() => setData("paymentMethod", "razorpay")}
+                                            >
+                                                {data.paymentMethod === "razorpay" && (
+                                                    <div className="payment-check-badge">
+                                                        <Icon icon="mdi:check" />
+                                                    </div>
+                                                )}
+                                                <Icon icon="simple-icons:razorpay" className="fs-4 text-primary mb-1" />
+                                                <span className="payment-name">{translate("Razorpay")}</span>
+                                            </div>
+                                        )}
+
+                                        {manual_payment_gateways.map((gateway, index) => (
+                                            <div
+                                                key={index}
+                                                className={`payment-option-card ${
+                                                    data.paymentMethod === gateway?.content?.gateway_name ? "selected" : ""
+                                                }`}
+                                                onClick={() => setData("paymentMethod", gateway?.content?.gateway_name)}
+                                            >
+                                                {data.paymentMethod === gateway?.content?.gateway_name && (
+                                                    <div className="payment-check-badge">
+                                                        <Icon icon="mdi:check" />
+                                                    </div>
+                                                )}
+                                                <Icon icon="mdi:bank" className="fs-4 text-success mb-1" />
+                                                <span className="payment-name text-truncate w-100">{gateway?.content?.gateway_name}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Manual Payment Details */}
+                                    {selectedGateway && (
+                                        <div className="bg-light p-3 rounded-2 mb-3 border animate__animated animate__fadeIn">
+                                            <h6 className="fw-bold mb-2 small">{translate("Payment Instructions")}</h6>
+                                            <div
+                                                className="small text-muted mb-2"
+                                                style={{ fontSize: "0.8rem" }}
+                                                dangerouslySetInnerHTML={{ __html: selectedGateway?.content?.instructions }}
+                                            />
+
+                                            <div className="row g-2">
+                                                <div className="col-7">
+                                                    <div className="form-floating">
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            id="txnId"
+                                                            placeholder="Txn ID"
+                                                            value={data.transactionId}
+                                                            onChange={(e) => setData("transactionId", e.target.value)}
+                                                            required
+                                                        />
+                                                        <label htmlFor="txnId">{translate("Transaction ID")} *</label>
+                                                    </div>
+                                                    {errors.transactionId && (
+                                                        <div className="text-danger small" style={{ fontSize: "0.75rem" }}>
+                                                            {errors.transactionId}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="col-5">
+                                                    <input
+                                                        type="file"
+                                                        className="form-control form-control-sm"
+                                                        style={{ height: "45px", paddingTop: "10px" }}
+                                                        onChange={handleFileChange}
+                                                        accept="image/*,.pdf"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     )}
-                                    {errors.paymentMethod && <span style={{ color: "red" }}>{errors.paymentMethod}</span>}
-                                    {is_active_google_captcha === "1" && (
-                                        <>
-                                            <ReCAPTCHA sitekey={captchaSiteKey} onChange={handleCaptchaChange} />
-                                            {captchaError && <div className="text-danger mb-3">{captchaError}</div>}
-                                        </>
-                                    )}
-                                    <div className="form-check">
-                                        <input
-                                            className="form-check-input custom-cursor-default-hover"
-                                            type="checkbox"
-                                            id="agreed"
-                                            checked={data.agreed}
-                                            onChange={(e) => setData("agreed", e.target.checked)}
-                                        />
-                                        <label className="form-check-label m-0 cs_semi_bold custom-cursor-default-hover" htmlFor="agreed">
-                                            <Link href={terms_condition_url}>{translate("Accept Terms And Conditions")}</Link>
-                                        </label>
+
+                                    {/* Footer / Submit */}
+                                    <div className="mt-3 pt-3 border-top">
+                                        {is_active_google_captcha === "1" && (
+                                            <div className="mb-3 d-flex justify-content-center scale-75 origin-center">
+                                                {/* scale-75 to make captcha smaller */}
+                                                <ReCAPTCHA sitekey={captchaSiteKey} onChange={handleCaptchaChange} />
+                                            </div>
+                                        )}
+
+                                        <div className="form-check mb-3">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id="agreed"
+                                                checked={data.agreed}
+                                                onChange={(e) => setData("agreed", e.target.checked)}
+                                            />
+                                            <label className="form-check-label small text-muted" htmlFor="agreed" style={{ fontSize: "0.8rem" }}>
+                                                {translate("I agree to the")}{" "}
+                                                <Link href={terms_condition_url} className="text-decoration-underline">
+                                                    {translate("Terms & Conditions")}
+                                                </Link>
+                                            </label>
+                                            {errors.agreed && (
+                                                <div className="text-danger small" style={{ fontSize: "0.75rem" }}>
+                                                    {errors.agreed}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <button
+                                            className="btn btn-primary rounded-pill w-100 fw-bold"
+                                            style={{ background: "linear-gradient(45deg, #ff8c00, #ffaa33)", border: "none", padding: "10px" }}
+                                            disabled={processing || (!captchaVerified && is_active_google_captcha === "1")}
+                                        >
+                                            {translate("Complete Donation")} <Amount amount={total.toFixed(2)} />
+                                        </button>
                                     </div>
-                                    {errors.agreed && <span style={{ color: "red" }}>{errors.agreed}</span>}
-                                    <div className="cs_height_20 cs_height_lg_20" />
-                                    <button className="cs_product_btn cs_semi_bold w-100" disabled={!captchaError && processing}>
-                                        {translate("Complete Donation")}
-                                    </button>
                                 </form>
                             </div>
                         </div>

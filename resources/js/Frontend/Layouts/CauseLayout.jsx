@@ -40,7 +40,6 @@ export default function CauseLayout({
                     <PageHeading bgSrc={breadcrumb_image ? breadcrumb_image : "/static/page_heading.jpeg"} data={pageHeaderData} />
                 )
             )}
-            {causeDetails ? <div className="cs_height_100 cs_height_lg_80"></div> : <div className="cs_height_150 cs_height_lg_80"></div>}
 
             <div className={`container cs_cause_section${causeDetails ? " cs_cause_details_content_section" : ""}`}>
                 {children}

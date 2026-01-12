@@ -32,6 +32,7 @@ export default function Create({ languages, product_categories, default_lang, br
         tags: [],
         sku: "",
         quantity: "",
+        min_quantity: "",
 
         // Language-specific fields
         ...Object.keys(languages).reduce((acc, code) => {
@@ -383,7 +384,6 @@ export default function Create({ languages, product_categories, default_lang, br
                                             />
                                         </div>
                                     </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
                                     <div className="row">
                                         <div className="col-md-12">
                                             <label htmlFor="quantity">{translate("Quantity")} *</label>
@@ -397,8 +397,19 @@ export default function Create({ languages, product_categories, default_lang, br
                                                 onChange={(e) => setData("quantity", e.target.value)}
                                             />
                                         </div>
+                                        <div className="col-md-12">
+                                            <label htmlFor="min_quantity">{translate("Min Quantity")} *</label>
+                                            <TextInput
+                                                title="Enter Min Quantity"
+                                                type="number"
+                                                step="0.01"
+                                                id="min_quantity"
+                                                error={errors.min_quantity}
+                                                value={data.min_quantity}
+                                                onChange={(e) => setData("min_quantity", e.target.value)}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
                                 </div>
                             </div>
                         </div>

@@ -19,6 +19,7 @@ import React, { useState, useEffect } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
 import Amount from "@/Components/Amount"
 import useStatesByCountry from "@/hooks/useStatesByCountry"
+import SocialWidget from "@/Frontend/Components/Widget/SocialWidget"
 
 export default function CauseDetails({
     cause,
@@ -39,7 +40,7 @@ export default function CauseDetails({
     const dispatch = useDispatch()
     const { carts, coupon } = useSelector((state) => state.carts)
 
-    // Calculate Totals
+    // --- 1. Totals Calculation ---
     const subtotal = carts.reduce((total, item) => total + Number(item.price || 0) * (item.quantity || 1), 0)
     let discount = 0
     if (coupon) {
@@ -48,32 +49,31 @@ export default function CauseDetails({
     }
     const total = subtotal - discount
 
+    // --- 2. Configurations & Settings ---
     const page_settings = JSON.parse(localStorage.getItem("page_settings")) || {}
     const { is_show_cause_details_sidebar } = page_settings
-
-    // Captcha Settings
     const captchaSiteKey = localStorage.getItem("google_captcha_site_key") ? JSON.parse(localStorage.getItem("google_captcha_site_key")) : []
     const is_active_google_captcha = localStorage.getItem("is_active_google_captcha")
         ? JSON.parse(localStorage.getItem("is_active_google_captcha"))
         : []
+
+    // --- 3. State Management ---
     const [captchaVerified, setCaptchaVerified] = useState(false)
     const [captchaError, setCaptchaError] = useState(null)
     const [isCheckouting, setIsCheckouting] = useState(false)
-
-    // Form States
     const [selectedGateway, setSelectedGateway] = useState(null)
     const [receiptFile, setReceiptFile] = useState(null)
     const [special_image, setSpecialImage] = useState(null)
     const { states } = useStatesByCountry("IN")
     const [showDonateModal, setShowDonateModal] = useState(false)
-
-    // FAQ Accordion State
     const [openFaqIndex, setOpenFaqIndex] = useState(null)
+    const [localAmount, setLocalAmount] = useState("")
+
     const toggleFaq = (index) => {
         setOpenFaqIndex(openFaqIndex === index ? null : index)
     }
 
-    // Main Form Hook
+    // --- 4. Main Form Hook ---
     const { data, setData, post, errors, processing } = useForm({
         name: "",
         email: "",
@@ -89,22 +89,17 @@ export default function CauseDetails({
         paymentMethod: "",
         transactionId: "",
         receiptFile: null,
-
-        // Special Dynamic Fields
         special_name: "",
         special_date: "",
         special_image: null,
         special_message: "",
-
         type: cause?.type || "",
         cause_id: cause?.id || null
     })
 
-    // --- DYNAMIC CONFIGURATION LOGIC ---
+    // --- 5. Special Dedication Config ---
     const getSpecialConfig = () => {
         const type = cause?.type
-
-        // Default / Fallback Config
         let config = {
             title: "Special Dedication Details",
             showName: true,
@@ -116,78 +111,58 @@ export default function CauseDetails({
             showMessage: true,
             messageLabel: "Message"
         }
-
         switch (type) {
-            // 1. Celebration Types (All 4 Fields)
             case "valentine_day":
-                config = {
-                    title: "Valentine Day Details",
-                    showName: true,
-                    nameLabel: "Valentine's Name / Person Name",
-                    showDate: true,
-                    dateLabel: "Date of Celebration",
-                    showImage: true,
-                    imageLabel: "Upload Photo",
-                    showMessage: true,
-                    messageLabel: "Special Message from Children"
-                }
+                config = { ...config, title: "Valentine Day", nameLabel: "Valentine's Name", messageLabel: "Message from Children" }
                 break
             case "birthday":
-                config = {
-                    title: "Birthday Details",
-                    showName: true,
-                    nameLabel: "Birthday Boy/Girl Name",
-                    showDate: true,
-                    dateLabel: "Date of Celebration",
-                    showImage: true,
-                    imageLabel: "Upload Photo",
-                    showMessage: true,
-                    messageLabel: "Special Message"
-                }
+                config = { ...config, title: "Birthday Details", nameLabel: "Birthday Boy/Girl Name" }
                 break
             case "anniversary":
-                config = {
-                    title: "Anniversary Details",
-                    showName: true,
-                    nameLabel: "Couple Name",
-                    showDate: true,
-                    dateLabel: "Date of Celebration",
-                    showImage: true,
-                    imageLabel: "Upload Photo",
-                    showMessage: true,
-                    messageLabel: "Special Message"
-                }
+                config = { ...config, title: "Anniversary Details", nameLabel: "Couple Name" }
                 break
-
-            // 2. Seva / Remembrance Types (Date + Name Only)
-            case "in_memory": // Death Anniversary
+            case "in_memory":
             case "sadhu_seva":
             case "tiffin_seva":
             case "gau_seva":
             case "pitru_paksha":
             case "homeless_needy":
                 config = {
-                    title: "Seva / Distribution Details",
-                    showName: true,
-                    nameLabel: "Sponsored By Name",
-                    showDate: true,
+                    ...config,
+                    title: "Seva / Distribution",
+                    nameLabel: "Sponsored By",
                     dateLabel: "Date of Distribution",
                     showImage: false,
-                    imageLabel: "",
-                    showMessage: false,
-                    messageLabel: ""
+                    showMessage: false
                 }
                 break
-
-            case "normal":
             default:
                 break
         }
         return config
     }
-
     const specialConfig = getSpecialConfig()
 
+    // --- 6. Effects & Handlers ---
+
+    // [CRITICAL] Fresh Start Logic: Wipe cart if user enters new cause page with old data
+    useEffect(() => {
+        const hasForeignItems = carts.some((item) => item.cause_id && item.cause_id !== cause.id)
+        if (hasForeignItems) {
+            dispatch(clearCart())
+            setLocalAmount("")
+        } else {
+            // Restore local amount from existing cart donation
+            const currentCauseItem = carts.find((item) => item.type === "cause" && item.id === cause.id)
+            if (currentCauseItem) {
+                setLocalAmount(currentCauseItem.price)
+            } else {
+                setLocalAmount("")
+            }
+        }
+    }, [cause.id])
+
+    // Update selected gateway info
     useEffect(() => {
         if (data.paymentMethod) {
             const gateway = manual_payment_gateways.find((gateway) => gateway?.content?.gateway_name === data.paymentMethod)
@@ -199,6 +174,28 @@ export default function CauseDetails({
             }
         }
     }, [data.paymentMethod])
+
+    // Handle Donation Input Changes (Input + Preset Buttons)
+    const handleDonationChange = (value) => {
+        setLocalAmount(value)
+        const numericVal = parseFloat(value)
+
+        // Remove existing donation first to prevent stacking/loops
+        dispatch(removeCart({ id: cause.id, type: "cause" }))
+
+        // Add new valid donation
+        if (value && !isNaN(numericVal) && numericVal > 0) {
+            dispatch(
+                addCart({
+                    id: cause.id,
+                    type: "cause",
+                    content: { ...cause, price: numericVal },
+                    quantity: 1,
+                    cause_id: cause.id
+                })
+            )
+        }
+    }
 
     const handleCaptchaChange = (value) => {
         if (is_active_google_captcha === "1") {
@@ -217,29 +214,8 @@ export default function CauseDetails({
         setReceiptFile(file)
         setData("receiptFile", file)
     }
-
     const handleSFileChange = (e) => {
         const file = e.target.files[0]
-        if (!file) {
-            setSpecialImage(null)
-            setData("special_image", null)
-            return
-        }
-        if (file.size > 5 * 1024 * 1024) {
-            alert(translate("File size should be less than 5MB"))
-            e.target.value = null
-            setSpecialImage(null)
-            setData("special_image", null)
-            return
-        }
-        const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
-        if (!allowedTypes.includes(file.type)) {
-            alert(translate("Only images files are allowed"))
-            e.target.value = null
-            setSpecialImage(null)
-            setData("special_image", null)
-            return
-        }
         setSpecialImage(file)
         setData("special_image", file)
     }
@@ -247,34 +223,31 @@ export default function CauseDetails({
     const handlePlaceOrder = (e) => {
         setIsCheckouting(true)
         e.preventDefault()
-
         if (!captchaVerified && is_active_google_captcha === "1") {
             setCaptchaError(translate("Please complete the captcha verification"))
             return
         }
-
-        post(route("checkout.store"), {
-            onSuccess: () => {
-                // Handle success (e.g. redirect or show message)
-            }
-        })
+        post(route("checkout.store"), { onSuccess: () => {} })
     }
+
+    const scrollToSection = (id) => {
+        const element = document.getElementById(id)
+        if (element) {
+            const y = element.getBoundingClientRect().top + window.pageYOffset - 120
+            window.scrollTo({ top: y, behavior: "smooth" })
+        }
+    }
+
+    // --- 7. Data Parsers ---
     const galleryItems = (() => {
         try {
             let items = []
-            if (Array.isArray(cause?.gallery_images)) {
-                items = [...cause.gallery_images]
-            } else if (cause?.gallery_images) {
-                items = [...JSON.parse(cause.gallery_images)]
-            }
+            if (Array.isArray(cause?.gallery_images)) items = [...cause.gallery_images]
+            else if (cause?.gallery_images) items = [...JSON.parse(cause.gallery_images)]
             return items.map((url) => {
                 if (url.includes("youtube.com") || url.includes("youtu.be")) {
                     const id = url.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/)([^&?]+))/)?.[1]
-                    return {
-                        type: "youtube",
-                        url: `https://www.youtube.com/embed/${id}?enablejsapi=1&rel=0`,
-                        thumb: `https://img.youtube.com/vi/${id}/mqdefault.jpg`
-                    }
+                    return { type: "youtube", url: `https://www.youtube.com/embed/${id}?enablejsapi=1&rel=0` }
                 } else if (url.match(/\.(mp4|webm|ogg)$/i)) {
                     return { type: "video", url: url }
                 } else {
@@ -295,6 +268,15 @@ export default function CauseDetails({
         }
     })()
 
+    function convertYouTube(url) {
+        if (!url) return ""
+        const normal = url.match(/v=([^&]+)/)
+        if (normal) return `https://www.youtube.com/embed/${normal[1]}?mute=1`
+        const short = url.match(/youtu\.be\/([^?]+)/)
+        if (short) return `https://www.youtube.com/embed/${short[1]}?mute=1`
+        return url
+    }
+
     // SEO
     SeoMeta(
         cause?.content?.title ?? cause?.meta_title,
@@ -310,50 +292,8 @@ export default function CauseDetails({
         breadcrumb: [
             { label: translate("Home"), url: "/" },
             { label: translate("Cause"), url: route("pages.show", slug) },
-            {
-                label: cause?.category?.content?.title,
-                url: route("pages.show", {
-                    slug: slug,
-                    filter: { category: cause?.category?.content?.title }
-                })
-            },
             { label: cause?.content?.title, url: null }
         ]
-    }
-
-    function convertYouTube(url) {
-        if (!url) return ""
-        const normal = url.match(/v=([^&]+)/)
-        if (normal) return `https://www.youtube.com/embed/${normal[1]}`
-        const short = url.match(/youtu\.be\/([^?]+)/)
-        if (short) return `https://www.youtube.com/embed/${short[1]}`
-        return url
-    }
-
-    const [localAmount, setLocalAmount] = useState("")
-    useEffect(() => {
-        const cartItem = carts.find((i) => i.id === cause.id && i.type === "cause")
-        if (cartItem) {
-            setLocalAmount(cartItem.price)
-        }
-    }, [])
-    const handleDonationChange = (value) => {
-        setLocalAmount(value)
-
-        const numericVal = parseFloat(value)
-        if (!value || isNaN(numericVal)) {
-            dispatch(removeCart({ id: cause.id, type: "cause" }))
-        } else {
-            dispatch(removeCart({ id: cause.id, type: "cause" }))
-            dispatch(
-                addCart({
-                    id: cause.id,
-                    type: "cause",
-                    content: { ...cause, price: numericVal },
-                    quantity: 1
-                })
-            )
-        }
     }
 
     return (
@@ -368,16 +308,100 @@ export default function CauseDetails({
                 causeDetailsUser={cause?.user?.name}
                 is_show_cause_details_sidebar={is_show_cause_details_sidebar}
             >
+                {/* 2. Responsive Sticky Nav Bar */}
+                <div className="cause-sticky-nav">
+                    <div className="container">
+                        <ul className="cause-nav-list">
+                            <li className="cause-nav-item" onClick={() => scrollToSection("donate-section")}>
+                                <Icon icon="mdi:gift-outline" className="me-2 fs-5" />
+                                {translate("Overview & Donate")}
+                            </li>
+                            <li className="cause-nav-item" onClick={() => scrollToSection("content-section")}>
+                                <Icon icon="mdi:format-align-left" className="me-2 fs-5" />
+                                {translate("Content")}
+                            </li>
+                            {cause?.content?.projects && (
+                                <li className="cause-nav-item" onClick={() => scrollToSection("project-section")}>
+                                    <Icon icon="mdi:clipboard-list-outline" className="me-2 fs-5" />
+                                    {translate("Project")}
+                                </li>
+                            )}
+                            {faqItems.length > 0 && (
+                                <li className="cause-nav-item" onClick={() => scrollToSection("faq-section")}>
+                                    <Icon icon="mdi:chat-question-outline" className="me-2 fs-5" />
+                                    {translate("FAQ")}
+                                </li>
+                            )}
+                            {cause?.content?.updates && (
+                                <li className="cause-nav-item" onClick={() => scrollToSection("updates-section")}>
+                                    <Icon icon="mdi:bell-ring-outline" className="me-2 fs-5" />
+                                    {translate("Updates")}
+                                </li>
+                            )}
+                        </ul>
+                        <div className="nav-social-wrapper">
+                            <SocialWidget />
+                        </div>
+                    </div>
+                </div>
+
                 <div className="row">
                     <div className={`${cause.type === "birthday" ? "col-md-12" : "col-md-8"}`}>
-                        {/* Title Section */}
-                        {/* <div className="cs_cause_details_wrap">
-                            <h1 className="cs_cause_details_title">{cause?.content?.title}</h1>
-                        </div> */}
+                        <div className="mobile-donation-card d-lg-none" id="donate-section">
+                            <h5 className="fw-bold mb-3">{translate("Make a Donation")}</h5>
+
+                            {/* Preset Buttons */}
+                            {cause?.custom_donation_amounts && (
+                                <div className="amount-grid mb-3">
+                                    {(Array.isArray(cause.custom_donation_amounts)
+                                        ? cause.custom_donation_amounts
+                                        : cause.custom_donation_amounts.split(",")
+                                    ).map((val, idx) => {
+                                        const btnAmount = Number(val)
+                                        const isSelected = Number(localAmount) === btnAmount
+                                        return (
+                                            <button
+                                                key={idx}
+                                                type="button"
+                                                className={`amount-btn ${isSelected ? "active" : ""}`}
+                                                onClick={() => handleDonationChange(btnAmount)}
+                                            >
+                                                <Amount amount={btnAmount.toFixed(0)} />
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                            )}
+
+                            {/* Custom Input */}
+                            <div className="input-group input-group-lg border rounded-3 overflow-hidden bg-white">
+                                <span className="input-group-text bg-white border-0 fw-bold text-muted">
+                                    <Amount amount={0} showSymbolOnly={true} />
+                                </span>
+                                <input
+                                    type="number"
+                                    className="form-control border-0 fw-bold fs-5 text-dark"
+                                    placeholder="Custom Amount"
+                                    value={localAmount}
+                                    onChange={(e) => handleDonationChange(e.target.value)}
+                                />
+                            </div>
+
+                            {/* Mobile Validation Message */}
+                            {(() => {
+                                const minAmount = Number(cause?.min_amount || 1)
+                                if (total > 0 && total < minAmount)
+                                    return (
+                                        <div className="text-danger small mt-2 d-flex align-items-center">
+                                            <Icon icon="mdi:alert-circle-outline" className="me-1" /> Min total: <Amount amount={minAmount} />
+                                        </div>
+                                    )
+                            })()}
+                        </div>
 
                         {/* Gifts Section */}
                         {cause?.have_gift == 1 && cause?.gifts?.length > 0 && (
-                            <div className="cs_cause_details_wrap mt-5">
+                            <div className="cs_cause_details_wrap">
                                 <h3 className="mb-4">Select a Gift</h3>
                                 <div className="row g-4">
                                     {cause.gifts.map((gift, idx) => {
@@ -395,19 +419,13 @@ export default function CauseDetails({
                                                             </div>
                                                         )}
                                                     </div>
-
                                                     <div className="card-body p-3 d-flex flex-column">
-                                                        <div className="cause-card-title" title={gift.content?.title}>
-                                                            {gift.content?.title}
-                                                        </div>
-
-                                                        <div className="d-flex justify-content-between align-items-center mb-3">
+                                                        <div className="cause-card-title">{gift.content?.title}</div>
+                                                        <div className="d-flex justify-content-between mb-3">
                                                             <span className="cause-card-price">
                                                                 <Amount amount={Number(gift.amount || 0).toFixed(2)} />
                                                             </span>
                                                         </div>
-
-                                                        {/* Bottom Action Area - Pushed to bottom */}
                                                         <div className="mt-auto">
                                                             <div className="qty-control d-flex justify-content-between align-items-center w-100">
                                                                 <button
@@ -417,9 +435,7 @@ export default function CauseDetails({
                                                                 >
                                                                     <Icon icon="ic:round-minus" />
                                                                 </button>
-
                                                                 <span className="fw-bold mx-2">{quantity}</span>
-
                                                                 <button
                                                                     className="qty-btn"
                                                                     onClick={() =>
@@ -430,7 +446,8 @@ export default function CauseDetails({
                                                                                       id: gift.id,
                                                                                       type: "gift",
                                                                                       content: gift,
-                                                                                      quantity: gift.min_qty || 1
+                                                                                      quantity: gift.min_qty || 1,
+                                                                                      cause_id: cause.id
                                                                                   })
                                                                               )
                                                                     }
@@ -457,7 +474,6 @@ export default function CauseDetails({
                                         const cartItem = carts.find((i) => i.id === product.id && i.type === "product")
                                         const quantity = cartItem ? cartItem.quantity : 1
                                         const finalPrice = Number(product.discount_price || product.price || 0)
-
                                         return (
                                             <div key={idx} className="col-12 col-sm-6 col-md-4">
                                                 <div className="cause-card h-100 d-flex flex-column shadow-sm">
@@ -465,19 +481,13 @@ export default function CauseDetails({
                                                         {product.thumbnail_image ? (
                                                             <img src={product.thumbnail_image} alt={product.content?.title} />
                                                         ) : (
-                                                            <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
+                                                            <div className="d-flex align-items-center justify-content-center bg-light text-muted h-100">
                                                                 No Image
                                                             </div>
                                                         )}
                                                     </div>
-
                                                     <div className="card-body p-3 d-flex flex-column">
-                                                        <div className="d-flex justify-content-between align-items-start">
-                                                            <div className="cause-card-title w-100" title={product.content?.title}>
-                                                                {product.content?.title}
-                                                            </div>
-                                                        </div>
-
+                                                        <div className="cause-card-title">{product.content?.title}</div>
                                                         <div className="cause-card-desc">
                                                             <div
                                                                 dangerouslySetInnerHTML={{
@@ -485,19 +495,14 @@ export default function CauseDetails({
                                                                 }}
                                                             />
                                                         </div>
-
-                                                        {/* Price and Actions - Pushed to Bottom */}
                                                         <div className="mt-auto pt-2 border-top">
-                                                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                                            <div className="d-flex justify-content-between mb-3">
                                                                 <span className="cause-card-price">
-                                                                    <Amount amount={finalPrice.toFixed(2)} />
-                                                                    <span className="text-muted fs-6 fw-normal"> / Unit</span>
+                                                                    <Amount amount={finalPrice.toFixed(2)} />{" "}
+                                                                    <span className="text-muted fs-6 fw-normal">/ Unit</span>
                                                                 </span>
                                                             </div>
-
-                                                            {/* Action Buttons Row */}
                                                             <div className="d-flex gap-2 align-items-center">
-                                                                {/* Qty Control */}
                                                                 <div
                                                                     className="qty-control d-flex align-items-center px-1"
                                                                     style={{ width: "100px" }}
@@ -518,23 +523,35 @@ export default function CauseDetails({
                                                                             cartItem
                                                                                 ? dispatch(increaseCart({ id: product.id, type: "product" }))
                                                                                 : dispatch(
-                                                                                      addCart({ id: product.id, type: "product", content: product })
+                                                                                      addCart({
+                                                                                          id: product.id,
+                                                                                          type: "product",
+                                                                                          content: product,
+                                                                                          quantity: product.min_quantity || 1,
+                                                                                          cause_id: cause.id
+                                                                                      })
                                                                                   )
                                                                         }
                                                                     >
                                                                         +
                                                                     </button>
                                                                 </div>
-
-                                                                {/* Add / Remove Button */}
                                                                 {!cartItem ? (
                                                                     <button
                                                                         className="btn btn-primary btn-sm flex-grow-1 rounded-pill"
                                                                         onClick={() =>
-                                                                            dispatch(addCart({ id: product.id, type: "product", content: product }))
+                                                                            dispatch(
+                                                                                addCart({
+                                                                                    id: product.id,
+                                                                                    type: "product",
+                                                                                    content: product,
+                                                                                    quantity: product.min_quantity || 1,
+                                                                                    cause_id: cause.id
+                                                                                })
+                                                                            )
                                                                         }
                                                                     >
-                                                                        Add to Cart
+                                                                        Add
                                                                     </button>
                                                                 ) : (
                                                                     <button
@@ -545,15 +562,22 @@ export default function CauseDetails({
                                                                     </button>
                                                                 )}
                                                             </div>
-
-                                                            {/* Birthday Special Donate Button */}
                                                             {["birthday"].includes(cause.type) && (
                                                                 <button
-                                                                    className="btn btn-dark w-100 mt-2 rounded-pill btn-sm"
-                                                                    disabled={carts.length === 0}
-                                                                    onClick={() => setShowDonateModal(true)}
+                                                                    className={`btn-donate-lg mt-2`}
+                                                                    onClick={() => {
+                                                                        dispatch(
+                                                                            addCart({
+                                                                                id: product.id,
+                                                                                type: "product",
+                                                                                content: product,
+                                                                                quantity: product.min_quantity || 1,
+                                                                                cause_id: cause.id
+                                                                            })
+                                                                        ),
+                                                                            setShowDonateModal(true)
+                                                                    }}
                                                                 >
-                                                                    <Icon icon="mdi:heart" className="me-1" />
                                                                     {translate("Donate Now")}
                                                                 </button>
                                                             )}
@@ -567,25 +591,22 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* --- Content (Story) Section --- */}
-                        <div className="cs_cause_details_wrap mt-5">
+                        {/* Content, Projects, FAQ, Updates */}
+                        <div id="content-section" className="cs_cause_details_wrap mt-5">
                             <div className="d-flex align-items-center mb-4">
                                 <h3 className="mb-0 fw-bold">Content</h3>
                             </div>
-
                             <div
                                 className="rich-content bg-white"
                                 dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.content || "") }}
                             />
                         </div>
 
-                        {/* --- Project Details Section --- */}
                         {cause?.content?.projects && (
-                            <div className="cs_cause_details_wrap mt-5 pt-4 border-top">
+                            <div id="project-section" className="cs_cause_details_wrap mt-5 pt-4 border-top">
                                 <div className="d-flex align-items-center mb-4">
                                     <h3 className="mb-0 fw-bold">Project</h3>
                                 </div>
-
                                 <div
                                     className="rich-content bg-white"
                                     dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.projects || "") }}
@@ -593,61 +614,40 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* --- FAQ Section --- */}
                         {faqItems.length > 0 && (
-                            <div className="cs_cause_details_wrap mt-5 pt-4 border-top">
+                            <div id="faq-section" className="cs_cause_details_wrap mt-5 pt-4 border-top">
                                 <div className="d-flex align-items-center mb-4">
-                                    <h3 className="mb-0 fw-bold">Frequently Asked Questions</h3>
+                                    <h3 className="mb-0 fw-bold">FAQ</h3>
                                 </div>
-
-                                <div className="accordion custom-accordion" id="faqAccordion">
-                                    {faqItems.map((item, idx) => {
-                                        const headingId = `faq-heading-${idx}`
-                                        const collapseId = `faq-collapse-${idx}`
-                                        const isOpen = openFaqIndex === idx
-
-                                        return (
-                                            <div className="accordion-item" key={idx}>
-                                                <h2 className="accordion-header" id={headingId}>
-                                                    <button
-                                                        className={`accordion-button ${isOpen ? "" : "collapsed"}`}
-                                                        type="button"
-                                                        onClick={() => toggleFaq(idx)}
-                                                        aria-expanded={isOpen}
-                                                        aria-controls={collapseId}
-                                                    >
-                                                        {item.title}
-                                                    </button>
-                                                </h2>
-                                                <div
-                                                    id={collapseId}
-                                                    className={`accordion-collapse collapse ${isOpen ? "show" : ""}`}
-                                                    aria-labelledby={headingId}
+                                <div className="accordion custom-accordion">
+                                    {faqItems.map((item, idx) => (
+                                        <div className="accordion-item" key={idx}>
+                                            <h2 className="accordion-header">
+                                                <button
+                                                    className={`accordion-button ${openFaqIndex === idx ? "" : "collapsed"}`}
+                                                    type="button"
+                                                    onClick={() => toggleFaq(idx)}
                                                 >
-                                                    <div className="accordion-body">
-                                                        <div
-                                                            className="rich-content"
-                                                            style={{ fontSize: "0.95rem" }}
-                                                            dangerouslySetInnerHTML={{
-                                                                __html: ProcessContent(item.content || "")
-                                                            }}
-                                                        />
-                                                    </div>
-                                                </div>
+                                                    {item.title}
+                                                </button>
+                                            </h2>
+                                            <div className={`accordion-collapse collapse ${openFaqIndex === idx ? "show" : ""}`}>
+                                                <div
+                                                    className="accordion-body rich-content"
+                                                    dangerouslySetInnerHTML={{ __html: ProcessContent(item.content || "") }}
+                                                />
                                             </div>
-                                        )
-                                    })}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         )}
 
-                        {/* --- Updates Section --- */}
                         {cause?.content?.updates && (
-                            <div className="cs_cause_details_wrap mt-5 pt-4 border-top">
+                            <div id="updates-section" className="cs_cause_details_wrap mt-5 pt-4 border-top">
                                 <div className="d-flex align-items-center mb-4">
                                     <h3 className="mb-0 fw-bold">Latest Updates</h3>
                                 </div>
-
                                 <div className="p-4 rounded-4 bg-light border border-light-subtle">
                                     <div
                                         className="rich-content"
@@ -657,19 +657,18 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* Transparency Gallery Section (Mixed Content) */}
+                        {/* Mixed Media Gallery */}
                         {galleryItems.length > 0 && (
-                            <div className="transparency-gallery-section mt-5 p-4 p-lg-5 rounded-4">
+                            <div className="transparency-gallery-section mt-5 p-4 rounded-4">
                                 <div className="text-center mb-4">
                                     <h3 className="fw-bold mb-2 section-title">We Ensure 100% Transparency With Your Donation</h3>
                                     <div className="separator mx-auto"></div>
                                 </div>
-
                                 <Swiper
                                     modules={[Pagination, Navigation, Autoplay]}
-                                    spaceBetween={24}
+                                    spaceBetween={10}
                                     slidesPerView={1}
-                                    navigation={true}
+                                    navigation={false}
                                     pagination={{ clickable: true, dynamicBullets: true }}
                                     autoplay={{
                                         delay: 4000,
@@ -690,34 +689,29 @@ export default function CauseDetails({
                                         <SwiperSlide key={idx}>
                                             <div className="gallery-card bg-white rounded-3 shadow-sm h-100">
                                                 <div className="img-wrapper rounded-2 overflow-hidden position-relative" style={{ height: "220px" }}>
-                                                    {item.type === "youtube" && (
+                                                    {item.type === "youtube" ? (
                                                         <div className="ratio ratio-1x1 h-100 w-100">
                                                             <iframe
-                                                                src={item.url}
+                                                                src={`${item.url}?autoplay=1&mute=1&playsinline=1`}
                                                                 title={`Gallery Video ${idx}`}
-                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allow="autoplay; encrypted-media; picture-in-picture"
                                                                 allowFullScreen
                                                                 style={{ borderRadius: "8px" }}
-                                                            ></iframe>
+                                                            />
                                                         </div>
-                                                    )}
-                                                    {item.type === "video" && (
+                                                    ) : item.type === "video" ? (
                                                         <video
                                                             src={item.url}
                                                             controls
                                                             className="w-100 h-100 object-fit-cover rounded-2"
                                                             style={{ backgroundColor: "#000" }}
-                                                            autoPlay={true}
+                                                            autoPlay
+                                                            muted
+                                                            playsInline
                                                         />
-                                                    )}
-                                                    {item.type === "image" && (
+                                                    ) : (
                                                         <>
-                                                            <img
-                                                                src={item.url}
-                                                                alt={`Transparency Proof ${idx + 1}`}
-                                                                className="w-100 h-100 object-fit-cover"
-                                                                style={{ transition: "transform 0.5s ease" }}
-                                                            />
+                                                            <img src={item.url} className="w-100 h-100 object-fit-cover" />
                                                             <div className="hover-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center pointer-events-none">
                                                                 <Icon icon="mdi:eye" className="text-white fs-2 opacity-0" />
                                                             </div>
@@ -732,133 +726,129 @@ export default function CauseDetails({
                         )}
                     </div>
 
-                    <div className={`col-xl-4 ${cause.type === "birthday" ? "d-none" : ""}`}>
-                        <div className="sidebar-sticky-wrapper">
-                            <div className="donation-card">
-                                <div className="donation-card-header">
-                                    <h3>{translate("Make a Donation")}</h3>
-                                    <p className="text-muted small mb-0">Your support changes lives.</p>
-                                </div>
-
-                                <div className="donation-logic-wrapper">
-                                    {/* 1. Preset Buttons */}
-                                    {cause?.custom_donation_amounts && (
-                                        <div className="amount-grid">
-                                            {(Array.isArray(cause.custom_donation_amounts)
-                                                ? cause.custom_donation_amounts
-                                                : cause.custom_donation_amounts.split(",")
-                                            ).map((val, idx) => {
-                                                const btnAmount = Number(val)
-                                                // Compare numbers to fix highlighting issue
-                                                const isSelected = Number(localAmount) === btnAmount
-
-                                                return (
+                    {/* Right Sidebar (Desktop Only) */}
+                    {!["birthday", "anniversary"].includes(cause?.type) && (
+                        <div className={`col-xl-4`}>
+                            <div className="sidebar-sticky-wrapper">
+                                <div className="donation-card">
+                                    <div className="donation-card-header">
+                                        <h3>{translate("Make a Donation")}</h3>
+                                        <p className="text-muted small mb-0">Your support changes lives.</p>
+                                    </div>
+                                    <div className="donation-logic-wrapper">
+                                        {cause?.custom_donation_amounts && (
+                                            <div className="amount-grid">
+                                                {(Array.isArray(cause.custom_donation_amounts)
+                                                    ? cause.custom_donation_amounts
+                                                    : cause.custom_donation_amounts.split(",")
+                                                ).map((val, idx) => (
                                                     <button
                                                         key={idx}
                                                         type="button"
-                                                        className={`amount-btn ${isSelected ? "active" : ""}`}
-                                                        onClick={() => handleDonationChange(btnAmount)}
+                                                        className={`amount-btn ${Number(localAmount) === Number(val) ? "active" : ""}`}
+                                                        onClick={() => handleDonationChange(Number(val))}
                                                     >
-                                                        <Amount amount={btnAmount.toFixed(0)} />
+                                                        <Amount amount={Number(val).toFixed(0)} />
                                                     </button>
-                                                )
-                                            })}
+                                                ))}
+                                            </div>
+                                        )}
+                                        <div className="mb-3">
+                                            <label className="form-label fw-bold small text-muted mb-1">{translate("Or Enter Custom Amount")}</label>
+                                            <div className="input-group input-group-lg border rounded-3 overflow-hidden">
+                                                <span className="input-group-text bg-light border-0 fw-bold text-muted">
+                                                    <Amount amount={0} showSymbolOnly={true} />
+                                                </span>
+                                                <input
+                                                    type="number"
+                                                    className="form-control border-0 fw-bold fs-5 text-dark"
+                                                    placeholder="0"
+                                                    value={localAmount}
+                                                    onChange={(e) => handleDonationChange(e.target.value)}
+                                                />
+                                            </div>
+                                            {(() => {
+                                                const minAmount = Number(cause?.min_amount || 1)
+                                                if (total > 0 && total < minAmount)
+                                                    return (
+                                                        <div className="text-danger small mt-1 d-flex align-items-center animate__animated animate__fadeIn">
+                                                            <Icon icon="mdi:alert-circle-outline" className="me-1" /> Min total:{" "}
+                                                            <Amount amount={minAmount} />
+                                                        </div>
+                                                    )
+                                            })()}
                                         </div>
-                                    )}
-
-                                    {/* 2. Custom Amount Input */}
-                                    <div className="mb-3">
-                                        <label className="form-label fw-bold small text-muted mb-1">{translate("Or Enter Custom Amount")}</label>
-                                        <div className="input-group input-group-lg border rounded-3 overflow-hidden">
-                                            <span className="input-group-text bg-light border-0 fw-bold text-muted">
-                                                <Amount amount={0} showSymbolOnly={true} />
+                                        <div className="d-flex justify-content-between align-items-center mb-3 pt-3 border-top">
+                                            <span className="fw-bold text-secondary">{translate("Total Payable")}</span>
+                                            <span className="fw-bolder fs-4 text-primary">
+                                                <Amount amount={total.toFixed(2)} />
                                             </span>
-                                            <input
-                                                type="number"
-                                                className="form-control border-0 fw-bold fs-5 text-dark"
-                                                placeholder="0"
-                                                value={localAmount}
-                                                onChange={(e) => handleDonationChange(e.target.value)}
+                                        </div>
+                                        <button
+                                            className={`btn-donate-lg ${
+                                                carts.length === 0 || total < Number(cause?.min_amount || 1) ? "disabled" : ""
+                                            }`}
+                                            disabled={carts.length === 0 || total < Number(cause?.min_amount || 1)}
+                                            onClick={() => setShowDonateModal(true)}
+                                        >
+                                            {translate("Donate Now")}
+                                        </button>
+                                        <div className="trust-badges">
+                                            <div className="trust-item">
+                                                <Icon icon="mdi:shield-check" className="text-success fs-5" />
+                                                <span>Secure Payment</span>
+                                            </div>
+                                            <div className="trust-item">
+                                                <Icon icon="mdi:tax" className="text-primary fs-5" />
+                                                <span>Tax Benefits</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {cause?.video_url && (
+                                    <div className="sidebar-video-card">
+                                        <div className="ratio ratio-16x9">
+                                            <iframe
+                                                src={convertYouTube(cause.video_url)}
+                                                title="Cause Video"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
                                             />
                                         </div>
-
-                                        {/* Validation Message */}
-                                        {(() => {
-                                            const numericVal = Number(localAmount)
-                                            const minAmount = Number(cause?.min_amount || 1)
-
-                                            if (numericVal > 0 && numericVal < minAmount) {
-                                                return (
-                                                    <div className="text-danger small mt-1 d-flex align-items-center animate__animated animate__fadeIn">
-                                                        <Icon icon="mdi:alert-circle-outline" className="me-1" />
-                                                        Minimum donation amount is <Amount amount={minAmount} />
-                                                    </div>
-                                                )
-                                            }
-                                            return null
-                                        })()}
                                     </div>
-
-                                    {/* Total Row */}
-                                    <div className="d-flex justify-content-between align-items-center mb-3 pt-3 border-top">
-                                        <span className="fw-bold text-secondary">{translate("Total Payable")}</span>
-                                        <span className="fw-bolder fs-4 text-primary">
-                                            <Amount amount={total.toFixed(2)} />
-                                        </span>
-                                    </div>
-
-                                    {/* Main Action Button */}
-                                    <button
-                                        className={`btn-donate-lg ${
-                                            !localAmount || Number(localAmount) < Number(cause?.min_amount || 1) ? "disabled" : ""
-                                        }`}
-                                        disabled={!localAmount || Number(localAmount) < Number(cause?.min_amount || 1)}
-                                        onClick={() => setShowDonateModal(true)}
-                                    >
-                                        {translate("Donate Now")}
-                                    </button>
-
-                                    <div className="trust-badges">
-                                        <div className="trust-item">
-                                            <Icon icon="mdi:shield-check" className="text-success fs-5" />
-                                            <span>Secure Payment</span>
-                                        </div>
-                                        <div className="trust-item">
-                                            <Icon icon="mdi:tax" className="text-primary fs-5" />
-                                            <span>Tax Benefits</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                )}
                             </div>
-
-                            {/* Video Section */}
-                            {cause?.video_url && (
-                                <div className="sidebar-video-card">
-                                    <div className="ratio ratio-16x9">
-                                        <iframe
-                                            src={convertYouTube(cause.video_url)}
-                                            title="Cause Video"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                        />
-                                    </div>
-                                </div>
-                            )}
                         </div>
-                    </div>
+                    )}
                 </div>
 
-                {/* --- DONATION MODAL --- */}
-                {showDonateModal && <div className="modal-backdrop fade show"></div>}
+                <div className="mobile-sticky-footer d-lg-none animate__animated animate__slideInUp">
+                    <div className="d-flex flex-column">
+                        <span className="small text-muted lh-1">{translate("Total")}</span>
+                        <span className="fw-bolder fs-4 text-primary lh-1 mt-1">
+                            <Amount amount={total.toFixed(2)} />
+                        </span>
+                    </div>
+                    <button
+                        className="btn btn-primary rounded-pill fw-bold px-4 py-2 shadow-sm"
+                        style={{ background: "linear-gradient(45deg, #ff8c00, #ffaa33)", border: "none", minWidth: "150px" }}
+                        disabled={carts.length === 0 || total < Number(cause?.min_amount || 1)}
+                        onClick={() => setShowDonateModal(true)}
+                    >
+                        {translate("Donate Now")}
+                    </button>
+                </div>
 
+                {/* Donation Modal (Same as before, keep your modal code here) */}
+                {showDonateModal && <div className="modal-backdrop fade show"></div>}
                 <div className={`modal fade ${showDonateModal ? "show d-block" : ""}`} tabIndex="-1" role="dialog" style={{ overflowY: "auto" }}>
                     <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div className="modal-content">
-                            {/* Header */}
                             <div className="modal-header d-flex align-items-center justify-content-between">
                                 <div>
                                     <h5 className="modal-title fs-6 fw-bold">{translate("Complete Donation")}</h5>
-                                    <p className="mb-0 text-muted" style={{ fontSize: "0.8rem" }}>
+                                    <p className="mb-0 text-muted small">
                                         Donating{" "}
                                         <span className="fw-bold text-primary">
                                             <Amount amount={total.toFixed(2)} />
@@ -866,20 +856,12 @@ export default function CauseDetails({
                                         to <span className="fw-bold">{cause?.content?.title}</span>
                                     </p>
                                 </div>
-                                <button
-                                    type="button"
-                                    className="btn-close shadow-none small"
-                                    onClick={() => setShowDonateModal(false)}
-                                    aria-label="Close"
-                                ></button>
+                                <button type="button" className="btn-close shadow-none small" onClick={() => setShowDonateModal(false)}></button>
                             </div>
-
                             <div className="modal-body">
                                 <form onSubmit={handlePlaceOrder}>
-                                    {/* SECTION 1: Personal Details */}
                                     <span className="section-label">{translate("Personal Details")}</span>
                                     <div className="row g-2 mb-3">
-                                        {" "}
                                         <div className="col-md-6">
                                             <div className="form-floating">
                                                 <input
@@ -892,11 +874,6 @@ export default function CauseDetails({
                                                 />
                                                 <label htmlFor="donorName">{translate("Full Name")} *</label>
                                             </div>
-                                            {errors.name && (
-                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
-                                                    {errors.name}
-                                                </div>
-                                            )}
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-floating">
@@ -910,11 +887,6 @@ export default function CauseDetails({
                                                 />
                                                 <label htmlFor="donorPhone">{translate("Phone Number")} *</label>
                                             </div>
-                                            {errors.phone && (
-                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
-                                                    {errors.phone}
-                                                </div>
-                                            )}
                                         </div>
                                         <div className="col-md-12">
                                             <div className="form-floating">
@@ -928,11 +900,6 @@ export default function CauseDetails({
                                                 />
                                                 <label htmlFor="donorEmail">{translate("Email Address")} *</label>
                                             </div>
-                                            {errors.email && (
-                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
-                                                    {errors.email}
-                                                </div>
-                                            )}
                                         </div>
                                         <div className="col-md-8">
                                             <div className="form-floating">
@@ -946,46 +913,34 @@ export default function CauseDetails({
                                                 />
                                                 <label htmlFor="donorAddress">{translate("Address")} *</label>
                                             </div>
-                                            {errors.address && (
-                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
-                                                    {errors.address}
-                                                </div>
-                                            )}
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-floating">
                                                 <select
-                                                    className={`form-select ${errors.state ? "is-invalid" : ""}`}
+                                                    className="form-select"
                                                     id="donorState"
                                                     value={data.state}
                                                     onChange={(e) => setData("state", e.target.value)}
-                                                    style={{ paddingTop: "0.25rem" }} // Small adjustment for select
+                                                    style={{ paddingTop: "0.25rem" }}
                                                 >
                                                     <option value="">State</option>
-                                                    {states.map((state) => (
-                                                        <option key={state} value={state}>
-                                                            {state}
+                                                    {states.map((s) => (
+                                                        <option key={s} value={s}>
+                                                            {s}
                                                         </option>
                                                     ))}
                                                 </select>
                                                 <label htmlFor="donorState">{translate("State")} *</label>
                                             </div>
-                                            {errors.state && (
-                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
-                                                    {errors.state}
-                                                </div>
-                                            )}
                                         </div>
                                     </div>
 
-                                    {/* SECTION 2: Special Dedication */}
                                     {!!cause?.is_special && (
                                         <div className="bg-light p-3 rounded-2 mb-3 border border-dashed">
                                             <div className="d-flex align-items-center mb-2">
                                                 <Icon icon="mdi:gift-outline" className="text-primary fs-6 me-2" />
                                                 <h6 className="fw-bold mb-0 text-dark small">{translate(specialConfig.title)}</h6>
                                             </div>
-
                                             <div className="row g-2">
                                                 {specialConfig.showName && (
                                                     <div className="col-md-6">
@@ -1002,7 +957,6 @@ export default function CauseDetails({
                                                         </div>
                                                     </div>
                                                 )}
-
                                                 {specialConfig.showDate && (
                                                     <div className="col-md-6">
                                                         <div className="form-floating">
@@ -1017,7 +971,6 @@ export default function CauseDetails({
                                                         </div>
                                                     </div>
                                                 )}
-
                                                 {specialConfig.showImage && (
                                                     <div className="col-md-12">
                                                         <input
@@ -1027,13 +980,10 @@ export default function CauseDetails({
                                                             onChange={handleSFileChange}
                                                         />
                                                         {special_image && (
-                                                            <div className="small text-success mt-1 ms-1" style={{ fontSize: "0.7rem" }}>
-                                                                Selected: {special_image.name}
-                                                            </div>
+                                                            <div className="small text-success mt-1 ms-1">Selected: {special_image.name}</div>
                                                         )}
                                                     </div>
                                                 )}
-
                                                 {specialConfig.showMessage && (
                                                     <div className="col-md-12">
                                                         <div className="form-floating">
@@ -1052,7 +1002,6 @@ export default function CauseDetails({
                                         </div>
                                     )}
 
-                                    {/* SECTION 3: 80G Certificate */}
                                     <div className="mb-3">
                                         <div className="form-check form-switch">
                                             <input
@@ -1061,23 +1010,21 @@ export default function CauseDetails({
                                                 role="switch"
                                                 id="is_80g"
                                                 checked={!!data.is_80g}
-                                                onChange={(e) => {
-                                                    const checked = e.target.checked
-                                                    setData({ ...data, is_80g: checked, pancard: checked ? data.pancard : "" })
-                                                }}
+                                                onChange={(e) =>
+                                                    setData({ ...data, is_80g: e.target.checked, pancard: e.target.checked ? data.pancard : "" })
+                                                }
                                             />
                                             <label className="form-check-label fw-semibold small ms-1" htmlFor="is_80g">
                                                 {translate("I need 80G Tax Exemption Certificate")}
                                             </label>
                                         </div>
                                     </div>
-
                                     {data.is_80g && (
                                         <div className="mb-3 animate__animated animate__fadeIn">
                                             <div className="form-floating">
                                                 <input
                                                     type="text"
-                                                    className={`form-control ${errors.pancard ? "is-invalid" : ""}`}
+                                                    className="form-control"
                                                     id="pancard"
                                                     placeholder="Pancard"
                                                     maxLength="10"
@@ -1086,17 +1033,10 @@ export default function CauseDetails({
                                                 />
                                                 <label htmlFor="pancard">{translate("PAN Card Number")} *</label>
                                             </div>
-                                            {errors.pancard && (
-                                                <div className="text-danger small ms-1" style={{ fontSize: "0.75rem" }}>
-                                                    {errors.pancard}
-                                                </div>
-                                            )}
                                         </div>
                                     )}
 
-                                    {/* SECTION 4: Payment Methods */}
                                     <span className="section-label">{translate("Payment Method")}</span>
-
                                     <div className="payment-grid">
                                         {payment_gateway.is_cod_active && (
                                             <div
@@ -1140,36 +1080,31 @@ export default function CauseDetails({
                                                 <span className="payment-name">{translate("Razorpay")}</span>
                                             </div>
                                         )}
-
-                                        {manual_payment_gateways.map((gateway, index) => (
+                                        {manual_payment_gateways.map((g, i) => (
                                             <div
-                                                key={index}
-                                                className={`payment-option-card ${
-                                                    data.paymentMethod === gateway?.content?.gateway_name ? "selected" : ""
-                                                }`}
-                                                onClick={() => setData("paymentMethod", gateway?.content?.gateway_name)}
+                                                key={i}
+                                                className={`payment-option-card ${data.paymentMethod === g?.content?.gateway_name ? "selected" : ""}`}
+                                                onClick={() => setData("paymentMethod", g?.content?.gateway_name)}
                                             >
-                                                {data.paymentMethod === gateway?.content?.gateway_name && (
+                                                {data.paymentMethod === g?.content?.gateway_name && (
                                                     <div className="payment-check-badge">
                                                         <Icon icon="mdi:check" />
                                                     </div>
                                                 )}
                                                 <Icon icon="mdi:bank" className="fs-4 text-success mb-1" />
-                                                <span className="payment-name text-truncate w-100">{gateway?.content?.gateway_name}</span>
+                                                <span className="payment-name text-truncate w-100">{g?.content?.gateway_name}</span>
                                             </div>
                                         ))}
                                     </div>
 
-                                    {/* Manual Payment Details */}
                                     {selectedGateway && (
-                                        <div className="bg-light p-3 rounded-2 mb-3 border animate__animated animate__fadeIn">
+                                        <div className="bg-light p-3 rounded-2 mb-3 border">
                                             <h6 className="fw-bold mb-2 small">{translate("Payment Instructions")}</h6>
                                             <div
                                                 className="small text-muted mb-2"
                                                 style={{ fontSize: "0.8rem" }}
                                                 dangerouslySetInnerHTML={{ __html: selectedGateway?.content?.instructions }}
                                             />
-
                                             <div className="row g-2">
                                                 <div className="col-7">
                                                     <div className="form-floating">
@@ -1184,11 +1119,6 @@ export default function CauseDetails({
                                                         />
                                                         <label htmlFor="txnId">{translate("Transaction ID")} *</label>
                                                     </div>
-                                                    {errors.transactionId && (
-                                                        <div className="text-danger small" style={{ fontSize: "0.75rem" }}>
-                                                            {errors.transactionId}
-                                                        </div>
-                                                    )}
                                                 </div>
                                                 <div className="col-5">
                                                     <input
@@ -1203,15 +1133,12 @@ export default function CauseDetails({
                                         </div>
                                     )}
 
-                                    {/* Footer / Submit */}
                                     <div className="mt-3 pt-3 border-top">
                                         {is_active_google_captcha === "1" && (
                                             <div className="mb-3 d-flex justify-content-center scale-75 origin-center">
-                                                {/* scale-75 to make captcha smaller */}
                                                 <ReCAPTCHA sitekey={captchaSiteKey} onChange={handleCaptchaChange} />
                                             </div>
                                         )}
-
                                         <div className="form-check mb-3">
                                             <input
                                                 className="form-check-input"
@@ -1226,13 +1153,7 @@ export default function CauseDetails({
                                                     {translate("Terms & Conditions")}
                                                 </Link>
                                             </label>
-                                            {errors.agreed && (
-                                                <div className="text-danger small" style={{ fontSize: "0.75rem" }}>
-                                                    {errors.agreed}
-                                                </div>
-                                            )}
                                         </div>
-
                                         <button
                                             className="btn btn-primary rounded-pill w-100 fw-bold"
                                             style={{ background: "linear-gradient(45deg, #ff8c00, #ffaa33)", border: "none", padding: "10px" }}

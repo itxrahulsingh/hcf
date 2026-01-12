@@ -15,7 +15,7 @@ const cartSlice = createSlice({
     initialState,
     reducers: {
         addCart(state, action) {
-            const { id, type, content, quantity = 1 } = action.payload
+            const { id, type, content, quantity = 1, cause_id } = action.payload
 
             const cartIndex = state.carts.findIndex(
                 (c) => c.id === id && c.type === type
@@ -38,7 +38,8 @@ const cartSlice = createSlice({
                     price: itemPrice,
                     thumbnail_image: content.thumbnail_image || content.gift_image || null,
                     quantity,
-                    sku: content.sku ?? null
+                    sku: content.sku ?? null,
+                    cause_id: cause_id || null
                 })
             } else {
                 state.carts[cartIndex].quantity += quantity

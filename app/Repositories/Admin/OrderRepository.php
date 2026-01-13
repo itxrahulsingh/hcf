@@ -67,6 +67,10 @@ class OrderRepository
             $query->where('type', $filter['type']);
         }
 
+        if (isset($filter['cause_id']) && $filter['cause_id'] !== 'All') {
+            $query->where('cause_id', $filter['cause_id']);
+        }
+
         // Filter by payment status
         if (isset($filter['payment_status']) && $filter['payment_status'] !== 'All Payment Status') {
             $query->where('payment_status', $filter['payment_status']);

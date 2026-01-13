@@ -83,7 +83,7 @@ export default function CauseDetails({
         pancard: "",
         orderNotes: "",
         coupon: coupon,
-        items: carts,
+        items: carts, // Initial state
         agreed: false,
         is_80g: false,
         paymentMethod: "",
@@ -96,6 +96,11 @@ export default function CauseDetails({
         type: cause?.type || "",
         cause_id: cause?.id || null
     })
+
+    useEffect(() => {
+        setData("items", carts)
+    }, [carts])
+    // ==================================================================
 
     // --- 5. Special Dedication Config ---
     const getSpecialConfig = () => {
@@ -143,16 +148,12 @@ export default function CauseDetails({
     }
     const specialConfig = getSpecialConfig()
 
-    // --- 6. Effects & Handlers ---
-
-    // [CRITICAL] Fresh Start Logic: Wipe cart if user enters new cause page with old data
     useEffect(() => {
         const hasForeignItems = carts.some((item) => item.cause_id && item.cause_id !== cause.id)
         if (hasForeignItems) {
             dispatch(clearCart())
             setLocalAmount("")
         } else {
-            // Restore local amount from existing cart donation
             const currentCauseItem = carts.find((item) => item.type === "cause" && item.id === cause.id)
             if (currentCauseItem) {
                 setLocalAmount(currentCauseItem.price)
@@ -238,7 +239,6 @@ export default function CauseDetails({
         }
     }
 
-    // --- 7. Data Parsers ---
     const galleryItems = (() => {
         try {
             let items = []
@@ -308,7 +308,7 @@ export default function CauseDetails({
                 causeDetailsUser={cause?.user?.name}
                 is_show_cause_details_sidebar={is_show_cause_details_sidebar}
             >
-                {/* 2. Responsive Sticky Nav Bar */}
+                {/* ... (Sticky Nav code remains same) ... */}
                 <div className="cause-sticky-nav">
                     <div className="container">
                         <ul className="cause-nav-list">
@@ -347,10 +347,11 @@ export default function CauseDetails({
 
                 <div className="row">
                     <div className={`${cause.type === "birthday" ? "col-md-12" : "col-md-8"}`}>
-                        <div className="mobile-donation-card d-lg-none" id="donate-section">
-                            <h5 className="fw-bold mb-3">{translate("Make a Donation")}</h5>
 
-                            {/* Preset Buttons */}
+                        {/* Mobile Donation Card (Hidden on Desktop) */}
+                        <div className="mobile-donation-card d-lg-none" id="donate-section">
+                            {/* ... (Existing logic for Mobile Donation Card) ... */}
+                             <h5 className="fw-bold mb-3">{translate("Make a Donation")}</h5>
                             {cause?.custom_donation_amounts && (
                                 <div className="amount-grid mb-3">
                                     {(Array.isArray(cause.custom_donation_amounts)
@@ -372,8 +373,6 @@ export default function CauseDetails({
                                     })}
                                 </div>
                             )}
-
-                            {/* Custom Input */}
                             <div className="input-group input-group-lg border rounded-3 overflow-hidden bg-white">
                                 <span className="input-group-text bg-white border-0 fw-bold text-muted">
                                     <Amount amount={0} showSymbolOnly={true} />
@@ -386,8 +385,6 @@ export default function CauseDetails({
                                     onChange={(e) => handleDonationChange(e.target.value)}
                                 />
                             </div>
-
-                            {/* Mobile Validation Message */}
                             {(() => {
                                 const minAmount = Number(cause?.min_amount || 1)
                                 if (total > 0 && total < minAmount)
@@ -399,7 +396,7 @@ export default function CauseDetails({
                             })()}
                         </div>
 
-                        {/* Gifts Section */}
+                        {/* Gifts Section (Remains Same) */}
                         {cause?.have_gift == 1 && cause?.gifts?.length > 0 && (
                             <div className="cs_cause_details_wrap">
                                 <h3 className="mb-4">Select a Gift</h3>
@@ -414,9 +411,7 @@ export default function CauseDetails({
                                                         {gift.gift_image ? (
                                                             <img src={gift.gift_image} alt={gift.content?.title} />
                                                         ) : (
-                                                            <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
-                                                                No Image
-                                                            </div>
+                                                            <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">No Image</div>
                                                         )}
                                                     </div>
                                                     <div className="card-body p-3 d-flex flex-column">
@@ -465,7 +460,7 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* Products Section */}
+                        {/* Products Section - FIX 2 Applied Here */}
                         {cause?.have_product == 1 && products?.length > 0 && (
                             <div className="mt-5">
                                 <h3 className="mb-4">Products</h3>
@@ -477,6 +472,7 @@ export default function CauseDetails({
                                         return (
                                             <div key={idx} className="col-12 col-sm-6 col-md-4">
                                                 <div className="cause-card h-100 d-flex flex-column shadow-sm">
+                                                    {/* ... Image ... */}
                                                     <div className="cause-card-img-wrapper">
                                                         {product.thumbnail_image ? (
                                                             <img src={product.thumbnail_image} alt={product.content?.title} />
@@ -498,15 +494,11 @@ export default function CauseDetails({
                                                         <div className="mt-auto pt-2 border-top">
                                                             <div className="d-flex justify-content-between mb-3">
                                                                 <span className="cause-card-price">
-                                                                    <Amount amount={finalPrice.toFixed(2)} />{" "}
-                                                                    <span className="text-muted fs-6 fw-normal">/ Unit</span>
+                                                                    <Amount amount={finalPrice.toFixed(2)} /> <span className="text-muted fs-6 fw-normal">/ Unit</span>
                                                                 </span>
                                                             </div>
                                                             <div className="d-flex gap-2 align-items-center">
-                                                                <div
-                                                                    className="qty-control d-flex align-items-center px-1"
-                                                                    style={{ width: "100px" }}
-                                                                >
+                                                                <div className="qty-control d-flex align-items-center px-1" style={{ width: "100px" }}>
                                                                     <button
                                                                         className="qty-btn"
                                                                         style={{ width: "24px", height: "24px" }}
@@ -566,16 +558,20 @@ export default function CauseDetails({
                                                                 <button
                                                                     className={`btn-donate-lg mt-2`}
                                                                     onClick={() => {
-                                                                        dispatch(
-                                                                            addCart({
-                                                                                id: product.id,
-                                                                                type: "product",
-                                                                                content: product,
-                                                                                quantity: product.min_quantity || 1,
-                                                                                cause_id: cause.id
-                                                                            })
-                                                                        ),
-                                                                            setShowDonateModal(true)
+                                                                        // ========== FIX 2: Check if item exists before adding ==========
+                                                                        if (!cartItem) {
+                                                                            dispatch(
+                                                                                addCart({
+                                                                                    id: product.id,
+                                                                                    type: "product",
+                                                                                    content: product,
+                                                                                    quantity: product.min_quantity || 1,
+                                                                                    cause_id: cause.id
+                                                                                })
+                                                                            )
+                                                                        }
+                                                                        // ===============================================================
+                                                                        setShowDonateModal(true)
                                                                     }}
                                                                 >
                                                                     {translate("Donate Now")}
@@ -591,7 +587,7 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* Content, Projects, FAQ, Updates */}
+                        {/* ... Rest of Content (Projects, FAQ, Gallery, etc.) ... */}
                         <div id="content-section" className="cs_cause_details_wrap mt-5">
                             <div className="d-flex align-items-center mb-4">
                                 <h3 className="mb-0 fw-bold">Content</h3>
@@ -614,6 +610,7 @@ export default function CauseDetails({
                             </div>
                         )}
 
+                        {/* ... FAQ, Updates, Gallery ... */}
                         {faqItems.length > 0 && (
                             <div id="faq-section" className="cs_cause_details_wrap mt-5 pt-4 border-top">
                                 <div className="d-flex align-items-center mb-4">
@@ -657,7 +654,6 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* Mixed Media Gallery */}
                         {galleryItems.length > 0 && (
                             <div className="transparency-gallery-section mt-5 p-4 rounded-4">
                                 <div className="text-center mb-4">
@@ -726,7 +722,7 @@ export default function CauseDetails({
                         )}
                     </div>
 
-                    {/* Right Sidebar (Desktop Only) */}
+                    {/* Right Sidebar (Desktop Only) - Remains Same */}
                     {!["birthday", "anniversary"].includes(cause?.type) && (
                         <div className={`col-xl-4`}>
                             <div className="sidebar-sticky-wrapper">
@@ -823,6 +819,7 @@ export default function CauseDetails({
                     )}
                 </div>
 
+                {/* Mobile Sticky Footer & Modal Code (Remains Same) */}
                 <div className="mobile-sticky-footer d-lg-none animate__animated animate__slideInUp">
                     <div className="d-flex flex-column">
                         <span className="small text-muted lh-1">{translate("Total")}</span>
@@ -840,11 +837,12 @@ export default function CauseDetails({
                     </button>
                 </div>
 
-                {/* Donation Modal (Same as before, keep your modal code here) */}
+                {/* Donation Modal (Keep existing logic) */}
                 {showDonateModal && <div className="modal-backdrop fade show"></div>}
                 <div className={`modal fade ${showDonateModal ? "show d-block" : ""}`} tabIndex="-1" role="dialog" style={{ overflowY: "auto" }}>
                     <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div className="modal-content">
+                            {/* ... Modal Header & Body ... */}
                             <div className="modal-header d-flex align-items-center justify-content-between">
                                 <div>
                                     <h5 className="modal-title fs-6 fw-bold">{translate("Complete Donation")}</h5>

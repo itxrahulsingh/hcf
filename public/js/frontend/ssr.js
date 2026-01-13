@@ -23395,6 +23395,7 @@ function CauseDetails(_ref) {
       orderNotes: "",
       coupon: coupon,
       items: carts,
+      // Initial state
       agreed: false,
       is_80g: false,
       paymentMethod: "",
@@ -23412,6 +23413,10 @@ function CauseDetails(_ref) {
     post = _useForm.post,
     errors = _useForm.errors,
     processing = _useForm.processing;
+  (0,react__WEBPACK_IMPORTED_MODULE_17__.useEffect)(function () {
+    setData("items", carts);
+  }, [carts]);
+  // ==================================================================
 
   // --- 5. Special Dedication Config ---
   var getSpecialConfig = function getSpecialConfig() {
@@ -23467,10 +23472,6 @@ function CauseDetails(_ref) {
     return config;
   };
   var specialConfig = getSpecialConfig();
-
-  // --- 6. Effects & Handlers ---
-
-  // [CRITICAL] Fresh Start Logic: Wipe cart if user enters new cause page with old data
   (0,react__WEBPACK_IMPORTED_MODULE_17__.useEffect)(function () {
     var hasForeignItems = carts.some(function (item) {
       return item.cause_id && item.cause_id !== cause.id;
@@ -23479,7 +23480,6 @@ function CauseDetails(_ref) {
       dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.clearCart)());
       setLocalAmount("");
     } else {
-      // Restore local amount from existing cart donation
       var currentCauseItem = carts.find(function (item) {
         return item.type === "cause" && item.id === cause.id;
       });
@@ -23573,8 +23573,6 @@ function CauseDetails(_ref) {
       });
     }
   };
-
-  // --- 7. Data Parsers ---
   var galleryItems = function () {
     try {
       var items = [];
@@ -23962,13 +23960,18 @@ function CauseDetails(_ref) {
                         }), ["birthday"].includes(cause.type) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
                           className: "btn-donate-lg mt-2",
                           onClick: function onClick() {
-                            dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
-                              id: product.id,
-                              type: "product",
-                              content: product,
-                              quantity: product.min_quantity || 1,
-                              cause_id: cause.id
-                            })), setShowDonateModal(true);
+                            // ========== FIX 2: Check if item exists before adding ==========
+                            if (!cartItem) {
+                              dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+                                id: product.id,
+                                type: "product",
+                                content: product,
+                                quantity: product.min_quantity || 1,
+                                cause_id: cause.id
+                              }));
+                            }
+                            // ===============================================================
+                            setShowDonateModal(true);
                           },
                           children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Donate Now")
                         })]

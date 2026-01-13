@@ -5,7 +5,7 @@ import translate from "@/utils/translate"
 import { Icon } from "@iconify/react"
 
 export default function Sidebar() {
-    const { auth, isEnabledEcommerce, isEnabledCaseStudy, isEnabledPortfolio, isEnabledService, isEnabledTeam } = usePage().props
+    const { auth, isEnabledEcommerce, isEnabledCaseStudy, isEnabledPortfolio, isEnabledService, isEnabledTeam, causeTypes } = usePage().props
     const [toggle, setToggle] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
 
@@ -387,63 +387,24 @@ export default function Sidebar() {
                                                     </Link>
                                                 </li>
 
-                                                <li className={`${route().current("admin.orders.index", {
-                                                        filter: {
-                                                            type: "birthday"
-                                                        }
-                                                    }) && "active"
-                                                        }`}
-                                                >
-                                                    <Link
-                                                        href={route("admin.orders.index", {
-                                                            filter: {
-                                                                type: "birthday"
-                                                            }
-                                                        })}
+{causeTypes && Object.entries(causeTypes).map(([key, label]) => (
+                                                    <li
+                                                        key={key}
+                                                        className={`${route().current("admin.orders.index", { filter: { type: key } }) ? "active" : ""}`}
                                                     >
-                                                        <span className="yoo-sidebar-link-title">
-                                                            <span className="yoo-sidebar-link-text">{translate("Birthday Orders")}</span>
-                                                        </span>
-                                                    </Link>
-                                                </li>
-                                                <li className={`${route().current("admin.orders.index", {
-                                                        filter: {
-                                                            type: "aniversary"
-                                                        }
-                                                    }) && "active"
-                                                        }`}
-                                                >
-                                                    <Link
-                                                        href={route("admin.orders.index", {
-                                                            filter: {
-                                                                type: "aniversary"
-                                                            }
-                                                        })}
-                                                    >
-                                                        <span className="yoo-sidebar-link-title">
-                                                            <span className="yoo-sidebar-link-text">{translate("Aniversary Orders")}</span>
-                                                        </span>
-                                                    </Link>
-                                                </li>
-                                                <li className={`${route().current("admin.orders.index", {
-                                                        filter: {
-                                                            type: "special_day"
-                                                        }
-                                                    }) && "active"
-                                                        }`}
-                                                >
-                                                    <Link
-                                                        href={route("admin.orders.index", {
-                                                            filter: {
-                                                                type: "special_day"
-                                                            }
-                                                        })}
-                                                    >
-                                                        <span className="yoo-sidebar-link-title">
-                                                            <span className="yoo-sidebar-link-text">{translate("Special Day Orders")}</span>
-                                                        </span>
-                                                    </Link>
-                                                </li>
+                                                        <Link
+                                                            href={route("admin.orders.index", { filter: { type: key } })}
+                                                        >
+                                                            <span className="yoo-sidebar-link-title">
+                                                                <span className="yoo-sidebar-link-text">
+                                                                    {translate(label + " Orders")}
+                                                                </span>
+                                                            </span>
+                                                        </Link>
+                                                    </li>
+                                                ))}
+
+
                                             </ul>
                                         </li>
                                     )}

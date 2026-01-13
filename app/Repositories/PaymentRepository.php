@@ -22,7 +22,7 @@ class PaymentRepository
                 $paypal = new Paypal;
                 $response = $paypal->verifyPayment($request->token);
                 if ($response->status === 'COMPLETED') {
-                    return $this->updateSuccessPaymentData($paymentType, $request->identifier);
+                    return $this->updateSuccessPaymentData($paymentType, $request->identifier, $response->toArray());
                 } else {
                     throw new \Exception('Payment Failed');
                 }
@@ -31,7 +31,7 @@ class PaymentRepository
                 $paymentId = Session::get('paymentId');
                 $response = $stripe->verifyPayment($paymentId);
                 if ($response->payment_status === 'paid') {
-                    return $this->updateSuccessPaymentData($paymentType, $request->identifier);
+                    return $this->updateSuccessPaymentData($paymentType, $request->identifier, $response->toArray());
                 } else {
                     throw new \Exception('Payment Failed');
                 }
@@ -40,7 +40,7 @@ class PaymentRepository
                 $sslcmz = new SSLCommerz(null);
                 $res = $sslcmz->verifyPayment($request->all());
                 if ($res) {
-                    return $this->updateSuccessPaymentData($paymentType, $request->identifier);
+                    return $this->updateSuccessPaymentData($paymentType, $request->identifier, $res->toArray());
                 }
 
             case 'flutterwave':
@@ -50,7 +50,7 @@ class PaymentRepository
                     $flutterwave = new FlutterWave;
                     $response = $flutterwave->verifyPayment($request->transaction_id);
                     if ($response['status'] == 'success') {
-                        return $this->updateSuccessPaymentData($paymentType, $request->identifier);
+                        return $this->updateSuccessPaymentData($paymentType, $request->identifier, $response);
                     }
                 }
 
@@ -63,7 +63,7 @@ class PaymentRepository
                 ];
                 $razorpay->verifyPayment($data);
 
-                return $this->updateSuccessPaymentData($paymentType ?? 'donation', $request->identifier);
+                return $this->updateSuccessPaymentData($paymentType ?? 'donation', $request->identifier, $data);
         }
     }
 
@@ -99,12 +99,15 @@ class PaymentRepository
         }
     }
 
-    private function updateSuccessPaymentData($type, $identifier)
+    private function updateSuccessPaymentData($type, $identifier, $data = null)
     {
         if ($type == 'product') {
             $order = Order::find($identifier);
             $order->update([
                 'payment_status' => '2',
+                'transaction_id' => $data['razorpay_payment_id'] ?? null,
+                'rzp_order_id' => $data['razorpay_order_id'] ?? null,
+                'payment_data' => $data,
             ]);
 
             return redirect()->route('payment.success.page', $order);
@@ -114,7 +117,10 @@ class PaymentRepository
                 return;
             }
             $data = [
-                'payment_status' => '2'
+                'payment_status' => '2',
+                'transaction_id' => $data['razorpay_payment_id'] ?? null,
+                'rzp_order_id' => $data['razorpay_order_id'] ?? null,
+                'payment_data' => $data,
             ];
             if ($order->type === 'normal') {
                 $data['status'] = 'completed';

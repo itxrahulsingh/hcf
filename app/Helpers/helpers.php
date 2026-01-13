@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Setting;
+use App\Models\Invoice;
+use Illuminate\Support\Facades\DB;
 
 if (! function_exists('get_options')) {
     function get_options(string $key, bool $decode = false, $locale = false)
@@ -68,5 +70,40 @@ if (! function_exists('format_currency')) {
             default:
                 return "{$symbol}{$formattedAmount}";
         }
+    }
+}
+
+if (! function_exists('generate_invoice_number')) {
+    /**
+     * Generate a sequential invoice number based on financial year settings.
+     *
+     * @return array
+     */
+    function generate_invoice_number()
+    {
+        $prefix = get_options('invoice_prefix') ?? 'INV';
+        $fyStartMonth = get_options('financial_year_start_month') ?? 4;
+
+        $now = now();
+        $startYear = $now->month >= $fyStartMonth ? $now->year : $now->year - 1;
+        $endYear   = $startYear + 1;
+        $financialYear = $startYear . "-" . $endYear;
+
+        $invoiceCount = DB::transaction(function () use ($startYear) {
+            $last = Invoice::where('financial_year_start', $startYear)
+                ->lockForUpdate()
+                ->max('invoice_count');
+            return ($last ?? 0) + 1;
+        });
+
+        $invoiceNumber = sprintf("%s/%s/%05d", $prefix, $financialYear, $invoiceCount);
+
+        return [
+            'number' => $invoiceNumber,
+            'count'  => $invoiceCount,
+            'fy'     => $financialYear,
+            'start'  => $startYear,
+            'end'    => $endYear,
+        ];
     }
 }

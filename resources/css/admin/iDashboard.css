@@ -4267,7 +4267,7 @@ kbd {
 }
 /*========== End Header  ==========*/
 .yoo-sidebarheader {
-    width: 300px;
+    width: 270px;
     background-color: #fff;
     height: 100vh;
     overflow-y: auto;
@@ -4296,9 +4296,9 @@ kbd {
 }
 
 .yoo-sidebar-nav {
-    padding: 17px 0px 40px;
+    padding: 15px 0px 35px;
     overflow: hidden;
-    width: 300px;
+    width: 270px;
 }
 
 .yoo-sidebar-nav-list {
@@ -4330,9 +4330,9 @@ kbd {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0;
-    font-size: 16px;
+    font-size: 14px;
 }
 .yoo-sidebar-nav-list a:hover {
     background-color: rgba(0, 0, 0, 0.05);
@@ -4346,7 +4346,7 @@ kbd {
     align-items: center;
 }
 .yoo-sidebar-nav-list a .yoo-sidebar-link-text {
-    line-height: 1.25em;
+    line-height: 1em;
 }
 .yoo-sidebar-nav-list .yoo-sidebar-link-icon {
     font-size: 20px;
@@ -4409,9 +4409,9 @@ kbd {
 .yoo-sidebar-nav-list li.yoo-sidebar-has-children .yoo-sidebar-nav-dropdown > li a {
     padding-left: 78px;
     padding-top: 8px;
-    padding-bottom: 12px;
-    padding-top: 12px;
-    font-size: 15px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    font-size: 14px;
 }
 
 .yoo-sidebar-nav-list li.yoo-sidebar-has-children .yoo-sidebar-nav-dropdown > li a::before {
@@ -4550,7 +4550,7 @@ kbd {
 }
 
 .yoo-sidebar-active .yoo-hover-active.yoo-sidebarheader {
-    width: 300px;
+    width: 270px;
 }
 .yoo-sidebar-active .yoo-hover-active .yoo-sidebar-nav-dropdown,
 .yoo-sidebar-active .yoo-hover-active .yoo-nav-label,
@@ -4596,7 +4596,7 @@ kbd {
 
 @media screen and (max-width: 1199px) {
     .yoo-sidebarheader {
-        left: -300px;
+        left: -270px;
     }
 
     .yoo-content.yoo-style1 {
@@ -4607,7 +4607,7 @@ kbd {
         padding-left: 0px;
     }
     .yoo-sidebar-active .yoo-sidebarheader {
-        width: 300px;
+        width: 270px;
         left: 0;
         background-color: #fff;
     }

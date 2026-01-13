@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Cause;
 use App\Models\Setting;
 use App\Repositories\Admin\OrderRepository;
 use Illuminate\Http\RedirectResponse;
@@ -33,9 +34,12 @@ class OrderController extends Controller
         $data['sort']['column'] = $request->sort['column'] ?? 'id';
         $data['sort']['order'] = $request->sort['order'] ?? 'desc';
         $data['filter']['status'] = $request->filter['status'] ?? 'All Order Status';
-        $data['filter']['type'] = $request->filter['type'] ?? null;
+        $data['filter']['cause_id'] = $request->filter['cause_id'] ?? null;
+        $data['filter']['type'] = $request->filter['type'] ?? 'All';
         $data['filter']['payment_status'] = $request->filter['payment_status'] ?? 'All Payment Status';
+
         $data['orders'] = $repository->paginateSearchResult($data['search'], $data['sort'], $data['filter']);
+        $data['causes'] = Cause::with('content:cause_id,title')->select('id')->get();
 
         return Inertia::render('Orders/Index', $data);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Events\DonationSuccess;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Models\Order;
@@ -117,28 +118,11 @@ class PaymentController extends Controller
         * LOAD INVOICE SETTINGS
         * ---------------------------------------------------------- */
 
-        $prefix = Setting::pull('invoice_prefix') ?? 'INV';
-        $fyStartMonth = Setting::pull('financial_year_start_month') ?? 4;
-
-        $now = now();
-        $startYear = $now->month >= $fyStartMonth ? $now->year : $now->year - 1;
-        $endYear   = $startYear + 1;
-
-        $financialYear = $startYear . "-" . $endYear;
-
-        /* ----------------------------------------------------------
-        * GET SAFE AUTO-INCREMENT PER FINANCIAL YEAR
-        * ---------------------------------------------------------- */
-        $invoiceCount = DB::transaction(function () use ($startYear) {
-            $last = Invoice::where('financial_year_start', $startYear)->lockForUpdate()->max('invoice_count');
-            return ($last ?? 0) + 1;
-        });
-
-        $invoiceNumber = sprintf("%s/%s/%05d", $prefix, $financialYear, $invoiceCount);
+        $invData = generate_invoice_number();
 
         $invoice = Invoice::create([
-            'invoice_number'        => $invoiceNumber,
-            'invoice_count'         => $invoiceCount,
+            'invoice_number'        => $invData['number'],
+            'invoice_count'         => $invData['count'],
             'order_id'              => $order->id,
             'customer_name'         => $order->customer_name,
             'customer_email'        => $order->customer_email,
@@ -147,9 +131,9 @@ class PaymentController extends Controller
             'state'                 => $order->state,
             'is_80g'                => $order->is_80g ?? false,
             'pancard'               => $order->pancard,
-            'financial_year'        => $financialYear,
-            'financial_year_start'  => $startYear,
-            'financial_year_end'    => $endYear,
+            'financial_year'        => $invData['fy'],
+            'financial_year_start'  => $invData['start'],
+            'financial_year_end'    => $invData['end'],
             'total_price'           => $order->total_price,
             'payment_method'        => $order->payment_method,
             'type'                  => $order->type,
@@ -158,6 +142,8 @@ class PaymentController extends Controller
         ]);
 
         $data['invoice'] = $invoice;
+
+        event(new DonationSuccess($order, $order->transaction_id ?? 'N/A'));
 
         SEOMeta::setTitle($tagline);
         SEOMeta::setCanonical($current_page_url);

@@ -1,4 +1,4 @@
-import { Head, Link } from "@inertiajs/react"
+import { Head, Link, usePage } from "@inertiajs/react"
 import { search, createOutline, businessOutline, arrowForwardOutline, eyeOutline } from "ionicons/icons"
 import { IonIcon } from "@ionic/react"
 import { useState } from "react"
@@ -12,11 +12,13 @@ import Amount from "@/Components/Amount"
 import hasPermission from "@/Admin/Utils/hasPermission"
 import translate from "@/utils/translate"
 
-export default function Index({ orders, sort, filter }) {
+export default function Index({ orders, sort, filter, causes }) {
+    const { causeTypes } = usePage().props
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedOption, setSelectedOption] = useState("Bulk Action")
     const [selectedStatus, setSelectedStatus] = useState(filter?.status || "All Order Status")
     const [selectedType, setSelectedType] = useState(filter?.type || "All")
+    const [selectedCause, setSelectedCause] = useState(filter?.cause_id || "All")
     const [selectedPaymentStatus, setSelectedPaymentStatus] = useState(filter?.payment_status || "All Payment Status")
     const [isMarkAll, setIsMarkAll] = useState(false)
     const [markItems, setMarkItems] = useState([])
@@ -38,6 +40,7 @@ export default function Index({ orders, sort, filter }) {
                 filter: {
                     status: selectedStatus,
                     type: selectedType,
+                    cause_id: selectedCause,
                     payment_status: selectedPaymentStatus
                 }
             }),
@@ -180,37 +183,65 @@ export default function Index({ orders, sort, filter }) {
                                                         </DropDownButton>
                                                     </div>
                                                 </div>
+
                                                 <div className="">
                                                     <div className="position-relative">
-                                                        <DropDownButton selectedOption={selectedType}>
+                                                        <DropDownButton
+                                                            selectedOption={
+                                                                selectedType === "All"
+                                                                ? translate("All Types")
+                                                                : (causeTypes[selectedType] ? translate(causeTypes[selectedType]) : selectedType)
+                                                            }
+                                                        >
                                                             <a
                                                                 onClick={() => setSelectedType("All")}
                                                                 className={`dropdown-item ${selectedType === "All" ? "active" : ""}`}
                                                                 href="#"
                                                             >
-                                                                {translate("All Order Types")}
+                                                                {translate("All Types")}
                                                             </a>
+                                                            {/* Loop through shared causeTypes */}
+                                                            {causeTypes && Object.entries(causeTypes).map(([key, label]) => (
+                                                                <a
+                                                                    key={key}
+                                                                    onClick={() => setSelectedType(key)}
+                                                                    className={`dropdown-item ${selectedType === key ? "active" : ""}`}
+                                                                    href="#"
+                                                                >
+                                                                    {translate(label)}
+                                                                </a>
+                                                            ))}
+                                                        </DropDownButton>
+                                                    </div>
+                                                </div>
+                                                <div className="">
+                                                    <div className="position-relative">
+                                                        <DropDownButton
+                                                            selectedOption={
+                                                                selectedCause === "All"
+                                                                    ? translate("All Causes")
+                                                                    :
+                                                                      causes.find((c) => c.id == selectedCause)?.content?.title ||
+                                                                      translate("All Causes")
+                                                            }
+                                                        >
                                                             <a
-                                                                onClick={() => setSelectedType("Birthday")}
-                                                                className={`dropdown-item ${selectedType === "birthday" ? "active" : ""}`}
+                                                                onClick={() => setSelectedCause("All")}
+                                                                className={`dropdown-item ${selectedCause === "All" ? "active" : ""}`}
                                                                 href="#"
                                                             >
-                                                                Birthday
+                                                                {translate("All Causes")}
                                                             </a>
-                                                            <a
-                                                                onClick={() => setSelectedType("Aniversary")}
-                                                                className={`dropdown-item ${selectedType === "aniversary" ? "active" : ""}`}
-                                                                href="#"
-                                                            >
-                                                                {translate("Aniversary")}
-                                                            </a>
-                                                            <a
-                                                                onClick={() => setSelectedType("Special Day")}
-                                                                className={`dropdown-item ${selectedType === "special_day" ? "active" : ""}`}
-                                                                href="#"
-                                                            >
-                                                                {translate("Special Day")}
-                                                            </a>
+                                                            {causes.map((cause) => (
+                                                                <a
+                                                                    key={cause.id}
+                                                                    onClick={() => setSelectedCause(cause.id)}
+                                                                    className={`dropdown-item ${selectedCause == cause.id ? "active" : ""}`}
+                                                                    href="#"
+                                                                >
+                                                                    {cause.content?.title || "Untitled Cause"} {/* [!code focus] */}
+                                                                </a>
+                                                            ))}
                                                         </DropDownButton>
                                                     </div>
                                                 </div>
@@ -371,9 +402,9 @@ export default function Index({ orders, sort, filter }) {
                                                         <td>
                                                             <ul>
                                                                 {order.orderitems?.map((item, index) => (
-                                                                <li key={index}>
-                                                                    {item.item_name} ({item.type_name || "product"})
-                                                                </li>
+                                                                    <li key={index}>
+                                                                        {item.item_name} ({item.type_name || "product"})
+                                                                    </li>
                                                                 ))}
                                                             </ul>
                                                         </td>

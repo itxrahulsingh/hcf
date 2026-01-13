@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Cause;
 use App\Models\Page;
 use App\Models\Setting;
 use App\Repositories\SettingRepository;
@@ -71,6 +72,7 @@ class HandleInertiaRequests extends Middleware
                 'isEnabledPortfolio' => $isEnabledPortfolio,
                 'isEnabledService' => $isEnabledService,
                 'isEnabledTeam' => $isEnabledTeam,
+                'causeTypes' => Cause::$causeTypes,
             ]);
         }
 

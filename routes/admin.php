@@ -446,6 +446,13 @@ Route::group(['prefix' => 'coupons', 'as' => 'coupons.'], function () {
 
 /** Orders routes **/
 Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+
+    Route::get('/create', [OrderController::class, 'create'])->name('create');
+    Route::post('/store', [OrderController::class, 'store'])->name('store');
+
+    Route::get('/edit/{order}', [OrderController::class, 'edit'])->name('edit')->can('orders.edit');
+    Route::post('/update-details/{order}', [OrderController::class, 'updateDetails'])->name('update.details')->can('orders.edit');
+
     Route::get('/', [OrderController::class, 'index'])->name('index')->can('orders.index');
     Route::get('/show/{order}', [OrderController::class, 'show'])->name('show')->can('orders.show');
     Route::put('/update-status/{order}', [OrderController::class, 'updateStatus'])->name('update.status')->can('orders.show');
@@ -459,8 +466,7 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
 Route::group(['prefix' => 'invoices', 'as' => 'invoices.'], function () {
     Route::get('/', [InvoiceController::class, 'index'])->name('index')->can('invoices.index');
     Route::post('/resend-invoice/{invoice}', [InvoiceController::class, 'resendInvoice'])->name('resend');
-    Route::get('/edit/{invoice}', [InvoiceController::class, 'edit'])->name('edit')->can('invoices.edit');
-    Route::put('/update/{invoice}', [InvoiceController::class, 'update'])->name('update')->can('invoices.edit');
+    Route::post('/update-remarks/{invoice}', [InvoiceController::class, 'updateRemarks'])->name('update.remarks')->can('invoices.edit');
     Route::delete('/destroy/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy')->can('invoices.delete');
     Route::delete('/bulk-delete', [InvoiceController::class, 'bulkDelete'])->name('bulk.delete')->can('invoices.delete');
     Route::post('/status/toggle', [InvoiceController::class, 'statusToggle'])->name('status.toggle')->can('invoices.edit');

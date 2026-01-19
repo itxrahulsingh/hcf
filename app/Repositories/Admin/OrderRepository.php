@@ -2,11 +2,13 @@
 
 namespace App\Repositories\Admin;
 
+use App\Models\Cause;
 use App\Models\Order;
 use App\Models\Setting;
 use App\Repositories\Traits\ModelRepositoryTraits;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
 
 class OrderRepository
 {
@@ -59,7 +61,7 @@ class OrderRepository
         }
 
         // Filter by status
-        if (isset($filter['status']) && $filter['status'] !== 'All Order Status') {
+        if (isset($filter['status']) && $filter['status'] !== 'All Order') {
             $query->where('status', $filter['status']);
         }
 
@@ -72,7 +74,7 @@ class OrderRepository
         }
 
         // Filter by payment status
-        if (isset($filter['payment_status']) && $filter['payment_status'] !== 'All Payment Status') {
+        if (isset($filter['payment_status']) && $filter['payment_status'] !== 'All Payment') {
             $query->where('payment_status', $filter['payment_status']);
         }
 
@@ -80,6 +82,123 @@ class OrderRepository
             'search' => $search,
             'sort' => $sort,
         ]));
+    }
+
+
+    public function store(Request $request)
+    {
+        // 1. Handle Image
+        $specialImagePath = null;
+        if ($request->hasFile('special_image')) {
+            $file = $request->file('special_image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('special_images', $filename, 'public');
+            $specialImagePath = '/storage/' . $path;
+        }
+
+        // 2. Calculate Total (Cause Amount + Add-ons)
+        $totalPrice = $request->cause_amount; // Start with Cause Amount
+
+        if ($request->items) {
+            foreach ($request->items as $item) {
+                $qty = $item['quantity'] ?? 1;
+                $totalPrice += ($item['amount'] * $qty);
+            }
+        }
+
+        // 3. Create Order
+        $order = $this->model->create([
+            'order_number'    => date('Ymd') . mt_rand(1000, 9999),
+            'customer_name'   => $request->customer_name,
+            'customer_email'  => $request->customer_email,
+            'customer_phone'  => $request->customer_phone,
+            'shipping_address' => $request->shipping_address,
+            'pancard'         => $request->pancard,
+            'is_80g'          => $request->is_80g ? 1 : 0,
+            'status'          => $request->status ?? 'pending',
+            'payment_status'  => $request->payment_status ?? 0,
+            'payment_method'  => $request->payment_method ?? 'Cash',
+            'total_price'     => $totalPrice,
+            'type'            => 'manual',
+            'cause_id'        => $request->cause_id,
+            'special_name'    => $request->special_name,
+            'special_message' => $request->special_message,
+            'special_date'    => $request->special_date ? \Carbon\Carbon::parse($request->special_date)->format('Y-m-d') : null,
+            'special_video'   => $request->special_video,
+            'special_image'   => $specialImagePath,
+            'order_notes'     => $request->order_notes,
+        ]);
+
+        $orderItems = [];
+
+        $cause = Cause::find($request->cause_id);
+        $causeName = $cause && $cause->content ? $cause->content->title : 'Donation Cause';
+
+        $orderItems[] = [
+            'item_id'     => $request->cause_id,
+            'item_type'   => \App\Models\Cause::class,
+            'item_name'   => $causeName,
+            'item_price'  => $request->cause_amount,
+            'quantity'    => 1,
+            'total_price' => $request->cause_amount,
+        ];
+
+        if ($request->items) {
+            foreach ($request->items as $item) {
+                $itemTypeClass = match ($item['type']) {
+                    'product' => \App\Models\Product::class,
+                    'gift'    => \App\Models\Gift::class,
+                    default   => \App\Models\Product::class,
+                };
+
+                $orderItems[] = [
+                    'item_id'     => $item['id'],
+                    'item_type'   => $itemTypeClass,
+                    'item_name'   => $item['name'],
+                    'item_price'  => $item['amount'],
+                    'quantity'    => $item['quantity'],
+                    'total_price' => $item['amount'] * $item['quantity'],
+                ];
+            }
+        }
+
+        $order->orderitems()->createMany($orderItems);
+
+        return $order;
+    }
+
+    public function updateDetails(Request $request, Order $order)
+    {
+        $data = $request->only([
+            'customer_name',
+            'customer_email',
+            'customer_phone',
+            'shipping_address',
+            'pancard',
+            'status',
+            'payment_status',
+            'payment_method',
+            'special_name',
+            'special_message',
+            'special_date',
+            'special_video',
+            'order_notes'
+        ]);
+
+        $data['is_80g'] = $request->boolean('is_80g') ? 1 : 0;
+
+        if ($request->hasFile('special_image')) {
+            if ($order->special_image) {
+                $oldPath = str_replace('/storage/', '', $order->special_image);
+                Storage::disk('public')->delete($oldPath);
+            }
+            $file = $request->file('special_image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('special_images', $filename, 'public');
+            $data['special_image'] = '/storage/' . $path;
+        }
+
+        $order->update($data);
     }
 
     public function updateStatus(Request $request, Order $order)

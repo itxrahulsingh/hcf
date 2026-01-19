@@ -81,7 +81,7 @@ class InvoiceRepository
             if ($column === 'cause_title') {
                 $query->leftJoin('orders', 'invoices.order_id', '=', 'orders.id')
                     ->leftJoin('causes', 'orders.cause_id', '=', 'causes.id')
-                    ->orderBy('causes.title', $order)
+                    ->orderBy('causes.content.title', $order)
                     ->select('invoices.*');
             } elseif ($column === 'order_number') {
                 $query->leftJoin('orders', 'invoices.order_id', '=', 'orders.id')

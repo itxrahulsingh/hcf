@@ -56,6 +56,24 @@ class InvoiceController extends Controller
     }
 
     /**
+     * Update invoice/order remarks inline
+     */
+    public function updateRemarks(Request $request, Invoice $invoice): RedirectResponse
+    {
+        $request->validate([
+            'remarks' => 'nullable|string|max:1000',
+        ]);
+
+        if ($invoice->order) {
+            $invoice->order->update([
+                'order_notes' => $request->remarks
+            ]);
+        }
+
+        return back()->with('success', 'Remarks updated successfully!');
+    }
+
+    /**
      * Delete invoice
      */
     public function destroy(Invoice $invoice, InvoiceRepository $repository): RedirectResponse

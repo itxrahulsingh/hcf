@@ -1,5 +1,16 @@
 import { Head, Link, usePage } from "@inertiajs/react"
-import { search, createOutline, businessOutline, arrowForwardOutline, eyeOutline, imageOutline, videocamOutline, documentTextOutline } from "ionicons/icons"
+import {
+    search,
+    businessOutline,
+    eyeOutline,
+    pencilOutline,
+    addCircleOutline,
+    videocamOutline,
+    imageOutline,
+    documentTextOutline,
+    closeOutline,
+    giftOutline
+} from "ionicons/icons"
 import { IonIcon } from "@ionic/react"
 import { useState } from "react"
 import { router } from "@inertiajs/react"
@@ -23,6 +34,9 @@ export default function Index({ orders, sort, filter, causes }) {
     const [selectedPaymentStatus, setSelectedPaymentStatus] = useState(filter?.payment_status || "All Payment")
     const [isMarkAll, setIsMarkAll] = useState(false)
     const [markItems, setMarkItems] = useState([])
+
+    // State for Media Modal
+    const [mediaModalOrder, setMediaModalOrder] = useState(null)
 
     const paymentStatusOptions = {
         0: "Initialize",
@@ -89,14 +103,52 @@ export default function Index({ orders, sort, filter, causes }) {
         })
     }
 
+    // Helper to render video player
+    const renderVideoPlayer = (url) => {
+        if (!url) return null
+
+        // Basic check for YouTube
+        if (url.includes("youtube.com") || url.includes("youtu.be")) {
+            let embedUrl = url.replace("watch?v=", "embed/")
+            return (
+                <div className="embed-responsive embed-responsive-16by9 mb-2">
+                    <iframe className="embed-responsive-item" src={embedUrl} allowFullScreen></iframe>
+                </div>
+            )
+        }
+        // Basic check for direct video file
+        else if (url.match(/\.(mp4|webm|ogg)$/)) {
+            return (
+                <video controls className="w-100 rounded">
+                    <source src={url} type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+            )
+        }
+        // Default link button
+        else {
+            return (
+                <a href={url} target="_blank" rel="noreferrer" className="btn btn-outline-primary btn-block">
+                    <IonIcon icon={videocamOutline} className="mr-2" /> Watch Video Link
+                </a>
+            )
+        }
+    }
+
     return (
         <>
             <Head title="All Orders" />
             <AdminLayouts>
                 <div className="yoo-height-b30 yoo-height-lg-b30" />
                 <div className="container-fluid">
-                    <div className="yoo-uikits-heading">
+                    <div className="yoo-uikits-heading d-flex justify-content-between align-items-center">
                         <h2 className="yoo-uikits-title">{translate("All Orders")}</h2>
+
+                        {hasPermission("orders.create") && (
+                            <Link href={route("admin.orders.create")} className="btn btn-success btn-sm">
+                                <IonIcon icon={addCircleOutline} className="mr-1" /> {translate("Create New Order")}
+                            </Link>
+                        )}
                     </div>
                     <div className="yoo-height-b20 yoo-height-lg-b20"></div>
                     <div className="yoo-card yoo-style1">
@@ -121,6 +173,7 @@ export default function Index({ orders, sort, filter, causes }) {
                                 <div className="yoo-height-b15 yoo-height-lg-b15" />
                                 <div className="yooDataTableWrap">
                                     <div className="dataTables_heading">
+                                        {/* FILTERS START */}
                                         {hasPermission("orders.delete") && (
                                             <div className="dataTables_heading_left">
                                                 <div className="yoo-group-btn">
@@ -184,14 +237,15 @@ export default function Index({ orders, sort, filter, causes }) {
                                                         </DropDownButton>
                                                     </div>
                                                 </div>
-
                                                 <div className="">
                                                     <div className="position-relative">
                                                         <DropDownButton
                                                             selectedOption={
                                                                 selectedType === "All"
                                                                     ? translate("All Types")
-                                                                    : (causeTypes[selectedType] ? translate(causeTypes[selectedType]) : selectedType)
+                                                                    : causeTypes[selectedType]
+                                                                      ? translate(causeTypes[selectedType])
+                                                                      : selectedType
                                                             }
                                                         >
                                                             <a
@@ -201,16 +255,17 @@ export default function Index({ orders, sort, filter, causes }) {
                                                             >
                                                                 {translate("All Types")}
                                                             </a>
-                                                            {causeTypes && Object.entries(causeTypes).map(([key, label]) => (
-                                                                <a
-                                                                    key={key}
-                                                                    onClick={() => setSelectedType(key)}
-                                                                    className={`dropdown-item ${selectedType === key ? "active" : ""}`}
-                                                                    href="#"
-                                                                >
-                                                                    {translate(label)}
-                                                                </a>
-                                                            ))}
+                                                            {causeTypes &&
+                                                                Object.entries(causeTypes).map(([key, label]) => (
+                                                                    <a
+                                                                        key={key}
+                                                                        onClick={() => setSelectedType(key)}
+                                                                        className={`dropdown-item ${selectedType === key ? "active" : ""}`}
+                                                                        href="#"
+                                                                    >
+                                                                        {translate(label)}
+                                                                    </a>
+                                                                ))}
                                                         </DropDownButton>
                                                     </div>
                                                 </div>
@@ -220,9 +275,8 @@ export default function Index({ orders, sort, filter, causes }) {
                                                             selectedOption={
                                                                 selectedCause === "All"
                                                                     ? translate("All Causes")
-                                                                    :
-                                                                    causes.find((c) => c.id == selectedCause)?.content?.title ||
-                                                                    translate("All Causes")
+                                                                    : causes.find((c) => c.id == selectedCause)?.content?.title ||
+                                                                      translate("All Causes")
                                                             }
                                                         >
                                                             <a
@@ -249,12 +303,11 @@ export default function Index({ orders, sort, filter, causes }) {
                                                     <div className="position-relative">
                                                         <DropDownButton selectedOption={paymentStatusOptions[selectedPaymentStatus]}>
                                                             <a
-                                                                onClick={() => setSelectedPaymentStatus("All Payment Status")}
-                                                                className={`dropdown-item ${selectedPaymentStatus === "All Payment Status" ? "active" : ""
-                                                                    }`}
+                                                                onClick={() => setSelectedPaymentStatus("All Payment")}
+                                                                className={`dropdown-item ${selectedPaymentStatus === "All Payment" ? "active" : ""}`}
                                                                 href="#"
                                                             >
-                                                                {translate("All Payment Status")}
+                                                                {translate("All Payment")}
                                                             </a>
                                                             <a
                                                                 onClick={() => setSelectedPaymentStatus("1")}
@@ -285,6 +338,8 @@ export default function Index({ orders, sort, filter, causes }) {
                                                 </div>
                                             </div>
                                         )}
+                                        {/* FILTERS END */}
+
                                         <div className="dataTables_heading_right">
                                             <div id="yooDataTable_filter" className="dataTables_filter">
                                                 <label>
@@ -316,8 +371,10 @@ export default function Index({ orders, sort, filter, causes }) {
                                                             <span className="yoo-last" />
                                                         </div>
                                                     </th>
+
+                                                    {/* Special Date Column */}
                                                     <ThSortable
-                                                        width="10%"
+                                                        width="15%"
                                                         sort={sort}
                                                         onSorted={() => getResults(searchQuery)}
                                                         column="special_date"
@@ -335,7 +392,8 @@ export default function Index({ orders, sort, filter, causes }) {
                                                         {translate("Customer Details")}
                                                     </ThSortable>
 
-                                                    <th width="15%">{translate("Special Data")}</th>
+                                                    {/* Special Data (Visible in column) */}
+                                                    <th width="20%">{translate("Special Data")}</th>
 
                                                     <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
                                                         Amount
@@ -352,12 +410,9 @@ export default function Index({ orders, sort, filter, causes }) {
                                                     <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="status">
                                                         {translate("Status")}
                                                     </ThSortable>
-                                                    <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="created_at">
-                                                        Donation Date
-                                                    </ThSortable>
-                                                    {(hasPermission("orders.show") || hasPermission("orders.delete")) && (
-                                                        <th style={{ width: "5%" }}>{translate("Action")}</th>
-                                                    )}
+                                                    {(hasPermission("orders.show") ||
+                                                        hasPermission("orders.delete") ||
+                                                        hasPermission("orders.edit")) && <th style={{ width: "5%" }}>{translate("Action")}</th>}
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -366,10 +421,11 @@ export default function Index({ orders, sort, filter, causes }) {
                                                         <td className="sorting_1" onClick={() => handleMark(order.id)}>
                                                             <div className={`yoo-check-mark ${markItems.includes(order.id) && "active"}`} />
                                                         </td>
-                                                        {/* Special Date */}
+
+                                                        {/* Special Date (Normal Font Size as Basic Details) */}
                                                         <td>
                                                             {order.special_date ? (
-                                                                <span className="badge badge-light-primary">
+                                                                <span className="text-dark font-weight-bold" style={{ fontSize: "14px" }}>
                                                                     {moment(order.special_date).format("DD MMM YYYY")}
                                                                 </span>
                                                             ) : (
@@ -378,102 +434,133 @@ export default function Index({ orders, sort, filter, causes }) {
                                                         </td>
 
                                                         <td>
-                                                            <strong>{order.customer_name}</strong> <br/>
-                                                            <small>
-                                                                <a href={`mailto:${order.customer_email}`} className="text-muted">{order.customer_email}</a>
-                                                            </small> <br/>
-                                                            <small>
-                                                                <a href={`tel:${order.customer_phone}`} className="text-muted">{order.customer_phone}</a>
-                                                            </small>
-                                                            {/* Show PAN and 80G if available */}
-                                                            {order.pancard && (
-                                                                <div className="mt-1"><span className="badge badge-light-info">PAN: {order.pancard}</span></div>
-                                                            )}
-                                                            {order.is_80g == 1 && (
-                                                                <div className="mt-1"><span className="badge badge-success text-white" style={{fontSize: '10px'}}>80G Support</span></div>
-                                                            )}
+                                                            <strong>{order.customer_name}</strong>
+                                                            <div className="small text-muted">{moment(order.created_at).format("DD MMM YYYY")}</div>
+                                                            <div className="small">
+                                                                <a href={`mailto:${order.customer_email}`} className="text-muted">
+                                                                    {order.customer_email}
+                                                                </a>
+                                                            </div>
+
+                                                            {/* 80G Tag (Solid Green, Visible) */}
+                                                            <div className="mt-2 d-flex flex-wrap gap-1" style={{ gap: "5px" }}>
+                                                                {order.pancard && <span className="badge badge-dark">PAN: {order.pancard}</span>}
+                                                                {order.is_80g == 1 && (
+                                                                    <span
+                                                                        className="badge badge-success text-white"
+                                                                        style={{ backgroundColor: "#28a745" }}
+                                                                    >
+                                                                        80G Benefit
+                                                                    </span>
+                                                                )}
+                                                            </div>
                                                         </td>
 
-                                                        {/* Special Content Display */}
+                                                        {/* Special Data (Message Outside Modal) */}
                                                         <td>
-                                                            <div className="d-flex align-items-center" style={{gap: '8px'}}>
-                                                                {/* Special Message Tooltip/Icon */}
-                                                                {order.special_message ? (
-                                                                    <div title={order.special_message} style={{cursor: 'help'}}>
-                                                                        <IonIcon icon={documentTextOutline} className="text-primary" style={{fontSize: '20px'}} />
+                                                            <div className="d-flex flex-column gap-2">
+                                                                {order.special_name && (
+                                                                    <div className="font-weight-bold text-primary small">{order.special_name}</div>
+                                                                )}
+                                                                {/* Show Message Here */}
+                                                                {order.special_message && (
+                                                                    <div
+                                                                        className="text-dark small border-left pl-2"
+                                                                        style={{ borderLeftColor: "#007bff" }}
+                                                                    >
+                                                                        "
+                                                                        {order.special_message.length > 50
+                                                                            ? order.special_message.substring(0, 50) + "..."
+                                                                            : order.special_message}
+                                                                        "
                                                                     </div>
-                                                                ) : null}
+                                                                )}
 
-                                                                {/* Special Image */}
-                                                                {order.special_image ? (
-                                                                    <a href={order.special_image} target="_blank" title="View Image">
-                                                                        <img
-                                                                            src={order.special_image}
-                                                                            style={{width: '35px', height: '35px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #eee'}}
-                                                                            alt="Special"
-                                                                        />
-                                                                    </a>
-                                                                ) : null}
-
-                                                                {/* Special Video */}
-                                                                {order.special_video ? (
-                                                                    <a href={order.special_video} target="_blank" title="View Video" className="btn btn-sm btn-light p-1">
-                                                                        <IonIcon icon={videocamOutline} className="text-danger" style={{fontSize: '18px'}} />
-                                                                    </a>
-                                                                ) : null}
-
-                                                                {!order.special_message && !order.special_image && !order.special_video && (
-                                                                    <span className="text-muted">-</span>
+                                                                {/* Media Button (Only if Image or Video exists) */}
+                                                                {order.special_image || order.special_video ? (
+                                                                    <button
+                                                                        className="btn btn-sm btn-info text-white d-inline-flex align-items-center"
+                                                                        style={{ width: "fit-content" }}
+                                                                        onClick={() => setMediaModalOrder(order)}
+                                                                    >
+                                                                        <IonIcon icon={imageOutline} className="mr-1" />
+                                                                        {order.special_video ? "Media (Video)" : "View Image"}
+                                                                    </button>
+                                                                ) : (
+                                                                    !order.special_message && <span className="text-muted">-</span>
                                                                 )}
                                                             </div>
                                                         </td>
 
                                                         <td>
-                                                            <Amount amount={order.total_price} /> <br/>
+                                                            <Amount amount={order.total_price} /> <br />
                                                             <small className="text-muted">{order.payment_method}</small>
                                                         </td>
 
                                                         <td>
                                                             <span
                                                                 className={`badge ${
-                                                                    order.payment_status === "0" ? "badge-secondary"
-                                                                    : order.payment_status === "1" ? "badge-warning"
-                                                                    : order.payment_status === "2" ? "badge-success"
-                                                                    : "badge-danger"
+                                                                    order.payment_status === "0"
+                                                                        ? "badge-secondary"
+                                                                        : order.payment_status === "1"
+                                                                          ? "badge-warning"
+                                                                          : order.payment_status === "2"
+                                                                            ? "badge-success"
+                                                                            : "badge-danger"
                                                                 }`}
                                                             >
-                                                                {order.payment_status === "0" ? "Init"
-                                                                : order.payment_status === "1" ? "Wait"
-                                                                : order.payment_status === "2" ? "Paid"
-                                                                : "Cancel"}
+                                                                {order.payment_status === "0"
+                                                                    ? "Init"
+                                                                    : order.payment_status === "1"
+                                                                      ? "Wait"
+                                                                      : order.payment_status === "2"
+                                                                        ? "Paid"
+                                                                        : "Cancel"}
                                                             </span>
                                                         </td>
                                                         <td>
                                                             <span
                                                                 className={`badge ${
-                                                                    order.status === "initialize" ? "badge-secondary"
-                                                                    : order.status === "pending" ? "badge-warning"
-                                                                    : order.status === "confirmed" ? "badge-success"
-                                                                    : order.status === "canceled" ? "badge-danger"
-                                                                    : "badge-info"
+                                                                    order.status === "initialize"
+                                                                        ? "badge-secondary"
+                                                                        : order.status === "pending"
+                                                                          ? "badge-warning"
+                                                                          : order.status === "confirmed"
+                                                                            ? "badge-success"
+                                                                            : order.status === "canceled"
+                                                                              ? "badge-danger"
+                                                                              : "badge-info"
                                                                 }`}
                                                             >
                                                                 {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                                                             </span>
                                                         </td>
-                                                        <td>{moment(order.created_at).format("DD MMM YYYY")}</td>
 
-                                                        {(hasPermission("orders.show") || hasPermission("orders.delete")) && (
+                                                        {(hasPermission("orders.show") ||
+                                                            hasPermission("orders.delete") ||
+                                                            hasPermission("orders.edit")) && (
                                                             <td>
                                                                 <div className="d-flex" style={{ gap: "5px" }}>
                                                                     {hasPermission("orders.show") && (
                                                                         <Link
                                                                             href={route("admin.orders.show", order)}
                                                                             className="badge badge-secondary"
+                                                                            title="View"
                                                                         >
                                                                             <IonIcon icon={eyeOutline} style={{ height: "16px", width: "16px" }} />
                                                                         </Link>
                                                                     )}
+
+                                                                    {hasPermission("orders.edit") && (
+                                                                        <Link
+                                                                            href={route("admin.orders.edit", order)}
+                                                                            className="badge badge-primary"
+                                                                            title="Edit"
+                                                                        >
+                                                                            <IonIcon icon={pencilOutline} style={{ height: "16px", width: "16px" }} />
+                                                                        </Link>
+                                                                    )}
+
                                                                     {hasPermission("orders.delete") && (
                                                                         <DeleteButton href={route("admin.orders.destroy", order)} />
                                                                     )}
@@ -485,13 +572,7 @@ export default function Index({ orders, sort, filter, causes }) {
                                             </tbody>
                                         </table>
                                         {!orders.data.length && (
-                                            <div
-                                                className="no-data-found"
-                                                style={{
-                                                    textAlign: "center",
-                                                    padding: "50px"
-                                                }}
-                                            >
+                                            <div className="no-data-found" style={{ textAlign: "center", padding: "50px" }}>
                                                 <p>No orders found!</p>
                                             </div>
                                         )}
@@ -501,19 +582,13 @@ export default function Index({ orders, sort, filter, causes }) {
                             </div>
                         </div>
                     </div>
-                    {/* .yoo-card */}
+                    {/* Pagination */}
                     {orders.total > 1 && (
                         <div className="pagination-wrapper" style={{ marginTop: "10px" }}>
                             <ul className="pagination">
                                 {orders.links.map((link, index) => (
                                     <li className={`page-item ${link.active ? "active" : ""}`} key={`pagination_${index}`}>
-                                        <Link
-                                            href={link.url}
-                                            className="page-link"
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label
-                                            }}
-                                        />
+                                        <Link href={link.url} className="page-link" dangerouslySetInnerHTML={{ __html: link.label }} />
                                     </li>
                                 ))}
                             </ul>
@@ -521,6 +596,50 @@ export default function Index({ orders, sort, filter, causes }) {
                     )}
                     <div className="yoo-height-b30 yoo-height-lg-b30" />
                 </div>
+
+                {/* --- MEDIA MODAL (Image & Video Only) --- */}
+                {mediaModalOrder && (
+                    <div className="modal show d-block" style={{ backgroundColor: "rgba(0,0,0,0.6)", zIndex: 1050 }}>
+                        <div className="modal-dialog modal-dialog-centered modal-lg">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">
+                                        <IonIcon icon={giftOutline} className="mr-2 text-primary" style={{ verticalAlign: "middle" }} />
+                                        {translate("Attached Media")}
+                                    </h5>
+                                    <button type="button" className="close" onClick={() => setMediaModalOrder(null)}>
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body text-center bg-dark">
+                                    {/* Image */}
+                                    {mediaModalOrder.special_image && (
+                                        <div className="mb-3">
+                                            <img
+                                                src={mediaModalOrder.special_image}
+                                                alt="Special Request"
+                                                className="img-fluid rounded"
+                                                style={{ maxHeight: "60vh" }}
+                                            />
+                                        </div>
+                                    )}
+
+                                    {/* Video Player */}
+                                    {mediaModalOrder.special_video && <div className="mt-3">{renderVideoPlayer(mediaModalOrder.special_video)}</div>}
+
+                                    {!mediaModalOrder.special_image && !mediaModalOrder.special_video && (
+                                        <div className="text-white">No media attached.</div>
+                                    )}
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" onClick={() => setMediaModalOrder(null)}>
+                                        <IonIcon icon={closeOutline} className="mr-1" /> {translate("Close")}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </AdminLayouts>
         </>
     )

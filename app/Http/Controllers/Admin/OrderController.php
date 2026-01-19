@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Cause;
+use App\Models\Gift;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Repositories\Admin\OrderRepository;
 use Illuminate\Http\RedirectResponse;
@@ -33,7 +35,7 @@ class OrderController extends Controller
         $data['search'] = $request->search ?: '';
         $data['sort']['column'] = $request->sort['column'] ?? 'id';
         $data['sort']['order'] = $request->sort['order'] ?? 'desc';
-        $data['filter']['status'] = $request->filter['status'] ?? 'All Order Status';
+        $data['filter']['status'] = $request->filter['status'] ?? 'All Order';
         $data['filter']['cause_id'] = $request->filter['cause_id'] ?? null;
         $data['filter']['type'] = $request->filter['type'] ?? 'All';
         $data['filter']['payment_status'] = $request->filter['payment_status'] ?? 'All Payment';
@@ -42,6 +44,65 @@ class OrderController extends Controller
         $data['causes'] = Cause::with('content:cause_id,title')->select('id')->get();
 
         return Inertia::render('Orders/Index', $data);
+    }
+
+    public function create()
+    {
+        $data['causes'] = Cause::with('content:cause_id,title')
+            ->where('status', 1)
+            ->select('id', 'min_amount', 'custom_donation_amounts')
+            ->get()
+            ->map(fn($item) => [
+                'id' => $item->id,
+                'title' => $item->content->title ?? 'Untitled Cause',
+                'min_amount' => $item->min_amount,
+                'suggested_amounts' => $item->custom_donation_amounts ? explode(',', $item->custom_donation_amounts) : []
+            ]);
+
+        $data['products'] = Product::with('content:product_id,title')
+            ->where('status', 1)
+            ->select('id', 'price', 'min_quantity')
+            ->get()
+            ->map(fn($item) => [
+                'id' => $item->id,
+                'title' => $item->content->title ?? 'Untitled Product',
+                'price' => $item->price,
+                'min_qty' => $item->min_quantity ?? 1
+            ]);
+
+        $data['gifts'] = Gift::with('content:gift_id,title')
+            ->where('status', 1)
+            ->select('id', 'amount', 'min_qty')
+            ->get()
+            ->map(fn($item) => [
+                'id' => $item->id,
+                'title' => $item->content->title ?? 'Untitled Gift',
+                'price' => $item->amount,
+                'min_qty' => $item->min_qty ?? 1
+            ]);
+
+        return Inertia::render('Orders/Create', $data);
+    }
+
+    public function store(Request $request, OrderRepository $repository)
+    {
+        $request->validate([
+            'customer_name'   => 'required|string|max:255',
+            'customer_email'  => 'nullable|email',
+            'cause_id'        => 'required|integer',
+            'cause_amount'    => 'required|numeric|min:1',
+            'items'           => 'nullable|array',
+            'items.*.type'    => 'required|in:product,gift',
+            'items.*.id'      => 'required',
+            'items.*.amount'  => 'required|numeric|min:1',
+            'items.*.quantity' => 'required|integer|min:1',
+            'special_name'    => 'nullable|string|max:255',
+            'special_image'   => 'nullable|image|max:5120',
+        ]);
+
+        $repository->store($request);
+
+        return redirect()->route('admin.orders.index')->with('success', 'Order created successfully!');
     }
 
     /**
@@ -55,6 +116,33 @@ class OrderController extends Controller
 
         $data['order'] = $order->load('orderitems', 'invoice');
         return Inertia::render('Orders/Show', $data);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Order $order)
+    {
+        return Inertia::render('Orders/Edit', [
+            'order' => $order
+        ]);
+    }
+
+    /**
+     * Update the specified resource details in storage.
+     */
+    public function updateDetails(Request $request, Order $order, OrderRepository $repository)
+    {
+        $request->validate([
+            'customer_name'  => 'required|string|max:255',
+            'customer_email' => 'nullable|email',
+            'special_name'   => 'nullable|string|max:255',
+            'special_image'  => 'nullable|image|max:5120',
+        ]);
+
+        $repository->updateDetails($request, $order);
+
+        return redirect()->route('admin.orders.index')->with('success', 'Order details updated successfully!');
     }
 
     /**

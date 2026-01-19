@@ -100,9 +100,7 @@ export default function CauseDetails({
     useEffect(() => {
         setData("items", carts)
     }, [carts])
-    // ==================================================================
 
-    // --- 5. Special Dedication Config ---
     const getSpecialConfig = () => {
         const type = cause?.type
         let config = {

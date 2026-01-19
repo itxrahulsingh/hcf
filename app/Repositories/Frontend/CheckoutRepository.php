@@ -76,6 +76,7 @@ class CheckoutRepository
             'order_notes' => $request->orderNotes,
             'transaction_id' => $request->transactionId ?? null,
             'receipt_file' => $receiptFilePath,
+            'special_name' => $request->special_name ?? null,
             'special_message' => $request->special_message ?? null,
             'special_image' => $specialFilePath,
             'special_video' => $request->special_video ?? null,

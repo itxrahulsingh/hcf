@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('special_message')->nullable()->after('discount');
+            $table->string('special_name')->nullable()->after('discount');
+            $table->string('special_message')->nullable()->after('special_name');
             $table->string('special_image')->nullable()->after('special_message');
             $table->string('special_video')->nullable()->after('special_image');
             $table->date('special_date')->nullable()->after('special_video');
@@ -33,6 +34,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn([
+                'special_name',
                 'special_message',
                 'special_image',
                 'special_video',

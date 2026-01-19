@@ -64,7 +64,7 @@ class RolePermissionSeeder extends Seeder
         ],
         'orders' => [
             'title' => 'Manage orders',
-            'action' => ['index' => 1, 'delete' => 1, 'show' => 1],
+            'action' => ['index' => 1, 'delete' => 1, 'edit' => 1, 'create' => 1, 'show' => 1],
         ],
         'support_tickets' => [
             'title' => 'Manage support tickets',

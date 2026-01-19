@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\DonationFailed;
+use App\Events\DonationSuccess;
 use App\Events\FormSubmitted;
+use App\Listeners\SendDonationFailedNotifications;
+use App\Listeners\SendDonationSuccessNotifications;
 use App\Listeners\SendFormResponseMail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -22,6 +26,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         FormSubmitted::class => [
             SendFormResponseMail::class,
+        ],
+        DonationSuccess::class => [
+            SendDonationSuccessNotifications::class,
+        ],
+        DonationFailed::class => [
+            SendDonationFailedNotifications::class,
         ],
     ];
 

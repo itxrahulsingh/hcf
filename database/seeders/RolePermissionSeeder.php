@@ -39,7 +39,7 @@ class RolePermissionSeeder extends Seeder
             'action' => ['index' => 1, 'delete' => 1, 'edit' => 1, 'create' => 1],
         ],
         'invoices' => [
-            'title' => 'Manage invoices',
+            'title' => 'Manage Financial Invoices',
             'action' => ['index' => 1, 'show' => 1, 'create' => 1, 'edit' => 1, 'delete' => 1],
         ],
         'products' => [

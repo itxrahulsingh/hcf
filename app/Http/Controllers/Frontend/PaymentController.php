@@ -143,7 +143,7 @@ class PaymentController extends Controller
 
         $data['invoice'] = $invoice;
 
-        event(new DonationSuccess($order, $order->transaction_id ?? 'N/A'));
+        DonationSuccess::dispatch($invoice);
 
         SEOMeta::setTitle($tagline);
         SEOMeta::setCanonical($current_page_url);

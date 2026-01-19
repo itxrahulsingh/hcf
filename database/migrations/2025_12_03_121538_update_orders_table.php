@@ -21,8 +21,7 @@ return new class extends Migration
             $table->string('pancard', 20)->nullable()->after('is_80g');
             $table->string('type')->default('normal')->after('pancard');
             $table->bigInteger('cause_id')->nullable()->after('type');
-            $table->string('transaction_id')->nullable()->after('cause_id');
-            $table->string('rzp_order_id')->nullable()->after('transaction_id');
+            $table->string('rzp_order_id')->nullable()->after('cause_id');
             $table->string('payment_data')->nullable()->after('rzp_order_id');
         });
     }

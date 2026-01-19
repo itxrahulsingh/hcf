@@ -19,6 +19,7 @@ export default function Sidebar() {
         if (isRouteActive(["admin.products.*", "admin.product.categories.*", "admin.brands.*", "admin.coupons.*", "admin.product.tags.*", "admin.reviews.*"])) return "products"
         if (isRouteActive(["admin.causes.*", "admin.cause.categories.*"])) return "causes"
         if (isRouteActive(["admin.orders.*"])) return "orders"
+        if (isRouteActive(["admin.invoices.*"])) return "invoices"
         if (isRouteActive(["admin.posts.*", "admin.categories.*", "admin.tags.*"])) return "posts"
         if (isRouteActive(["admin.pages.*"])) return "pages"
         if (isRouteActive(["admin.themes.*", "admin.menus.*"])) return "appearance"
@@ -409,6 +410,19 @@ export default function Sidebar() {
                                         </li>
                                     )}
                                 </>
+                            )}
+
+                            {hasPermission("invoices.index") && (
+                                <li className={`${route().current("admin.invoices.*") ? "active" : ""}`}>
+                                    <Link href={route("admin.invoices.index")}>
+                                        <span className="yoo-sidebar-link-title">
+                                            <span className="yoo-sidebar-link-icon yoo-light-blue-bg">
+                                                <Icon icon="ion:document-text-outline" width="20" height="20" />
+                                            </span>
+                                            <span className="yoo-sidebar-link-text">{translate("Invoices")}</span>
+                                        </span>
+                                    </Link>
+                                </li>
                             )}
 
                             {/* Subscribers */}

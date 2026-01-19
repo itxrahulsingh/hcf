@@ -2,10 +2,7 @@
 
 namespace App\Repositories\Admin;
 
-use App\Models\CategoryContent;
 use App\Models\Invoice;
-use App\Models\Setting;
-use App\Models\User;
 use App\Repositories\Traits\ModelRepositoryTraits;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -14,12 +11,12 @@ class InvoiceRepository
     use ModelRepositoryTraits;
 
     /**
-     * Object model will be used to modify posts table
+     * Object model will be used to modify invoices table
      */
     protected Invoice $model;
 
     /**
-     * Constructor for Post repository
+     * Constructor for Invoice repository
      */
     public function __construct(Invoice $invoice)
     {
@@ -31,68 +28,82 @@ class InvoiceRepository
      */
     public function paginateSearchResult($search, array $sort = [], array $filter = []): LengthAwarePaginator
     {
-        $query = $this->model->with(['category.content', 'user'])->newQuery();
+        $query = $this->model->with(['order.cause'])->newQuery();
 
-        // search invoice
         if ($search) {
-            $query->whereHas('contents', function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('title', 'like', "%{$search}%");
-            })->orWhereHas('category.contents', function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('invoice_number', 'like', "%{$search}%")
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('customer_email', 'like', "%{$search}%")
+                    ->orWhere('customer_phone', 'like', "%{$search}%")
+                    ->orWhere('pancard', 'like', "%{$search}%");
+
+                $q->orWhereHas('order', function ($orderQ) use ($search) {
+                    $orderQ->where('order_number', 'like', "%{$search}%");
+                });
+
+                $q->orWhereHas('order.cause.content', function ($causeQ) use ($search) {
+                    $causeQ->where('title', 'like', "%{$search}%");
+                });
             });
         }
 
-        // Filter post by category title
-        // if (isset($filter['category']) && $filter['category'] !== 'All Categories') {
-        //     $query->whereHas('category.content', function ($categoryQuery) use ($filter) {
-        //         $categoryQuery->where('title', $filter['category']);
-        //     });
-        // }
-
-        // Filter post by status
-        if (isset($filter['status']) && $filter['status'] !== 'All Status') {
-            $statusNo = $filter['status'] == 'Published' ? '1' : '0';
-            $query->where('status', $statusNo);
+        if (isset($filter['cause_id']) && $filter['cause_id'] !== 'All') {
+            $query->whereHas('order', function ($q) use ($filter) {
+                $q->where('cause_id', $filter['cause_id']);
+            });
         }
 
-        // sort invoice
+        if (isset($filter['date_range']) && !empty($filter['date_range'])) {
+            $dates = explode(' to ', $filter['date_range']);
+            if (count($dates) === 2) {
+                $query->whereBetween('payment_date', [$dates[0], $dates[1]]);
+            } elseif (count($dates) === 1) {
+                $query->whereDate('payment_date', $dates[0]);
+            }
+        }
+
+        // [REMOVED] Status Filter Block (as requested)
+        /*
+        if (isset($filter['status']) && $filter['status'] !== 'All Status') {
+            $query->where('status', $filter['status']);
+        }
+        */
+
+        if (isset($filter['financial_year']) && $filter['financial_year'] !== 'All Years') {
+            $query->where('financial_year', $filter['financial_year']);
+        }
+
         if (isset($sort['column']) && isset($sort['order'])) {
             $column = $sort['column'];
             $order = $sort['order'];
 
-            if ($column === 'title') {
-                $query->orderBy(PostContent::select($sort['column'])
-                    ->whereColumn('posts.id', 'post_contents.post_id')
-                    ->where('language_code', app()->getLocale()), $sort['order']);
-            } elseif ($column === 'published_by') {
-                $query->orderBy(
-                    User::select('name')
-                        ->whereColumn('users.id', 'posts.user_id'),
-                    $order
-                );
-            } elseif ($column === 'category' || $column === 'category_title') {
-                $query->orderBy(
-                    CategoryContent::select('title')
-                        ->whereColumn('category_contents.category_id', 'posts.category_id')
-                        ->where('language_code', app()->getLocale()),
-                    $order
-                );
+            if ($column === 'cause_title') {
+                $query->leftJoin('orders', 'invoices.order_id', '=', 'orders.id')
+                    ->leftJoin('causes', 'orders.cause_id', '=', 'causes.id')
+                    ->orderBy('causes.title', $order)
+                    ->select('invoices.*');
+            } elseif ($column === 'order_number') {
+                $query->leftJoin('orders', 'invoices.order_id', '=', 'orders.id')
+                    ->orderBy('orders.order_number', $order)
+                    ->select('invoices.*');
             } else {
                 $query->orderBy($column, $order);
             }
+        } else {
+            $query->orderBy('created_at', 'desc');
         }
 
         return $query->paginate(30)
             ->appends(array_filter([
                 'search' => $search,
-                'sort' => $sort,
-                'lang' => app()->getLocale(),
+                'sort'   => $sort,
+                'filter' => $filter,
             ]));
     }
 
     /**
-     * Delete post
+     * Delete invoice
      */
     public function destroy(Invoice $invoice): void
     {
@@ -100,7 +111,7 @@ class InvoiceRepository
     }
 
     /**
-     * Bulk delete posts
+     * Bulk delete invoices
      */
     public function bulkDelete($ids): void
     {

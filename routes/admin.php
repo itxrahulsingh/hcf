@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EditorImageUploaderController;
 use App\Http\Controllers\Admin\FormResponseController;
 use App\Http\Controllers\Admin\GiftController;
+use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\LanguagesController;
 use App\Http\Controllers\Admin\ManualPaymentGatewayController;
 use App\Http\Controllers\Admin\MediaController;
@@ -452,6 +453,17 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
     Route::get('/download-invoice/{order}', [OrderController::class, 'downloadInvoice'])->name('download.invoice')->can('orders.show');
     Route::delete('/delete/{order}', [OrderController::class, 'destroy'])->name('destroy')->can('orders.delete');
     Route::delete('/bulk-delete', [OrderController::class, 'bulkDelete'])->name('bulk.delete')->can('orders.delete');
+});
+
+/** Invoice Routes **/
+Route::group(['prefix' => 'invoices', 'as' => 'invoices.'], function () {
+    Route::get('/', [InvoiceController::class, 'index'])->name('index')->can('invoices.index');
+    Route::post('/resend-invoice/{invoice}', [InvoiceController::class, 'resendInvoice'])->name('resend');
+    Route::get('/edit/{invoice}', [InvoiceController::class, 'edit'])->name('edit')->can('invoices.edit');
+    Route::put('/update/{invoice}', [InvoiceController::class, 'update'])->name('update')->can('invoices.edit');
+    Route::delete('/destroy/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy')->can('invoices.delete');
+    Route::delete('/bulk-delete', [InvoiceController::class, 'bulkDelete'])->name('bulk.delete')->can('invoices.delete');
+    Route::post('/status/toggle', [InvoiceController::class, 'statusToggle'])->name('status.toggle')->can('invoices.edit');
 });
 
 /** Review routes **/

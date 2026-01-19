@@ -152,7 +152,7 @@ class CheckPendingDonation extends Command
         }
 
         // Fire Event
-        event(new DonationSuccess($order, $transactionId));
+        DonationSuccess::dispatch($order->invoice);
 
         $this->info("Order {$order->order_number}: Marked as Success.");
     }

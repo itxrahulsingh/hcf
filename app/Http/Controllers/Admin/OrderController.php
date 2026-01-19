@@ -36,7 +36,7 @@ class OrderController extends Controller
         $data['filter']['status'] = $request->filter['status'] ?? 'All Order Status';
         $data['filter']['cause_id'] = $request->filter['cause_id'] ?? null;
         $data['filter']['type'] = $request->filter['type'] ?? 'All';
-        $data['filter']['payment_status'] = $request->filter['payment_status'] ?? 'All Payment Status';
+        $data['filter']['payment_status'] = $request->filter['payment_status'] ?? 'All Payment';
 
         $data['orders'] = $repository->paginateSearchResult($data['search'], $data['sort'], $data['filter']);
         $data['causes'] = Cause::with('content:cause_id,title')->select('id')->get();

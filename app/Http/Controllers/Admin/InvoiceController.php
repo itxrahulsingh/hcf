@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\DonationSuccess;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Posts\PostStoreRequest;
-use App\Http\Requests\Admin\Posts\PostUpdateRequest;
-use App\Http\Resources\Admin\PostCategoryCollection;
-use App\Models\Category;
-use App\Models\Post;
+use App\Models\Cause;
+use App\Models\Invoice;
 use App\Models\Setting;
 use App\Repositories\Admin\InvoiceRepository;
 use Illuminate\Http\RedirectResponse;
@@ -22,11 +20,8 @@ class InvoiceController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('can:invoices.index', ['only' => ['index']]);
-        $this->middleware('can:invoices.show', ['only' => ['show']]);
-        $this->middleware('can:invoices.create', ['only' => ['create']]);
-        $this->middleware('can:invoices.edit', ['only' => ['edit', 'bulkPublish', 'update', 'statusToggle', 'bulkUnPublish']]);
-        $this->middleware('can:invoices.delete', ['only' => ['delete', 'bulkDelete']]);
+        $this->middleware('can:invoices.index', ['only' => ['index', 'resendInvoice']]);
+        $this->middleware('can:invoices.delete', ['only' => ['destroy', 'bulkDelete']]);
     }
 
     /**
@@ -37,76 +32,46 @@ class InvoiceController extends Controller
         $data['search'] = $request->search ?: '';
         $data['sort']['column'] = $request->sort['column'] ?? 'id';
         $data['sort']['order'] = $request->sort['order'] ?? 'desc';
-        $data['filter']['status'] = $request->filter['status'] ?? 'All Status';
-        $data['filter']['category'] = $request->filter['category'] ?? 'All Categories';
-        $default_lang = Setting::pull('default_lang');
-        $data['filtered_lang'] = $request->filter['lang'] ?? $default_lang;
-        $data['languages'] = json_decode(Setting::pull('languages'));
-        $data['categories'] = new PostCategoryCollection(Category::with('contents')->get());
+
+        // Filters
+        $data['filter']['cause_id'] = $request->filter['cause_id'] ?? 'All';
+        $data['filter']['date_range'] = $request->filter['date_range'] ?? '';
+
+        // Pass other filters if you still use them in Repository logic
+        // $data['filter']['payment_method'] = ...
+
         $data['invoices'] = $repository->paginateSearchResult($data['search'], $data['sort'], $data['filter']);
+        $data['causes'] = Cause::with('content:cause_id,title')->select('id')->get();
 
         return Inertia::render('Invoices/Index', $data);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Resend invoice to customer
      */
-    public function create(): Response
+    public function resendInvoice(Invoice $invoice, InvoiceRepository $repository): RedirectResponse
     {
-        $data['default_lang'] = Setting::pull('default_lang');
-        $data['languages'] = json_decode(Setting::pull('languages'));
-        $data['categories'] = new PostCategoryCollection(Category::with('contents')->get());
-
-        return Inertia::render('Posts/Create', $data);
+        DonationSuccess::dispatch($invoice);
+        return back()->with('success', 'Invoice resent to customer successfully!');
     }
 
     /**
-     * Store new post
+     * Delete invoice
      */
-    public function store(PostStoreRequest $request, PostRepository $repository): RedirectResponse
+    public function destroy(Invoice $invoice, InvoiceRepository $repository): RedirectResponse
     {
-        $repository->create($request);
-
-        return redirect()->route('admin.invoices.index')->with('success', 'Invoice successfully created');
-    }
-
-    /**
-     * Update invoice
-     */
-    public function update(PostUpdateRequest $request, Post $post, PostRepository $repository): RedirectResponse
-    {
-        $repository->update($request, $post);
-
-        return redirect()->route('admin.invoices.index')->with('success', 'Invoice successfully updated!');
-    }
-
-    /**
-     * Delete post
-     */
-    public function destroy(Post $post, PostRepository $repository): RedirectResponse
-    {
-        $repository->destroy($post);
-
-        return back()->with('success', 'Post successfully deleted!');
-    }
-
-    /**
-     * Build delete
-     */
-    public function bulkDelete(Request $request, PostRepository $repository): RedirectResponse
-    {
-        $repository->bulkDelete($request->ids);
+        $repository->destroy($invoice);
 
         return back()->with('success', 'Invoice successfully deleted!');
     }
 
     /**
-     * Invoice status toggle
+     * Bulk delete
      */
-    public function statusToggle(Request $request, PostRepository $repository): RedirectResponse
+    public function bulkDelete(Request $request, InvoiceRepository $repository): RedirectResponse
     {
-        $repository->statusToggle($request->id);
+        $repository->bulkDelete($request->ids);
 
-        return back()->with('success', 'Invoice status has been changed!');
+        return back()->with('success', 'Invoices successfully deleted!');
     }
 }

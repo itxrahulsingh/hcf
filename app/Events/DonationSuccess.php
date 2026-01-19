@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Order;
+use App\Models\Invoice;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -11,18 +11,15 @@ class DonationSuccess
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $order;
-    public $transactionId;
+    public $invoice;
 
     /**
      * Create a new event instance.
      *
-     * @param Order $order
-     * @param string|null $transactionId
+     * @param Invoice $invoice
      */
-    public function __construct(Order $order, $transactionId = null)
+    public function __construct(Invoice $invoice)
     {
-        $this->order = $order;
-        $this->transactionId = $transactionId;
+        $this->invoice = $invoice;
     }
 }

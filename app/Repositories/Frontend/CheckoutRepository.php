@@ -46,16 +46,12 @@ class CheckoutRepository
         // Handle receipt file upload
         $receiptFilePath = null;
         if ($request->hasFile('receiptFile')) {
-            $file = $request->file('receiptFile');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $receiptFilePath = $file->storeAs('receipts', $filename, config('filesystems.default'));
+            $receiptFilePath = upload_file($request->file('receiptFile'), 'receipts');
         }
         // Handle receipt file upload
         $specialFilePath = null;
         if ($request->hasFile('special_image')) {
-            $file = $request->file('special_image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $specialFilePath = $file->storeAs('special_image', $filename, config('filesystems.default'));
+            $specialFilePath = upload_file($request->file('special_image'), 'special_image');
         }
 
         // Create Order
@@ -90,7 +86,6 @@ class CheckoutRepository
         // Prepare order items for polymorphic table
         $order_items = array_map(function ($item) {
 
-            // Determine type: Product, Gift, Cause
             $itemTypeClass = match ($item['type']) {
                 'product' => \App\Models\Product::class,
                 'gift' => \App\Models\Gift::class,
@@ -112,7 +107,6 @@ class CheckoutRepository
 
         $order->orderitems()->createMany($order_items);
 
-        // Handle manual payments or COD
         $manualPayment = ManualPaymentGateway::whereHas('content', function ($query) use ($request) {
             $query->where('gateway_name', $request->paymentMethod);
         })->first();

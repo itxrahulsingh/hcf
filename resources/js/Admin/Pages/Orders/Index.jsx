@@ -616,10 +616,10 @@ export default function Index({ orders, sort, filter, causes }) {
                                     {mediaModalOrder.special_image && (
                                         <div className="mb-3">
                                             <img
-                                                src={mediaModalOrder.special_image}
+                                                src={`/storage/${mediaModalOrder.special_image}`}
                                                 alt="Special Request"
                                                 className="img-fluid rounded"
-                                                style={{ maxHeight: "60vh" }}
+                                                style={{ maxHeight: "60vh", objectFit: "contain" }}
                                             />
                                         </div>
                                     )}

@@ -3,6 +3,8 @@
 use App\Models\Setting;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Http\UploadedFile;
 
 if (! function_exists('get_options')) {
     function get_options(string $key, bool $decode = false, $locale = false)
@@ -105,5 +107,27 @@ if (! function_exists('generate_invoice_number')) {
             'start'  => $startYear,
             'end'    => $endYear,
         ];
+    }
+}
+
+
+if (!function_exists('upload_file')) {
+    /**
+     * Global helper to upload files with year/month nesting.
+     *
+     * @param UploadedFile $file
+     * @param string $baseFolder
+     * @return string
+     */
+    function upload_file(UploadedFile $file, string $baseFolder = 'media'): string
+    {
+        $folder = rtrim($baseFolder, '/') . '/' . date('Y') . '/' . date('m');
+        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension    = $file->getClientOriginalExtension();
+        $slug         = Str::slug($originalName);
+        $unique       = substr(md5(uniqid() . microtime()), 0, 6);
+        $fileName     = "{$slug}-{$unique}.{$extension}";
+
+        return $file->storeAs($folder, $fileName, config('filesystems.default'));
     }
 }

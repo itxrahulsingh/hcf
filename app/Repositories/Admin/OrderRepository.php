@@ -84,20 +84,13 @@ class OrderRepository
         ]));
     }
 
-
     public function store(Request $request)
     {
-        // 1. Handle Image
         $specialImagePath = null;
         if ($request->hasFile('special_image')) {
-            $file = $request->file('special_image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('special_images', $filename, 'public');
-            $specialImagePath = '/storage/' . $path;
+            $specialImagePath = upload_file($request->file('special_image'), 'special_images');
         }
-
-        // 2. Calculate Total (Cause Amount + Add-ons)
-        $totalPrice = $request->cause_amount; // Start with Cause Amount
+        $totalPrice = $request->cause_amount;
 
         if ($request->items) {
             foreach ($request->items as $item) {
@@ -106,7 +99,6 @@ class OrderRepository
             }
         }
 
-        // 3. Create Order
         $order = $this->model->create([
             'order_number'    => date('Ymd') . mt_rand(1000, 9999),
             'customer_name'   => $request->customer_name,
@@ -189,13 +181,9 @@ class OrderRepository
 
         if ($request->hasFile('special_image')) {
             if ($order->special_image) {
-                $oldPath = str_replace('/storage/', '', $order->special_image);
-                Storage::disk('public')->delete($oldPath);
+                Storage::disk(config('filesystems.default'))->delete($order->special_image);
             }
-            $file = $request->file('special_image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('special_images', $filename, 'public');
-            $data['special_image'] = '/storage/' . $path;
+            $data['special_image'] = upload_file($request->file('special_image'), 'special_image');
         }
 
         $order->update($data);

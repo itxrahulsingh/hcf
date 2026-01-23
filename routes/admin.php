@@ -469,6 +469,7 @@ Route::group(['prefix' => 'invoices', 'as' => 'invoices.'], function () {
     Route::post('/update-remarks/{invoice}', [InvoiceController::class, 'updateRemarks'])->name('update.remarks')->can('invoices.edit');
     Route::delete('/destroy/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy')->can('invoices.delete');
     Route::delete('/bulk-delete', [InvoiceController::class, 'bulkDelete'])->name('bulk.delete')->can('invoices.delete');
+    Route::post('bulk-download', [InvoiceController::class, 'bulkDownload'])->name('bulk.download');
     Route::post('/status/toggle', [InvoiceController::class, 'statusToggle'])->name('status.toggle')->can('invoices.edit');
 });
 

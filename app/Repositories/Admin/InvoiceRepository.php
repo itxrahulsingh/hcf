@@ -4,29 +4,25 @@ namespace App\Repositories\Admin;
 
 use App\Models\Invoice;
 use App\Repositories\Traits\ModelRepositoryTraits;
+use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceRepository
 {
     use ModelRepositoryTraits;
 
-    /**
-     * Object model will be used to modify invoices table
-     */
     protected Invoice $model;
 
-    /**
-     * Constructor for Invoice repository
-     */
     public function __construct(Invoice $invoice)
     {
         $this->model = $invoice;
     }
 
     /**
-     * Get search result with paginate
+     * Shared query logic for Table, Chart, and Total
      */
-    public function paginateSearchResult($search, array $sort = [], array $filter = []): LengthAwarePaginator
+    private function buildBaseQuery($search, array $filter = [])
     {
         $query = $this->model->with(['order.cause'])->newQuery();
 
@@ -53,26 +49,29 @@ class InvoiceRepository
                 $q->where('cause_id', $filter['cause_id']);
             });
         }
-
-        if (isset($filter['date_range']) && !empty($filter['date_range'])) {
+        if (!empty($filter['date_range'])) {
             $dates = explode(' to ', $filter['date_range']);
+
             if (count($dates) === 2) {
-                $query->whereBetween('payment_date', [$dates[0], $dates[1]]);
+                $start = Carbon::parse($dates[0])->startOfDay();
+                $end   = Carbon::parse($dates[1])->endOfDay();
+
+                $query->whereBetween('payment_date', [$start, $end]);
             } elseif (count($dates) === 1) {
-                $query->whereDate('payment_date', $dates[0]);
+                $query->whereDate('payment_date', Carbon::parse($dates[0]));
             }
         }
-
-        // [REMOVED] Status Filter Block (as requested)
-        /*
-        if (isset($filter['status']) && $filter['status'] !== 'All Status') {
-            $query->where('status', $filter['status']);
-        }
-        */
 
         if (isset($filter['financial_year']) && $filter['financial_year'] !== 'All Years') {
             $query->where('financial_year', $filter['financial_year']);
         }
+
+        return $query;
+    }
+
+    public function paginateSearchResult($search, array $sort = [], array $filter = []): LengthAwarePaginator
+    {
+        $query = $this->buildBaseQuery($search, $filter);
 
         if (isset($sort['column']) && isset($sort['order'])) {
             $column = $sort['column'];
@@ -103,16 +102,34 @@ class InvoiceRepository
     }
 
     /**
-     * Delete invoice
+     * New Method: Get Total and Chart Data
      */
+    public function getAnalytics($search, array $filter = [])
+    {
+        $baseQuery = $this->buildBaseQuery($search, $filter);
+
+        $totalTurnover = $baseQuery->sum('total_price');
+
+        $chartData = $baseQuery->clone()
+            ->select(
+                DB::raw('DATE(payment_date) as date'),
+                DB::raw('SUM(total_price) as total_amount')
+            )
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+
+        return [
+            'total_turnover' => $totalTurnover,
+            'chart_data' => $chartData
+        ];
+    }
+
     public function destroy(Invoice $invoice): void
     {
         $invoice->delete();
     }
 
-    /**
-     * Bulk delete invoices
-     */
     public function bulkDelete($ids): void
     {
         $idArray = explode(',', $ids);

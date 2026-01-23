@@ -8,10 +8,15 @@ use App\Models\Cause;
 use App\Models\Invoice;
 use App\Models\Setting;
 use App\Repositories\Admin\InvoiceRepository;
+use App\Repositories\Admin\OrderRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use ZipArchive;
+use App\Models\Export;
+use App\Jobs\GenerateBulkInvoices;
+use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends Controller
 {
@@ -37,11 +42,21 @@ class InvoiceController extends Controller
         $data['filter']['cause_id'] = $request->filter['cause_id'] ?? 'All';
         $data['filter']['date_range'] = $request->filter['date_range'] ?? '';
 
-        // Pass other filters if you still use them in Repository logic
-        // $data['filter']['payment_method'] = ...
-
         $data['invoices'] = $repository->paginateSearchResult($data['search'], $data['sort'], $data['filter']);
+
+        $analytics = $repository->getAnalytics($data['search'], $data['filter']);
+        $data['total_turnover'] = $analytics['total_turnover'];
+        $data['chart_data'] = $analytics['chart_data'];
+
         $data['causes'] = Cause::with('content:cause_id,title')->select('id')->get();
+
+        $latestExport = Export::where('user_id', auth()->id())->where('type', 'invoice_bulk')->latest()->first();
+
+        if ($latestExport && $latestExport->status === 'completed') {
+            $latestExport->download_url = Storage::url($latestExport->file_path);
+        }
+
+        $data['latest_export'] = $latestExport;
 
         return Inertia::render('Invoices/Index', $data);
     }
@@ -91,5 +106,28 @@ class InvoiceController extends Controller
         $repository->bulkDelete($request->ids);
 
         return back()->with('success', 'Invoices successfully deleted!');
+    }
+
+    /**
+     * Start the Bulk Export Process
+     */
+    public function bulkDownload(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|string',
+        ]);
+
+        $ids = explode(',', $request->ids);
+
+        $export = Export::create([
+            'user_id'   => auth()->id(),
+            'type'      => 'invoice_bulk',
+            'status'    => 'processing',
+            'file_name' => 'Preparing...'
+        ]);
+
+        GenerateBulkInvoices::dispatch($ids, $export->id);
+
+        return back()->with('success', 'Export started! You can track the status above the chart.');
     }
 }

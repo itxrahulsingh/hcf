@@ -118,32 +118,37 @@ class PaymentController extends Controller
         * LOAD INVOICE SETTINGS
         * ---------------------------------------------------------- */
 
-        $invData = generate_invoice_number();
+        if ($order->invoice) {
+            $invoice = $order->invoice;
+        } else {
+            $invoice = DB::transaction(function () use ($order) {
+                $invData = generate_invoice_number();
+                return Invoice::create([
+                    'invoice_number'        => $invData['number'],
+                    'invoice_count'         => $invData['count'],
+                    'order_id'              => $order->id,
+                    'customer_name'         => $order->customer_name,
+                    'customer_email'        => $order->customer_email,
+                    'customer_phone'        => $order->customer_phone,
+                    'shipping_address'      => $order->shipping_address,
+                    'state'                 => $order->state,
+                    'is_80g'                => $order->is_80g ?? false,
+                    'pancard'               => $order->pancard,
+                    'financial_year'        => $invData['fy'],
+                    'financial_year_start'  => $invData['start'],
+                    'financial_year_end'    => $invData['end'],
+                    'total_price'           => $order->total_price,
+                    'payment_method'        => $order->payment_method,
+                    'type'                  => $order->type,
+                    'payment_date'          => now(),
+                    'status'                => 'paid',
+                ]);
+            });
 
-        $invoice = Invoice::create([
-            'invoice_number'        => $invData['number'],
-            'invoice_count'         => $invData['count'],
-            'order_id'              => $order->id,
-            'customer_name'         => $order->customer_name,
-            'customer_email'        => $order->customer_email,
-            'customer_phone'        => $order->customer_phone,
-            'shipping_address'      => $order->shipping_address,
-            'state'                 => $order->state,
-            'is_80g'                => $order->is_80g ?? false,
-            'pancard'               => $order->pancard,
-            'financial_year'        => $invData['fy'],
-            'financial_year_start'  => $invData['start'],
-            'financial_year_end'    => $invData['end'],
-            'total_price'           => $order->total_price,
-            'payment_method'        => $order->payment_method,
-            'type'                  => $order->type,
-            'payment_date'          => now(),
-            'status'                => 'paid',
-        ]);
+            DonationSuccess::dispatch($invoice);
+        }
 
         $data['invoice'] = $invoice;
-
-        DonationSuccess::dispatch($invoice);
 
         SEOMeta::setTitle($tagline);
         SEOMeta::setCanonical($current_page_url);

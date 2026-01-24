@@ -76,14 +76,18 @@ if (! function_exists('format_currency')) {
 }
 
 if (! function_exists('generate_invoice_number')) {
+
     /**
-     * Generate a sequential invoice number based on financial year settings.
+     * Generate invoice number (auto or manual)
      *
+     * @param string $type  auto|manual
      * @return array
      */
-    function generate_invoice_number()
+    function generate_invoice_number(string $type = 'auto')
     {
-        $prefix = get_options('invoice_prefix') ?? 'INV';
+        $autoPrefix   = get_options('invoice_prefix') ?? 'INV';
+        $manualPrefix = get_options('manual_invoice_prefix') ?? 'MINV';
+
         $fyStartMonth = get_options('financial_year_start_month') ?? 4;
 
         $now = now();
@@ -91,14 +95,30 @@ if (! function_exists('generate_invoice_number')) {
         $endYear   = $startYear + 1;
         $financialYear = $startYear . "-" . $endYear;
 
-        $invoiceCount = DB::transaction(function () use ($startYear) {
+        $invoiceCount = DB::transaction(function () use ($startYear, $type) {
             $last = Invoice::where('financial_year_start', $startYear)
+                ->where('type', $type)
                 ->lockForUpdate()
                 ->max('invoice_count');
+
             return ($last ?? 0) + 1;
         });
 
-        $invoiceNumber = sprintf("%s/%s/%05d", $prefix, $financialYear, $invoiceCount);
+        if ($type === 'manual') {
+            $invoiceNumber = sprintf(
+                "%s/%s/%04d",
+                $manualPrefix,
+                $financialYear,
+                $invoiceCount
+            );
+        } else {
+            $invoiceNumber = sprintf(
+                "%s/%s/%05d",
+                $autoPrefix,
+                $financialYear,
+                $invoiceCount
+            );
+        }
 
         return [
             'number' => $invoiceNumber,
@@ -106,10 +126,10 @@ if (! function_exists('generate_invoice_number')) {
             'fy'     => $financialYear,
             'start'  => $startYear,
             'end'    => $endYear,
+            'type'   => $type,
         ];
     }
 }
-
 
 if (!function_exists('upload_file')) {
     /**
@@ -129,5 +149,80 @@ if (!function_exists('upload_file')) {
         $fileName     = "{$slug}-{$unique}.{$extension}";
 
         return $file->storeAs($folder, $fileName, config('filesystems.default'));
+    }
+}
+
+if (!function_exists('number_to_words')) {
+    /**
+     * Convert a number to words (Indian Rupee format - Lakhs/Crores)
+     *
+     * @param float $number
+     * @return string
+     */
+    function number_to_words($number)
+    {
+        $no = floor($number);
+        $point = round($number - $no, 2) * 100;
+        $hundred = null;
+        $digits_1 = strlen($no);
+        $i = 0;
+        $str = array();
+        $words = array(
+            '0' => '',
+            '1' => 'one',
+            '2' => 'two',
+            '3' => 'three',
+            '4' => 'four',
+            '5' => 'five',
+            '6' => 'six',
+            '7' => 'seven',
+            '8' => 'eight',
+            '9' => 'nine',
+            '10' => 'ten',
+            '11' => 'eleven',
+            '12' => 'twelve',
+            '13' => 'thirteen',
+            '14' => 'fourteen',
+            '15' => 'fifteen',
+            '16' => 'sixteen',
+            '17' => 'seventeen',
+            '18' => 'eighteen',
+            '19' => 'nineteen',
+            '20' => 'twenty',
+            '30' => 'thirty',
+            '40' => 'forty',
+            '50' => 'fifty',
+            '60' => 'sixty',
+            '70' => 'seventy',
+            '80' => 'eighty',
+            '90' => 'ninety'
+        );
+        $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+
+        while ($i < $digits_1) {
+            $divider = ($i == 2) ? 10 : 100;
+            $number = floor($no % $divider);
+            $no = floor($no / $divider);
+            $i += ($divider == 10) ? 1 : 2;
+            if ($number) {
+                $plural = (($counter = count($str)) && $number > 9) ? '' : null;
+                $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+                $str[] = ($number < 21) ? $words[$number] . " " . $digits[$counter] . $plural . " " . $hundred
+                    : $words[floor($number / 10) * 10] . " " . $words[$number % 10] . " " . $digits[$counter] . $plural . " " . $hundred;
+            } else {
+                $str[] = null;
+            }
+        }
+
+        $str = array_reverse($str);
+        $result = implode('', $str);
+
+        // Handle Paise (optional, usually skipped in donation receipts if 00)
+        // if ($point) {
+        //    $points = $words[$point / 10] . " " . $words[$point = $point % 10];
+        //    $result .= " and " . $points . " Paise";
+        // }
+
+        return $result ? $result : 'Zero';
     }
 }

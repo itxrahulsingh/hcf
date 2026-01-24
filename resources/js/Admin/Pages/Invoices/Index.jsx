@@ -52,17 +52,17 @@ const StatCard = ({ title, value, subtext, icon, gradient }) => (
                 >
                     <IonIcon icon={icon} style={{ fontSize: "22px", color: "#fff" }} />
                 </div>
-                <h5 className="mb-0 font-weight-normal" style={{ fontSize: "1.1rem", opacity: 0.9, color: "#fff" }}>
+                <h5 className="mb-0 font-weight-bold" style={{ fontSize: "1.1rem", opacity: 0.9, color: "#fff" }}>
                     {title}
                 </h5>
             </div>
-            <h2 className="mb-0 mt-3 font-weight-bold" style={{ fontSize: "2rem" }}>
+            <h2 className="mb-0 mt-3 font-weight-bold text-white" style={{ fontSize: "2.5rem" }}>
                 {value}
             </h2>
             <div
                 className="mt-2"
                 style={{
-                    fontSize: "0.85rem",
+                    fontSize: "1rem",
                     opacity: 0.8,
                     background: "rgba(0,0,0,0.1)",
                     display: "inline-block",
@@ -431,367 +431,353 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
     }
 
     return (
-        <>
+        <AdminLayouts>
             <Head title="Financial Receipts" />
-            <AdminLayouts>
-                <div className="yoo-height-b30 yoo-height-lg-b30" />
-                <div className="container-fluid">
-                    <div className="yoo-uikits-heading">
-                        <h2 className="yoo-uikits-title">{translate("All Receipts")}</h2>
-                    </div>
-                    <div className="yoo-height-b20 yoo-height-lg-b20"></div>
+            <div className="yoo-height-b30 yoo-height-lg-b30" />
+            <div className="container-fluid">
+                <div className="yoo-uikits-heading">
+                    <h2 className="yoo-uikits-title">{translate("All Receipts")}</h2>
+                </div>
+                <div className="yoo-height-b20 yoo-height-lg-b20"></div>
 
-                    {latest_export && (
-                        <div className="row">
-                            <ExportStatusCard exportData={latest_export} />
-                        </div>
-                    )}
+                {latest_export && (
                     <div className="row">
-                        <div className="col-lg-4 mb-4">
-                            <StatCard
-                                title={translate("Total Turnover")}
-                                value={<Amount amount={total_turnover || 0} />}
-                                subtext={dateRange ? `Period: ${dateRange}` : translate("All Time Data")}
-                                icon={cashOutline}
-                                gradient="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)" // Deep Purple/Dark
-                            />
-                        </div>
+                        <ExportStatusCard exportData={latest_export} />
+                    </div>
+                )}
+                <div className="row">
+                    <div className="col-lg-4 mb-4">
+                        <StatCard
+                            title={translate("Total Turnover")}
+                            value={<Amount amount={total_turnover || 0} />}
+                            subtext={dateRange ? `Period: ${dateRange}` : translate("All Time Data")}
+                            icon={cashOutline}
+                            gradient="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)" // Deep Purple/Dark
+                        />
+                    </div>
 
-                        {/* Chart Card */}
-                        <div className="col-lg-8 mb-4">
-                            <div className="yoo-card yoo-style1 h-100 border-0 shadow-sm" style={{ borderRadius: "15px" }}>
-                                <div className="yoo-card-heading d-flex justify-content-between align-items-center pt-3 px-4">
-                                    <div className="d-flex align-items-center">
-                                        <div
-                                            className="d-flex align-items-center justify-content-center mr-2"
-                                            style={{ width: "35px", height: "35px", background: "#eef2ff", borderRadius: "10px" }}
-                                        >
-                                            <IonIcon icon={barChartOutline} style={{ color: "#4361ee" }} />
-                                        </div>
-                                        <h2 className="yoo-card-title font-weight-bold" style={{ fontSize: "1.1rem" }}>
-                                            {translate("Donation Trends")}
-                                        </h2>
+                    {/* Chart Card */}
+                    <div className="col-lg-8 mb-4">
+                        <div className="yoo-card yoo-style1 h-100 border-0 shadow-sm" style={{ borderRadius: "15px" }}>
+                            <div className="yoo-card-heading d-flex justify-content-between align-items-center pt-3 px-4">
+                                <div className="d-flex align-items-center">
+                                    <div
+                                        className="d-flex align-items-center justify-content-center mr-2"
+                                        style={{ width: "35px", height: "35px", background: "#eef2ff", borderRadius: "10px" }}
+                                    >
+                                        <IonIcon icon={barChartOutline} style={{ color: "#4361ee" }} />
                                     </div>
-                                    <div className="badge badge-light px-3 py-2">{chart_data?.length || 0} Days Active</div>
+                                    <h2 className="yoo-card-title font-weight-bold" style={{ fontSize: "1.1rem" }}>
+                                        {translate("Donation Trends")}
+                                    </h2>
                                 </div>
-                                <div className="yoo-card-body px-4 pb-4">
-                                    <div style={{ height: "260px" }}>
-                                        {chart_data && chart_data.length > 0 ? (
-                                            <Line options={chartOptions} data={chartDataFormatted} />
-                                        ) : (
-                                            <div className="d-flex flex-column align-items-center justify-content-center h-100 text-muted">
-                                                <IonIcon icon={barChartOutline} style={{ fontSize: "40px", opacity: 0.2, marginBottom: "10px" }} />
-                                                <span>{translate("No transaction data for this period")}</span>
-                                            </div>
-                                        )}
-                                    </div>
+                                <div className="badge badge-light px-3 py-2">{chart_data?.length || 0} Days Active</div>
+                            </div>
+                            <div className="yoo-card-body px-4 pb-4">
+                                <div style={{ height: "260px" }}>
+                                    {chart_data && chart_data.length > 0 ? (
+                                        <Line options={chartOptions} data={chartDataFormatted} />
+                                    ) : (
+                                        <div className="d-flex flex-column align-items-center justify-content-center h-100 text-muted">
+                                            <IonIcon icon={barChartOutline} style={{ fontSize: "40px", opacity: 0.2, marginBottom: "10px" }} />
+                                            <span>{translate("No transaction data for this period")}</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {/* --- END STATS SECTION --- */}
+                </div>
 
-                    <div className="yoo-card yoo-style1 border-0 shadow-sm" style={{ borderRadius: "15px" }}>
-                        <div className="yoo-card-heading px-4 pt-4 border-bottom-0">
-                            <div className="yoo-card-heading-left">
-                                <h2 className="yoo-card-title d-flex align-items-center">
-                                    <span className="yoo-card-title-icon yoo-blue-bg mr-2">
-                                        <IonIcon icon={documentTextOutline} style={{ width: "16px", height: "16px" }} />
-                                    </span>
-                                    {translate("Receipts List")}
-                                </h2>
-                            </div>
+                <div className="yoo-card yoo-style1">
+                    <div className="yoo-card-heading">
+                        <div className="yoo-card-heading-left">
+                            <h2 className="yoo-card-title">
+                                <span className="yoo-card-title-icon yoo-blue-bg">
+                                    <IonIcon
+                                        icon={documentTextOutline}
+                                        style={{
+                                            width: "16px",
+                                            height: "16px"
+                                        }}
+                                    />
+                                </span>
+                                {translate("Receipts")}
+                            </h2>
                         </div>
-                        <div className="yoo-card-body px-4">
-                            <div className="">
-                                <div className="yoo-height-b15 yoo-height-lg-b15" />
-                                <div className="yooDataTableWrap">
-                                    <div className="dataTables_heading">
-                                        {/* LEFT SIDE: Filters & Bulk Actions */}
-                                        <div className="dataTables_heading_left">
-                                            {/* 1. Bulk Action */}
-                                            <div className="yoo-group-btn">
-                                                <div className="position-relative">
-                                                    <DropDownButton selectedOption={selectedOption} disabled={!markItems.length}>
-                                                        {hasPermission("invoices.delete") && (
-                                                            <a
-                                                                onClick={() => setSelectedOption("Delete")}
-                                                                className={`dropdown-item ${selectedOption === "Delete" ? "active" : ""}`}
-                                                                href="#"
-                                                            >
-                                                                <IonIcon icon={trashOutline} className="mr-2" /> {translate("Delete")}
-                                                            </a>
-                                                        )}
+                    </div>
+                    <div className="yoo-card-body">
+                        <div className="">
+                            <div className="yoo-height-b15 yoo-height-lg-b15" />
+                            <div className="yooDataTableWrap">
+                                <div className="dataTables_heading">
+                                    <div className="dataTables_heading_left">
+                                        <div className="yoo-group-btn">
+                                            <div className="position-relative">
+                                                <DropDownButton selectedOption={selectedOption} disabled={!markItems.length}>
+                                                    {hasPermission("invoices.delete") && (
                                                         <a
-                                                            onClick={() => setSelectedOption("Download ZIP")}
-                                                            className={`dropdown-item ${selectedOption === "Download ZIP" ? "active" : ""}`}
+                                                            onClick={() => setSelectedOption("Delete")}
+                                                            className={`dropdown-item ${selectedOption === "Delete" ? "active" : ""}`}
                                                             href="#"
                                                         >
-                                                            <IonIcon icon={cloudDownloadOutline} className="mr-2" /> {translate("Download ZIP")}
+                                                            <IonIcon icon={trashOutline} className="mr-2" /> {translate("Delete")}
                                                         </a>
-                                                    </DropDownButton>
-                                                </div>
-                                                <button
-                                                    disabled={!markItems.length}
-                                                    onClick={() => handleBulkAction()}
-                                                    className="btn btn-success btn-sm"
-                                                >
-                                                    Apply
-                                                </button>
-                                            </div>
-
-                                            {/* 2. Cause Filter (Always Visible) */}
-                                            <div className="position-relative">
-                                                <DropDownButton selectedOption={getSelectedCauseLabel()}>
+                                                    )}
                                                     <a
-                                                        onClick={() => setSelectedCause("All")}
-                                                        className={`dropdown-item ${selectedCause === "All" ? "active" : ""}`}
+                                                        onClick={() => setSelectedOption("Download ZIP")}
+                                                        className={`dropdown-item ${selectedOption === "Download ZIP" ? "active" : ""}`}
                                                         href="#"
                                                     >
-                                                        {translate("All Causes")}
-                                                    </a>
-                                                    {causes &&
-                                                        causes.map((cause) => (
-                                                            <a
-                                                                key={cause.id}
-                                                                onClick={() => setSelectedCause(cause.id)}
-                                                                className={`dropdown-item ${selectedCause == cause.id ? "active" : ""}`}
-                                                                href="#"
-                                                            >
-                                                                {cause.content?.title || "Untitled"}
-                                                            </a>
-                                                        ))}
-                                                </DropDownButton>
-                                            </div>
-
-                                            {/* 3. Date Presets (Always Visible) */}
-                                            <div className="position-relative">
-                                                <DropDownButton selectedOption={rangeLabel}>
-                                                    <a onClick={() => applyDatePreset("Today")} className="dropdown-item" href="#">
-                                                        Today
-                                                    </a>
-                                                    <a onClick={() => applyDatePreset("Yesterday")} className="dropdown-item" href="#">
-                                                        Yesterday
-                                                    </a>
-                                                    <a onClick={() => applyDatePreset("This Week")} className="dropdown-item" href="#">
-                                                        This Week
-                                                    </a>
-                                                    <a onClick={() => applyDatePreset("Last Week")} className="dropdown-item" href="#">
-                                                        Last Week
-                                                    </a>
-                                                    <a onClick={() => applyDatePreset("This Month")} className="dropdown-item" href="#">
-                                                        This Month
-                                                    </a>
-                                                    <a onClick={() => applyDatePreset("Last Month")} className="dropdown-item" href="#">
-                                                        Last Month
-                                                    </a>
-                                                    <div className="dropdown-divider"></div>
-                                                    <a onClick={() => applyDatePreset("Custom")} className="dropdown-item" href="#">
-                                                        Custom Range
+                                                        <IonIcon icon={cloudDownloadOutline} className="mr-2" /> {translate("Download ZIP")}
                                                     </a>
                                                 </DropDownButton>
                                             </div>
-
-                                            {/* 4. Date Picker Input (Always Visible) */}
-                                            <div className="position-relative" style={{ minWidth: "200px" }}>
-                                                <span
-                                                    className="position-absolute"
-                                                    style={{ left: "10px", top: "50%", transform: "translateY(-50%)", zIndex: 5, color: "#999" }}
-                                                >
-                                                    <IonIcon icon={calendarOutline} />
-                                                </span>
-                                                <Flatpickr
-                                                    className="form-control pl-4"
-                                                    placeholder="Select Range"
-                                                    value={dateRange ? dateRange.split(" to ") : []}
-                                                    options={{ mode: "range", dateFormat: "Y-m-d" }}
-                                                    onChange={onDateChange}
-                                                />
-                                            </div>
-
-                                            {/* 5. Filter Button (Always Visible) */}
-                                            <button onClick={() => getResults(searchQuery)} className="btn btn-success btn-sm">
-                                                {translate("Filter")}
+                                            <button
+                                                disabled={!markItems.length}
+                                                onClick={() => handleBulkAction()}
+                                                className="btn btn-success btn-sm"
+                                            >
+                                                Apply
                                             </button>
                                         </div>
 
-                                        {/* RIGHT SIDE: Search */}
-                                        <div className="dataTables_heading_right">
-                                            <div id="yooDataTable_filter" className="dataTables_filter">
-                                                <label>
-                                                    <input
-                                                        type="search"
-                                                        placeholder="Search Receipt, Donor..."
-                                                        value={searchQuery}
-                                                        onChange={(e) => {
-                                                            setSearchQuery(e.target.value)
-                                                            getResults(e.target.value)
-                                                        }}
-                                                    />
-                                                </label>
-                                                <button className="dataTables_filter_btn">
-                                                    <IonIcon icon={search} />
-                                                </button>
-                                            </div>
+                                        {/* 2. Cause Filter (Always Visible) */}
+                                        <div className="position-relative">
+                                            <DropDownButton selectedOption={getSelectedCauseLabel()}>
+                                                <a
+                                                    onClick={() => setSelectedCause("All")}
+                                                    className={`dropdown-item ${selectedCause === "All" ? "active" : ""}`}
+                                                    href="#"
+                                                >
+                                                    {translate("All Causes")}
+                                                </a>
+                                                {causes &&
+                                                    causes.map((cause) => (
+                                                        <a
+                                                            key={cause.id}
+                                                            onClick={() => setSelectedCause(cause.id)}
+                                                            className={`dropdown-item ${selectedCause == cause.id ? "active" : ""}`}
+                                                            href="#"
+                                                        >
+                                                            {cause.content?.title || "Untitled"}
+                                                        </a>
+                                                    ))}
+                                            </DropDownButton>
+                                        </div>
+
+                                        {/* 3. Date Presets (Always Visible) */}
+                                        <div className="position-relative">
+                                            <DropDownButton selectedOption={rangeLabel}>
+                                                <a onClick={() => applyDatePreset("Today")} className="dropdown-item" href="#">
+                                                    Today
+                                                </a>
+                                                <a onClick={() => applyDatePreset("Yesterday")} className="dropdown-item" href="#">
+                                                    Yesterday
+                                                </a>
+                                                <a onClick={() => applyDatePreset("This Week")} className="dropdown-item" href="#">
+                                                    This Week
+                                                </a>
+                                                <a onClick={() => applyDatePreset("Last Week")} className="dropdown-item" href="#">
+                                                    Last Week
+                                                </a>
+                                                <a onClick={() => applyDatePreset("This Month")} className="dropdown-item" href="#">
+                                                    This Month
+                                                </a>
+                                                <a onClick={() => applyDatePreset("Last Month")} className="dropdown-item" href="#">
+                                                    Last Month
+                                                </a>
+                                                <div className="dropdown-divider"></div>
+                                                <a onClick={() => applyDatePreset("Custom")} className="dropdown-item" href="#">
+                                                    Custom Range
+                                                </a>
+                                            </DropDownButton>
+                                        </div>
+
+                                        {/* 4. Date Picker Input (Always Visible) */}
+                                        <div className="position-relative" style={{ minWidth: "200px" }}>
+                                            <span
+                                                className="position-absolute"
+                                                style={{ left: "10px", top: "50%", transform: "translateY(-50%)", zIndex: 5, color: "#999" }}
+                                            >
+                                                <IonIcon icon={calendarOutline} />
+                                            </span>
+                                            <Flatpickr
+                                                className="form-control pl-4"
+                                                placeholder="Select Range"
+                                                value={dateRange ? dateRange.split(" to ") : []}
+                                                options={{ mode: "range", dateFormat: "Y-m-d" }}
+                                                onChange={onDateChange}
+                                            />
+                                        </div>
+
+                                        {/* 5. Filter Button (Always Visible) */}
+                                        <button onClick={() => getResults(searchQuery)} className="btn btn-success btn-sm">
+                                            {translate("Filter")}
+                                        </button>
+                                    </div>
+
+                                    {/* RIGHT SIDE: Search */}
+                                    <div className="dataTables_heading_right">
+                                        <div id="yooDataTable_filter" className="dataTables_filter">
+                                            <label>
+                                                <input
+                                                    type="search"
+                                                    placeholder="Search Receipt, Donor..."
+                                                    value={searchQuery}
+                                                    onChange={(e) => {
+                                                        setSearchQuery(e.target.value)
+                                                        getResults(e.target.value)
+                                                    }}
+                                                />
+                                            </label>
+                                            <button className="dataTables_filter_btn">
+                                                <IonIcon icon={search} />
+                                            </button>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div id="yooDataTable_wrapper" className="dataTables_wrapper no-footer">
-                                        <table id="yooDataTable" className="display dataTable no-footer" style={{ width: "100%" }}>
-                                            <thead>
-                                                <tr role="row">
-                                                    <th onClick={() => markAll()} style={{ width: "1%" }}>
-                                                        <div className={`yoo-check-mark-all ${isMarkAll && "active"}`}>
-                                                            <span className="yoo-first" />
-                                                            <span className="yoo-last" />
+                                <div id="yooDataTable_wrapper" className="dataTables_wrapper no-footer">
+                                    <table id="yooDataTable" className="display dataTable no-footer" style={{ width: "100%" }}>
+                                        <thead>
+                                            <tr role="row">
+                                                <th onClick={() => markAll()} style={{ width: "1%" }}>
+                                                    <div className={`yoo-check-mark-all ${isMarkAll && "active"}`}>
+                                                        <span className="yoo-first" />
+                                                        <span className="yoo-last" />
+                                                    </div>
+                                                </th>
+                                                <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="invoice_number">
+                                                    {translate("Receipt No")}
+                                                </ThSortable>
+                                                <ThSortable width="20%" sort={sort} onSorted={() => getResults(searchQuery)} column="customer_name">
+                                                    {translate("Donor Name")}
+                                                </ThSortable>
+                                                <ThSortable width="12%" sort={sort} onSorted={() => getResults(searchQuery)} column="payment_date">
+                                                    {translate("Donation Date")}
+                                                </ThSortable>
+                                                <th width="15%">{translate("Cause")}</th>
+                                                <th width="20%">{translate("Remarks")}</th>
+                                                <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
+                                                    {translate("Amount")}
+                                                </ThSortable>
+                                                <th width="5%" className="text-center">
+                                                    {translate("PDF")}
+                                                </th>
+                                                <th width="5%" className="text-center">
+                                                    {translate("Send")}
+                                                </th>
+                                                {hasPermission("invoices.delete") && (
+                                                    <th style={{ width: "5%" }} className="text-center">
+                                                        {translate("Action")}
+                                                    </th>
+                                                )}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {invoices.data.map((invoice, index) => (
+                                                <tr key={invoice.id || index}>
+                                                    <td className="sorting_1" onClick={() => handleMark(invoice.id)}>
+                                                        <div className={`yoo-check-mark ${markItems.includes(invoice.id) && "active"}`} />
+                                                    </td>
+                                                    <td>
+                                                        <div className="yoo-table-medias yoo-style1 text-primary font-weight-bold">
+                                                            #{invoice.invoice_number}
                                                         </div>
-                                                    </th>
-                                                    <ThSortable
-                                                        width="10%"
-                                                        sort={sort}
-                                                        onSorted={() => getResults(searchQuery)}
-                                                        column="invoice_number"
-                                                    >
-                                                        {translate("Receipt No")}
-                                                    </ThSortable>
-                                                    <ThSortable
-                                                        width="20%"
-                                                        sort={sort}
-                                                        onSorted={() => getResults(searchQuery)}
-                                                        column="customer_name"
-                                                    >
-                                                        {translate("Donor Name")}
-                                                    </ThSortable>
-                                                    <ThSortable
-                                                        width="12%"
-                                                        sort={sort}
-                                                        onSorted={() => getResults(searchQuery)}
-                                                        column="payment_date"
-                                                    >
-                                                        {translate("Donation Date")}
-                                                    </ThSortable>
-                                                    <th width="15%">{translate("Cause")}</th>
-                                                    <th width="20%">{translate("Remarks")}</th>
-                                                    <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
-                                                        {translate("Amount")}
-                                                    </ThSortable>
-                                                    <th width="5%" className="text-center">
-                                                        {translate("PDF")}
-                                                    </th>
-                                                    <th width="5%" className="text-center">
-                                                        {translate("Send")}
-                                                    </th>
+                                                    </td>
+                                                    <td>
+                                                        <span className="font-weight-bold text-dark">{invoice.customer_name}</span> <br />
+                                                        <small className="text-muted d-block">{invoice.customer_email}</small>
+                                                        <small className="text-muted d-block">{invoice.customer_phone}</small>
+                                                        <div className="d-flex flex-wrap gap-1 mt-1" style={{ gap: "5px" }}>
+                                                            {invoice.pancard && (
+                                                                <span className="badge badge-light border">PAN: {invoice.pancard}</span>
+                                                            )}
+                                                            {invoice.order?.is_80g == 1 && (
+                                                                <span className="badge badge-success text-white">80G Benefit</span>
+                                                            )}
+                                                        </div>
+                                                    </td>
+
+                                                    {/* Payment Date */}
+                                                    <td>{invoice.payment_date ? moment(invoice.payment_date).format("DD MMM YYYY") : "-"}</td>
+
+                                                    {/* Cause Title Fix */}
+                                                    <td>{getCauseTitle(invoice)}</td>
+
+                                                    {/* Inline Remarks Editor */}
+                                                    <td>
+                                                        <RemarksCell invoice={invoice} canEdit={hasPermission("invoices.edit")} />
+                                                    </td>
+
+                                                    <td>
+                                                        <strong className="text-success">
+                                                            <Amount amount={invoice.total_price} />
+                                                        </strong>
+                                                    </td>
+
+                                                    {/* Download */}
+                                                    <td className="text-center">
+                                                        <a
+                                                            href={route("admin.orders.download.invoice", invoice.order)}
+                                                            download
+                                                            className="btn btn-sm btn-outline-secondary"
+                                                            title={translate("Download Invoice")}
+                                                            style={{ padding: "4px 8px" }}
+                                                        >
+                                                            <IonIcon icon={downloadOutline} style={{ fontSize: "16px" }} />
+                                                        </a>
+                                                    </td>
+
+                                                    {/* Resend */}
+                                                    <td className="text-center">
+                                                        <Link
+                                                            href={route("admin.invoices.resend", invoice)}
+                                                            method="post"
+                                                            as="button"
+                                                            className="btn btn-sm btn-outline-secondary"
+                                                            title={translate("Resend Receipt")}
+                                                            style={{ padding: "4px 8px" }}
+                                                        >
+                                                            <IonIcon icon={paperPlaneOutline} style={{ fontSize: "16px" }} />
+                                                        </Link>
+                                                    </td>
+
                                                     {hasPermission("invoices.delete") && (
-                                                        <th style={{ width: "5%" }} className="text-center">
-                                                            {translate("Action")}
-                                                        </th>
+                                                        <td className="text-center">
+                                                            <DeleteButton href={route("admin.invoices.destroy", invoice)} />
+                                                        </td>
                                                     )}
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                {invoices.data.map((invoice, index) => (
-                                                    <tr key={invoice.id || index}>
-                                                        <td className="sorting_1" onClick={() => handleMark(invoice.id)}>
-                                                            <div className={`yoo-check-mark ${markItems.includes(invoice.id) && "active"}`} />
-                                                        </td>
-                                                        <td>
-                                                            <div className="yoo-table-medias yoo-style1 text-primary font-weight-bold">
-                                                                #{invoice.invoice_number}
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className="font-weight-bold text-dark">{invoice.customer_name}</span> <br />
-                                                            <small className="text-muted d-block">{invoice.customer_email}</small>
-                                                            <small className="text-muted d-block">{invoice.customer_phone}</small>
-                                                            <div className="d-flex flex-wrap gap-1 mt-1" style={{ gap: "5px" }}>
-                                                                {invoice.pancard && (
-                                                                    <span className="badge badge-light border">PAN: {invoice.pancard}</span>
-                                                                )}
-                                                                {invoice.order?.is_80g == 1 && (
-                                                                    <span className="badge badge-success text-white">80G Benefit</span>
-                                                                )}
-                                                            </div>
-                                                        </td>
-
-                                                        {/* Payment Date */}
-                                                        <td>{invoice.payment_date ? moment(invoice.payment_date).format("DD MMM YYYY") : "-"}</td>
-
-                                                        {/* Cause Title Fix */}
-                                                        <td>{getCauseTitle(invoice)}</td>
-
-                                                        {/* Inline Remarks Editor */}
-                                                        <td>
-                                                            <RemarksCell invoice={invoice} canEdit={hasPermission("invoices.edit")} />
-                                                        </td>
-
-                                                        <td>
-                                                            <strong className="text-success">
-                                                                <Amount amount={invoice.total_price} />
-                                                            </strong>
-                                                        </td>
-
-                                                        {/* Download */}
-                                                        <td className="text-center">
-                                                            <a
-                                                                href={route("admin.orders.download.invoice", invoice.order)}
-                                                                download
-                                                                className="btn btn-sm btn-outline-secondary"
-                                                                title={translate("Download Invoice")}
-                                                                style={{ padding: "4px 8px" }}
-                                                            >
-                                                                <IonIcon icon={downloadOutline} style={{ fontSize: "16px" }} />
-                                                            </a>
-                                                        </td>
-
-                                                        {/* Resend */}
-                                                        <td className="text-center">
-                                                            <Link
-                                                                href={route("admin.invoices.resend", invoice)}
-                                                                method="post"
-                                                                as="button"
-                                                                className="btn btn-sm btn-outline-secondary"
-                                                                title={translate("Resend Receipt")}
-                                                                style={{ padding: "4px 8px" }}
-                                                            >
-                                                                <IonIcon icon={paperPlaneOutline} style={{ fontSize: "16px" }} />
-                                                            </Link>
-                                                        </td>
-
-                                                        {hasPermission("invoices.delete") && (
-                                                            <td className="text-center">
-                                                                <DeleteButton href={route("admin.invoices.destroy", invoice)} />
-                                                            </td>
-                                                        )}
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                        {!invoices.data.length && (
-                                            <div className="no-data-found" style={{ textAlign: "center", padding: "50px" }}>
-                                                <p>No receipts found!</p>
-                                            </div>
-                                        )}
-                                        <div className="clear" />
-                                    </div>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    {!invoices.data.length && (
+                                        <div className="no-data-found" style={{ textAlign: "center", padding: "50px" }}>
+                                            <p>No receipts found!</p>
+                                        </div>
+                                    )}
+                                    <div className="clear" />
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {/* Pagination */}
-                    {invoices.total > 1 && (
-                        <div className="pagination-wrapper" style={{ marginTop: "10px" }}>
-                            <ul className="pagination">
-                                {invoices.links.map((link, index) => (
-                                    <li className={`page-item ${link.active ? "active" : ""}`} key={`pagination_${index}`}>
-                                        <Link href={link.url} className="page-link" dangerouslySetInnerHTML={{ __html: link.label }} />
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    <div className="yoo-height-b30 yoo-height-lg-b30" />
                 </div>
-            </AdminLayouts>
-        </>
+                {/* Pagination */}
+                {invoices.total > 1 && (
+                    <div className="pagination-wrapper" style={{ marginTop: "10px" }}>
+                        <ul className="pagination">
+                            {invoices.links.map((link, index) => (
+                                <li className={`page-item ${link.active ? "active" : ""}`} key={`pagination_${index}`}>
+                                    <Link href={link.url} className="page-link" dangerouslySetInnerHTML={{ __html: link.label }} />
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+                <div className="yoo-height-b30 yoo-height-lg-b30" />
+            </div>
+        </AdminLayouts>
     )
 }

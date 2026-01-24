@@ -3,6 +3,7 @@
 namespace App\Repositories\Admin;
 
 use App\Models\Cause;
+use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Setting;
 use App\Repositories\Traits\ModelRepositoryTraits;
@@ -155,6 +156,31 @@ class OrderRepository
         }
 
         $order->orderitems()->createMany($orderItems);
+
+        $invData = generate_invoice_number();
+
+        $invoice = Invoice::create([
+            'invoice_number'        => $invData['number'],
+            'invoice_count'         => $invData['count'],
+            'order_id'              => $order->id,
+            'customer_name'         => $order->customer_name,
+            'customer_email'        => $order->customer_email,
+            'customer_phone'        => $order->customer_phone,
+            'shipping_address'      => $order->shipping_address,
+            'state'                 => $order->state,
+            'is_80g'                => $order->is_80g ?? false,
+            'pancard'               => $order->pancard,
+            'financial_year'        => $invData['fy'],
+            'financial_year_start'  => $invData['start'],
+            'financial_year_end'    => $invData['end'],
+            'total_price'           => $order->total_price,
+            'payment_method'        => $order->payment_method,
+            'type'                  => $order->type,
+            'payment_date'          => now(),
+            'status'                => 'paid',
+        ]);
+
+        $data['invoice'] = $invoice;
 
         return $order;
     }

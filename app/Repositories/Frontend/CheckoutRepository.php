@@ -22,7 +22,6 @@ class CheckoutRepository
     {
         $currency_code = Setting::pull('currency_code') ?? 'INR';
 
-        // Calculate subtotal
         $subtotal = array_reduce(
             $request->items,
             fn($carry, $item) =>

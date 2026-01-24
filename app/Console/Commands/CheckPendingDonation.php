@@ -118,9 +118,7 @@ class CheckPendingDonation extends Command
 
         if (function_exists('generate_invoice_number')) {
 
-            // Check if invoice already exists to avoid duplicates
             $invoiceExists = Invoice::where('order_id', $order->id)->exists();
-
             if (!$invoiceExists) {
                 $invData = generate_invoice_number();
 
@@ -151,7 +149,6 @@ class CheckPendingDonation extends Command
             }
         }
 
-        // Fire Event
         DonationSuccess::dispatch($order->invoice);
 
         $this->info("Order {$order->order_number}: Marked as Success.");

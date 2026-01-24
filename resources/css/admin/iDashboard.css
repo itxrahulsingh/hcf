@@ -8520,7 +8520,7 @@ table.dataTable tbody tr {
 .dataTables_heading {
     display: flex;
     justify-content: space-between;
-    padding: 0 20px 15px;
+    padding: 0 15px 15px;
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -8533,7 +8533,7 @@ table.dataTable tbody tr {
     display: flex;
 }
 .dataTables_heading_left {
-    gap: 10px 15px;
+    gap: 10px 10px;
     flex-wrap: wrap;
 }
 .dataTables_heading_right {

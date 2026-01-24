@@ -13,10 +13,12 @@ class DonationFailedNotification extends Notification
     use Queueable;
 
     public $order;
+    public $retryUrl;
 
     public function __construct(Order $order)
     {
-        $this->order = $order->load('cause');
+        $this->order = $order;
+        $this->retryUrl = route('cause.show', $this->order->cause->slug);
     }
 
     public function via($notifiable)
@@ -30,14 +32,12 @@ class DonationFailedNotification extends Notification
         $causeName = $this->order->cause->content->title ?? 'our cause';
         $amount    = $this->order->total_price;
 
-        $retryUrl = url("/donate/retry/{$this->order->id}");
-
         return (new MailMessage)
-            ->subject("Donation Alert: Payment Failed")
+            ->subject("Action Required: Donation Payment Failed")
             ->greeting("Hello {$donorName},")
             ->line("We noticed an attempt to donate {$amount} for '{$causeName}' was not successful.")
             ->line("This often happens due to bank timeouts or network issues. No amount has been deducted.")
-            ->action('Try Donation Again', $retryUrl)
+            ->action('Try Donation Again', $this->retryUrl)
             ->line('We appreciate your intent to support us. Please try again or contact support if the issue persists.');
     }
 
@@ -45,7 +45,6 @@ class DonationFailedNotification extends Notification
     {
         $donorName = $this->order->customer_name;
         $causeName = $this->order->cause->content->title ?? 'Cause';
-        $retryUrl  = url("/donate/retry/{$this->order->id}");
 
         return [
             'phone' => $notifiable,
@@ -58,7 +57,7 @@ class DonationFailedNotification extends Notification
                         'parameters' => [
                             ['type' => 'text', 'text' => $donorName],
                             ['type' => 'text', 'text' => $causeName],
-                            ['type' => 'text', 'text' => $retryUrl],
+                            ['type' => 'text', 'text' => $this->retryUrl],
                         ]
                     ]
                 ]

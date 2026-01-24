@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use App\Channels\WhatsAppChannel;
 use App\Models\Invoice;
-use App\Models\Setting;
 use App\Repositories\Admin\OrderRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -16,10 +15,13 @@ class DonationReceivedNotification extends Notification
     use Queueable;
 
     public $invoice;
+    public $settings;
 
-    public function __construct(Invoice $invoice)
+
+    public function __construct(Invoice $invoice, array $settings)
     {
-        $this->invoice = $invoice->load(['order.cause', 'order.orderitems', 'order.invoice']);
+        $this->invoice = $invoice;
+        $this->settings = $settings;
     }
 
     public function via($notifiable)
@@ -32,22 +34,18 @@ class DonationReceivedNotification extends Notification
         $receiptNo = $this->invoice->invoice_number;
         $donorName = $this->invoice->customer_name;
         $amount    = $this->invoice->total_price;
-        $causeName = $this->invoice->order->cause->content->title ?? 'General Donation';
 
+        $causeName = $this->invoice->order->cause->content->title ?? 'General Donation';
         $repository = app(OrderRepository::class);
 
-        $data = [
-            'invoice_logo'    => Setting::pull('invoice_logo'),
-            'footer_contact'  => Setting::pull('footer_contact'),
-            'footer_address'  => Setting::pull('footer_address'),
-            'currency_symbol' => Setting::pull('currency_symbol'),
+        $pdfData = array_merge($this->settings, [
             'font_family'     => $repository->getInvoiceFrontName(),
             'direction'       => $repository->getInvoiceDirection(),
+            'text_align'      => $repository->getInvoiceDirection() == 'ltr' ? 'left' : 'right',
             'order'           => $this->invoice->order
-        ];
+        ]);
 
-        $data['text_align'] = $data['direction'] == 'ltr' ? 'left' : 'right';
-        $pdf = PDF::loadView('invoice', $data);
+        $pdf = PDF::loadView('invoice', $pdfData);
 
         return (new MailMessage)
             ->subject("Donation Receipt #{$receiptNo}")
@@ -55,21 +53,14 @@ class DonationReceivedNotification extends Notification
             ->line("Thank you for your generous donation of {$amount} towards '{$causeName}'.")
             ->line("Please find your official donation receipt attached to this email.")
             ->line("Receipt No: {$receiptNo}")
-
-            // Attach the PDF directly from memory
             ->attachData($pdf->output(), "Receipt-{$receiptNo}.pdf", [
                 'mime' => 'application/pdf',
             ])
-
             ->line('Your support makes a huge difference!');
     }
 
     public function toWhatsApp($notifiable)
     {
-        $receiptNo = $this->invoice->invoice_number;
-        $donorName = $this->invoice->customer_name;
-        $amount    = $this->invoice->total_price;
-
         return [
             'phone' => $notifiable,
             'template' => [
@@ -79,9 +70,9 @@ class DonationReceivedNotification extends Notification
                     [
                         'type' => 'body',
                         'parameters' => [
-                            ['type' => 'text', 'text' => $donorName],
-                            ['type' => 'text', 'text' => $amount],
-                            ['type' => 'text', 'text' => $receiptNo],
+                            ['type' => 'text', 'text' => $this->invoice->customer_name],
+                            ['type' => 'text', 'text' => (string) $this->invoice->total_price],
+                            ['type' => 'text', 'text' => $this->invoice->invoice_number],
                         ]
                     ]
                 ]

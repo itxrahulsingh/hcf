@@ -24,7 +24,8 @@ class GenerateBulkInvoices implements ShouldQueue
     protected $invoiceIds;
     protected $exportId;
 
-    public $timeout = 900;
+    public $timeout = 1800;
+    public $failOnTimeout = true;
 
     public function __construct($invoiceIds, $exportId)
     {
@@ -37,18 +38,14 @@ class GenerateBulkInvoices implements ShouldQueue
         $export = Export::find($this->exportId);
         if (!$export) return;
 
-        $tempFileName = 'receipts_' . date('Y-m-d_H.i.s') . '_' . uniqid() . '.zip';
-        $tempPath = storage_path('app/temp');
-        $tempFilePath = $tempPath . '/' . $tempFileName;
+        $tempDir = storage_path('app/temp/bulk_' . $this->exportId);
+        if (!file_exists($tempDir)) mkdir($tempDir, 0755, true);
 
-        if (!file_exists($tempPath)) {
-            mkdir($tempPath, 0755, true);
-        }
+        $zipFileName = 'receipts_' . date('Y-m-d') . '_' . $this->exportId . '.zip';
+        $zipFilePath = $tempDir . '/' . $zipFileName;
 
         try {
-            $invoices = Invoice::with(['order.orderitems', 'order.invoice'])->whereIn('id', $this->invoiceIds)->get();
             $repository = app(OrderRepository::class);
-
             $globalData = [
                 'invoice_logo'    => Setting::pull('invoice_logo'),
                 'footer_contact'  => Setting::pull('footer_contact'),
@@ -56,38 +53,74 @@ class GenerateBulkInvoices implements ShouldQueue
                 'currency_symbol' => Setting::pull('currency_symbol'),
                 'font_family'     => $repository->getInvoiceFrontName(),
                 'direction'       => $repository->getInvoiceDirection(),
+                'text_align'      => $repository->getInvoiceDirection() == 'ltr' ? 'left' : 'right',
             ];
-            $globalData['text_align'] = $globalData['direction'] == 'ltr' ? 'left' : 'right';
 
             $zip = new ZipArchive;
-            if ($zip->open($tempFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-                foreach ($invoices as $invoice) {
-                    if (!$invoice->order) continue;
-
-                    $data = $globalData;
-                    $data['order'] = $invoice->order;
-
-                    $pdf = PDF::loadView('invoice', $data);
-                    $zip->addFromString('Receipt-' . $invoice->invoice_number . '.pdf', $pdf->output());
-                }
-                $zip->close();
-            } else {
-                throw new \Exception("Could not create ZIP file at $tempFilePath");
+            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE) {
+                throw new \Exception("Could not create ZIP file at $zipFilePath");
             }
-            $path = Storage::disk(config('filesystems.default'))->putFileAs('exports', new File($tempFilePath), $tempFileName);
+
+            Invoice::with(['order.orderitems', 'order.invoice'])
+                ->whereIn('id', $this->invoiceIds)
+                ->chunkById(50, function ($invoices) use ($zip, $globalData, $tempDir) {
+
+                    foreach ($invoices as $invoice) {
+                        if (!$invoice->order) continue;
+
+                        try {
+                            $data = $globalData;
+                            $data['order'] = $invoice->order;
+
+                            $pdf = PDF::loadView('invoice', $data);
+
+                            $pdfName = 'Receipt-' . $invoice->invoice_number . '.pdf';
+                            $tempPdfPath = $tempDir . '/' . $pdfName;
+
+                            file_put_contents($tempPdfPath, $pdf->output());
+
+                            $zip->addFile($tempPdfPath, $pdfName);
+                        } catch (\Exception $e) {
+                            Log::warning("Failed to generate PDF for Invoice ID: {$invoice->id}");
+                        }
+                    }
+
+                    unset($invoices);
+                    gc_collect_cycles();
+                });
+
+            $zip->close();
+
+            $path = Storage::disk(config('filesystems.default'))->putFileAs(
+                'exports',
+                new File($zipFilePath),
+                $zipFileName
+            );
 
             $export->update([
                 'status'    => 'completed',
                 'file_path' => $path,
-                'file_name' => $tempFileName
+                'file_name' => $zipFileName
             ]);
         } catch (\Exception $e) {
             Log::error("Bulk Export Job Failed: " . $e->getMessage());
             $export->update(['status' => 'failed']);
         } finally {
-            if (file_exists($tempFilePath)) {
-                unlink($tempFilePath);
-            }
+            $this->deleteDirectory($tempDir);
         }
+    }
+
+    /**
+     * Recursively delete a directory
+     */
+    private function deleteDirectory($dir)
+    {
+        if (!file_exists($dir)) return true;
+        if (!is_dir($dir)) return unlink($dir);
+        foreach (scandir($dir) as $item) {
+            if ($item == '.' || $item == '..') continue;
+            if (!$this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) return false;
+        }
+        return rmdir($dir);
     }
 }

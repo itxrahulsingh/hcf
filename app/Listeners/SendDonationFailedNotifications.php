@@ -13,9 +13,12 @@ class SendDonationFailedNotifications implements ShouldQueue
 {
     use InteractsWithQueue;
 
+    public $tries = 3;
+
     public function handle(DonationFailed $event)
     {
         $order = $event->order;
+        $order->load('cause.content');
 
         Notification::route('mail', $order->customer_email)
             ->route(WhatsAppChannel::class, $order->customer_phone)

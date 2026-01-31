@@ -308,6 +308,15 @@ class OrderRepository
     }
 
     /**
+     * Bulk update orders status.
+     */
+    public function bulkUpdateStatus(string $ids, string $status): void
+    {
+        $idArray = explode(',', $ids);
+        $this->model->whereIn('id', $idArray)->update(['status' => $status]);
+    }
+
+    /**
      * Delete order
      */
     public function destroy(Order $order): void

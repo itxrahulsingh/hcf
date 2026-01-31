@@ -76,6 +76,7 @@ export default function Sidebar() {
                 <div className="yoo-sidebarheader-in">
                     <div className="yoo-sidebar-nav">
                         <ul className="yoo-sidebar-nav-list yoo-mp0">
+                            {/* Dashboard */}
                             <li className={`${route().current("admin.dashboard") ? "active" : ""}`}>
                                 <Link href={route("admin.dashboard")}>
                                     <span className="yoo-sidebar-link-title">
@@ -86,6 +87,8 @@ export default function Sidebar() {
                                     </span>
                                 </Link>
                             </li>
+
+                            {/* Posts Menu */}
                             <li className={`yoo-sidebar-has-children ${activeMenu === "posts" ? "active" : ""}`}>
                                 <a
                                     href="#"
@@ -224,7 +227,7 @@ export default function Sidebar() {
                                     >
                                         <span className="yoo-sidebar-link-title">
                                             <span className="yoo-sidebar-link-icon yoo-pink-bg">
-                                                <Icon icon="ion:bag-handle-outline" width="20" height="20" />
+                                                <Icon icon="ion:shirt-outline" width="20" height="20" />
                                             </span>
                                             <span className="yoo-sidebar-link-text">{translate("Products")}</span>
                                         </span>
@@ -388,7 +391,7 @@ export default function Sidebar() {
                                                     </Link>
                                                 </li>
 
-{causeTypes && Object.entries(causeTypes).map(([key, label]) => (
+                                                {causeTypes && Object.entries(causeTypes).map(([key, label]) => (
                                                     <li
                                                         key={key}
                                                         className={`${route().current("admin.orders.index", { filter: { type: key } }) ? "active" : ""}`}
@@ -460,20 +463,6 @@ export default function Sidebar() {
                                                 <Icon icon="ion:mail-unread-outline" width="20" height="20" />
                                             </span>
                                             <span className="yoo-sidebar-link-text">{translate("Form Response")}</span>
-                                        </span>
-                                    </Link>
-                                </li>
-                            )}
-
-                            {/* Pricing Plan */}
-                            {hasPermission("pricing_plans.index") && (
-                                <li className={`${route().current("admin.pricing.plans.*") ? "active" : ""}`}>
-                                    <Link href={route("admin.pricing.plans.index")}>
-                                        <span className="yoo-sidebar-link-title">
-                                            <span className="yoo-sidebar-link-icon yoo-blue-bg">
-                                                <Icon icon="ion:cash-outline" width="20" height="20" />
-                                            </span>
-                                            <span className="yoo-sidebar-link-text">{translate("Pricing Plan")}</span>
                                         </span>
                                     </Link>
                                 </li>
@@ -928,14 +917,14 @@ export default function Sidebar() {
                                                 </span>
                                             </Link>
                                         </li>
-                                        <li className={`${route().current("admin.languages.*") && "active"}`}>
+                                        <li className={`${route().current("admin.languages.index") && "active"}`}>
                                             <Link href={route("admin.languages.index")}>
                                                 <span className="yoo-sidebar-link-title">
                                                     <span className="yoo-sidebar-link-text">{translate("Languages")}</span>
                                                 </span>
                                             </Link>
                                         </li>
-                                        <li className={`${route().current("admin.translations.*") && "active"}`}>
+                                        <li className={`${route().current("admin.translations.index") && "active"}`}>
                                             <Link href={route("admin.translations.index")}>
                                                 <span className="yoo-sidebar-link-title">
                                                     <span className="yoo-sidebar-link-text">{translate("Translation")}</span>

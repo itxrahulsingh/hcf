@@ -202,6 +202,34 @@ class OrderController extends Controller
     }
 
     /**
+     * Update invoice/order remarks inline
+     */
+    public function updateRemarks(Request $request, Order $order): RedirectResponse
+    {
+        $request->validate([
+            'remarks' => 'nullable|string|max:1000',
+        ]);
+
+        if ($order) {
+            $order->update([
+                'order_notes' => $request->remarks
+            ]);
+        }
+
+        return back()->with('success', 'Remarks updated successfully!');
+    }
+
+    /**
+     * Bulk Order Status Update
+     */
+    public function bulkUpdateStatus(Request $request, OrderRepository $repository)
+    {
+        $repository->bulkUpdateStatus($request->ids, $request->status);
+
+        return back()->with('success', 'Orders status updated successfully!');
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Order $order, OrderRepository $repository)

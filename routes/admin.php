@@ -456,9 +456,11 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
     Route::get('/', [OrderController::class, 'index'])->name('index')->can('orders.index');
     Route::get('/show/{order}', [OrderController::class, 'show'])->name('show')->can('orders.show');
     Route::put('/update-status/{order}', [OrderController::class, 'updateStatus'])->name('update.status')->can('orders.show');
+    Route::post('/update-remarks/{order}', [OrderController::class, 'updateRemarks'])->name('update.remarks')->can('orders.edit');
     Route::get('/show-invoice/{order}', [OrderController::class, 'showInvoice'])->name('show.invoice')->can('orders.show');
     Route::get('/download-invoice/{order}', [OrderController::class, 'downloadInvoice'])->name('download.invoice')->can('orders.show');
     Route::delete('/delete/{order}', [OrderController::class, 'destroy'])->name('destroy')->can('orders.delete');
+    Route::post('/bulk-update-status', [OrderController::class, 'bulkUpdateStatus'])->name('bulk.update.status')->can('orders.edit');
     Route::delete('/bulk-delete', [OrderController::class, 'bulkDelete'])->name('bulk.delete')->can('orders.delete');
 });
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\LoginLink\Exceptions\DidNotFindUserToLogIn;
 use Spatie\LoginLink\Exceptions\InvalidUserClass;
@@ -42,7 +41,7 @@ class LoginLinkController extends Controller
         $authenticatableClass = $this->getAuthenticatableClass($request->guard);
 
         $user = $authenticatableClass::query()
-            ->when(count($attributes), fn (Builder $query) => $query->where($attributes))
+            ->when(count($attributes), fn(Builder $query) => $query->where($attributes))
             ->first();
 
         if ($user) {

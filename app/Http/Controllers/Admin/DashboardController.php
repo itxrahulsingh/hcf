@@ -10,22 +10,23 @@ class DashboardController extends Controller
 {
     public function dashboard(DashboardRepository $repository)
     {
-        $data['post_count'] = $repository->getPostCount();
-        $data['service_count'] = $repository->getServiceCount();
-        $data['portfolio_count'] = $repository->getPortfolioCount();
-        $data['case_study_count'] = $repository->getCaseStudyCount();
-        $data['comment_count'] = $repository->getCommentCount();
-        $data['user_count'] = $repository->getUserCount();
-        $data['subscriber_count'] = $repository->getSubscribeCount();
-        $data['form_response_count'] = $repository->getFormResponseCount();
-        $data['latest_form_responses'] = $repository->getLatestFormResponses();
-        $data['latest_comments'] = $repository->getLatestComments();
+        $data = [
+            'post_count'       => $repository->getPostCount(),
+            'user_count'       => $repository->getUserCount(),
+            'subscriber_count' => $repository->getSubscribeCount(),
+            'service_count'    => $repository->getServiceCount(),
+            'portfolio_count'  => $repository->getPortfolioCount(),
+            'case_study_count' => $repository->getCaseStudyCount(),
+
+            'cause_count'      => $repository->getCauseCount(),
+            'total_raised'     => $repository->getTotalRaisedAmount(),
+            'month_raised'     => $repository->getThisMonthRaised(),
+
+            'recent_donations' => $repository->getRecentDonations(),
+            'top_causes'       => $repository->getTopCauses(),
+            'recent_inquiries' => $repository->getRecentInquiries(),
+        ];
 
         return Inertia::render('Dashboard', $data);
-    }
-
-    public function test()
-    {
-        return redirect()->back()->with('success', 'Hello');
     }
 }

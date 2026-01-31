@@ -25,7 +25,8 @@ class Invoice extends Model
         'payment_date',
         'status',
         'remarks',
-        'type'
+        'type',
+        'notes',
     ];
 
     protected $appends = ['realized_amount'];

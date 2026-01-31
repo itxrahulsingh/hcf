@@ -12,7 +12,7 @@ import {
     giftOutline
 } from "ionicons/icons"
 import { IonIcon } from "@ionic/react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { router } from "@inertiajs/react"
 import ThSortable from "@/Admin/Components/Table/ThSortable"
 import { showAlert } from "@/Admin/Utils/SweetAlert"
@@ -23,6 +23,58 @@ import Amount from "@/Components/Amount"
 import hasPermission from "@/Admin/Utils/hasPermission"
 import translate from "@/utils/translate"
 import moment from "moment"
+
+const RemarksCell = ({ order, canEdit }) => {
+    const [value, setValue] = useState(order?.order_notes || "")
+    const [originalValue, setOriginalValue] = useState(order?.order_notes || "")
+
+    useEffect(() => {
+        const note = order?.order_notes || ""
+        setValue(note)
+        setOriginalValue(note)
+    }, [order?.id])
+
+    const handleBlur = () => {
+        if (value !== originalValue) {
+            router.post(
+                route("admin.orders.update.remarks", order.id),
+                { remarks: value },
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    onSuccess: () => setOriginalValue(value)
+                }
+            )
+        }
+    }
+
+    if (!canEdit) {
+        return (
+            <div className="text-muted small" style={{ whiteSpace: "pre-wrap", minWidth: "200px", maxHeight: "60px", overflowY: "auto" }}>
+                {value || "-"}
+            </div>
+        )
+    }
+
+    return (
+        <textarea
+            className="form-control form-control-sm"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={handleBlur}
+            placeholder="Add remarks..."
+            rows="2"
+            style={{
+                width: "100%",
+                minWidth: "200px",
+                border: "1px solid #e2e8f0",
+                background: "#f8f9fa",
+                fontSize: "13px",
+                resize: "vertical"
+            }}
+        />
+    )
+}
 
 export default function Index({ orders, sort, filter, causes }) {
     const { causeTypes } = usePage().props
@@ -96,43 +148,25 @@ export default function Index({ orders, sort, filter, causes }) {
         if (selectedOption === "Delete") {
             confirmMessage = "You want to delete selected orders?"
             action = "admin.orders.bulk.delete"
+        } else if (["Mark as Completed", "Mark as Canceled", "Mark as Pending", "Mark as Confirmed"].includes(selectedOption)) {
+            confirmMessage = "You want to update status of selected orders?"
+            action = "admin.orders.bulk.update.status"
         }
+
         setIsMarkAll([])
         showAlert("Are you sure?", confirmMessage, selectedOption + "!", () => {
+            if (["Mark as Completed", "Mark as Canceled", "Mark as Pending", "Mark as Confirmed"].includes(selectedOption)) {
+                let status = ""
+                if (selectedOption === "Mark as Completed") status = "completed"
+                else if (selectedOption === "Mark as Canceled") status = "canceled"
+                else if (selectedOption === "Mark as Pending") status = "pending"
+                else if (selectedOption === "Mark as Confirmed") status = "confirmed"
+
+                router.post(route(action, { ids: markItems.join(","), status: status }))
+                return
+            }
             router.delete(route(action, { ids: markItems.join(",") }))
         })
-    }
-
-    // Helper to render video player
-    const renderVideoPlayer = (url) => {
-        if (!url) return null
-
-        // Basic check for YouTube
-        if (url.includes("youtube.com") || url.includes("youtu.be")) {
-            let embedUrl = url.replace("watch?v=", "embed/")
-            return (
-                <div className="embed-responsive embed-responsive-16by9 mb-2">
-                    <iframe className="embed-responsive-item" src={embedUrl} allowFullScreen></iframe>
-                </div>
-            )
-        }
-        // Basic check for direct video file
-        else if (url.match(/\.(mp4|webm|ogg)$/)) {
-            return (
-                <video controls className="w-100 rounded">
-                    <source src={url} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
-            )
-        }
-        // Default link button
-        else {
-            return (
-                <a href={url} target="_blank" rel="noreferrer" className="btn btn-outline-primary btn-block">
-                    <IonIcon icon={videocamOutline} className="mr-2" /> Watch Video Link
-                </a>
-            )
-        }
     }
 
     return (
@@ -178,15 +212,39 @@ export default function Index({ orders, sort, filter, causes }) {
                                             <div className="dataTables_heading_left">
                                                 <div className="yoo-group-btn">
                                                     <div className="position-relative">
-                                                        <DropDownButton selectedOption={selectedOption} disabled={!markItems.length}>
-                                                            <a
-                                                                onClick={() => setSelectedOption("Delete")}
-                                                                className={`dropdown-item ${selectedOption === "Delete" ? "active" : ""}`}
-                                                                href="#"
-                                                            >
-                                                                {translate("Delete")}
-                                                            </a>
-                                                        </DropDownButton>
+                                                        {(hasPermission("orders.delete") || hasPermission("orders.edit")) && (
+                                                            <DropDownButton selectedOption={selectedOption} disabled={!markItems.length}>
+                                                                {hasPermission("orders.delete") && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => setSelectedOption("Delete")}
+                                                                        className={`dropdown-item ${selectedOption === "Delete" ? "active" : ""}`}
+                                                                    >
+                                                                        {translate("Delete")}
+                                                                    </button>
+                                                                )}
+
+                                                                {hasPermission("orders.edit") && (
+                                                                    <>
+                                                                        {[
+                                                                            "Mark as Pending",
+                                                                            "Mark as Confirmed",
+                                                                            "Mark as Canceled",
+                                                                            "Mark as Completed"
+                                                                        ].map((option) => (
+                                                                            <button
+                                                                                key={option}
+                                                                                type="button"
+                                                                                onClick={() => setSelectedOption(option)}
+                                                                                className={`dropdown-item ${selectedOption === option ? "active" : ""}`}
+                                                                            >
+                                                                                {translate(option)}
+                                                                            </button>
+                                                                        ))}
+                                                                    </>
+                                                                )}
+                                                            </DropDownButton>
+                                                        )}
                                                     </div>
                                                     <button
                                                         disabled={!markItems.length}
@@ -196,48 +254,49 @@ export default function Index({ orders, sort, filter, causes }) {
                                                         Apply
                                                     </button>
                                                 </div>
-                                                <div className="">
+                                                <div>
                                                     <div className="position-relative">
                                                         <DropDownButton selectedOption={selectedStatus}>
-                                                            <a
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedStatus("All")}
                                                                 className={`dropdown-item ${selectedStatus === "All" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 {translate("All Order Status")}
-                                                            </a>
-                                                            <a
+                                                            </button>
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedStatus("Pending")}
                                                                 className={`dropdown-item ${selectedStatus === "Pending" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 Pending
-                                                            </a>
-                                                            <a
+                                                            </button>
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedStatus("Confirmed")}
                                                                 className={`dropdown-item ${selectedStatus === "Confirmed" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 {translate("Confirmed")}
-                                                            </a>
-                                                            <a
+                                                            </button>
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedStatus("Canceled")}
                                                                 className={`dropdown-item ${selectedStatus === "Canceled" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 {translate("Canceled")}
-                                                            </a>
-                                                            <a
+                                                            </button>
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedStatus("Completed")}
                                                                 className={`dropdown-item ${selectedStatus === "Completed" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 {translate("Completed")}
-                                                            </a>
+                                                            </button>
                                                         </DropDownButton>
                                                     </div>
                                                 </div>
-                                                <div className="">
+
+                                                <div>
                                                     <div className="position-relative">
                                                         <DropDownButton
                                                             selectedOption={
@@ -248,90 +307,98 @@ export default function Index({ orders, sort, filter, causes }) {
                                                                       : selectedType
                                                             }
                                                         >
-                                                            <a
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedType("All")}
                                                                 className={`dropdown-item ${selectedType === "All" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 {translate("All Types")}
-                                                            </a>
+                                                            </button>
+
                                                             {causeTypes &&
                                                                 Object.entries(causeTypes).map(([key, label]) => (
-                                                                    <a
+                                                                    <button
                                                                         key={key}
+                                                                        type="button"
                                                                         onClick={() => setSelectedType(key)}
                                                                         className={`dropdown-item ${selectedType === key ? "active" : ""}`}
-                                                                        href="#"
                                                                     >
                                                                         {translate(label)}
-                                                                    </a>
+                                                                    </button>
                                                                 ))}
                                                         </DropDownButton>
                                                     </div>
                                                 </div>
-                                                <div className="">
+
+                                                <div>
                                                     <div className="position-relative">
                                                         <DropDownButton
                                                             selectedOption={
                                                                 selectedCause === "All"
                                                                     ? translate("All Causes")
-                                                                    : causes.find((c) => c.id == selectedCause)?.content?.title ||
+                                                                    : causes.find((c) => c.id === selectedCause)?.content?.title ||
                                                                       translate("All Causes")
                                                             }
                                                         >
-                                                            <a
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedCause("All")}
                                                                 className={`dropdown-item ${selectedCause === "All" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 {translate("All Causes")}
-                                                            </a>
+                                                            </button>
+
                                                             {causes.map((cause) => (
-                                                                <a
+                                                                <button
                                                                     key={cause.id}
+                                                                    type="button"
                                                                     onClick={() => setSelectedCause(cause.id)}
-                                                                    className={`dropdown-item ${selectedCause == cause.id ? "active" : ""}`}
-                                                                    href="#"
+                                                                    className={`dropdown-item ${selectedCause === cause.id ? "active" : ""}`}
                                                                 >
                                                                     {cause.content?.title || "Untitled Cause"}
-                                                                </a>
+                                                                </button>
                                                             ))}
                                                         </DropDownButton>
                                                     </div>
                                                 </div>
+
                                                 <div className="yoo-group-btn">
                                                     <div className="position-relative">
                                                         <DropDownButton selectedOption={paymentStatusOptions[selectedPaymentStatus]}>
-                                                            <a
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedPaymentStatus("All Payment")}
                                                                 className={`dropdown-item ${selectedPaymentStatus === "All Payment" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 {translate("All Payment")}
-                                                            </a>
-                                                            <a
+                                                            </button>
+
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedPaymentStatus("1")}
                                                                 className={`dropdown-item ${selectedPaymentStatus === "1" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 {translate("Awaiting Payment")}
-                                                            </a>
-                                                            <a
+                                                            </button>
+
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedPaymentStatus("2")}
                                                                 className={`dropdown-item ${selectedPaymentStatus === "2" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 {translate("Success")}
-                                                            </a>
-                                                            <a
+                                                            </button>
+
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setSelectedPaymentStatus("3")}
                                                                 className={`dropdown-item ${selectedPaymentStatus === "3" ? "active" : ""}`}
-                                                                href="#"
                                                             >
                                                                 {translate("Cancel")}
-                                                            </a>
+                                                            </button>
                                                         </DropDownButton>
                                                     </div>
+
                                                     <button onClick={() => getResults(searchQuery)} className="btn btn-success btn-sm">
                                                         {translate("Filter")}
                                                     </button>
@@ -371,8 +438,6 @@ export default function Index({ orders, sort, filter, causes }) {
                                                             <span className="yoo-last" />
                                                         </div>
                                                     </th>
-
-                                                    {/* Special Date Column */}
                                                     <ThSortable
                                                         width="15%"
                                                         sort={sort}
@@ -381,8 +446,6 @@ export default function Index({ orders, sort, filter, causes }) {
                                                     >
                                                         {translate("Special Date")}
                                                     </ThSortable>
-
-                                                    {/* Customer Info */}
                                                     <ThSortable
                                                         width="20%"
                                                         sort={sort}
@@ -391,14 +454,11 @@ export default function Index({ orders, sort, filter, causes }) {
                                                     >
                                                         {translate("Customer Details")}
                                                     </ThSortable>
-
-                                                    {/* Special Data (Visible in column) */}
                                                     <th width="20%">{translate("Special Data")}</th>
-
+                                                    <th width="20%">{translate("Remarks")}</th>
                                                     <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
                                                         Amount
                                                     </ThSortable>
-
                                                     <ThSortable
                                                         width="10%"
                                                         sort={sort}
@@ -441,8 +501,7 @@ export default function Index({ orders, sort, filter, causes }) {
                                                                     {order.customer_email}
                                                                 </a>
                                                             </div>
-
-                                                            {/* 80G Tag (Solid Green, Visible) */}
+                                                            <div className="small text-muted">{order.customer_phone}</div>
                                                             <div className="mt-2 d-flex flex-wrap gap-1" style={{ gap: "5px" }}>
                                                                 {order.pancard && <span className="badge badge-dark">PAN: {order.pancard}</span>}
                                                                 {order.is_80g == 1 && (
@@ -455,14 +514,11 @@ export default function Index({ orders, sort, filter, causes }) {
                                                                 )}
                                                             </div>
                                                         </td>
-
-                                                        {/* Special Data (Message Outside Modal) */}
                                                         <td>
                                                             <div className="d-flex flex-column gap-2">
                                                                 {order.special_name && (
                                                                     <div className="font-weight-bold text-primary small">{order.special_name}</div>
                                                                 )}
-                                                                {/* Show Message Here */}
                                                                 {order.special_message && (
                                                                     <div
                                                                         className="text-dark small border-left pl-2"
@@ -475,8 +531,6 @@ export default function Index({ orders, sort, filter, causes }) {
                                                                         "
                                                                     </div>
                                                                 )}
-
-                                                                {/* Media Button (Only if Image or Video exists) */}
                                                                 {order.special_image || order.special_video ? (
                                                                     <button
                                                                         className="btn btn-sm btn-info text-white d-inline-flex align-items-center"
@@ -491,7 +545,9 @@ export default function Index({ orders, sort, filter, causes }) {
                                                                 )}
                                                             </div>
                                                         </td>
-
+                                                        <td>
+                                                            <RemarksCell order={order} canEdit={hasPermission("orders.edit")} />
+                                                        </td>
                                                         <td>
                                                             <Amount amount={order.total_price} /> <br />
                                                             <small className="text-muted">{order.payment_method}</small>
@@ -623,9 +679,6 @@ export default function Index({ orders, sort, filter, causes }) {
                                             />
                                         </div>
                                     )}
-
-                                    {/* Video Player */}
-                                    {mediaModalOrder.special_video && <div className="mt-3">{renderVideoPlayer(mediaModalOrder.special_video)}</div>}
 
                                     {!mediaModalOrder.special_image && !mediaModalOrder.special_video && (
                                         <div className="text-white">No media attached.</div>

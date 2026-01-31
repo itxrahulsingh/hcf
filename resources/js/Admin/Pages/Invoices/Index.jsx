@@ -81,11 +81,11 @@ const StatCard = ({ title, value, subtext, icon, gradient }) => (
 )
 
 const RemarksCell = ({ invoice, canEdit }) => {
-    const [value, setValue] = useState(invoice.order?.order_notes || "")
-    const [originalValue, setOriginalValue] = useState(invoice.order?.order_notes || "")
+    const [value, setValue] = useState(invoice.notes || "")
+    const [originalValue, setOriginalValue] = useState(invoice.notes || "")
 
     useEffect(() => {
-        const note = invoice.order?.order_notes || ""
+        const note = invoice.notes || ""
         setValue(note)
         setOriginalValue(note)
     }, [invoice.id])
@@ -429,6 +429,7 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
             }
         ]
     }
+    const datePresets = ["Today", "Yesterday", "This Week", "Last Week", "This Month", "Last Month"]
 
     return (
         <AdminLayouts>
@@ -450,13 +451,11 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                         <StatCard
                             title={translate("Total Turnover")}
                             value={<Amount amount={total_turnover || 0} />}
-                            subtext={dateRange ? `Period: ${dateRange}` : translate("All Time Data")}
+                            subtext={dateRange ? `Period: ${dateRange}` : translate("Today's Data")}
                             icon={cashOutline}
-                            gradient="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)" // Deep Purple/Dark
+                            gradient="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)"
                         />
                     </div>
-
-                    {/* Chart Card */}
                     <div className="col-lg-8 mb-4">
                         <div className="yoo-card yoo-style1 h-100 border-0 shadow-sm" style={{ borderRadius: "15px" }}>
                             <div className="yoo-card-heading d-flex justify-content-between align-items-center pt-3 px-4">
@@ -516,21 +515,24 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                             <div className="position-relative">
                                                 <DropDownButton selectedOption={selectedOption} disabled={!markItems.length}>
                                                     {hasPermission("invoices.delete") && (
-                                                        <a
+                                                        <button
+                                                            type="button"
                                                             onClick={() => setSelectedOption("Delete")}
                                                             className={`dropdown-item ${selectedOption === "Delete" ? "active" : ""}`}
-                                                            href="#"
                                                         >
-                                                            <IonIcon icon={trashOutline} className="mr-2" /> {translate("Delete")}
-                                                        </a>
+                                                            <IonIcon icon={trashOutline} className="mr-2" />
+                                                            {translate("Delete")}
+                                                        </button>
                                                     )}
-                                                    <a
+
+                                                    <button
+                                                        type="button"
                                                         onClick={() => setSelectedOption("Download ZIP")}
                                                         className={`dropdown-item ${selectedOption === "Download ZIP" ? "active" : ""}`}
-                                                        href="#"
                                                     >
-                                                        <IonIcon icon={cloudDownloadOutline} className="mr-2" /> {translate("Download ZIP")}
-                                                    </a>
+                                                        <IonIcon icon={cloudDownloadOutline} className="mr-2" />
+                                                        {translate("Download ZIP")}
+                                                    </button>
                                                 </DropDownButton>
                                             </div>
                                             <button
@@ -541,60 +543,52 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                 Apply
                                             </button>
                                         </div>
-
-                                        {/* 2. Cause Filter (Always Visible) */}
                                         <div className="position-relative">
                                             <DropDownButton selectedOption={getSelectedCauseLabel()}>
-                                                <a
+                                                <button
+                                                    type="button"
                                                     onClick={() => setSelectedCause("All")}
                                                     className={`dropdown-item ${selectedCause === "All" ? "active" : ""}`}
-                                                    href="#"
                                                 >
                                                     {translate("All Causes")}
-                                                </a>
-                                                {causes &&
-                                                    causes.map((cause) => (
-                                                        <a
-                                                            key={cause.id}
-                                                            onClick={() => setSelectedCause(cause.id)}
-                                                            className={`dropdown-item ${selectedCause == cause.id ? "active" : ""}`}
-                                                            href="#"
-                                                        >
-                                                            {cause.content?.title || "Untitled"}
-                                                        </a>
-                                                    ))}
+                                                </button>
+
+                                                {causes?.map((cause) => (
+                                                    <button
+                                                        key={cause.id}
+                                                        type="button"
+                                                        onClick={() => setSelectedCause(cause.id)}
+                                                        className={`dropdown-item ${selectedCause === cause.id ? "active" : ""}`}
+                                                    >
+                                                        {cause.content?.title || "Untitled"}
+                                                    </button>
+                                                ))}
                                             </DropDownButton>
                                         </div>
-
-                                        {/* 3. Date Presets (Always Visible) */}
                                         <div className="position-relative">
                                             <DropDownButton selectedOption={rangeLabel}>
-                                                <a onClick={() => applyDatePreset("Today")} className="dropdown-item" href="#">
-                                                    Today
-                                                </a>
-                                                <a onClick={() => applyDatePreset("Yesterday")} className="dropdown-item" href="#">
-                                                    Yesterday
-                                                </a>
-                                                <a onClick={() => applyDatePreset("This Week")} className="dropdown-item" href="#">
-                                                    This Week
-                                                </a>
-                                                <a onClick={() => applyDatePreset("Last Week")} className="dropdown-item" href="#">
-                                                    Last Week
-                                                </a>
-                                                <a onClick={() => applyDatePreset("This Month")} className="dropdown-item" href="#">
-                                                    This Month
-                                                </a>
-                                                <a onClick={() => applyDatePreset("Last Month")} className="dropdown-item" href="#">
-                                                    Last Month
-                                                </a>
-                                                <div className="dropdown-divider"></div>
-                                                <a onClick={() => applyDatePreset("Custom")} className="dropdown-item" href="#">
+                                                {datePresets.map((preset) => (
+                                                    <button
+                                                        key={preset}
+                                                        type="button"
+                                                        onClick={() => applyDatePreset(preset)}
+                                                        className={`dropdown-item ${rangeLabel === preset ? "active" : ""}`}
+                                                    >
+                                                        {preset}
+                                                    </button>
+                                                ))}
+
+                                                <div className="dropdown-divider" />
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() => applyDatePreset("Custom")}
+                                                    className={`dropdown-item ${rangeLabel === "Custom" ? "active" : ""}`}
+                                                >
                                                     Custom Range
-                                                </a>
+                                                </button>
                                             </DropDownButton>
                                         </div>
-
-                                        {/* 4. Date Picker Input (Always Visible) */}
                                         <div className="position-relative" style={{ minWidth: "200px" }}>
                                             <span
                                                 className="position-absolute"
@@ -610,14 +604,11 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                 onChange={onDateChange}
                                             />
                                         </div>
-
-                                        {/* 5. Filter Button (Always Visible) */}
                                         <button onClick={() => getResults(searchQuery)} className="btn btn-success btn-sm">
                                             {translate("Filter")}
                                         </button>
                                     </div>
 
-                                    {/* RIGHT SIDE: Search */}
                                     <div className="dataTables_heading_right">
                                         <div id="yooDataTable_filter" className="dataTables_filter">
                                             <label>
@@ -682,6 +673,9 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                         <div className={`yoo-check-mark ${markItems.includes(invoice.id) && "active"}`} />
                                                     </td>
                                                     <td>
+                                                        <span className="badge badge-light border">
+                                                            Type: {invoice.type == "manual" ? "Manual" : "Automatic"}
+                                                        </span>
                                                         <div className="yoo-table-medias yoo-style1 text-primary font-weight-bold">
                                                             #{invoice.invoice_number}
                                                         </div>
@@ -699,25 +693,16 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                             )}
                                                         </div>
                                                     </td>
-
-                                                    {/* Payment Date */}
                                                     <td>{invoice.payment_date ? moment(invoice.payment_date).format("DD MMM YYYY") : "-"}</td>
-
-                                                    {/* Cause Title Fix */}
                                                     <td>{getCauseTitle(invoice)}</td>
-
-                                                    {/* Inline Remarks Editor */}
                                                     <td>
                                                         <RemarksCell invoice={invoice} canEdit={hasPermission("invoices.edit")} />
                                                     </td>
-
                                                     <td>
                                                         <strong className="text-success">
                                                             <Amount amount={invoice.total_price} />
                                                         </strong>
                                                     </td>
-
-                                                    {/* Download */}
                                                     <td className="text-center">
                                                         <a
                                                             href={route("admin.orders.download.invoice", invoice.order)}
@@ -729,8 +714,6 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                             <IonIcon icon={downloadOutline} style={{ fontSize: "16px" }} />
                                                         </a>
                                                     </td>
-
-                                                    {/* Resend */}
                                                     <td className="text-center">
                                                         <Link
                                                             href={route("admin.invoices.resend", invoice)}
@@ -743,7 +726,6 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                             <IonIcon icon={paperPlaneOutline} style={{ fontSize: "16px" }} />
                                                         </Link>
                                                     </td>
-
                                                     {hasPermission("invoices.delete") && (
                                                         <td className="text-center">
                                                             <DeleteButton href={route("admin.invoices.destroy", invoice)} />
@@ -764,7 +746,6 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                         </div>
                     </div>
                 </div>
-                {/* Pagination */}
                 {invoices.total > 1 && (
                     <div className="pagination-wrapper" style={{ marginTop: "10px" }}>
                         <ul className="pagination">

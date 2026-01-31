@@ -60,6 +60,8 @@ class InvoiceRepository
             } elseif (count($dates) === 1) {
                 $query->whereDate('payment_date', Carbon::parse($dates[0]));
             }
+        }else{
+            $query->whereDate('payment_date', Carbon::today());
         }
 
         if (isset($filter['financial_year']) && $filter['financial_year'] !== 'All Years') {

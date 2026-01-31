@@ -6,14 +6,11 @@ use App\Events\DonationSuccess;
 use App\Http\Controllers\Controller;
 use App\Models\Cause;
 use App\Models\Invoice;
-use App\Models\Setting;
 use App\Repositories\Admin\InvoiceRepository;
-use App\Repositories\Admin\OrderRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use ZipArchive;
 use App\Models\Export;
 use App\Jobs\GenerateBulkInvoices;
 use Illuminate\Support\Facades\Storage;
@@ -79,9 +76,9 @@ class InvoiceController extends Controller
             'remarks' => 'nullable|string|max:1000',
         ]);
 
-        if ($invoice->order) {
-            $invoice->order->update([
-                'order_notes' => $request->remarks
+        if ($invoice) {
+            $invoice->update([
+                'notes' => $request->remarks
             ]);
         }
 

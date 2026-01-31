@@ -263,7 +263,7 @@ $secondary_font = \App\Models\Setting::pull('secondary_font');
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    height: 48px;
+    height: 18px;
     margin-bottom: 0.5rem;
 }
 .cause-card-price { color: #ff8c00; font-weight: 700; font-size: 1.1rem; }

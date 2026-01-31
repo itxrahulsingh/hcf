@@ -3,90 +3,98 @@
 namespace App\Repositories\Admin;
 
 use App\Models\CaseStudy;
-use App\Models\Comment;
+use App\Models\Cause;
 use App\Models\FormResponse;
+use App\Models\Order;
 use App\Models\Portfolio;
 use App\Models\Post;
 use App\Models\Service;
 use App\Models\Subscriber;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class DashboardRepository
 {
     /**
-     * Get post count
+     * Basic Counts
      */
-    public function getPostCount(): mixed
+    public function getPostCount()
     {
         return Post::count();
     }
-
-    /**
-     * Get service count
-     */
-    public function getServiceCount(): mixed
+    public function getServiceCount()
     {
         return Service::count();
     }
-
-    /**
-     * Get portfolio count
-     */
-    public function getPortfolioCount(): mixed
+    public function getPortfolioCount()
     {
         return Portfolio::count();
     }
-
-    /**
-     * Get case study count
-     */
-    public function getCaseStudyCount(): mixed
+    public function getCaseStudyCount()
     {
         return CaseStudy::count();
     }
-
-    /**
-     * Get comment count
-     */
-    public function getCommentCount(): mixed
+    public function getUserCount()
     {
-        return Comment::count();
+        return User::count();
     }
-
-    /**
-     * Get subscriber count
-     */
-    public function getSubscribeCount(): mixed
+    public function getSubscribeCount()
     {
         return Subscriber::count();
     }
 
     /**
-     * Get contact count
+     * Cause & Donation Specific Data
      */
-    public function getFormResponseCount(): mixed
+    public function getCauseCount()
     {
-        return FormResponse::count();
+        return Cause::where('status', 1)->count();
     }
 
-    public function getUserCount(): mixed
+    public function getTotalRaisedAmount()
     {
-        return User::count();
+        return Order::where('payment_status', 2)->sum('total_price');
+    }
+
+    public function getThisMonthRaised()
+    {
+        return Order::where('payment_status', 2)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('total_price');
     }
 
     /**
-     * Get latest contacts
+     * Get 5 most recent form inquiries
      */
-    public function getLatestFormResponses(): mixed
+    public function getRecentInquiries()
     {
-        return FormResponse::latest()->limit(10)->get();
+        return FormResponse::latest()->limit(5)->get();
     }
 
     /**
-     * Get latest comments
+     * Get 8 most recent successful donations with Donor & Cause info
      */
-    public function getLatestComments(): mixed
+    public function getRecentDonations()
     {
-        return Comment::latest()->limit(10)->get();
+        return Order::with(['cause.content'])
+            ->where('payment_status', '!=', 0)
+            ->latest()
+            ->limit(8)
+            ->get();
+    }
+
+    /**
+     * Get Top 5 Causes by Number of Donations
+     */
+    public function getTopCauses()
+    {
+        return Cause::with('content')
+            ->withCount(['orders' => function ($query) {
+                $query->where('payment_status', 2);
+            }])
+            ->orderBy('orders_count', 'desc')
+            ->limit(5)
+            ->get();
     }
 }

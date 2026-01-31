@@ -34,6 +34,7 @@ return new class extends Migration
             $table->string('payment_method')->nullable();
             $table->timestamp('payment_date')->nullable();
             $table->string('type')->default('normal');
+            $table->text('notes')->nullable();
             $table->enum('status', ['draft', 'paid', 'cancelled'])->default('draft');
             $table->timestamps();
         });

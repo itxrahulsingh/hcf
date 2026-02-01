@@ -45,8 +45,8 @@ $secondary_font = \App\Models\Setting::pull('secondary_font');
    2. STICKY NAVIGATION BAR
    ========================================= */
 .cause-sticky-nav {
-    position: -webkit-sticky; /* Safari support */
-    position: sticky;
+    <!-- position: -webkit-sticky; /* Safari support */ -->
+    <!-- position: sticky; -->
     top: 100px;
     z-index: 1020;
     background-color: #fff;

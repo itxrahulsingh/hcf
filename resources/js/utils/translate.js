@@ -1,6 +1,13 @@
+let cachedTranslations = null
+
 const translate = (text) => {
-    const translation = localStorage.getItem("translation") ? JSON.parse(localStorage.getItem("translation")) : {};
-    const translateText = translation[text];
-    return translateText ?? text;
+    if (!cachedTranslations) {
+        try {
+            cachedTranslations = JSON.parse(localStorage.getItem("translation")) || {}
+        } catch {
+            cachedTranslations = {}
+        }
+    }
+    return cachedTranslations[text] ?? text
 }
-export default translate;
+export default translate

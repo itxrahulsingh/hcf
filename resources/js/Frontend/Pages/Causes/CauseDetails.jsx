@@ -345,11 +345,10 @@ export default function CauseDetails({
 
                 <div className="row">
                     <div className={`${cause.type === "birthday" ? "col-md-12" : "col-md-8"}`}>
-
                         {/* Mobile Donation Card (Hidden on Desktop) */}
                         <div className="mobile-donation-card d-lg-none" id="donate-section">
                             {/* ... (Existing logic for Mobile Donation Card) ... */}
-                             <h5 className="fw-bold mb-3">{translate("Make a Donation")}</h5>
+                            <h5 className="fw-bold mb-3">{translate("Make a Donation")}</h5>
                             {cause?.custom_donation_amounts && (
                                 <div className="amount-grid mb-3">
                                     {(Array.isArray(cause.custom_donation_amounts)
@@ -409,7 +408,9 @@ export default function CauseDetails({
                                                         {gift.gift_image ? (
                                                             <img src={gift.gift_image} alt={gift.content?.title} />
                                                         ) : (
-                                                            <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">No Image</div>
+                                                            <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
+                                                                No Image
+                                                            </div>
                                                         )}
                                                     </div>
                                                     <div className="card-body p-3 d-flex flex-column">
@@ -469,94 +470,121 @@ export default function CauseDetails({
                                         const finalPrice = Number(product.discount_price || product.price || 0)
                                         return (
                                             <div key={idx} className="col-12 col-sm-6 col-md-4">
-                                                <div className="cause-card h-100 d-flex flex-column shadow-sm">
-                                                    {/* ... Image ... */}
-                                                    <div className="cause-card-img-wrapper">
+                                                <div className="cause-card h-100 d-flex flex-column shadow-sm border-0 overflow-hidden">
+                                                    <div className="cause-card-img-wrapper position-relative">
+                                                        <div
+                                                            className="position-absolute top-0 start-0 w-100 d-flex flex-column"
+                                                            style={{ zIndex: 5 }}
+                                                        >
+                                                            {product.is_popular == 1 && (
+                                                                <div
+                                                                    className="w-100 text-center text-white text-uppercase fw-bold py-1 shadow-sm"
+                                                                    style={{
+                                                                        background: "linear-gradient(90deg, #FF512F 0%, #F09819 100%)",
+                                                                        fontSize: "16px",
+                                                                        letterSpacing: "1px",
+                                                                        textShadow: "0px 1px 2px rgba(0,0,0,0.2)"
+                                                                    }}
+                                                                >
+                                                                    <i className="fa fa-star me-1"></i> {translate("Most Donated")}
+                                                                </div>
+                                                            )}
+
+                                                            {product.is_trending == 1 && (
+                                                                <div
+                                                                    className="w-100 text-center text-dark text-uppercase fw-bold py-1 shadow-sm"
+                                                                    style={{
+                                                                        background: "linear-gradient(90deg, #FFD700, #FDB931)",
+                                                                        fontSize: "16px",
+                                                                        letterSpacing: "1px"
+                                                                    }}
+                                                                >
+                                                                    <i className="fa fa-bolt me-1"></i> {translate("Trending")}
+                                                                </div>
+                                                            )}
+                                                        </div>
+
                                                         {product.thumbnail_image ? (
-                                                            <img src={product.thumbnail_image} alt={product.content?.title} />
+                                                            <img
+                                                                src={product.thumbnail_image}
+                                                                alt={product.content?.title}
+                                                                className="w-100 object-fit-cover"
+                                                                style={{ height: "200px" }}
+                                                            />
                                                         ) : (
-                                                            <div className="d-flex align-items-center justify-content-center bg-light text-muted h-100">
+                                                            <div
+                                                                className="d-flex align-items-center justify-content-center bg-light text-muted h-100"
+                                                                style={{ minHeight: "200px" }}
+                                                            >
                                                                 No Image
                                                             </div>
                                                         )}
                                                     </div>
+
                                                     <div className="card-body p-3 d-flex flex-column">
-                                                        <div className="cause-card-title">{product.content?.title}</div>
-                                                        <div className="cause-card-desc">
+                                                        <div className="cause-card-title mb-2 fw-bold text-dark">{product.content?.title}</div>
+
+                                                        <div className="d-flex justify-content-between align-items-center mb-3 bg-light p-2 rounded-3">
+                                                            <span className="cause-card-price fw-bold text-primary">
+                                                                <Amount amount={finalPrice.toFixed(2)} />{" "}
+                                                                <span className="text-muted fs-6 fw-normal small">/ Unit</span>
+                                                            </span>
+
+                                                            <div
+                                                                className="qty-control d-flex align-items-center bg-white rounded-pill border px-1"
+                                                                style={{ width: "90px", height: "32px" }}
+                                                            >
+                                                                <button
+                                                                    className="qty-btn btn btn-sm border-0 p-0 text-muted"
+                                                                    style={{ width: "24px" }}
+                                                                    disabled={!cartItem || quantity === 1}
+                                                                    onClick={() => dispatch(decreaseCart({ id: product.id, type: "product" }))}
+                                                                >
+                                                                    -
+                                                                </button>
+                                                                <span className="mx-auto fw-bold small text-dark">{quantity}</span>
+                                                                <button
+                                                                    className="qty-btn btn btn-sm border-0 p-0 text-primary"
+                                                                    style={{ width: "24px" }}
+                                                                    onClick={() =>
+                                                                        cartItem
+                                                                            ? dispatch(increaseCart({ id: product.id, type: "product" }))
+                                                                            : dispatch(
+                                                                                  addCart({
+                                                                                      id: product.id,
+                                                                                      type: "product",
+                                                                                      content: product,
+                                                                                      quantity: product.min_quantity || 1,
+                                                                                      cause_id: cause.id
+                                                                                  })
+                                                                              )
+                                                                    }
+                                                                >
+                                                                    +
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="cause-card-desc mb-3 text-muted small">
                                                             <div
                                                                 dangerouslySetInnerHTML={{
                                                                     __html: removeHTMLTags(product?.content?.short_description || "")
                                                                 }}
+                                                                style={{
+                                                                    display: "-webkit-box",
+                                                                    WebkitLineClamp: 2,
+                                                                    WebkitBoxOrient: "vertical",
+                                                                    overflow: "hidden"
+                                                                }}
                                                             />
                                                         </div>
+
                                                         <div className="mt-auto pt-2 border-top">
-                                                            <div className="d-flex justify-content-between mb-3">
-                                                                <span className="cause-card-price">
-                                                                    <Amount amount={finalPrice.toFixed(2)} /> <span className="text-muted fs-6 fw-normal">/ Unit</span>
-                                                                </span>
-                                                            </div>
-                                                            <div className="d-flex gap-2 align-items-center">
-                                                                <div className="qty-control d-flex align-items-center px-1" style={{ width: "100px" }}>
-                                                                    <button
-                                                                        className="qty-btn"
-                                                                        style={{ width: "24px", height: "24px" }}
-                                                                        disabled={!cartItem || quantity === 1}
-                                                                        onClick={() => dispatch(decreaseCart({ id: product.id, type: "product" }))}
-                                                                    >
-                                                                        -
-                                                                    </button>
-                                                                    <span className="mx-auto fw-bold small">{quantity}</span>
-                                                                    <button
-                                                                        className="qty-btn"
-                                                                        style={{ width: "24px", height: "24px" }}
-                                                                        onClick={() =>
-                                                                            cartItem
-                                                                                ? dispatch(increaseCart({ id: product.id, type: "product" }))
-                                                                                : dispatch(
-                                                                                      addCart({
-                                                                                          id: product.id,
-                                                                                          type: "product",
-                                                                                          content: product,
-                                                                                          quantity: product.min_quantity || 1,
-                                                                                          cause_id: cause.id
-                                                                                      })
-                                                                                  )
-                                                                        }
-                                                                    >
-                                                                        +
-                                                                    </button>
-                                                                </div>
-                                                                {!cartItem ? (
-                                                                    <button
-                                                                        className="btn btn-primary btn-sm flex-grow-1 rounded-pill"
-                                                                        onClick={() =>
-                                                                            dispatch(
-                                                                                addCart({
-                                                                                    id: product.id,
-                                                                                    type: "product",
-                                                                                    content: product,
-                                                                                    quantity: product.min_quantity || 1,
-                                                                                    cause_id: cause.id
-                                                                                })
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        Add
-                                                                    </button>
-                                                                ) : (
-                                                                    <button
-                                                                        className="btn btn-outline-danger btn-sm flex-grow-1 rounded-pill"
-                                                                        onClick={() => dispatch(removeCart({ id: product.id, type: "product" }))}
-                                                                    >
-                                                                        Remove
-                                                                    </button>
-                                                                )}
-                                                            </div>
                                                             {["birthday"].includes(cause.type) && (
                                                                 <button
-                                                                    className={`btn-donate-lg mt-2`}
+                                                                    className={`btn btn-primary w-100 rounded-pill fw-bold shadow-sm`}
+                                                                    style={{ padding: "10px" }}
                                                                     onClick={() => {
-                                                                        // ========== FIX 2: Check if item exists before adding ==========
                                                                         if (!cartItem) {
                                                                             dispatch(
                                                                                 addCart({
@@ -568,11 +596,10 @@ export default function CauseDetails({
                                                                                 })
                                                                             )
                                                                         }
-                                                                        // ===============================================================
                                                                         setShowDonateModal(true)
                                                                     }}
                                                                 >
-                                                                    {translate("Donate Now")}
+                                                                    <i className="fa fa-heart me-2"></i> {translate("Donate Now")}
                                                                 </button>
                                                             )}
                                                         </div>
@@ -585,11 +612,10 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* ... Rest of Content (Projects, FAQ, Gallery, etc.) ... */}
                         <div id="content-section" className="cs_cause_details_wrap mt-5">
-                            <div className="d-flex align-items-center mb-4">
+                            {/* <div className="d-flex align-items-center mb-4">
                                 <h3 className="mb-0 fw-bold">Content</h3>
-                            </div>
+                            </div> */}
                             <div
                                 className="rich-content bg-white"
                                 dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.content || "") }}
@@ -598,9 +624,9 @@ export default function CauseDetails({
 
                         {cause?.content?.projects && (
                             <div id="project-section" className="cs_cause_details_wrap mt-5 pt-4 border-top">
-                                <div className="d-flex align-items-center mb-4">
+                                {/* <div className="d-flex align-items-center mb-4">
                                     <h3 className="mb-0 fw-bold">Project</h3>
-                                </div>
+                                </div> */}
                                 <div
                                     className="rich-content bg-white"
                                     dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.projects || "") }}

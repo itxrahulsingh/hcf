@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\PricingPlanController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductTagController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SeoController;
@@ -501,4 +502,11 @@ Route::group(['prefix' => 'manual-payment-gateway', 'as' => 'manual.payment.gate
     Route::delete('/delete/{gateway}', [ManualPaymentGatewayController::class, 'destroy'])->name('destroy');
     Route::delete('/bulk-delete', [ManualPaymentGatewayController::class, 'bulkDelete'])->name('bulk.delete');
     Route::post('/status/toggle', [ManualPaymentGatewayController::class, 'statusToggle'])->name('status.toggle');
+});
+
+
+// Report Routes
+Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+    Route::get('/', [ReportController::class, 'index'])->name('index')->can('orders.index');
+    Route::get('/export', [ReportController::class, 'export'])->name('export');
 });

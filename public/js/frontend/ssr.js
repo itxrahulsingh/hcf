@@ -155,16 +155,26 @@ __webpack_require__.r(__webpack_exports__);
 
 var showAlert = function showAlert(title, text, confirmButtonText, confirmCallback) {
   sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-    title: title,
-    text: text,
+    title: title || "Are you sure?",
+    text: text || "This action cannot be undone.",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: confirmButtonText
+    reverseButtons: true,
+    focusCancel: true,
+    confirmButtonText: confirmButtonText || "Confirm",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#2563eb",
+    cancelButtonColor: "#e5e7eb",
+    customClass: {
+      popup: "swal-modern",
+      title: "swal-title",
+      htmlContainer: "swal-text",
+      confirmButton: "swal-confirm",
+      cancelButton: "swal-cancel"
+    }
   }).then(function (result) {
-    if (result.isConfirmed) {
-      confirmCallback(); // Call the callback function if the user confirms
+    if (result.isConfirmed && typeof confirmCallback === "function") {
+      confirmCallback();
     }
   });
 };
@@ -23853,89 +23863,97 @@ function CauseDetails(_ref) {
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                   className: "col-12 col-sm-6 col-md-4",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
-                    className: "cause-card h-100 d-flex flex-column shadow-sm",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-                      className: "cause-card-img-wrapper",
-                      children: product.thumbnail_image ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("img", {
+                    className: "cause-card h-100 d-flex flex-column shadow-sm border-0 overflow-hidden",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                      className: "cause-card-img-wrapper position-relative",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                        className: "position-absolute top-0 start-0 w-100 d-flex flex-column",
+                        style: {
+                          zIndex: 5
+                        },
+                        children: [product.is_popular == 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                          className: "w-100 text-center text-white text-uppercase fw-bold py-1 shadow-sm",
+                          style: {
+                            background: "linear-gradient(90deg, #FF512F 0%, #F09819 100%)",
+                            fontSize: "16px",
+                            letterSpacing: "1px",
+                            textShadow: "0px 1px 2px rgba(0,0,0,0.2)"
+                          },
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("i", {
+                            className: "fa fa-star me-1"
+                          }), " ", (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Most Donated")]
+                        }), product.is_trending == 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                          className: "w-100 text-center text-dark text-uppercase fw-bold py-1 shadow-sm",
+                          style: {
+                            background: "linear-gradient(90deg, #FFD700, #FDB931)",
+                            fontSize: "16px",
+                            letterSpacing: "1px"
+                          },
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("i", {
+                            className: "fa fa-bolt me-1"
+                          }), " ", (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Trending")]
+                        })]
+                      }), product.thumbnail_image ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("img", {
                         src: product.thumbnail_image,
-                        alt: (_product$content = product.content) === null || _product$content === void 0 ? void 0 : _product$content.title
+                        alt: (_product$content = product.content) === null || _product$content === void 0 ? void 0 : _product$content.title,
+                        className: "w-100 object-fit-cover",
+                        style: {
+                          height: "200px"
+                        }
                       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                         className: "d-flex align-items-center justify-content-center bg-light text-muted h-100",
+                        style: {
+                          minHeight: "200px"
+                        },
                         children: "No Image"
-                      })
+                      })]
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "card-body p-3 d-flex flex-column",
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-                        className: "cause-card-title",
+                        className: "cause-card-title mb-2 fw-bold text-dark",
                         children: (_product$content2 = product.content) === null || _product$content2 === void 0 ? void 0 : _product$content2.title
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-                        className: "cause-card-desc",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-                          dangerouslySetInnerHTML: {
-                            __html: (0,_utils_removeHTMLTags_js__WEBPACK_IMPORTED_MODULE_5__["default"])((product === null || product === void 0 || (_product$content3 = product.content) === null || _product$content3 === void 0 ? void 0 : _product$content3.short_description) || "")
-                          }
-                        })
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
-                        className: "mt-auto pt-2 border-top",
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-                          className: "d-flex justify-content-between mb-3",
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("span", {
-                            className: "cause-card-price",
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
-                              amount: finalPrice.toFixed(2)
-                            }), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
-                              className: "text-muted fs-6 fw-normal",
-                              children: "/ Unit"
-                            })]
-                          })
+                        className: "d-flex justify-content-between align-items-center mb-3 bg-light p-2 rounded-3",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("span", {
+                          className: "cause-card-price fw-bold text-primary",
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                            amount: finalPrice.toFixed(2)
+                          }), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
+                            className: "text-muted fs-6 fw-normal small",
+                            children: "/ Unit"
+                          })]
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
-                          className: "d-flex gap-2 align-items-center",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
-                            className: "qty-control d-flex align-items-center px-1",
+                          className: "qty-control d-flex align-items-center bg-white rounded-pill border px-1",
+                          style: {
+                            width: "90px",
+                            height: "32px"
+                          },
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
+                            className: "qty-btn btn btn-sm border-0 p-0 text-muted",
                             style: {
-                              width: "100px"
+                              width: "24px"
                             },
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
-                              className: "qty-btn",
-                              style: {
-                                width: "24px",
-                                height: "24px"
-                              },
-                              disabled: !cartItem || quantity === 1,
-                              onClick: function onClick() {
-                                return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.decreaseCart)({
-                                  id: product.id,
-                                  type: "product"
-                                }));
-                              },
-                              children: "-"
-                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
-                              className: "mx-auto fw-bold small",
-                              children: quantity
-                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
-                              className: "qty-btn",
-                              style: {
-                                width: "24px",
-                                height: "24px"
-                              },
-                              onClick: function onClick() {
-                                return cartItem ? dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.increaseCart)({
-                                  id: product.id,
-                                  type: "product"
-                                })) : dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
-                                  id: product.id,
-                                  type: "product",
-                                  content: product,
-                                  quantity: product.min_quantity || 1,
-                                  cause_id: cause.id
-                                }));
-                              },
-                              children: "+"
-                            })]
-                          }), !cartItem ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
-                            className: "btn btn-primary btn-sm flex-grow-1 rounded-pill",
+                            disabled: !cartItem || quantity === 1,
                             onClick: function onClick() {
-                              return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+                              return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.decreaseCart)({
+                                id: product.id,
+                                type: "product"
+                              }));
+                            },
+                            children: "-"
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
+                            className: "mx-auto fw-bold small text-dark",
+                            children: quantity
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
+                            className: "qty-btn btn btn-sm border-0 p-0 text-primary",
+                            style: {
+                              width: "24px"
+                            },
+                            onClick: function onClick() {
+                              return cartItem ? dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.increaseCart)({
+                                id: product.id,
+                                type: "product"
+                              })) : dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
                                 id: product.id,
                                 type: "product",
                                 content: product,
@@ -23943,21 +23961,30 @@ function CauseDetails(_ref) {
                                 cause_id: cause.id
                               }));
                             },
-                            children: "Add"
-                          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
-                            className: "btn btn-outline-danger btn-sm flex-grow-1 rounded-pill",
-                            onClick: function onClick() {
-                              return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
-                                id: product.id,
-                                type: "product"
-                              }));
-                            },
-                            children: "Remove"
+                            children: "+"
                           })]
-                        }), ["birthday"].includes(cause.type) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
-                          className: "btn-donate-lg mt-2",
+                        })]
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                        className: "cause-card-desc mb-3 text-muted small",
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                          dangerouslySetInnerHTML: {
+                            __html: (0,_utils_removeHTMLTags_js__WEBPACK_IMPORTED_MODULE_5__["default"])((product === null || product === void 0 || (_product$content3 = product.content) === null || _product$content3 === void 0 ? void 0 : _product$content3.short_description) || "")
+                          },
+                          style: {
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden"
+                          }
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                        className: "mt-auto pt-2 border-top",
+                        children: ["birthday"].includes(cause.type) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("button", {
+                          className: "btn btn-primary w-100 rounded-pill fw-bold shadow-sm",
+                          style: {
+                            padding: "10px"
+                          },
                           onClick: function onClick() {
-                            // ========== FIX 2: Check if item exists before adding ==========
                             if (!cartItem) {
                               dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
                                 id: product.id,
@@ -23967,47 +23994,36 @@ function CauseDetails(_ref) {
                                 cause_id: cause.id
                               }));
                             }
-                            // ===============================================================
                             setShowDonateModal(true);
                           },
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Donate Now")
-                        })]
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("i", {
+                            className: "fa fa-heart me-2"
+                          }), " ", (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Donate Now")]
+                        })
                       })]
                     })]
                   })
                 }, idx);
               })
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
             id: "content-section",
             className: "cs_cause_details_wrap mt-5",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-              className: "d-flex align-items-center mb-4",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("h3", {
-                className: "mb-0 fw-bold",
-                children: "Content"
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
               className: "rich-content bg-white",
               dangerouslySetInnerHTML: {
                 __html: (0,_utils_ProcessContent__WEBPACK_IMPORTED_MODULE_9__["default"])((cause === null || cause === void 0 || (_cause$content9 = cause.content) === null || _cause$content9 === void 0 ? void 0 : _cause$content9.content) || "")
               }
-            })]
-          }), (cause === null || cause === void 0 || (_cause$content10 = cause.content) === null || _cause$content10 === void 0 ? void 0 : _cause$content10.projects) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+            })
+          }), (cause === null || cause === void 0 || (_cause$content10 = cause.content) === null || _cause$content10 === void 0 ? void 0 : _cause$content10.projects) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
             id: "project-section",
             className: "cs_cause_details_wrap mt-5 pt-4 border-top",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-              className: "d-flex align-items-center mb-4",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("h3", {
-                className: "mb-0 fw-bold",
-                children: "Project"
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
               className: "rich-content bg-white",
               dangerouslySetInnerHTML: {
                 __html: (0,_utils_ProcessContent__WEBPACK_IMPORTED_MODULE_9__["default"])((cause === null || cause === void 0 || (_cause$content11 = cause.content) === null || _cause$content11 === void 0 ? void 0 : _cause$content11.projects) || "")
               }
-            })]
+            })
           }), faqItems.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
             id: "faq-section",
             className: "cs_cause_details_wrap mt-5 pt-4 border-top",
@@ -30929,21 +30945,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ SeoMeta)
 /* harmony export */ });
 function SeoMeta(title, meta_title, meta_tags, meta_description, og_image, site_title) {
-  document.title = title;
-  var metaKeywords = document.querySelector("meta[name='keywords']");
-  if (metaKeywords) metaKeywords.content = meta_tags !== null && meta_tags !== void 0 ? meta_tags : "";
-  var canonicalLink = document.querySelector("link[rel='canonical']");
-  if (canonicalLink) canonicalLink.href = window.location.href;
-  var ogSiteName = document.querySelector("meta[property='og:site_name']");
-  if (ogSiteName) ogSiteName.content = site_title !== null && site_title !== void 0 ? site_title : "";
-  var ogImage = document.querySelector("meta[property='og:image']");
-  if (ogImage) ogImage.content = og_image !== null && og_image !== void 0 ? og_image : "";
-  var twitterTitle = document.querySelector("meta[name='twitter:title']");
-  if (twitterTitle) twitterTitle.content = meta_title !== null && meta_title !== void 0 ? meta_title : "";
-  var twitterDescription = document.querySelector("meta[name='twitter:description']");
-  if (twitterDescription) twitterDescription.content = meta_description !== null && meta_description !== void 0 ? meta_description : "";
-  var twitterImage = document.querySelector("meta[name='twitter:image']");
-  if (twitterImage) twitterImage.content = og_image !== null && og_image !== void 0 ? og_image : "";
+  if (title) document.title = title;
+  var setMeta = function setMeta(selector, value) {
+    if (!value) return;
+    var el = document.querySelector(selector);
+    if (el && el.content !== value) {
+      el.content = value;
+    }
+  };
+  var setLink = function setLink(selector, value) {
+    var el = document.querySelector(selector);
+    if (el && el.href !== value) {
+      el.href = value;
+    }
+  };
+  setMeta("meta[name='keywords']", meta_tags !== null && meta_tags !== void 0 ? meta_tags : "");
+  setLink("link[rel='canonical']", window.location.href);
+  setMeta("meta[property='og:site_name']", site_title !== null && site_title !== void 0 ? site_title : "");
+  setMeta("meta[property='og:image']", og_image !== null && og_image !== void 0 ? og_image : "");
+  setMeta("meta[name='twitter:title']", meta_title !== null && meta_title !== void 0 ? meta_title : "");
+  setMeta("meta[name='twitter:description']", meta_description !== null && meta_description !== void 0 ? meta_description : "");
+  setMeta("meta[name='twitter:image']", og_image !== null && og_image !== void 0 ? og_image : "");
 }
 
 /***/ }),
@@ -31069,10 +31091,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+var cachedTranslations = null;
 var translate = function translate(text) {
-  var translation = localStorage.getItem("translation") ? JSON.parse(localStorage.getItem("translation")) : {};
-  var translateText = translation[text];
-  return translateText !== null && translateText !== void 0 ? translateText : text;
+  var _cachedTranslations$t;
+  if (!cachedTranslations) {
+    try {
+      cachedTranslations = JSON.parse(localStorage.getItem("translation")) || {};
+    } catch (_unused) {
+      cachedTranslations = {};
+    }
+  }
+  return (_cachedTranslations$t = cachedTranslations[text]) !== null && _cachedTranslations$t !== void 0 ? _cachedTranslations$t : text;
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (translate);
 

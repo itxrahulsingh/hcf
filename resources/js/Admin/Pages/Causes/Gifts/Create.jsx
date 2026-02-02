@@ -17,7 +17,7 @@ export default function Create({ default_lang, languages }) {
         gift_image: "",
         amount: "",
         min_qty: "",
-        have_variations: 0, // Default is OFF (0)
+        have_variations: 0,
         variations: [],
         ...Object.keys(languages).reduce((acc, code) => {
             acc[code + "_title"] = ""
@@ -26,7 +26,6 @@ export default function Create({ default_lang, languages }) {
         }, {})
     })
 
-    // --- Variation Handlers ---
     const addVariation = () => {
         setData(
             produce((draft) => {
@@ -50,7 +49,6 @@ export default function Create({ default_lang, languages }) {
             })
         )
     }
-    // --------------------------
 
     const handlePublish = (e) => {
         e.preventDefault()
@@ -149,7 +147,6 @@ export default function Create({ default_lang, languages }) {
                                         />
                                     </div>
 
-                                    {/* --- TOGGLE: Have Variations? --- */}
                                     <div className="form-group d-flex align-items-center justify-content-between mb-3 border p-3 rounded bg-light">
                                         <label className="mb-0 fw-bold">{translate("Have Price Variations?")}</label>
                                         <div
@@ -161,7 +158,6 @@ export default function Create({ default_lang, languages }) {
                                         </div>
                                     </div>
 
-                                    {/* --- VARIATIONS LIST (Hidden unless toggled) --- */}
                                     {data.have_variations === 1 && (
                                         <div className="form-group border rounded p-3 mb-3 bg-white animate__animated animate__fadeIn">
                                             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -217,7 +213,6 @@ export default function Create({ default_lang, languages }) {
                                             )}
                                         </div>
                                     )}
-                                    {/* ----------------------------------------------- */}
 
                                     <div className="form-group">
                                         <label htmlFor="min_qty">{translate("Minimum Quantity")} *</label>

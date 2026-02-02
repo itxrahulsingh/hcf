@@ -344,9 +344,7 @@ export default function CauseDetails({
 
                 <div className="row">
                     <div className={`${cause.type === "birthday" ? "col-md-12" : "col-md-8"}`}>
-                        {/* Mobile Donation Card (Hidden on Desktop) */}
                         <div className="mobile-donation-card d-lg-none" id="donate-section">
-                            {/* ... (Existing logic for Mobile Donation Card) ... */}
                             <h5 className="fw-bold mb-3">{translate("Make a Donation")}</h5>
                             {cause?.custom_donation_amounts && (
                                 <div className="amount-grid mb-3">
@@ -398,10 +396,14 @@ export default function CauseDetails({
                                 <h3 className="mb-4">Select a Gift</h3>
                                 <div className="row g-4">
                                     {cause.gifts.map((gift, idx) => {
-                                        const cartItem = carts.find((i) => i.id === gift.id && i.type === "gift")
-                                        const quantity = cartItem ? cartItem.quantity : 0
+                                        const isVaried = gift.have_variations === 1 && gift.variations?.length > 0;
+                                        const colClass = isVaried ? "col-12 col-md-6" : "col-6 col-sm-4 col-md-3";
+
+                                        const cartItem = !isVaried ? carts.find((i) => i.id === gift.id && i.type === "gift") : null;
+                                        const quantity = cartItem ? cartItem.quantity : 0;
+
                                         return (
-                                            <div key={idx} className="col-6 col-sm-4 col-md-3">
+                                            <div key={idx} className={colClass}>
                                                 <div className="cause-card h-100 d-flex flex-column shadow-sm">
                                                     <div className="cause-card-img-wrapper">
                                                         {gift.gift_image ? (
@@ -414,41 +416,92 @@ export default function CauseDetails({
                                                     </div>
                                                     <div className="card-body p-3 d-flex flex-column">
                                                         <div className="cause-card-title">{gift.content?.title}</div>
-                                                        <div className="d-flex justify-content-between mb-3">
-                                                            <span className="cause-card-price">
-                                                                <Amount amount={Number(gift.amount || 0).toFixed(2)} />
-                                                            </span>
-                                                        </div>
-                                                        <div className="mt-auto">
-                                                            <div className="qty-control d-flex justify-content-between align-items-center w-100">
-                                                                <button
-                                                                    className="qty-btn"
-                                                                    disabled={!cartItem || quantity === 0}
-                                                                    onClick={() => dispatch(decreaseCart({ id: gift.id, type: "gift" }))}
-                                                                >
-                                                                    <Icon icon="ic:round-minus" />
-                                                                </button>
-                                                                <span className="fw-bold mx-2">{quantity}</span>
-                                                                <button
-                                                                    className="qty-btn"
-                                                                    onClick={() =>
-                                                                        cartItem
-                                                                            ? dispatch(increaseCart({ id: gift.id, type: "gift" }))
-                                                                            : dispatch(
-                                                                                  addCart({
-                                                                                      id: gift.id,
-                                                                                      type: "gift",
-                                                                                      content: gift,
-                                                                                      quantity: gift.min_qty || 1,
-                                                                                      cause_id: cause.id
-                                                                                  })
-                                                                              )
-                                                                    }
-                                                                >
-                                                                    <Icon icon="ic:round-plus" />
-                                                                </button>
+                                                        {isVaried ? (
+                                                            <div className="mt-auto">
+                                                                <p>{gift.content?.description}</p>
+                                                                <div className="d-flex flex-column gap-2 mt-2">
+                                                                    {gift.variations.map((variant, vIdx) => {
+                                                                        const variantCartId = `${gift.id}-var-${vIdx}`;
+                                                                        const isActive = carts.some(i => i.id === variantCartId && i.type === 'gift');
+
+                                                                        return (
+                                                                            <button
+                                                                                key={vIdx}
+                                                                                className={`btn w-100 d-flex justify-content-between align-items-center px-3 py-2 shadow-sm border`}
+                                                                                style={{
+                                                                                    background: isActive ? "linear-gradient(45deg, #ff8c00, #ffaa33)" : "#fff",
+                                                                                    color: isActive ? "#fff" : "#333",
+                                                                                    borderColor: isActive ? "transparent" : "#dee2e6",
+                                                                                    transition: "all 0.3s ease"
+                                                                                }}
+                                                                                onClick={() => {
+                                                                                    gift.variations.forEach((_, otherIdx) => {
+                                                                                        const otherId = `${gift.id}-var-${otherIdx}`;
+                                                                                        if (carts.some(c => c.id === otherId && c.type === 'gift')) {
+                                                                                            dispatch(removeCart({ id: otherId, type: 'gift' }));
+                                                                                        }
+                                                                                    });
+                                                                                    if (!isActive) {
+                                                                                        dispatch(addCart({
+                                                                                            id: variantCartId,
+                                                                                            type: 'gift',
+                                                                                            content: {
+                                                                                                ...gift,
+                                                                                                amount: variant.amount,
+                                                                                                content: { ...gift.content, title: `${gift.content?.title} - ${variant.title}` }
+                                                                                            },
+                                                                                            quantity: 1,
+                                                                                            cause_id: cause.id
+                                                                                        }));
+                                                                                    }
+                                                                                }}
+                                                                            >
+                                                                                <span className="fw-medium small">{variant.title}</span>
+                                                                                <span className="fw-bold"><Amount amount={variant.amount} /></span>
+                                                                            </button>
+                                                                        )
+                                                                    })}
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        ) : (
+                                                            <>
+                                                                <div className="d-flex justify-content-between mb-3">
+                                                                    <span className="cause-card-price">
+                                                                        <Amount amount={Number(gift.amount || 0).toFixed(2)} />
+                                                                    </span>
+                                                                </div>
+                                                                <div className="mt-auto">
+                                                                    <div className="qty-control d-flex justify-content-between align-items-center w-100">
+                                                                        <button
+                                                                            className="qty-btn"
+                                                                            disabled={!cartItem || quantity === 0}
+                                                                            onClick={() => dispatch(decreaseCart({ id: gift.id, type: "gift" }))}
+                                                                        >
+                                                                            <Icon icon="ic:round-minus" />
+                                                                        </button>
+                                                                        <span className="fw-bold mx-2">{quantity}</span>
+                                                                        <button
+                                                                            className="qty-btn"
+                                                                            onClick={() =>
+                                                                                cartItem
+                                                                                    ? dispatch(increaseCart({ id: gift.id, type: "gift" }))
+                                                                                    : dispatch(
+                                                                                        addCart({
+                                                                                            id: gift.id,
+                                                                                            type: "gift",
+                                                                                            content: gift,
+                                                                                            quantity: gift.min_qty || 1,
+                                                                                            cause_id: cause.id
+                                                                                        })
+                                                                                    )
+                                                                            }
+                                                                        >
+                                                                            <Icon icon="ic:round-plus" />
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -458,7 +511,8 @@ export default function CauseDetails({
                             </div>
                         )}
 
-                        {/* Products Section - FIX 2 Applied Here */}
+
+                        {/* Products Section */}
                         {cause?.have_product == 1 && cause.products?.length > 0 && (
                             <div className="mt-5">
                                 <h3 className="mb-4">Products</h3>
@@ -745,7 +799,7 @@ export default function CauseDetails({
                         )}
                     </div>
 
-                    {/* Right Sidebar (Desktop Only) - Remains Same */}
+                    {/* Right Sidebar*/}
                     {!["birthday", "anniversary"].includes(cause?.type) && (
                         <div className={`col-xl-4`}>
                             <div className="sidebar-sticky-wrapper">
@@ -842,7 +896,7 @@ export default function CauseDetails({
                     )}
                 </div>
 
-                {/* Mobile Sticky Footer & Modal Code (Remains Same) */}
+                {/* Mobile Sticky Footer & Modal Code */}
                 <div className="mobile-sticky-footer d-lg-none animate__animated animate__slideInUp">
                     <div className="d-flex flex-column">
                         <span className="small text-muted lh-1">{translate("Total")}</span>

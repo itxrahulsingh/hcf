@@ -23210,13 +23210,15 @@ function CauseDetails(_ref) {
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
               className: "row g-4",
               children: cause.gifts.map(function (gift, idx) {
-                var _gift$content, _gift$content2;
-                var cartItem = carts.find(function (i) {
+                var _gift$variations, _gift$content, _gift$content2, _gift$content3;
+                var isVaried = gift.have_variations === 1 && ((_gift$variations = gift.variations) === null || _gift$variations === void 0 ? void 0 : _gift$variations.length) > 0;
+                var colClass = isVaried ? "col-12 col-md-6" : "col-6 col-sm-4 col-md-3";
+                var cartItem = !isVaried ? carts.find(function (i) {
                   return i.id === gift.id && i.type === "gift";
-                });
+                }) : null;
                 var quantity = cartItem ? cartItem.quantity : 0;
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-                  className: "col-6 col-sm-4 col-md-3",
+                  className: colClass,
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "cause-card h-100 d-flex flex-column shadow-sm",
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
@@ -23233,52 +23235,113 @@ function CauseDetails(_ref) {
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                         className: "cause-card-title",
                         children: (_gift$content2 = gift.content) === null || _gift$content2 === void 0 ? void 0 : _gift$content2.title
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-                        className: "d-flex justify-content-between mb-3",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
-                          className: "cause-card-price",
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
-                            amount: Number(gift.amount || 0).toFixed(2)
-                          })
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                      }), isVaried ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                         className: "mt-auto",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
-                          className: "qty-control d-flex justify-content-between align-items-center w-100",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
-                            className: "qty-btn",
-                            disabled: !cartItem || quantity === 0,
-                            onClick: function onClick() {
-                              return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.decreaseCart)({
-                                id: gift.id,
-                                type: "gift"
-                              }));
-                            },
-                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
-                              icon: "ic:round-minus"
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("p", {
+                          children: (_gift$content3 = gift.content) === null || _gift$content3 === void 0 ? void 0 : _gift$content3.description
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                          className: "d-flex flex-column gap-2 mt-2",
+                          children: gift.variations.map(function (variant, vIdx) {
+                            var variantCartId = "".concat(gift.id, "-var-").concat(vIdx);
+                            var isActive = carts.some(function (i) {
+                              return i.id === variantCartId && i.type === 'gift';
+                            });
+                            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("button", {
+                              className: "btn w-100 d-flex justify-content-between align-items-center px-3 py-2 shadow-sm border",
+                              style: {
+                                background: isActive ? "linear-gradient(45deg, #ff8c00, #ffaa33)" : "#fff",
+                                color: isActive ? "#fff" : "#333",
+                                borderColor: isActive ? "transparent" : "#dee2e6",
+                                transition: "all 0.3s ease"
+                              },
+                              onClick: function onClick() {
+                                gift.variations.forEach(function (_, otherIdx) {
+                                  var otherId = "".concat(gift.id, "-var-").concat(otherIdx);
+                                  if (carts.some(function (c) {
+                                    return c.id === otherId && c.type === 'gift';
+                                  })) {
+                                    dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
+                                      id: otherId,
+                                      type: 'gift'
+                                    }));
+                                  }
+                                });
+                                if (!isActive) {
+                                  var _gift$content4;
+                                  dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+                                    id: variantCartId,
+                                    type: 'gift',
+                                    content: _objectSpread(_objectSpread({}, gift), {}, {
+                                      amount: variant.amount,
+                                      content: _objectSpread(_objectSpread({}, gift.content), {}, {
+                                        title: "".concat((_gift$content4 = gift.content) === null || _gift$content4 === void 0 ? void 0 : _gift$content4.title, " - ").concat(variant.title)
+                                      })
+                                    }),
+                                    quantity: 1,
+                                    cause_id: cause.id
+                                  }));
+                                }
+                              },
+                              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
+                                className: "fw-medium small",
+                                children: variant.title
+                              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
+                                className: "fw-bold",
+                                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                                  amount: variant.amount
+                                })
+                              })]
+                            }, vIdx);
+                          })
+                        })]
+                      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.Fragment, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                          className: "d-flex justify-content-between mb-3",
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
+                            className: "cause-card-price",
+                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                              amount: Number(gift.amount || 0).toFixed(2)
                             })
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
-                            className: "fw-bold mx-2",
-                            children: quantity
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
-                            className: "qty-btn",
-                            onClick: function onClick() {
-                              return cartItem ? dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.increaseCart)({
-                                id: gift.id,
-                                type: "gift"
-                              })) : dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
-                                id: gift.id,
-                                type: "gift",
-                                content: gift,
-                                quantity: gift.min_qty || 1,
-                                cause_id: cause.id
-                              }));
-                            },
-                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
-                              icon: "ic:round-plus"
-                            })
-                          })]
-                        })
+                          })
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                          className: "mt-auto",
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                            className: "qty-control d-flex justify-content-between align-items-center w-100",
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
+                              className: "qty-btn",
+                              disabled: !cartItem || quantity === 0,
+                              onClick: function onClick() {
+                                return dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.decreaseCart)({
+                                  id: gift.id,
+                                  type: "gift"
+                                }));
+                              },
+                              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                                icon: "ic:round-minus"
+                              })
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
+                              className: "fw-bold mx-2",
+                              children: quantity
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
+                              className: "qty-btn",
+                              onClick: function onClick() {
+                                return cartItem ? dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.increaseCart)({
+                                  id: gift.id,
+                                  type: "gift"
+                                })) : dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+                                  id: gift.id,
+                                  type: "gift",
+                                  content: gift,
+                                  quantity: gift.min_qty || 1,
+                                  cause_id: cause.id
+                                }));
+                              },
+                              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
+                                icon: "ic:round-plus"
+                              })
+                            })]
+                          })
+                        })]
                       })]
                     })]
                   })

@@ -25,7 +25,6 @@ export default function CauseDetails({
     cause,
     categories,
     recent_post,
-    products,
     slug,
     page,
     payment_gateway,
@@ -393,7 +392,7 @@ export default function CauseDetails({
                             })()}
                         </div>
 
-                        {/* Gifts Section (Remains Same) */}
+                        {/* Gifts Section */}
                         {cause?.have_gift == 1 && cause?.gifts?.length > 0 && (
                             <div className="cs_cause_details_wrap">
                                 <h3 className="mb-4">Select a Gift</h3>
@@ -460,11 +459,11 @@ export default function CauseDetails({
                         )}
 
                         {/* Products Section - FIX 2 Applied Here */}
-                        {cause?.have_product == 1 && products?.length > 0 && (
+                        {cause?.have_product == 1 && cause.products?.length > 0 && (
                             <div className="mt-5">
                                 <h3 className="mb-4">Products</h3>
                                 <div className="row g-4">
-                                    {products.map((product, idx) => {
+                                    {cause.products.map((product, idx) => {
                                         const cartItem = carts.find((i) => i.id === product.id && i.type === "product")
                                         const quantity = cartItem ? cartItem.quantity : 1
                                         const finalPrice = Number(product.discount_price || product.price || 0)

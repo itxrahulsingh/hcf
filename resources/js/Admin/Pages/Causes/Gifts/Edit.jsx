@@ -7,20 +7,53 @@ import translate from "@/utils/translate"
 import SingleMediaUploader from "@/Admin/Components/Media/SingleMediaUploader"
 import FormValidationError from "@/Admin/Components/Validation/FromValidationError"
 import { produce } from "immer"
+import { Icon } from "@iconify/react"
 
 export default function Edit({ gift, default_lang, languages }) {
     const [selectedLang, setSelectedLang] = useState(default_lang)
     const [tempLang, setTempLang] = useState(selectedLang)
 
-    // Initialize form with existing gift data
+    // Helper to safely get existing variations
+    const getInitialVariations = () => {
+        if (Array.isArray(gift.variations)) return gift.variations
+        return []
+    }
+
     const { data, setData, errors, put, processing } = useForm({
-        ...gift
+        ...gift,
+        have_variations: Number(gift.have_variations || 0),
+        variations: getInitialVariations()
     })
 
-    // Handle update submission
+    // --- Variation Handlers ---
+    const addVariation = () => {
+        setData(
+            produce((draft) => {
+                draft.variations.push({ title: "", amount: "" })
+            })
+        )
+    }
+
+    const removeVariation = (index) => {
+        setData(
+            produce((draft) => {
+                draft.variations.splice(index, 1)
+            })
+        )
+    }
+
+    const updateVariation = (index, field, value) => {
+        setData(
+            produce((draft) => {
+                draft.variations[index][field] = value
+            })
+        )
+    }
+    // --------------------------
+
     const handleUpdate = (e) => {
         e.preventDefault()
-        put(route("admin.gifts.update", gift))
+        put(route("admin.gifts.update", gift.id))
     }
 
     useEffect(() => {
@@ -71,27 +104,23 @@ export default function Edit({ gift, default_lang, languages }) {
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
+
+                                    {/* Image Upload */}
                                     <div className="form-group">
                                         <label>{translate("Upload Gift image")} *</label>
                                         <SingleMediaUploader
                                             onSelected={(e) => {
-                                                setData(
-                                                    produce((draft) => {
-                                                        draft.gift_image = e
-                                                    })
-                                                )
+                                                setData(produce((draft) => { draft.gift_image = e }))
                                             }}
                                             handleRemoved={() =>
-                                                setData(
-                                                    produce((draft) => {
-                                                        draft.gift_image = ""
-                                                    })
-                                                )
+                                                setData(produce((draft) => { draft.gift_image = "" }))
                                             }
                                             defaultValue={data.gift_image}
                                         />
                                         <FormValidationError message={errors?.gift_image} />
                                     </div>
+
+                                    {/* Title */}
                                     <div className="form-group">
                                         <label htmlFor="title">
                                             {translate("Title")} ({languages[selectedLang].name}) *
@@ -105,8 +134,10 @@ export default function Edit({ gift, default_lang, languages }) {
                                             onChange={(e) => setData(`${selectedLang}_title`, e.target.value)}
                                         />
                                     </div>
+
+                                    {/* Amount */}
                                     <div className="form-group">
-                                        <label htmlFor="amount">Amount *</label>
+                                        <label htmlFor="amount">{translate("Default Amount")} *</label>
                                         <TextInput
                                             title={`${translate("Amount")}`}
                                             type="number"
@@ -116,8 +147,79 @@ export default function Edit({ gift, default_lang, languages }) {
                                             onChange={(e) => setData("amount", e.target.value)}
                                         />
                                     </div>
+
+                                    {/* --- TOGGLE: Have Variations? --- */}
+                                    <div className="form-group d-flex align-items-center justify-content-between mb-3 border p-3 rounded bg-light">
+                                        <label className="mb-0 fw-bold">{translate("Have Price Variations?")}</label>
+                                        <div
+                                            className={`yoo-switch ${data.have_variations === 1 ? "active" : ""}`}
+                                            onClick={() => setData("have_variations", data.have_variations === 1 ? 0 : 1)}
+                                            style={{cursor: 'pointer'}}
+                                        >
+                                            <div className="yoo-switch-in"></div>
+                                        </div>
+                                    </div>
+
+                                    {/* --- VARIATIONS LIST (Hidden unless toggled) --- */}
+                                    {data.have_variations === 1 && (
+                                        <div className="form-group border rounded p-3 mb-3 bg-white animate__animated animate__fadeIn">
+                                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                                <label className="mb-0 fw-bold text-primary">{translate("Variations List")}</label>
+                                                <button
+                                                    type="button"
+                                                    onClick={addVariation}
+                                                    className="btn btn-sm btn-primary d-flex align-items-center gap-1"
+                                                >
+                                                    <Icon icon="heroicons:plus" /> {translate("Add")}
+                                                </button>
+                                            </div>
+
+                                            {data.variations.map((variation, index) => (
+                                                <div key={index} className="row g-2 align-items-center mb-2 p-2 border-bottom">
+                                                    <div className="col-md-6">
+                                                        <label className="small text-muted">{translate("Title")}</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            placeholder={translate("e.g. Small, Large")}
+                                                            value={variation.title}
+                                                            onChange={(e) => updateVariation(index, "title", e.target.value)}
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <label className="small text-muted">{translate("Amount")}</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            placeholder="0.00"
+                                                            value={variation.amount}
+                                                            onChange={(e) => updateVariation(index, "amount", e.target.value)}
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-2 d-flex align-items-end pb-1">
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-danger btn-sm w-100"
+                                                            onClick={() => removeVariation(index)}
+                                                            title="Remove"
+                                                        >
+                                                            <Icon icon="heroicons:trash" width="18" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            {data.variations.length === 0 && (
+                                                <div className="text-center p-3 text-muted border border-dashed rounded bg-light">
+                                                    {translate("No variations added yet. Click 'Add' to create one.")}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                    {/* ----------------------------------------------- */}
+
                                     <div className="form-group">
-                                        <label htmlFor="min_qty">Minimum Quantity *</label>
+                                        <label htmlFor="min_qty">{translate("Minimum Quantity")} *</label>
                                         <TextInput
                                             title={`${translate("Minimum Quantity")}`}
                                             type="number"

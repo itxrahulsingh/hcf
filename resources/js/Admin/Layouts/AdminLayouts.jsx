@@ -16,7 +16,6 @@ import { useDispatch } from "react-redux"
 
 export default function AdminLayouts({ children }) {
     const { props } = usePage()
-    // const customizeSettings = localStorage.getItem('customize_settings') ? JSON.parse(localStorage.getItem('customize_settings')) : [];
     const dispatch = useDispatch()
     // show toast notification
     useEffect(() => {

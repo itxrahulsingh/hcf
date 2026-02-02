@@ -11,14 +11,14 @@ import { produce } from "immer"
 import AdminLayouts from "@/Admin/Layouts/AdminLayouts"
 import translate from "@/utils/translate"
 
-export default function Create({ languages, cause_categories, default_lang, gifts, cause_types }) {
+// Added products to props
+export default function Create({ languages, cause_categories, default_lang, gifts, products, cause_types }) {
     const [selectedLang, setSelectedLang] = useState(default_lang)
     const [tempLang, setTempLang] = useState(selectedLang)
     const languageArr = Object.entries(languages)
     const { props } = usePage()
 
     // --- 1. FAQ STATE INITIALIZATION ---
-    // Initialize with one empty FAQ per language
     const [faqs, setFaqs] = useState(
         Object.keys(languages).reduce((acc, code) => {
             acc[code] = [{ title: "", content: "" }]
@@ -45,6 +45,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
         is_special: 0,
         gift_ids: [],
         have_product: 0,
+        product_ids: [], // Initialized product_ids
         custom_donation_amounts: "2100,5100,11000",
         video_url: "",
         min_amount: "",
@@ -66,6 +67,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
             return acc
         }, {})
     })
+
     // Add a new empty FAQ row
     const addFaq = () => {
         setFaqs((prev) => ({
@@ -82,8 +84,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
         }))
     }
 
-    // Update specific FAQ field (title or content)
-    // We create a NEW object for the item to ensure React detects the change
+    // Update specific FAQ field
     const updateFaq = (index, field, value) => {
         setFaqs((prev) => {
             const list = [...(prev[selectedLang] || [])]
@@ -272,7 +273,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                     </div>
                                     <div className="yoo-height-b20" />
 
-                                    {/* --- FAQ SECTION (FIXED) --- */}
+                                    {/* --- FAQ SECTION --- */}
                                     <div className="row">
                                         <div className="col-md-12">
                                             <label>{translate("FAQ")}</label>
@@ -447,6 +448,27 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                             onChange={(selected) => setData("gift_ids", selected)}
                                         />
                                         <FormValidationError message={errors.gift_ids} />
+                                        <div className="yoo-height-b20" />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {data.have_product === 1 && (
+                            <div className="yoo-card yoo-style1 mt-4">
+                                <div className="yoo-card-heading">
+                                    <h2 className="yoo-card-title">{translate("Products")}</h2>
+                                </div>
+                                <div className="yoo-card-body">
+                                    <div className="yoo-padd-lr-20">
+                                        <div className="yoo-height-b20" />
+                                        <CustomMultiSelect
+                                            options={products.map((p) => ({ value: p.id, label: p?.content?.title || "Untitled Product" }))}
+                                            value={data.product_ids}
+                                            placeholder="Select Products"
+                                            onChange={(selected) => setData("product_ids", selected)}
+                                        />
+                                        <FormValidationError message={errors.product_ids} />
                                         <div className="yoo-height-b20" />
                                     </div>
                                 </div>

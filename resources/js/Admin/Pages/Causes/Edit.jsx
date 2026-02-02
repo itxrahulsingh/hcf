@@ -11,7 +11,8 @@ import { produce } from "immer"
 import AdminLayouts from "@/Admin/Layouts/AdminLayouts"
 import translate from "@/utils/translate"
 
-export default function Edit({ languages, cause_categories, default_lang, gifts, cause, cause_types }) {
+// Added products to props
+export default function Edit({ languages, cause_categories, default_lang, gifts, products, cause, cause_types }) {
     const { props } = usePage()
     const [selectedLang, setSelectedLang] = useState(default_lang)
     const [tempLang, setTempLang] = useState(default_lang)
@@ -22,9 +23,7 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
         Object.keys(languages).forEach((code) => {
             try {
                 let raw = cause?.[`${code}_faq`]
-                // Parse if string, otherwise use as is
                 const parsed = typeof raw === "string" ? JSON.parse(raw) : raw
-                // Ensure array has at least one empty item if empty
                 result[code] = Array.isArray(parsed) && parsed.length > 0 ? parsed : [{ title: "", content: "" }]
             } catch {
                 result[code] = [{ title: "", content: "" }]
@@ -33,10 +32,10 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
         return result
     })
 
-    // --- 2. GET SIMPLE GIFT IDs (Fix for MultiSelect checkboxes) ---
-    const getInitialGiftIds = () => {
-        if (!cause.gift_ids) return []
-        let ids = cause.gift_ids
+    // --- 2. HELPERS FOR IDs ---
+    const getInitialIds = (field) => {
+        if (!cause[field]) return []
+        let ids = cause[field]
         if (typeof ids === "string") {
             try {
                 ids = JSON.parse(ids)
@@ -57,7 +56,8 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
     const { data, setData, errors, put, processing } = useForm({
         _method: "put",
         ...cause,
-        gift_ids: getInitialGiftIds(),
+        gift_ids: getInitialIds("gift_ids"),
+        product_ids: getInitialIds("product_ids"), // Initialized product_ids
         gallery_images: Array.isArray(cause.gallery_images) ? cause.gallery_images : [],
         status: Number(cause.status || 0),
         is_special: Number(cause.is_special || 0),
@@ -65,7 +65,7 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
         have_product: Number(cause.have_product || 0)
     })
 
-    // --- 3. FAQ HANDLERS (FIXED: Immutable Updates) ---
+    // --- 3. FAQ HANDLERS ---
     const addFaq = () => {
         setFaqs((prev) => ({
             ...prev,
@@ -83,13 +83,12 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
     const updateFaq = (index, field, value) => {
         setFaqs((prev) => {
             const list = [...(prev[selectedLang] || [])]
-            // Create a NEW object to ensure React detects change
             list[index] = { ...list[index], [field]: value }
             return { ...prev, [selectedLang]: list }
         })
     }
 
-    // --- 4. HANDLE UPDATE WITH TRANSFORM ---
+    // --- 4. HANDLE UPDATE ---
     const handleUpdate = (e) => {
         e.preventDefault()
 
@@ -98,7 +97,6 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
             transform: (currentFormData) => {
                 const payload = { ...currentFormData }
 
-                // Force FAQ to JSON String
                 Object.keys(languages).forEach((lang) => {
                     const currentLangFaqs = faqs[lang] || []
                     const cleaned = currentLangFaqs.map((f) => ({
@@ -261,7 +259,7 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                         </div>
                                     </div>
 
-                                    {/* --- FAQ SECTION (FIXED) --- */}
+                                    {/* FAQ SECTION */}
                                     <div className="row mt-3">
                                         <div className="col-md-12">
                                             <label>{translate("FAQ")}</label>
@@ -432,6 +430,28 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                             onChange={(selected) => setData("gift_ids", selected)}
                                         />
                                         <FormValidationError message={errors.gift_ids} />
+                                        <div className="yoo-height-b20" />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* NEW: Products Selection (Update View) */}
+                        {data.have_product === 1 && (
+                            <div className="yoo-card yoo-style1 mt-4">
+                                <div className="yoo-card-heading">
+                                    <h2 className="yoo-card-title">{translate("Products")}</h2>
+                                </div>
+                                <div className="yoo-card-body">
+                                    <div className="yoo-padd-lr-20">
+                                        <div className="yoo-height-b20" />
+                                        <CustomMultiSelect
+                                            options={products.map((p) => ({ value: p.id, label: p?.content?.title || "Untitled Product" }))}
+                                            value={data.product_ids}
+                                            placeholder="Select Products"
+                                            onChange={(selected) => setData("product_ids", selected)}
+                                        />
+                                        <FormValidationError message={errors.product_ids} />
                                         <div className="yoo-height-b20" />
                                     </div>
                                 </div>

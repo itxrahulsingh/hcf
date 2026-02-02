@@ -65,6 +65,7 @@ class CauseRepository
             'have_product' => (int) $request->input('have_product', 0),
             'is_special' => (int) $request->input('is_special', 0),
             'gift_ids' => json_encode($this->extractIds($request->input('gift_ids'))),
+            'product_ids' => json_encode($this->extractIds($request->input('product_ids'))),
             'custom_donation_amounts' => $request->input('custom_donation_amounts'),
             'video_url' => $request->input('video_url'),
             'min_amount' => $request->input('min_amount'),
@@ -93,6 +94,7 @@ class CauseRepository
             'have_product' => $request->have_product,
             'is_special' => $request->is_special,
             'gift_ids' => json_encode($this->extractIds($request->input('gift_ids'))),
+            'product_ids' => json_encode($this->extractIds($request->input('product_ids'))),
             'custom_donation_amounts' => $request->custom_donation_amounts,
             'video_url' => $request->video_url,
             'min_amount' => $request->min_amount,
@@ -151,12 +153,14 @@ class CauseRepository
         $cause->load('contents');
         $languages = json_decode(Setting::pull('languages'), true);
 
-        // Decoding for Edit View
         $gallery = $cause->gallery_images;
         if (is_string($gallery)) $gallery = json_decode($gallery, true);
 
         $giftIds = $cause->gift_ids;
         if (is_string($giftIds)) $giftIds = json_decode($giftIds, true);
+
+        $productIds = $cause->product_ids;
+        if (is_string($productIds)) $productIds = json_decode($productIds, true);
 
         $data = [
             'id' => $cause->id,
@@ -169,6 +173,7 @@ class CauseRepository
             'have_product' => $cause->have_product,
             'is_special' => $cause->is_special,
             'gift_ids' => $giftIds ?? [],
+            'product_ids' => $productIds ?? [],
             'custom_donation_amounts' => $cause->custom_donation_amounts,
             'video_url' => $cause->video_url,
             'min_amount' => $cause->min_amount,
@@ -196,7 +201,7 @@ class CauseRepository
             $data["{$code}_title"] = $content->title;
             $data["{$code}_content"] = $content->content;
             $data["{$code}_projects"] = $content->projects;
-            $data["{$code}_faq"] = $content->faq; // Keep as string for Frontend to parse
+            $data["{$code}_faq"] = $content->faq;
             $data["{$code}_updates"] = $content->updates;
         }
 

@@ -91,7 +91,7 @@ export default function Header8() {
                             <div className="cs_main_header_right">
                                 <div className="cs_toolbox">
                                     {Object.entries(lang.languages).length > 1 && <LanguageDropdown />}
-                                    {auth?.is_loggedIn ? (
+                                    {/* {auth?.is_loggedIn ? (
                                         <div className="cs_dropdown_wrap">
                                             <div
                                                 onClick={handleProfileDropdownToggle}
@@ -129,7 +129,7 @@ export default function Header8() {
                                         <div className="cs_header_user_btn active d-flex">
                                             <Link href={route("login.create")}>{translate("Login")}</Link>
                                         </div>
-                                    )}
+                                    )} */}
                                     {currentLangPageInfo?.is_show_shopping_cart && (
                                         <Link href={route("pages.show", { slug: cart_slug })} className="cart-counter">
                                             <svg width={22} height={22} viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">

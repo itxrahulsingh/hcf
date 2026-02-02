@@ -67,8 +67,10 @@ class GiftRepository
     {
         $gift = $this->model->create([
             'gift_image' => $request->input('gift_image'),
-            'amount'=> $request->input('amount'),
-            'min_qty'=> $request->input('min_qty'),
+            'amount' => $request->input('amount'),
+            'min_qty' => $request->input('min_qty'),
+            'have_variations' => $request->input('have_variations', 0),
+            'variations' => $request->input('variations', []),
         ]);
 
         $languages = json_decode(Setting::pull('languages'), true);
@@ -94,6 +96,8 @@ class GiftRepository
             'gift_image' => $gift->gift_image,
             'amount' => $gift->amount,
             'min_qty' => $gift->min_qty,
+            'have_variations' => $gift->have_variations,
+            'variations' => $gift->variations ?? [],
         ];
         $contents = $gift->contents;
         $languages = json_decode(Setting::pull('languages'), true);
@@ -122,10 +126,19 @@ class GiftRepository
      */
     public function update(Request $request, Gift $gift): void
     {
+        $variations = $request->input('variations');
+        if (is_array($variations)) {
+            $variations = array_values(array_filter($variations, function ($v) {
+                return !empty($v['title']) && !empty($v['amount']);
+            }));
+        }
+
         $gift->update([
             'gift_image' => $request->input('gift_image'),
-            'amount'=> $request->input('amount'),
-            'min_qty'=> $request->input('min_qty'),
+            'amount' => $request->input('amount'),
+            'min_qty' => $request->input('min_qty'),
+            'have_variations' => $request->input('have_variations', 0),
+            'variations' => $variations ?? [],
         ]);
 
         $languages = json_decode(Setting::pull('languages'), true);

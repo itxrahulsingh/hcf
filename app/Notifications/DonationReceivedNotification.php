@@ -61,21 +61,36 @@ class DonationReceivedNotification extends Notification
 
     public function toWhatsApp($notifiable)
     {
+        $rawPhone = $this->invoice->customer_phone;
+
+        $numericPhone = preg_replace('/[^0-9]/', '', $rawPhone);
+        if (strlen($numericPhone) < 10) {
+            return null;
+        }
+
+        $cleanNumber = substr($numericPhone, -10);
+        $finalPhone = '91' . $cleanNumber;
+
+        $name   = $this->invoice->customer_name;
+        $amount = (string) $this->invoice->total_price;
+
         return [
-            'phone' => $notifiable,
-            'template' => [
-                'name' => 'donation_success_v1',
-                'language' => ['code' => 'en'],
-                'components' => [
-                    [
-                        'type' => 'body',
-                        'parameters' => [
-                            ['type' => 'text', 'text' => $this->invoice->customer_name],
-                            ['type' => 'text', 'text' => (string) $this->invoice->total_price],
-                            ['type' => 'text', 'text' => $this->invoice->invoice_number],
-                        ]
-                    ]
-                ]
+            'url'     => "https://api.gupshup.io/wa/api/v1/template/msg",
+            'method'  => 'POST',
+            'json'    => false,
+            'headers' => [
+                'apikey'       => 'd2lvcsfemrjtnso7dj7hggaytaayiplb',
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ],
+            'body'    => [
+                "channel"     => "whatsapp",
+                "source"      => "919625886997",
+                "destination" => $finalPhone,
+                "src.name"    => "vNI9BU2rWoMqGqFOCvBdUEdS",
+                "template"    => json_encode([
+                    "id"     => "e8120582-40f0-4dcb-a86b-e2eef66cc78c",
+                    "params" => [$name, $amount]
+                ])
             ]
         ];
     }

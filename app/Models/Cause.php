@@ -14,7 +14,8 @@ class Cause extends Model
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    protected $appends = ['banner_image_url', 'gifts', 'total_orders', 'total_order_amount'];
+    // Added 'products' to appends
+    protected $appends = ['banner_image_url', 'gifts', 'products', 'total_orders', 'total_order_amount'];
 
     protected $casts = [
         'have_gift' => 'integer',
@@ -64,6 +65,25 @@ class Cause extends Model
         }
 
         return Gift::with('content')->whereIn('id', $ids)->where('status', 1)->get();
+    }
+
+    public function getProductsAttribute()
+    {
+        if (!isset($this->attributes['product_ids'])) {
+            return collect();
+        }
+
+        $ids = $this->attributes['product_ids'];
+
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        if (empty($ids) || !is_array($ids)) {
+            return collect();
+        }
+
+        return Product::with('content')->whereIn('id', $ids)->where('status', 1)->get();
     }
 
     public function user(): BelongsTo

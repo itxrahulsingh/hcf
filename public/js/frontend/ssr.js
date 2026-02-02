@@ -7333,7 +7333,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function Header10() {
-  var _customize$general, _customize$general2, _auth$user, _auth$user2, _auth$user3;
+  var _customize$general, _customize$general2;
   var cart_slug = (0,_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.cart_slug;
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_4__.useSelector)(function (state) {
       return state.carts;
@@ -7451,63 +7451,7 @@ function Header10() {
                 })]
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                 className: "cs_toolbox",
-                children: [auth !== null && auth !== void 0 && auth.is_loggedIn ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                  className: "cs_dropdown_wrap",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                    onClick: handleProfileDropdownToggle,
-                    className: "cs_header_user_btn ".concat(profileDropdownOpen ? "active" : ""),
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_9__.Icon, {
-                      icon: "lucide:circle-user",
-                      width: "20",
-                      height: "20"
-                    })
-                  }), profileDropdownOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                    className: "cs_header_user_dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                      className: "cs_header_user_info",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
-                        src: gravatar_url__WEBPACK_IMPORTED_MODULE_8___default()(auth === null || auth === void 0 || (_auth$user = auth.user) === null || _auth$user === void 0 ? void 0 : _auth$user.email),
-                        alt: ""
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h4", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user2 = auth.user) === null || _auth$user2 === void 0 ? void 0 : _auth$user2.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user3 = auth.user) === null || _auth$user3 === void 0 ? void 0 : _auth$user3.email
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("ul", {
-                      className: "cs_header_user_list cs_mp0",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.dashboard"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Dashboard")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.orders"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("My Orders")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.profile.edit"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Profile")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
-                          href: "#",
-                          onClick: handleLogout,
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Log out")
-                        })
-                      })]
-                    })]
-                  })]
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                  className: "cs_header_user_btn active d-flex",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                    href: route("login.create"),
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Login")
-                  })
-                }), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+                children: [(currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
                   href: route("pages.show", {
                     slug: cart_slug
                   }),
@@ -7605,7 +7549,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function Header2() {
-  var _customize$general, _customize$general2, _auth$user, _auth$user2, _auth$user3;
+  var _customize$general, _customize$general2;
   var cart_slug = (0,_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.cart_slug;
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_4__.useSelector)(function (state) {
       return state.carts;
@@ -7723,63 +7667,7 @@ function Header2() {
               className: "cs_main_header_right",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                 className: "cs_toolbox",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_GlobalSearch__WEBPACK_IMPORTED_MODULE_7__["default"], {}), auth !== null && auth !== void 0 && auth.is_loggedIn ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                  className: "cs_dropdown_wrap",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                    onClick: handleProfileDropdownToggle,
-                    className: "cs_header_user_btn ".concat(profileDropdownOpen ? "active" : ""),
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_10__.Icon, {
-                      icon: "lucide:circle-user",
-                      width: "20",
-                      height: "20"
-                    })
-                  }), profileDropdownOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                    className: "cs_header_user_dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                      className: "cs_header_user_info",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
-                        src: gravatar_url__WEBPACK_IMPORTED_MODULE_9___default()(auth === null || auth === void 0 || (_auth$user = auth.user) === null || _auth$user === void 0 ? void 0 : _auth$user.email),
-                        alt: ""
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h4", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user2 = auth.user) === null || _auth$user2 === void 0 ? void 0 : _auth$user2.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user3 = auth.user) === null || _auth$user3 === void 0 ? void 0 : _auth$user3.email
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("ul", {
-                      className: "cs_header_user_list cs_mp0",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.dashboard"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Dashboard")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.orders"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("My Orders")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.profile.edit"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Profile")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
-                          href: "#",
-                          onClick: handleLogout,
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Log out")
-                        })
-                      })]
-                    })]
-                  })]
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                  className: "cs_header_user_btn active d-flex",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                    href: route("login.create"),
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Login")
-                  })
-                }), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+                children: [(currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
                   href: route("pages.show", {
                     slug: cart_slug
                   }),
@@ -7882,7 +7770,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function Header3() {
-  var _auth$user, _auth$user2, _auth$user3, _customize$general, _customize$general2, _customize$general3, _customize$general4, _customize$contact, _customize$contact2, _customize$contact3, _customize$contact4, _customize$contact5, _customize$contact6;
+  var _customize$general, _customize$general2, _customize$general3, _customize$general4, _customize$contact, _customize$contact2, _customize$contact3, _customize$contact4, _customize$contact5, _customize$contact6;
   var cart_slug = (0,_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.cart_slug;
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_4__.useSelector)(function (state) {
       return state.carts;
@@ -7982,63 +7870,7 @@ function Header3() {
                     className: "cs_hamburger_btn_in",
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("span", {})]
                   })
-                }), Object.entries(lang.languages).length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_LanguageDropdown__WEBPACK_IMPORTED_MODULE_7__["default"], {}), auth !== null && auth !== void 0 && auth.is_loggedIn ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                  className: "cs_dropdown_wrap",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                    onClick: handleProfileDropdownToggle,
-                    className: "cs_header_user_btn ".concat(profileDropdownOpen ? "active" : ""),
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_8__.Icon, {
-                      icon: "lucide:circle-user",
-                      width: "20",
-                      height: "20"
-                    })
-                  }), profileDropdownOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                    className: "cs_header_user_dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                      className: "cs_header_user_info",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
-                        src: gravatar_url__WEBPACK_IMPORTED_MODULE_9___default()(auth === null || auth === void 0 || (_auth$user = auth.user) === null || _auth$user === void 0 ? void 0 : _auth$user.email),
-                        alt: ""
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h4", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user2 = auth.user) === null || _auth$user2 === void 0 ? void 0 : _auth$user2.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user3 = auth.user) === null || _auth$user3 === void 0 ? void 0 : _auth$user3.email
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("ul", {
-                      className: "cs_header_user_list cs_mp0",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.dashboard"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Dashboard")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.orders"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("My Orders")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.profile.edit"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Profile")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
-                          href: "#",
-                          onClick: handleLogout,
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Log out")
-                        })
-                      })]
-                    })]
-                  })]
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                  className: "cs_header_user_btn active d-flex",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                    href: route("login.create"),
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Login")
-                  })
-                }), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+                }), Object.entries(lang.languages).length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_LanguageDropdown__WEBPACK_IMPORTED_MODULE_7__["default"], {}), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
                   href: route("pages.show", {
                     slug: cart_slug
                   }),
@@ -8210,7 +8042,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function Header4() {
-  var _customize$contact, _customize$contact2, _customize$contact3, _customize$contact4, _customize$contact5, _customize$contact6, _customize$contact7, _customize$contact8, _customize$social_lin, _customize$general, _customize$general2, _auth$user, _auth$user2, _auth$user3;
+  var _customize$contact, _customize$contact2, _customize$contact3, _customize$contact4, _customize$contact5, _customize$contact6, _customize$contact7, _customize$contact8, _customize$social_lin, _customize$general, _customize$general2;
   var cart_slug = (0,_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.cart_slug;
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_4__.useSelector)(function (state) {
       return state.carts;
@@ -8399,63 +8231,7 @@ function Header4() {
               className: "cs_main_header_right",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                 className: "cs_toolbox",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_GlobalSearch__WEBPACK_IMPORTED_MODULE_7__["default"], {}), auth !== null && auth !== void 0 && auth.is_loggedIn ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                  className: "cs_dropdown_wrap",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                    onClick: handleProfileDropdownToggle,
-                    className: "cs_header_user_btn ".concat(profileDropdownOpen ? "active" : ""),
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_9__.Icon, {
-                      icon: "lucide:circle-user",
-                      width: "20",
-                      height: "20"
-                    })
-                  }), profileDropdownOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                    className: "cs_header_user_dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                      className: "cs_header_user_info",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
-                        src: gravatar_url__WEBPACK_IMPORTED_MODULE_10___default()(auth === null || auth === void 0 || (_auth$user = auth.user) === null || _auth$user === void 0 ? void 0 : _auth$user.email),
-                        alt: ""
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h4", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user2 = auth.user) === null || _auth$user2 === void 0 ? void 0 : _auth$user2.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user3 = auth.user) === null || _auth$user3 === void 0 ? void 0 : _auth$user3.email
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("ul", {
-                      className: "cs_header_user_list cs_mp0",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.dashboard"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Dashboard")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.orders"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("My Orders")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.profile.edit"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Profile")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
-                          href: "#",
-                          onClick: handleLogout,
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Log out")
-                        })
-                      })]
-                    })]
-                  })]
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                  className: "cs_header_user_btn active d-flex",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                    href: route("login.create"),
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Login")
-                  })
-                }), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+                children: [(currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
                   href: route("pages.show", {
                     slug: cart_slug
                   }),
@@ -8558,7 +8334,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function Header5() {
-  var _customize$general, _customize$general2, _customize$contact, _customize$contact2, _customize$contact3, _customize$contact4, _customize$contact5, _customize$contact6, _auth$user, _auth$user2, _auth$user3;
+  var _customize$general, _customize$general2, _customize$contact, _customize$contact2, _customize$contact3, _customize$contact4, _customize$contact5, _customize$contact6;
   var cart_slug = (0,_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.cart_slug;
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_4__.useSelector)(function (state) {
       return state.carts;
@@ -8707,62 +8483,6 @@ function Header5() {
                       children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])(customize === null || customize === void 0 || (_customize$contact6 = customize.contact) === null || _customize$contact6 === void 0 ? void 0 : _customize$contact6.contact_phone_number)
                     })]
                   })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_GlobalSearch__WEBPACK_IMPORTED_MODULE_7__["default"], {}), auth !== null && auth !== void 0 && auth.is_loggedIn ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                  className: "cs_dropdown_wrap",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                    onClick: handleProfileDropdownToggle,
-                    className: "cs_header_user_btn ".concat(profileDropdownOpen ? "active" : ""),
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_9__.Icon, {
-                      icon: "lucide:circle-user",
-                      width: "20",
-                      height: "20"
-                    })
-                  }), profileDropdownOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                    className: "cs_header_user_dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                      className: "cs_header_user_info",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
-                        src: gravatar_url__WEBPACK_IMPORTED_MODULE_10___default()(auth === null || auth === void 0 || (_auth$user = auth.user) === null || _auth$user === void 0 ? void 0 : _auth$user.email),
-                        alt: ""
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h4", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user2 = auth.user) === null || _auth$user2 === void 0 ? void 0 : _auth$user2.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user3 = auth.user) === null || _auth$user3 === void 0 ? void 0 : _auth$user3.email
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("ul", {
-                      className: "cs_header_user_list cs_mp0",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.dashboard"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Dashboard")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.orders"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("My Orders")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.profile.edit"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Profile")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
-                          href: "#",
-                          onClick: handleLogout,
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Log out")
-                        })
-                      })]
-                    })]
-                  })]
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                  className: "cs_header_user_btn active d-flex",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                    href: route("login.create"),
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Login")
-                  })
                 }), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
                   href: route("pages.show", {
                     slug: cart_slug
@@ -8866,7 +8586,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function Header6() {
-  var _customize$general, _customize$general2, _auth$user, _auth$user2, _auth$user3;
+  var _customize$general, _customize$general2;
   var cart_slug = (0,_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.cart_slug;
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_4__.useSelector)(function (state) {
       return state.carts;
@@ -8987,63 +8707,7 @@ function Header6() {
               className: "cs_main_header_right",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                 className: "cs_toolbox",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_GlobalSearch__WEBPACK_IMPORTED_MODULE_6__["default"], {}), auth !== null && auth !== void 0 && auth.is_loggedIn ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                  className: "cs_dropdown_wrap",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                    onClick: handleProfileDropdownToggle,
-                    className: "cs_header_user_btn ".concat(profileDropdownOpen ? "active" : ""),
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_10__.Icon, {
-                      icon: "lucide:circle-user",
-                      width: "20",
-                      height: "20"
-                    })
-                  }), profileDropdownOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                    className: "cs_header_user_dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                      className: "cs_header_user_info",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
-                        src: gravatar_url__WEBPACK_IMPORTED_MODULE_8___default()(auth === null || auth === void 0 || (_auth$user = auth.user) === null || _auth$user === void 0 ? void 0 : _auth$user.email),
-                        alt: ""
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h4", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user2 = auth.user) === null || _auth$user2 === void 0 ? void 0 : _auth$user2.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user3 = auth.user) === null || _auth$user3 === void 0 ? void 0 : _auth$user3.email
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("ul", {
-                      className: "cs_header_user_list cs_mp0",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.dashboard"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Dashboard")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.orders"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("My Orders")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.profile.edit"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Profile")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
-                          href: "#",
-                          onClick: handleLogout,
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Log out")
-                        })
-                      })]
-                    })]
-                  })]
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                  className: "cs_header_user_btn active d-flex",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                    href: route("login.create"),
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Login")
-                  })
-                }), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+                children: [(currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
                   href: route("pages.show", {
                     slug: cart_slug
                   }),
@@ -9146,7 +8810,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function Header7() {
-  var _customize$general, _customize$general2, _auth$user, _auth$user2, _auth$user3;
+  var _customize$general, _customize$general2;
   var cart_slug = (0,_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.cart_slug;
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_4__.useSelector)(function (state) {
       return state.carts;
@@ -9267,63 +8931,7 @@ function Header7() {
               className: "cs_main_header_right",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                 className: "cs_toolbox",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_GlobalSearch__WEBPACK_IMPORTED_MODULE_6__["default"], {}), auth !== null && auth !== void 0 && auth.is_loggedIn ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                  className: "cs_dropdown_wrap",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                    onClick: handleProfileDropdownToggle,
-                    className: "cs_header_user_btn ".concat(profileDropdownOpen ? "active" : ""),
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_10__.Icon, {
-                      icon: "lucide:circle-user",
-                      width: "20",
-                      height: "20"
-                    })
-                  }), profileDropdownOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                    className: "cs_header_user_dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                      className: "cs_header_user_info",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
-                        src: gravatar_url__WEBPACK_IMPORTED_MODULE_8___default()(auth === null || auth === void 0 || (_auth$user = auth.user) === null || _auth$user === void 0 ? void 0 : _auth$user.email),
-                        alt: ""
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h4", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user2 = auth.user) === null || _auth$user2 === void 0 ? void 0 : _auth$user2.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user3 = auth.user) === null || _auth$user3 === void 0 ? void 0 : _auth$user3.email
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("ul", {
-                      className: "cs_header_user_list cs_mp0",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.dashboard"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Dashboard")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.orders"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("My Orders")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.profile.edit"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Profile")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
-                          href: "#",
-                          onClick: handleLogout,
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Log out")
-                        })
-                      })]
-                    })]
-                  })]
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                  className: "cs_header_user_btn active d-flex",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                    href: route("login.create"),
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Login")
-                  })
-                }), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+                children: [(currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
                   href: route("pages.show", {
                     slug: cart_slug
                   }),
@@ -9426,7 +9034,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function Header8() {
-  var _customize$general, _customize$general2, _auth$user, _auth$user2, _auth$user3;
+  var _customize$general, _customize$general2;
   var cart_slug = (0,_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.cart_slug;
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_4__.useSelector)(function (state) {
       return state.carts;
@@ -9544,63 +9152,7 @@ function Header8() {
               className: "cs_main_header_right",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                 className: "cs_toolbox",
-                children: [Object.entries(lang.languages).length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_LanguageDropdown__WEBPACK_IMPORTED_MODULE_6__["default"], {}), auth !== null && auth !== void 0 && auth.is_loggedIn ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                  className: "cs_dropdown_wrap",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                    onClick: handleProfileDropdownToggle,
-                    className: "cs_header_user_btn ".concat(profileDropdownOpen ? "active" : ""),
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_9__.Icon, {
-                      icon: "lucide:circle-user",
-                      width: "20",
-                      height: "20"
-                    })
-                  }), profileDropdownOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                    className: "cs_header_user_dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
-                      className: "cs_header_user_info",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
-                        src: gravatar_url__WEBPACK_IMPORTED_MODULE_8___default()(auth === null || auth === void 0 || (_auth$user = auth.user) === null || _auth$user === void 0 ? void 0 : _auth$user.email),
-                        alt: ""
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h4", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user2 = auth.user) === null || _auth$user2 === void 0 ? void 0 : _auth$user2.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("p", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user3 = auth.user) === null || _auth$user3 === void 0 ? void 0 : _auth$user3.email
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("ul", {
-                      className: "cs_header_user_list cs_mp0",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.dashboard"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Dashboard")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.orders"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("My Orders")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.profile.edit"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Profile")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
-                          href: "#",
-                          onClick: handleLogout,
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Log out")
-                        })
-                      })]
-                    })]
-                  })]
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-                  className: "cs_header_user_btn active d-flex",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                    href: route("login.create"),
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Login")
-                  })
-                }), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+                children: [Object.entries(lang.languages).length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_LanguageDropdown__WEBPACK_IMPORTED_MODULE_6__["default"], {}), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
                   href: route("pages.show", {
                     slug: cart_slug
                   }),
@@ -9696,7 +9248,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function Header9() {
-  var _customize$general, _customize$general2, _auth$user, _auth$user2, _auth$user3, _customize$general3, _customize$general4, _customize$contact, _customize$contact2, _customize$contact3, _customize$contact4, _customize$contact5, _customize$contact6;
+  var _customize$general, _customize$general2, _customize$general3, _customize$general4, _customize$contact, _customize$contact2, _customize$contact3, _customize$contact4, _customize$contact5, _customize$contact6;
   var cart_slug = (0,_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.cart_slug;
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_4__.useSelector)(function (state) {
       return state.carts;
@@ -9798,63 +9350,7 @@ function Header9() {
               className: "cs_main_header_right",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
                 className: "cs_toolbox",
-                children: [auth !== null && auth !== void 0 && auth.is_loggedIn ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
-                  className: "cs_dropdown_wrap",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-                    onClick: handleProfileDropdownToggle,
-                    className: "cs_header_user_btn ".concat(profileDropdownOpen ? "active" : ""),
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_7__.Icon, {
-                      icon: "lucide:circle-user",
-                      width: "20",
-                      height: "20"
-                    })
-                  }), profileDropdownOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
-                    className: "cs_header_user_dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
-                      className: "cs_header_user_info",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("img", {
-                        src: gravatar_url__WEBPACK_IMPORTED_MODULE_8___default()(auth === null || auth === void 0 || (_auth$user = auth.user) === null || _auth$user === void 0 ? void 0 : _auth$user.email),
-                        alt: ""
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("h4", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user2 = auth.user) === null || _auth$user2 === void 0 ? void 0 : _auth$user2.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user3 = auth.user) === null || _auth$user3 === void 0 ? void 0 : _auth$user3.email
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("ul", {
-                      className: "cs_header_user_list cs_mp0",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.dashboard"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Dashboard")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.orders"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("My Orders")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.profile.edit"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Profile")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("a", {
-                          href: "#",
-                          onClick: handleLogout,
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Log out")
-                        })
-                      })]
-                    })]
-                  })]
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-                  className: "cs_header_user_btn active d-flex",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                    href: route("login.create"),
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_9__["default"])("Login")
-                  })
-                }), (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+                children: [(currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
                   href: route("pages.show", {
                     slug: cart_slug
                   }),
@@ -10250,7 +9746,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function Header(_ref) {
-  var _customize$general, _customize$general2, _auth$user, _auth$user2, _auth$user3;
+  var _customize$general, _customize$general2;
   var cart = _ref.cart;
   var cart_slug = (0,_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.cart_slug;
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_4__.useSelector)(function (state) {
@@ -10369,63 +9865,7 @@ function Header(_ref) {
               className: "cs_main_header_right",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
                 className: "cs_toolbox",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_GlobalSearch__WEBPACK_IMPORTED_MODULE_6__["default"], {}), auth !== null && auth !== void 0 && auth.is_loggedIn ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
-                  className: "cs_dropdown_wrap",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
-                    onClick: handleProfileDropdownToggle,
-                    className: "cs_header_user_btn ".concat(profileDropdownOpen ? "active" : ""),
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_11__.Icon, {
-                      icon: "lucide:circle-user",
-                      width: "20",
-                      height: "20"
-                    })
-                  }), profileDropdownOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
-                    className: "cs_header_user_dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
-                      className: "cs_header_user_info",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("img", {
-                        src: gravatar_url__WEBPACK_IMPORTED_MODULE_8___default()(auth === null || auth === void 0 || (_auth$user = auth.user) === null || _auth$user === void 0 ? void 0 : _auth$user.email),
-                        alt: ""
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("h4", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user2 = auth.user) === null || _auth$user2 === void 0 ? void 0 : _auth$user2.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("p", {
-                        className: "",
-                        children: auth === null || auth === void 0 || (_auth$user3 = auth.user) === null || _auth$user3 === void 0 ? void 0 : _auth$user3.email
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("ul", {
-                      className: "cs_header_user_list cs_mp0",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.dashboard"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Dashboard")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.orders"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("My Orders")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                          href: route("user.profile.edit"),
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Profile")
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("li", {
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("a", {
-                          href: "#",
-                          onClick: handleLogout,
-                          children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Log out")
-                        })
-                      })]
-                    })]
-                  })]
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
-                  className: "cs_header_user_btn active d-flex",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-                    href: route("login.create"),
-                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Login")
-                  })
-                }), (cart || (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart)) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+                children: [(cart || (currentLangPageInfo === null || currentLangPageInfo === void 0 ? void 0 : currentLangPageInfo.is_show_shopping_cart)) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
                   href: route("pages.show", {
                     slug: cart_slug
                   }),
@@ -23312,11 +22752,10 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function CauseDetails(_ref) {
-  var _cause$content$title, _cause$content3, _cause$content4, _cause$content5, _cause$content6, _cause$category, _cause$user, _cause$content7, _cause$content8, _cause$gifts, _cause$content9, _cause$content10, _cause$content11, _cause$content12, _cause$content13, _cause$content14, _selectedGateway$cont;
+  var _cause$content$title, _cause$content3, _cause$content4, _cause$content5, _cause$content6, _cause$category, _cause$user, _cause$content7, _cause$content8, _cause$gifts, _cause$products, _cause$content9, _cause$content10, _cause$content11, _cause$content12, _cause$content13, _cause$content14, _selectedGateway$cont;
   var cause = _ref.cause,
     categories = _ref.categories,
     recent_post = _ref.recent_post,
-    products = _ref.products,
     slug = _ref.slug,
     page = _ref.page,
     payment_gateway = _ref.payment_gateway,
@@ -23846,14 +23285,14 @@ function CauseDetails(_ref) {
                 }, idx);
               })
             })]
-          }), (cause === null || cause === void 0 ? void 0 : cause.have_product) == 1 && (products === null || products === void 0 ? void 0 : products.length) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+          }), (cause === null || cause === void 0 ? void 0 : cause.have_product) == 1 && ((_cause$products = cause.products) === null || _cause$products === void 0 ? void 0 : _cause$products.length) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
             className: "mt-5",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("h3", {
               className: "mb-4",
               children: "Products"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
               className: "row g-4",
-              children: products.map(function (product, idx) {
+              children: cause.products.map(function (product, idx) {
                 var _product$content, _product$content2, _product$content3;
                 var cartItem = carts.find(function (i) {
                   return i.id === product.id && i.type === "product";

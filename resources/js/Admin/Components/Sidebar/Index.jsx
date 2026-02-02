@@ -88,6 +88,20 @@ export default function Sidebar() {
                                 </Link>
                             </li>
 
+                            {/* Reports (NEW LINK ADDED HERE) */}
+                            {hasPermission("orders.index") && (
+                                <li className={`${route().current("admin.reports.index") ? "active" : ""}`}>
+                                    <Link href={route("admin.reports.index")}>
+                                        <span className="yoo-sidebar-link-title">
+                                            <span className="yoo-sidebar-link-icon yoo-green-bg">
+                                                <Icon icon="ion:bar-chart-outline" width="20" height="20" />
+                                            </span>
+                                            <span className="yoo-sidebar-link-text">{translate("Reports")}</span>
+                                        </span>
+                                    </Link>
+                                </li>
+                            )}
+
                             {/* Posts Menu */}
                             <li className={`yoo-sidebar-has-children ${activeMenu === "posts" ? "active" : ""}`}>
                                 <a

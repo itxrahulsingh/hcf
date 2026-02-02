@@ -504,7 +504,6 @@ Route::group(['prefix' => 'manual-payment-gateway', 'as' => 'manual.payment.gate
     Route::post('/status/toggle', [ManualPaymentGatewayController::class, 'statusToggle'])->name('status.toggle');
 });
 
-
 // Report Routes
 Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
     Route::get('/', [ReportController::class, 'index'])->name('index')->can('orders.index');

@@ -26,7 +26,6 @@ class CauseController extends Controller
         $data['recent_post'] = Cause::where('status', '1')->with(['content', 'user'])->latest()->take(4)->get();
         $cause = $repository->show($slug);
         $data['cause'] = $cause;
-        $data['products'] = Product::where('status', '1')->with('content')->latest()->get();
         $data['slug'] = Page::where('rendered_page', 'causes')->first()->slug;
         $data['page'] = Page::where('rendered_page', 'causes')->with('content')->first();
 

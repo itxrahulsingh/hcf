@@ -43,24 +43,36 @@ class DonationFailedNotification extends Notification
 
     public function toWhatsApp($notifiable)
     {
-        $donorName = $this->order->customer_name;
-        $causeName = $this->order->cause->content->title ?? 'Cause';
+        $rawPhone = $this->order->customer_phone;
+
+        $numericPhone = preg_replace('/[^0-9]/', '', $rawPhone);
+        if (strlen($numericPhone) < 10) {
+            return null;
+        }
+
+        $cleanNumber = substr($numericPhone, -10);
+        $finalPhone = '91' . $cleanNumber;
+
+        $name   = $this->order->customer_name;
+        $amount = (string) $this->order->total_price;
 
         return [
-            'phone' => $notifiable,
-            'template' => [
-                'name' => 'donation_failed_v1',
-                'language' => ['code' => 'en'],
-                'components' => [
-                    [
-                        'type' => 'body',
-                        'parameters' => [
-                            ['type' => 'text', 'text' => $donorName],
-                            ['type' => 'text', 'text' => $causeName],
-                            ['type' => 'text', 'text' => $this->retryUrl],
-                        ]
-                    ]
-                ]
+            'url'     => "https://api.gupshup.io/wa/api/v1/template/msg",
+            'method'  => 'POST',
+            'json'    => false,
+            'headers' => [
+                'apikey'       => 'd2lvcsfemrjtnso7dj7hggaytaayiplb',
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ],
+            'body'    => [
+                "channel"     => "whatsapp",
+                "source"      => "919625886997",
+                "destination" => $finalPhone,
+                "src.name"    => "vNI9BU2rWoMqGqFOCvBdUEdS",
+                "template"    => json_encode([
+                    "id"     => "6b4f5e2a-a816-461c-a762-7b34afe1508a",
+                    "params" => [$name, $amount, $this->retryUrl]
+                ])
             ]
         ];
     }

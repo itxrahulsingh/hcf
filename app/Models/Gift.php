@@ -13,6 +13,11 @@ class Gift extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'variations' => 'array',
+        'have_variations' => 'integer',
+    ];
+
     /**
      * Get contents
      */

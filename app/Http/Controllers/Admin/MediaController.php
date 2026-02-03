@@ -4,17 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Media;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class MediaController extends Controller
 {
-
     public function __construct()
     {
         // for demo mood
@@ -84,84 +87,69 @@ class MediaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    // public function store(Request $request)
-    // {
-    //     $file = $request->file('file');
-
-    //     $fileName = $file->getClientOriginalName();
-    //     $fileSize = $file->getSize();
-    //     $fileType = $file->getMimeType();
-    //     $imageDimensions = null;
-    //     // Check if the file is an image but not an SVG
-    //     if (str_starts_with($fileType, 'image') && $fileType !== 'image/svg+xml') {
-    //         // Get image dimensions
-    //         $dimensions = getimagesize($file->getPathname());
-    //         if ($dimensions) {
-    //             $imageDimensions = $dimensions[0] . ' x ' . $dimensions[1] . ' pixels';
-    //         }
-    //     }
-    //     $path = $file->store('media');
-    //     $media = Media::create([
-    //         'title' => $fileName,
-    //         'user_id' => Auth::id(),
-    //         'media_url' => $path,
-    //         'type' => $fileType,
-    //         'dimensions' => $imageDimensions,
-    //         'size' => $fileSize,
-    //         'driver' => config('filesystems.default'),
-    //     ]);
-
-    //     return $media;
-    // }
-
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $file = $request->file('file');
 
-        // Basic metadata
-        $fileSize = $file->getSize();
-        $fileType = $file->getMimeType();
+        $originalType = $file->getMimeType();
+        $disk = config('filesystems.default');
+        $originalSize = $file->getSize();
 
-        // if (str_starts_with($fileType, 'image')) {
-        //     $baseFolder = 'media/images/';
-        // } elseif (str_starts_with($fileType, 'video')) {
-        //     $baseFolder = 'media/videos/';
-        // } elseif (str_starts_with($fileType, 'audio')) {
-        //     $baseFolder = 'media/audios/';
-        // } else {
-        //     $baseFolder = 'media/documents/';
-        // }
         $baseFolder = 'media/';
-
-        // Year/Month structure
         $folder = $baseFolder . date('Y') . '/' . date('m');
 
         $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $extension    = $file->getClientOriginalExtension();
+        $slug         = Str::slug($originalName);
+        $unique       = substr(md5(uniqid() . microtime()), 0, 6);
 
-        $slug   = Str::slug($originalName);
-        $unique = substr(md5(uniqid() . microtime()), 0, 6);
+        $isImage = str_starts_with($originalType, 'image') && $originalType !== 'image/svg+xml';
 
-        $fileName = "{$slug}-{$unique}.{$extension}";
+        $extension = $isImage ? 'webp' : $file->getClientOriginalExtension();
+        $fileName  = "{$slug}-{$unique}.{$extension}";
+        $fullPath  = $folder . '/' . $fileName;
 
         $imageDimensions = null;
-        if (str_starts_with($fileType, 'image') && $fileType !== 'image/svg+xml') {
-            $dimensions = @getimagesize($file->getPathname());
-            if ($dimensions) {
-                $imageDimensions = $dimensions[0] . ' x ' . $dimensions[1] . ' pixels';
-            }
-        }
+        $finalSize = 0;
+        $finalMimeType = $isImage ? 'image/webp' : $originalType;
 
-        $disk = config('filesystems.default');
-        $path = $file->storeAs($folder, $fileName, $disk);
+        $maxWidth = Setting::where('setting_key', 'image_max_width')->value('setting_value') ?? 2000;
+        $quality  = Setting::where('setting_key', 'image_compression_quality')->value('setting_value') ?? 80;
+
+        if ($isImage) {
+            try {
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file);
+
+                $image->scaleDown(width: $maxWidth);
+                $encoded = $image->toWebp($quality);
+
+                $compressedContent = (string) $encoded;
+                $compressedSize = strlen($compressedContent);
+                Storage::disk($disk)->put($fullPath, $compressedContent);
+
+                $finalSize = $compressedSize;
+                $imageDimensions = $image->width() . ' x ' . $image->height() . ' pixels';
+            } catch (\Exception $e) {
+                $path = $file->storeAs($folder, "{$slug}-{$unique}." . $file->getClientOriginalExtension(), $disk);
+                $finalSize = $originalSize;
+                $finalMimeType = $originalType;
+                $fullPath = $path;
+            }
+        } else {
+            $file->storeAs($folder, $fileName, $disk);
+            $finalSize = $originalSize;
+        }
 
         $media = Media::create([
             'title'      => $originalName,
             'user_id'    => Auth::id(),
-            'media_url'  => $path,
-            'type'       => $fileType,
+            'media_url'  => $fullPath,
+            'type'       => $finalMimeType,
             'dimensions' => $imageDimensions,
-            'size'       => $fileSize,
+            'size'       => $finalSize,
             'driver'     => $disk,
         ]);
 
@@ -173,13 +161,17 @@ class MediaController extends Controller
      */
     public function destroy(Media $media): bool
     {
+        if (Storage::disk($media->driver)->exists($media->media_url)) {
+            Storage::disk($media->driver)->delete($media->media_url);
+        }
+
         $media->delete();
 
         return true;
     }
 
     /**
-     * Get filterede data.
+     * Get filtered data.
      *
      * @param  Media  $media
      */

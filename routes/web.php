@@ -23,9 +23,10 @@ use App\Http\Controllers\Frontend\SubscribeController;
 use App\Http\Controllers\Frontend\TeamController;
 use App\Http\Controllers\Frontend\TicketController;
 use App\Http\Controllers\Frontend\UserController;
-use App\Models\Setting;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,13 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// Route::get('/storage/{path}', function ($path) {
+//     if (!Storage::disk('public')->exists($path)) {
+//         abort(404);
+//     }
+//     return Storage::disk('public')->response($path);
+// })->where('path', '.*');
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 

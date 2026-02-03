@@ -3,15 +3,15 @@ const path = require("path")
 
 /*
  |--------------------------------------------------------------------------
- | Mix Asset Management
+ | Webpack Config
  |--------------------------------------------------------------------------
- |
- | Mix provides a clean, fluent API for defining some Webpack build steps
- | for your Laravel applications. By default, we are compiling the CSS
- | file for the application as well as bundling up all the JS files.
- |
  */
 var webpackConfig = {
+    output: {
+        // This organizes your split files into a specific folder
+        chunkFilename: 'js/chunks/[name].js?id=[chunkhash]',
+        publicPath: '/', // Required for dynamic imports to find the chunks
+    },
     resolve: {
         alias: {
             "@": path.resolve("resources/js")
@@ -27,14 +27,14 @@ mix.options({
     }
 })
 
-// frontend
+// Frontend
 mix.js("resources/js/Frontend/app.jsx", "public/js/frontend")
     .sass("resources/scss/Frontend/globals.scss", "public/css/frontend")
     .styles("resources/css/frontend/bootstrap.min.css", "public/css/frontend/bootstrap.min.css")
     .react()
-    .webpackConfig(webpackConfig)
+    .webpackConfig(webpackConfig) // Apply the config here
 
-// admin
+// Admin
 mix.js("resources/js/Admin/app.jsx", "public/js/admin")
     .styles(
         ["resources/css/admin/bootstrap.min.css", "resources/css/admin/fontawesome.css", "resources/css/admin/iDashboard.css"],
@@ -43,7 +43,8 @@ mix.js("resources/js/Admin/app.jsx", "public/js/admin")
     .react()
     .webpackConfig(webpackConfig)
 
-// Copy static files to the 'public' directory
 mix.copyDirectory("resources/static", "public/static")
 
-mix.version()
+if (mix.inProduction()) {
+    mix.version();
+}

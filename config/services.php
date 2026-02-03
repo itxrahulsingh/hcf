@@ -34,17 +34,13 @@ return [
     'google' => [
         'client_id' => '',
         'client_secret' => '',
-        'redirect' => function () {
-            return route('social.callback', 'google');
-        },
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
     'facebook' => [
         'client_id' => '',
         'client_secret' => '',
-        'redirect' => function () {
-            return route('social.callback', 'facebook');
-        },
+        'redirect' => env('FACEBOOK_REDIRECT_URI'),
     ],
 
 ];

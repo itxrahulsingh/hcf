@@ -6,9 +6,14 @@ import { produce } from "immer"
 import TextInput from "@/Admin/Components/Inputs/TextInput"
 
 export default function CommonSettings({ get_common_settings }) {
-    const { data, setData, errors, put, processing } = useForm(get_common_settings)
+    // Ensure new fields have default values if not present in props
+    const { data, setData, errors, put, processing } = useForm({
+        image_compression_quality: 80,
+        image_max_width: 2000,
+        ...get_common_settings
+    })
 
-    // update payment gateway configure
+    // update settings
     const handlePublish = (e) => {
         e.preventDefault()
         put(route("admin.settings.common.settings.update"))
@@ -34,6 +39,8 @@ export default function CommonSettings({ get_common_settings }) {
                             <div className="yoo-card-body">
                                 <div className="yoo-padd-lr-20">
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
+
+                                    {/* Form Response To */}
                                     <div className="form-group form-group-md">
                                         <label htmlFor="form_response_to">{translate("Form Response To")} *</label>
                                         <div className="yoo-select">
@@ -51,6 +58,8 @@ export default function CommonSettings({ get_common_settings }) {
                                             <FromValidationError message={errors.form_response_to} />
                                         </div>
                                     </div>
+
+                                    {/* Admin Email */}
                                     <TextInput
                                         title={translate("Admin Notification Mail")}
                                         type="text"
@@ -59,6 +68,40 @@ export default function CommonSettings({ get_common_settings }) {
                                         value={data.admin_notification_email}
                                         onChange={(e) => setData("admin_notification_email", e.target.value)}
                                     />
+
+                                    {/* --- Image Optimization Settings --- */}
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <TextInput
+                                                title={translate("Image Compression Quality (0-100)")}
+                                                type="number"
+                                                id="image_compression_quality"
+                                                min="1"
+                                                max="100"
+                                                error={errors?.image_compression_quality}
+                                                value={data.image_compression_quality}
+                                                onChange={(e) => setData("image_compression_quality", e.target.value)}
+                                            />
+                                            <small className="text-muted d-block mb-3" style={{marginTop: '-10px'}}>
+                                                {translate("Recommended: 80")}
+                                            </small>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <TextInput
+                                                title={translate("Max Image Width (px)")}
+                                                type="number"
+                                                id="image_max_width"
+                                                error={errors?.image_max_width}
+                                                value={data.image_max_width}
+                                                onChange={(e) => setData("image_max_width", e.target.value)}
+                                            />
+                                            <small className="text-muted d-block mb-3" style={{marginTop: '-10px'}}>
+                                                {translate("Recommended: 2000")}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    {/* ----------------------------------- */}
+
                                     <div className="form-group">
                                         <label
                                             htmlFor=""

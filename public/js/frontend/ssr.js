@@ -24434,16 +24434,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-redux */ "react-redux");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var lottie_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lottie-react */ "lottie-react");
-/* harmony import */ var lottie_react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(lottie_react__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _Lottie_success_json__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Lottie/success.json */ "./resources/js/Frontend/Lottie/success.json");
-/* harmony import */ var _utils_translate__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/utils/translate */ "./resources/js/utils/translate.js");
-/* harmony import */ var _inertiajs_react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @inertiajs/react */ "@inertiajs/react");
-/* harmony import */ var _inertiajs_react__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_inertiajs_react__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _utils_SeoMeta__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/utils/SeoMeta */ "./resources/js/utils/SeoMeta.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__);
-
+/* harmony import */ var _utils_translate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/utils/translate */ "./resources/js/utils/translate.js");
+/* harmony import */ var _inertiajs_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @inertiajs/react */ "@inertiajs/react");
+/* harmony import */ var _inertiajs_react__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_inertiajs_react__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _utils_SeoMeta__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/utils/SeoMeta */ "./resources/js/utils/SeoMeta.js");
+/* harmony import */ var _Components_Amount__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/Components/Amount */ "./resources/js/Components/Amount.jsx");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__);
 
 
 
@@ -24455,6 +24452,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function DonationSuccess(_ref) {
+  var _order$cause, _order$invoice, _order$customer_phone, _order$shipping_addre;
   var order = _ref.order,
     meta_tags = _ref.meta_tags,
     tagline = _ref.tagline,
@@ -24464,96 +24462,134 @@ function DonationSuccess(_ref) {
     dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_2__.clearCart)());
     localStorage.removeItem("coupon");
   }, [dispatch]);
-  (0,_utils_SeoMeta__WEBPACK_IMPORTED_MODULE_9__["default"])(tagline, "", meta_tags, "", "", site_name);
-  // page header data
+  (0,_utils_SeoMeta__WEBPACK_IMPORTED_MODULE_7__["default"])(tagline, "", meta_tags, "", "", site_name);
   var pageHeaderData = {
-    title: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Donation Success"),
+    title: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Donation Success"),
     breadcrumb: [{
-      label: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Home"),
+      label: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Home"),
       url: "/",
       key: "home"
     }, {
-      label: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Donation Success"),
+      label: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Donation Success"),
       url: null,
       key: "success"
     }]
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_Frontend_Layouts_FrontendLayout__WEBPACK_IMPORTED_MODULE_0__["default"], {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_Frontend_Components_PageHeading__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  var ReceiptRow = function ReceiptRow(_ref2) {
+    var label = _ref2.label,
+      value = _ref2.value;
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("tr", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("td", {
+        className: "fw-bold text-secondary bg-light bg-opacity-10",
+        style: {
+          width: "30%",
+          padding: "12px 15px"
+        },
+        children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])(label)
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("td", {
+        className: "text-dark",
+        style: {
+          padding: "12px 15px"
+        },
+        children: value || "NA"
+      })]
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_Frontend_Layouts_FrontendLayout__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_Frontend_Components_PageHeading__WEBPACK_IMPORTED_MODULE_1__["default"], {
       data: pageHeaderData,
       bgSrc: "/static/page_heading.jpeg"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-      className: "container donation-success-page text-center py-5",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+      className: "container py-5",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
         className: "row justify-content-center",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-          className: "col-md-6",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-            className: "card booking-card p-5 shadow-lg rounded-4 border-0",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
-              className: "card-body",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-                className: "booking-success-icon mb-4",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+          className: "col-lg-10",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+            className: "card shadow-sm border-0 rounded-0",
+            style: {
+              backgroundColor: "#fff9f0"
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+              className: "card-body p-4 p-md-5",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("h2", {
+                className: "text-center fw-bold mb-5",
                 style: {
-                  maxWidth: "200px",
-                  margin: "0 auto"
-                },
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)((lottie_react__WEBPACK_IMPORTED_MODULE_5___default()), {
-                  animationData: _Lottie_success_json__WEBPACK_IMPORTED_MODULE_6__,
-                  loop: true
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("h1", {
-                className: "my-3 fw-bold text-success",
-                style: {
+                  color: "#fbbf24",
                   fontSize: "2.5rem"
                 },
-                children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Donation Successful"), "!"]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("p", {
-                className: "text-muted mb-4",
-                style: {
-                  fontSize: "1.1rem"
-                },
-                children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Thank you for your generosity. Your donation ID is"), ": ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("strong", {
-                  children: ["#", order.order_number]
-                })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
-                className: "text-start mt-4",
-                children: [order.name && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("p", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("strong", {
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Donor Name"), ":"]
-                  }), " ", order.name]
-                }), order.amount && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("p", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("strong", {
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Donation Amount"), ":"]
-                  }), " \u20B9", order.amount]
-                }), order.payment_method && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("p", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("strong", {
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Payment Method"), ":"]
-                  }), " ", order.payment_method]
-                }), order.address && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("p", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("strong", {
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Address"), ":"]
-                  }), " ", order.address]
-                }), order.city && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("p", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("strong", {
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("City"), ":"]
-                  }), " ", order.city]
-                }), order.status && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("p", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("strong", {
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Status"), ":"]
-                  }), " ", order.status]
-                }), order.created_at && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("p", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("strong", {
-                    children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Donation Date"), ":"]
-                  }), " ", new Date(order.created_at).toLocaleString()]
-                })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_8__.Link, {
-                href: route("home"),
-                className: "btn booking-btn-custom btn-lg mt-4 px-4 py-2",
-                children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("Go to Homepage")
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
-                className: "text-muted small mt-3",
-                children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_7__["default"])("You will receive a confirmation email shortly.")
+                children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Donation Receipt")
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+                className: "table-responsive bg-white border",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("table", {
+                  className: "table table-bordered mb-0",
+                  style: {
+                    borderColor: "#dee2e6"
+                  },
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("tbody", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "Name",
+                      value: order.customer_name
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "Email",
+                      value: order.customer_email
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "PAN Number",
+                      value: order.pancard
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "Amount",
+                      value: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_8__["default"], {
+                        amount: order.total_price || order.amount
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "Campaign",
+                      value: ((_order$cause = order.cause) === null || _order$cause === void 0 || (_order$cause = _order$cause.content) === null || _order$cause === void 0 ? void 0 : _order$cause.title) || (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("General Donation")
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "Receipt No",
+                      value: (order === null || order === void 0 || (_order$invoice = order.invoice) === null || _order$invoice === void 0 ? void 0 : _order$invoice.invoice_number) || "NA"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "Phone",
+                      value: (_order$customer_phone = order.customer_phone) !== null && _order$customer_phone !== void 0 ? _order$customer_phone : "NA"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "Address",
+                      value: (_order$shipping_addre = order.shipping_address) !== null && _order$shipping_addre !== void 0 ? _order$shipping_addre : "NA"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "Payment Method",
+                      value: order.payment_method
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "Payment Status",
+                      value: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
+                        className: order.payment_status == "2" ? "text-success" : "text-warning",
+                        children: order.payment_status_label || (order.payment_status == "2" ? "Complete" : "Pending")
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ReceiptRow, {
+                      label: "Transaction ID",
+                      value: order.transaction_id
+                    })]
+                  })
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+                className: "text-center mt-5",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("a", {
+                  href: route("download.invoice", order.id),
+                  className: "btn btn-lg px-5 py-2 fw-normal text-dark",
+                  style: {
+                    backgroundColor: "#fcd34d",
+                    borderColor: "#fcd34d",
+                    borderRadius: "4px",
+                    fontSize: "1.1rem"
+                  },
+                  children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Download Receipt")
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+                className: "text-center mt-3",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_6__.Link, {
+                  href: route("home"),
+                  className: "text-muted text-decoration-none small",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("i", {
+                    className: "fa fa-arrow-left me-1"
+                  }), " ", (0,_utils_translate__WEBPACK_IMPORTED_MODULE_5__["default"])("Back to Home")]
+                })
               })]
             })
           })

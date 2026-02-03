@@ -5,6 +5,9 @@ use App\Models\Invoice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 if (! function_exists('get_options')) {
     function get_options(string $key, bool $decode = false, $locale = false)
@@ -133,7 +136,7 @@ if (! function_exists('generate_invoice_number')) {
 
 if (!function_exists('upload_file')) {
     /**
-     * Global helper to upload files with year/month nesting.
+     * Global helper to upload files with year/month nesting AND image compression (Intervention V3).
      *
      * @param UploadedFile $file
      * @param string $baseFolder
@@ -141,14 +144,51 @@ if (!function_exists('upload_file')) {
      */
     function upload_file(UploadedFile $file, string $baseFolder = 'media'): string
     {
+        $originalType = $file->getMimeType();
+        $disk         = config('filesystems.default');
+        $originalSize = $file->getSize();
+
         $folder = rtrim($baseFolder, '/') . '/' . date('Y') . '/' . date('m');
         $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $extension    = $file->getClientOriginalExtension();
         $slug         = Str::slug($originalName);
         $unique       = substr(md5(uniqid() . microtime()), 0, 6);
-        $fileName     = "{$slug}-{$unique}.{$extension}";
 
-        return $file->storeAs($folder, $fileName, config('filesystems.default'));
+        $isImage = str_starts_with($originalType, 'image') && $originalType !== 'image/svg+xml';
+
+        $extension = $isImage ? 'webp' : $file->getClientOriginalExtension();
+        $fileName  = "{$slug}-{$unique}.{$extension}";
+        $fullPath  = $folder . '/' . $fileName;
+
+        $maxWidth = Setting::where('setting_key', 'image_max_width')->value('setting_value') ?? 2000;
+        $quality  = Setting::where('setting_key', 'image_compression_quality')->value('setting_value') ?? 80;
+
+        if ($isImage) {
+            try {
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file);
+
+                $image->scaleDown(width: $maxWidth);
+
+                $encoded = $image->toWebp($quality);
+                $compressedContent = (string) $encoded;
+                $compressedSize = strlen($compressedContent);
+
+                if ($compressedSize < $originalSize) {
+                    Storage::disk($disk)->put($fullPath, $compressedContent);
+                    return $fullPath;
+                } else {
+                    $origExt = $file->getClientOriginalExtension();
+                    $origName = "{$slug}-{$unique}.{$origExt}";
+                    return $file->storeAs($folder, $origName, $disk);
+                }
+            } catch (\Exception $e) {
+                $origExt = $file->getClientOriginalExtension();
+                $origName = "{$slug}-{$unique}.{$origExt}";
+                return $file->storeAs($folder, $origName, $disk);
+            }
+        }
+
+        return $file->storeAs($folder, $fileName, $disk);
     }
 }
 
@@ -216,12 +256,6 @@ if (!function_exists('number_to_words')) {
 
         $str = array_reverse($str);
         $result = implode('', $str);
-
-        // Handle Paise (optional, usually skipped in donation receipts if 00)
-        // if ($point) {
-        //    $points = $words[$point / 10] . " " . $words[$point = $point % 10];
-        //    $result .= " and " . $points . " Paise";
-        // }
 
         return $result ? $result : 'Zero';
     }

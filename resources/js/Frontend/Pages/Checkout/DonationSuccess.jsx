@@ -3,11 +3,10 @@ import PageHeading from "@/Frontend/Components/PageHeading"
 import { clearCart } from "@/Redux/features/Cart/cart"
 import React, { useEffect } from "react"
 import { useDispatch } from "react-redux"
-import Lottie from "lottie-react"
-import SuccessAnimation from "../../Lottie/success.json"
 import translate from "@/utils/translate"
 import { Link } from "@inertiajs/react"
 import SeoMeta from "@/utils/SeoMeta"
+import Amount from "@/Components/Amount"
 
 export default function DonationSuccess({ order, meta_tags, tagline, site_name }) {
     const dispatch = useDispatch()
@@ -18,7 +17,7 @@ export default function DonationSuccess({ order, meta_tags, tagline, site_name }
     }, [dispatch])
 
     SeoMeta(tagline, "", meta_tags, "", "", site_name)
-    // page header data
+
     const pageHeaderData = {
         title: translate("Donation Success"),
         breadcrumb: [
@@ -27,67 +26,78 @@ export default function DonationSuccess({ order, meta_tags, tagline, site_name }
         ]
     }
 
+    const ReceiptRow = ({ label, value }) => (
+        <tr>
+            <td className="fw-bold text-secondary bg-light bg-opacity-10" style={{ width: "30%", padding: "12px 15px" }}>
+                {translate(label)}
+            </td>
+            <td className="text-dark" style={{ padding: "12px 15px" }}>
+                {value || "NA"}
+            </td>
+        </tr>
+    )
+
     return (
         <FrontendLayout>
             <PageHeading data={pageHeaderData} bgSrc={"/static/page_heading.jpeg"} />
-            <div className="container donation-success-page text-center py-5">
+
+            <div className="container py-5">
                 <div className="row justify-content-center">
-                    <div className="col-md-6">
-                        <div className="card booking-card p-5 shadow-lg rounded-4 border-0">
-                            <div className="card-body">
-                                <div className="booking-success-icon mb-4" style={{ maxWidth: "200px", margin: "0 auto" }}>
-                                    <Lottie animationData={SuccessAnimation} loop={true} />
-                                </div>
-                                <h1 className="my-3 fw-bold text-success" style={{ fontSize: "2.5rem" }}>
-                                    {translate("Donation Successful")}!
-                                </h1>
-                                <p className="text-muted mb-4" style={{ fontSize: "1.1rem" }}>
-                                    {translate("Thank you for your generosity. Your donation ID is")}: <strong>#{order.order_number}</strong>
-                                </p>
+                    <div className="col-lg-10">
+                        <div
+                            className="card shadow-sm border-0 rounded-0"
+                            style={{ backgroundColor: "#fff9f0" }}
+                        >
+                            <div className="card-body p-4 p-md-5">
+                                <h2 className="text-center fw-bold mb-5" style={{ color: "#fbbf24", fontSize: "2.5rem" }}>
+                                    {translate("Donation Receipt")}
+                                </h2>
 
-                                <div className="text-start mt-4">
-                                    {order.name && (
-                                        <p>
-                                            <strong>{translate("Donor Name")}:</strong> {order.name}
-                                        </p>
-                                    )}
-                                    {order.amount && (
-                                        <p>
-                                            <strong>{translate("Donation Amount")}:</strong> ₹{order.amount}
-                                        </p>
-                                    )}
-                                    {order.payment_method && (
-                                        <p>
-                                            <strong>{translate("Payment Method")}:</strong> {order.payment_method}
-                                        </p>
-                                    )}
-                                    {order.address && (
-                                        <p>
-                                            <strong>{translate("Address")}:</strong> {order.address}
-                                        </p>
-                                    )}
-                                    {order.city && (
-                                        <p>
-                                            <strong>{translate("City")}:</strong> {order.city}
-                                        </p>
-                                    )}
-                                    {order.status && (
-                                        <p>
-                                            <strong>{translate("Status")}:</strong> {order.status}
-                                        </p>
-                                    )}
-                                    {order.created_at && (
-                                        <p>
-                                            <strong>{translate("Donation Date")}:</strong> {new Date(order.created_at).toLocaleString()}
-                                        </p>
-                                    )}
+                                <div className="table-responsive bg-white border">
+                                    <table className="table table-bordered mb-0" style={{ borderColor: "#dee2e6" }}>
+                                        <tbody>
+                                            <ReceiptRow label="Name" value={order.customer_name} />
+                                            <ReceiptRow label="Email" value={order.customer_email} />
+                                            <ReceiptRow label="PAN Number" value={order.pancard} />
+                                            <ReceiptRow label="Amount" value={<Amount amount={order.total_price || order.amount} />} />
+                                            <ReceiptRow label="Campaign" value={order.cause?.content?.title || translate("General Donation")} />
+                                            <ReceiptRow label="Receipt No" value={order?.invoice?.invoice_number || "NA"} />
+                                            <ReceiptRow label="Phone" value={order.customer_phone ?? "NA"} />
+                                            <ReceiptRow label="Address" value={order.shipping_address ?? "NA"} />
+                                            <ReceiptRow label="Payment Method" value={order.payment_method} />
+                                            <ReceiptRow
+                                                label="Payment Status"
+                                                value={
+                                                    <span className={order.payment_status == "2" ? "text-success" : "text-warning"}>
+                                                        {order.payment_status_label || (order.payment_status == "2" ? "Complete" : "Pending")}
+                                                    </span>
+                                                }
+                                            />
+                                            <ReceiptRow label="Transaction ID" value={order.transaction_id} />
+                                        </tbody>
+                                    </table>
                                 </div>
 
-                                <Link href={route("home")} className="btn booking-btn-custom btn-lg mt-4 px-4 py-2">
-                                    {translate("Go to Homepage")}
-                                </Link>
+                                <div className="text-center mt-5">
+                                    <a
+                                        href={route("download.invoice", order.id)}
+                                        className="btn btn-lg px-5 py-2 fw-normal text-dark"
+                                        style={{
+                                            backgroundColor: "#fcd34d",
+                                            borderColor: "#fcd34d",
+                                            borderRadius: "4px",
+                                            fontSize: "1.1rem"
+                                        }}
+                                    >
+                                        {translate("Download Receipt")}
+                                    </a>
+                                </div>
 
-                                <p className="text-muted small mt-3">{translate("You will receive a confirmation email shortly.")}</p>
+                                <div className="text-center mt-3">
+                                    <Link href={route("home")} className="text-muted text-decoration-none small">
+                                        <i className="fa fa-arrow-left me-1"></i> {translate("Back to Home")}
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1,46 +1,10 @@
-import React, { useEffect, useRef } from "react"
-import { useState } from "react"
+import React, { useEffect, useRef, useState, Suspense, lazy, useMemo } from "react"
 import FrontendLayout from "@/Frontend/Layouts/FrontendLayout"
-import HeroSection from "@/Frontend/Components/Sections/HeroSection"
-import FunFactSection from "@/Frontend/Components/Sections/FunFactSection"
-import ServiceSection from "@/Frontend/Components/Sections/ServicesSection"
-import PortfolioSection from "@/Frontend/Components/Sections/PortfolioSection"
-import AditionalFeatureSection from "@/Frontend/Components/Sections/AditionalFeatureSection"
-import VideoSection from "@/Frontend/Components/Sections/VideoSection"
-import TeamSection from "@/Frontend/Components/Sections/TeamSection"
-import TestimonialSection from "@/Frontend/Components/Sections/TestimonialSection"
-import BlogSection from "@/Frontend/Components/Sections/BlogSection"
-import CauseSection from "@/Frontend/Components/Sections/CauseSection"
-import MarqueeSection from "@/Frontend/Components/Sections/MarqueeSection"
-import PartnerSection from "@/Frontend/Components/Sections/PartnerSection"
-import CTASection from "@/Frontend/Components/Sections/CTASection"
-import PricingSection from "@/Frontend/Components/Sections/PricingSection"
-import GoogleMapSection from "@/Frontend/Components/Sections/GoogleMapSection"
-import CaseStudySection from "@/Frontend/Components/Sections/CaseStudySection"
-import AboutSection from "@/Frontend/Components/Sections/AboutSection"
-import WhyChooseUsSection from "@/Frontend/Components/Sections/WhyChooseUsSection"
-import FaqSection from "@/Frontend/Components/Sections/FaqSection"
 import PageHeading from "@/Frontend/Components/PageHeading"
 import { useDispatch, useSelector } from "react-redux"
 import { usePage } from "@inertiajs/react"
 import { updateClickedSection, updateCurrentLang, updatePageData, updatePageInfo } from "@/Redux/features/pages/Page/page"
-import PhotoGallerySection from "@/Frontend/Components/Sections/PhotoGallerySection"
-import WorkingProcessSection from "@/Frontend/Components/Sections/WorkingProcessSection"
-import BannerSection from "@/Frontend/Components/Sections/BannerSection"
-import CoreValueSection from "@/Frontend/Components/Sections/CoreValueSection"
-import ContactWithFormBuilderSection from "@/Frontend/Components/Sections/ContactWithFormBuilderSection"
 import SeoMeta from "@/utils/SeoMeta"
-import CustomHTMLSection from "@/Frontend/Components/Sections/CustomHTMLSection"
-import JobListingsSection from "@/Frontend/Components/Sections/JobListingsSection"
-import TextEditorSection from "@/Frontend/Components/Sections/TextEditorSection"
-import EventScheduleSection from "@/Frontend/Components/Sections/EventScheduleSection"
-import HorizontalScrollSection from "@/Frontend/Components/Sections/HorizontalScrollSection"
-import TeamDetailsSection from "@/Frontend/Components/Sections/TeamDetailsSection"
-import PortfolioDetailsSection from "@/Frontend/Components/Sections/PortfolioDetailsSection"
-import CaseStudyDetailsSection from "@/Frontend/Components/Sections/CaseStudyDetailsSection"
-import CategorySection from "@/Frontend/Components/Sections/CategorySection"
-import PopularProductSection from "@/Frontend/Components/Sections/PopularProductSection"
-import TrendingProductSection from "@/Frontend/Components/Sections/TrendingProductSection"
 
 export default function Page() {
     const { page_data, lang, page_info, site_name } = usePage().props
@@ -51,41 +15,41 @@ export default function Page() {
     const sectionRef = useRef()
     const [screenSize, setScreenSize] = useState("desktop")
     const sectionComponents = {
-        Hero: HeroSection,
-        FunFact: FunFactSection,
-        Service: ServiceSection,
-        Portfolio: PortfolioSection,
-        AditionalFeature: AditionalFeatureSection,
-        Video: VideoSection,
-        Team: TeamSection,
-        Testimonial: TestimonialSection,
-        Blog: BlogSection,
-        Cause: CauseSection,
-        Marquee: MarqueeSection,
-        Partner: PartnerSection,
-        CTA: CTASection,
-        Pricing: PricingSection,
-        GoogleMap: GoogleMapSection,
-        CaseStudy: CaseStudySection,
-        About: AboutSection,
-        WhyChooseUs: WhyChooseUsSection,
-        Faq: FaqSection,
-        PhotoGallery: PhotoGallerySection,
-        WorkingProcess: WorkingProcessSection,
-        Banner: BannerSection,
-        CoreValue: CoreValueSection,
-        ContactWithFormBuilder: ContactWithFormBuilderSection,
-        CustomHTML: CustomHTMLSection,
-        JobListings: JobListingsSection,
-        TeamDetails: TeamDetailsSection,
-        HorizontalScroll: HorizontalScrollSection,
-        EventSchedule: EventScheduleSection,
-        PortfolioDetails: PortfolioDetailsSection,
-        CaseStudyDetails: CaseStudyDetailsSection,
-        TextEditor: TextEditorSection,
-        Category: CategorySection,
-        PopularProduct: PopularProductSection,
-        TrendingProduct: TrendingProductSection
+        Hero: lazy(() => import("@/Frontend/Components/Sections/HeroSection")),
+        FunFact: lazy(() => import("@/Frontend/Components/Sections/FunFactSection")),
+        Service: lazy(() => import("@/Frontend/Components/Sections/ServicesSection")),
+        Portfolio: lazy(() => import("@/Frontend/Components/Sections/PortfolioSection")),
+        AditionalFeature: lazy(() => import("@/Frontend/Components/Sections/AditionalFeatureSection")),
+        Video: lazy(() => import("@/Frontend/Components/Sections/VideoSection")),
+        Team: lazy(() => import("@/Frontend/Components/Sections/TeamSection")),
+        Testimonial: lazy(() => import("@/Frontend/Components/Sections/TestimonialSection")),
+        Blog: lazy(() => import("@/Frontend/Components/Sections/BlogSection")),
+        Cause: lazy(() => import("@/Frontend/Components/Sections/CauseSection")),
+        Marquee: lazy(() => import("@/Frontend/Components/Sections/MarqueeSection")),
+        Partner: lazy(() => import("@/Frontend/Components/Sections/PartnerSection")),
+        CTA: lazy(() => import("@/Frontend/Components/Sections/CTASection")),
+        Pricing: lazy(() => import("@/Frontend/Components/Sections/PricingSection")),
+        GoogleMap: lazy(() => import("@/Frontend/Components/Sections/GoogleMapSection")),
+        CaseStudy: lazy(() => import("@/Frontend/Components/Sections/CaseStudySection")),
+        About: lazy(() => import("@/Frontend/Components/Sections/AboutSection")),
+        WhyChooseUs: lazy(() => import("@/Frontend/Components/Sections/WhyChooseUsSection")),
+        Faq: lazy(() => import("@/Frontend/Components/Sections/FaqSection")),
+        PhotoGallery: lazy(() => import("@/Frontend/Components/Sections/PhotoGallerySection")),
+        WorkingProcess: lazy(() => import("@/Frontend/Components/Sections/WorkingProcessSection")),
+        Banner: lazy(() => import("@/Frontend/Components/Sections/BannerSection")),
+        CoreValue: lazy(() => import("@/Frontend/Components/Sections/CoreValueSection")),
+        ContactWithFormBuilder: lazy(() => import("@/Frontend/Components/Sections/ContactWithFormBuilderSection")),
+        CustomHTML: lazy(() => import("@/Frontend/Components/Sections/CustomHTMLSection")),
+        JobListings: lazy(() => import("@/Frontend/Components/Sections/JobListingsSection")),
+        TeamDetails: lazy(() => import("@/Frontend/Components/Sections/TeamDetailsSection")),
+        HorizontalScroll: lazy(() => import("@/Frontend/Components/Sections/HorizontalScrollSection")),
+        EventSchedule: lazy(() => import("@/Frontend/Components/Sections/EventScheduleSection")),
+        PortfolioDetails: lazy(() => import("@/Frontend/Components/Sections/PortfolioDetailsSection")),
+        CaseStudyDetails: lazy(() => import("@/Frontend/Components/Sections/CaseStudyDetailsSection")),
+        TextEditor: lazy(() => import("@/Frontend/Components/Sections/TextEditorSection")),
+        Category: lazy(() => import("@/Frontend/Components/Sections/CategorySection")),
+        PopularProduct: lazy(() => import("@/Frontend/Components/Sections/PopularProductSection")),
+        TrendingProduct: lazy(() => import("@/Frontend/Components/Sections/TrendingProductSection"))
     }
 
     SeoMeta(
@@ -159,27 +123,31 @@ export default function Page() {
             )}
 
             <div ref={sectionRef}>
-                {sectionData?.map((section) => {
-                    const advanced = section?.advanced
-                    const SectionComponent = sectionComponents[section?.type]
-                    return (
-                        <section
-                            id={section.sectionId}
-                            key={section.sectionId}
-                            onClick={() => dispatch(updateClickedSection(section.sectionId))}
-                            style={{
-                                paddingTop: screenSize === "desktop" ? `${advanced?.padding?.top.lg}px` : `${advanced?.padding?.top.md}px`,
-                                paddingBottom: screenSize === "desktop" ? `${advanced?.padding?.bottom.lg}px` : `${advanced?.padding?.bottom.md}px`,
-                                backgroundImage: `url(${advanced?.backgroundImage ?? ""})`,
-                                backgroundColor: advanced?.backgroundColor ?? "transparent"
-                            }}
-                            className={`cs_bg_filed${advanced?.is_section_dark ? " cs_dark_section" : ""} ${advanced?.classes} ${isEditorMode ? "editor-hover-active" : ""
-                                }`}
-                        >
-                            <SectionComponent sections_data={section?.data} />
-                        </section>
-                    )
-                })}
+                <Suspense fallback={<div className="section-loader-placeholder" style={{ height: "200px" }} />}>
+                    {sectionData?.map((section) => {
+                        const advanced = section?.advanced
+                        const SectionComponent = sectionComponents[section?.type]
+
+                        if (!SectionComponent) return null
+
+                        return (
+                            <section
+                                id={section.sectionId}
+                                key={section.sectionId}
+                                onClick={() => dispatch(updateClickedSection(section.sectionId))}
+                                style={{
+                                    paddingTop: screenSize === "desktop" ? `${advanced?.padding?.top.lg}px` : `${advanced?.padding?.top.md}px`,
+                                    paddingBottom: screenSize === "desktop" ? `${advanced?.padding?.bottom.lg}px` : `${advanced?.padding?.bottom.md}px`,
+                                    backgroundImage: advanced?.backgroundImage ? `url(${advanced.backgroundImage})` : "none",
+                                    backgroundColor: advanced?.backgroundColor ?? "transparent"
+                                }}
+                                className={`cs_bg_filed${advanced?.is_section_dark ? " cs_dark_section" : ""} ${advanced?.classes} ${isEditorMode ? "editor-hover-active" : ""}`}
+                            >
+                                <SectionComponent sections_data={section?.data} />
+                            </section>
+                        )
+                    })}
+                </Suspense>
             </div>
         </FrontendLayout>
     )

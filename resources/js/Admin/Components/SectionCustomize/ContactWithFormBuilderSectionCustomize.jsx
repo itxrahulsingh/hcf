@@ -54,6 +54,7 @@ export default function ContactWithFormBuilderSectionCustomize({ index }) {
                     select_options: [],
                     radio_options: [],
                     checkbox_options: [],
+                    file_extensions: ["jpg", "png", "pdf", "doc", "docx"],
                     isRequired: false,
                     default_value: "",
                     placeholder: ""
@@ -542,6 +543,7 @@ export default function ContactWithFormBuilderSectionCustomize({ index }) {
                         select_options: [],
                         radio_options: [],
                         checkbox_options: [],
+                        file_extensions: ["jpg", "png", "pdf", "doc", "docx"],
                         isRequired: false,
                         default_value: "",
                         placeholder: ""
@@ -609,7 +611,12 @@ export default function ContactWithFormBuilderSectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/contact_with_form_builder/contact_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
+                                            <img
+                                                src={`/static/sections/contact_with_form_builder/contact_style_${value}.jpg`}
+                                                alt="Thumb"
+                                                loading="lazy"
+                                                decoding="async"
+                                            />
                                             <label htmlFor={`layout-${value}`}>Contact Style {value}</label>
                                         </div>
                                     </div>
@@ -748,6 +755,7 @@ export default function ContactWithFormBuilderSectionCustomize({ index }) {
                                                     <option value="hidden">Hidden</option>
                                                     <option value="radio">Radio</option>
                                                     <option value="checkbox">Checkbox</option>
+                                                    <option value="file">File Upload</option>
                                                 </select>
                                             </div>
                                             {item.fieldType === "select" && (
@@ -796,6 +804,23 @@ export default function ContactWithFormBuilderSectionCustomize({ index }) {
                                                             )
                                                         }
                                                     />
+                                                </div>
+                                            )}
+                                            {item.fieldType === "file" && (
+                                                <div className="form-group">
+                                                    <label>Allowed Extensions (e.g. pdf, docx, jpg)</label>
+                                                    <TagsInput
+                                                        value={item?.file_extensions ?? ["jpg", "png", "pdf", "doc", "docx"]}
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                produce((draft) => {
+                                                                    draft.forms[index].file_extensions = e
+                                                                })
+                                                            )
+                                                        }
+                                                        placeHolder="Enter extension and press enter"
+                                                    />
+                                                    <small className="text-muted">Safe defaults: pdf, doc, docx, jpg, png</small>
                                                 </div>
                                             )}
                                             <div className="form-group">

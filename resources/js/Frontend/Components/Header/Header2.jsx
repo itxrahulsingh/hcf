@@ -150,7 +150,7 @@ export default function Header2() {
                                     )}
                                     {Object.entries(lang.languages).length > 1 && <LanguageDropdown />}
                                     <button
-                                        className="cs_hamburger_btn cs_hamburger_info_btn "
+                                        className="cs_hamburger_btn cs_hamburger_info_btn" aria-label="Open main menu"
                                         onClick={() => setSideHeaderToggle(!sideHeaderToggle)}
                                     >
                                         <span className="cs_hamburger_btn_in">

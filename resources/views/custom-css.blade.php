@@ -209,14 +209,14 @@ box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.15) !important;
 
 /* Donate Button Style */
 .btn-donate-lg {
-background: linear-gradient(45deg, #ff8c00, #ffaa33);
+background: linear-gradient(45deg, rgb(255 51 51), rgb(237, 143, 3));
 color: white;
 border: none;
 width: 100%;
 padding: 14px;
 font-size: 1.1rem;
 font-weight: 700;
-border-radius: 50px;
+border-radius: 10px;
 box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
 transition: transform 0.2s;
 text-transform: uppercase;

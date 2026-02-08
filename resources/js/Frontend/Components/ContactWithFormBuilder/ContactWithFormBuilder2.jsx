@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react"
 import { useForm, usePage } from "@inertiajs/react"
 import ReCAPTCHA from "react-google-recaptcha"
 import { useState } from "react"
+import translate from "@/utils/translate"
 
 export default function ContactWithFormBuilder2({ sections_data }) {
     const captchaSiteKey = localStorage.getItem("google_captcha_site_key") ? JSON.parse(localStorage.getItem("google_captcha_site_key")) : []
@@ -13,9 +14,13 @@ export default function ContactWithFormBuilder2({ sections_data }) {
     const [captchaError, setCaptchaError] = useState(null)
     const { flash } = usePage().props
     const formRef = useRef(null)
-    const { data, setData, post, wasSuccessful, reset, processing } = useForm({})
 
-    const handleSetData = (e, label, placeholder) => {
+    const { data, setData, post, wasSuccessful, reset, processing, errors } = useForm({
+        response_from: sections_data?.response_form,
+        form_name: sections_data?.form_name
+    })
+
+    const handleSetData = (e, label, placeholder, fieldType = "text") => {
         let fieldName
 
         if (label) {
@@ -26,7 +31,27 @@ export default function ContactWithFormBuilder2({ sections_data }) {
             fieldName = `field_${Object.keys(data).length + 1}`
         }
 
-        setData(fieldName, e.target.value)
+        // Handle File Input
+        if (fieldType === "file") {
+            setData(fieldName, e.target.files[0])
+        }
+        // Handle Checkbox (if needed for this layout)
+        else if (fieldType === "checkbox") {
+            const checkboxValue = e.target.value
+            const isChecked = e.target.checked
+            const currentValues = Array.isArray(data[fieldName]) ? data[fieldName] : []
+
+            if (isChecked) {
+                setData(fieldName, [...currentValues, checkboxValue])
+            } else {
+                setData(
+                    fieldName,
+                    currentValues.filter((val) => val !== checkboxValue)
+                )
+            }
+        } else {
+            setData(fieldName, e.target.value)
+        }
     }
 
     const handleCaptchaChange = (value) => {
@@ -50,10 +75,12 @@ export default function ContactWithFormBuilder2({ sections_data }) {
         }
 
         post(route("form.submit"), {
+            forceFormData: true, // Required for file uploads
             preserveScroll: true,
             onSuccess: () => {
                 reset()
-                formRef.current.reset()
+                if (formRef.current) formRef.current.reset()
+                setCaptchaVerified(false)
             }
         })
     }
@@ -124,147 +151,154 @@ export default function ContactWithFormBuilder2({ sections_data }) {
                             {sections_data?.forms?.map((form, index) => (
                                 <React.Fragment key={index}>
                                     {form.fieldType === "multilineText" ? (
-                                        <>
-                                            <div className={`col-lg-${form.column ?? "6"}`}>
-                                                {form.label && (
-                                                    <label>
-                                                        {form.label} {form.label && form.isRequired && "*"}
-                                                    </label>
-                                                )}
-                                                <textarea
-                                                    cols="30"
-                                                    rows="7"
-                                                    className="cs_form_field_2"
-                                                    defaultValue={form.default_value}
-                                                    required={form.isRequired}
-                                                    onChange={(e) => handleSetData(e, form.label, form.placeholder)}
-                                                    placeholder={`${form.placeholder ? form.placeholder : ""}${
-                                                        form.label ? "" : form.isRequired ? " *" : ""
-                                                    }`}
-                                                />
-                                                <div className="cs_height_35 cs_height_lg_22"></div>
-                                            </div>
-                                        </>
-                                    ) : form.fieldType === "radio" ? (
-                                        <>
-                                            <div className={`col-lg-${form.column ?? "6"}`}>
-                                                {form.label && (
-                                                    <label>
-                                                        {form.label} {form.isRequired && "*"}
-                                                    </label>
-                                                )}
-                                                <div className="cs_radio_group">
-                                                    {form?.radio_options?.map((option, optionIndex) => (
-                                                        <div className="cs_radio_wrapper" key={`radio-${index}-${optionIndex}`}>
-                                                            <input
-                                                                type="radio"
-                                                                id={`radio-${index}-${optionIndex}`}
-                                                                name={form.label?.toLowerCase().replace(/\s+/g, "_") || `radio_group_${index}`}
-                                                                value={option}
-                                                                required={form.isRequired}
-                                                                defaultChecked={form.default_value === option}
-                                                                onChange={(e) => handleSetData(e, form.label, form.placeholder)}
-                                                            />
-                                                            <label style={{ marginLeft: "8px" }} htmlFor={`radio-${index}-${optionIndex}`}>
-                                                                {option}
-                                                            </label>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                                <div className="cs_height_22 cs_height_lg_22"></div>
-                                            </div>
-                                        </>
-                                    ) : form.fieldType === "checkbox" ? (
-                                        <>
-                                            <div className={`col-lg-${form.column ?? "6"}`}>
-                                                {form.label && (
-                                                    <label>
-                                                        {form.label} {form.isRequired && "*"}
-                                                    </label>
-                                                )}
-                                                <div className="cs_checkbox_group">
-                                                    {form?.checkbox_options?.map((option, optionIndex) => (
-                                                        <div className="cs_checkbox_wrapper" key={`checkbox-${index}-${optionIndex}`}>
-                                                            <input
-                                                                type="checkbox"
-                                                                id={`checkbox-${index}-${optionIndex}`}
-                                                                name={form.label?.toLowerCase().replace(/\s+/g, "_") || `checkbox_group_${index}`}
-                                                                value={option}
-                                                                required={form.isRequired}
-                                                                defaultChecked={form.default_value === option}
-                                                                onChange={(e) => handleSetData(e, form.label, form.placeholder)}
-                                                            />
-                                                            <label style={{ marginLeft: "8px" }} htmlFor={`checkbox-${index}-${optionIndex}`}>
-                                                                {option}
-                                                            </label>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                                <div className="cs_height_22 cs_height_lg_22"></div>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            {form.fieldType === "select" ? (
-                                                <div className={`col-lg-${form.column ?? "6"}`}>
-                                                    {form.label && (
-                                                        <label htmlFor="">
-                                                            {form.label} {form.label && form.isRequired && "*"}
-                                                        </label>
-                                                    )}
-                                                    <select
-                                                        className="cs_form_field_2"
-                                                        required={form.isRequired}
-                                                        onChange={(e) => handleSetData(e, form.label, form.placeholder)}
-                                                    >
-                                                        <option value="">Select an option</option>
-                                                        {form?.select_options?.map((option, index) => (
-                                                            <option value={option} key={`options-${index}`}>
-                                                                {option}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                    <div className="cs_height_35 cs_height_lg_22"></div>
-                                                </div>
-                                            ) : (
-                                                <div className={`col-lg-${form.column ?? "6"}`}>
-                                                    {form.fieldType !== "hidden" && (
-                                                        <>
-                                                            {form.label && (
-                                                                <label>
-                                                                    {form.label} {form.label && form.isRequired && "*"}
-                                                                </label>
-                                                            )}
-                                                        </>
-                                                    )}
-                                                    <input
-                                                        type={form.fieldType}
-                                                        defaultValue={form.default_value}
-                                                        className="cs_form_field_2"
-                                                        required={form.isRequired}
-                                                        onChange={(e) => handleSetData(e, form.label, form.placeholder)}
-                                                        placeholder={`${form.placeholder ? form.placeholder : ""}${
-                                                            form.label ? "" : form.isRequired ? " *" : ""
-                                                        }`}
-                                                    />
-                                                    {form.fieldType !== "hidden" && <div className="cs_height_35 cs_height_lg_22"></div>}
-                                                </div>
+                                        <div className={`col-lg-${form.column ?? "6"}`}>
+                                            {form.label && (
+                                                <label>
+                                                    {form.label} {form.isRequired && "*"}
+                                                </label>
                                             )}
-                                        </>
+                                            <textarea
+                                                cols="30"
+                                                rows="7"
+                                                className="cs_form_field_2"
+                                                defaultValue={form.default_value}
+                                                required={form.isRequired}
+                                                onChange={(e) => handleSetData(e, form.label, form.placeholder)}
+                                                placeholder={`${form.placeholder ? form.placeholder : ""}${form.label ? "" : form.isRequired ? " *" : ""}`}
+                                            />
+                                            <div className="cs_height_35 cs_height_lg_22"></div>
+                                        </div>
+                                    ) : form.fieldType === "file" ? (
+                                        <div className={`col-lg-${form.column ?? "6"}`}>
+                                            {form.label && (
+                                                <label>
+                                                    {form.label} {form.isRequired && "*"}
+                                                </label>
+                                            )}
+                                            <input
+                                                type="file"
+                                                className="cs_form_field_2"
+                                                style={{ paddingTop: "10px" }}
+                                                required={form.isRequired}
+                                                accept={form.file_extensions?.map((ext) => `.${ext}`).join(",")}
+                                                onChange={(e) => handleSetData(e, form.label, form.placeholder, "file")}
+                                            />
+                                            {form.file_extensions && (
+                                                <small className="text-muted d-block mt-1">
+                                                    {translate("Allowed")}: {form.file_extensions.join(", ")}
+                                                </small>
+                                            )}
+                                            <div className="cs_height_35 cs_height_lg_22"></div>
+                                        </div>
+                                    ) : form.fieldType === "radio" ? (
+                                        <div className={`col-lg-${form.column ?? "6"}`}>
+                                            {form.label && (
+                                                <label>
+                                                    {form.label} {form.isRequired && "*"}
+                                                </label>
+                                            )}
+                                            <div className="cs_radio_group">
+                                                {form?.radio_options?.map((option, optionIndex) => (
+                                                    <div className="cs_radio_wrapper" key={`radio-${index}-${optionIndex}`}>
+                                                        <input
+                                                            type="radio"
+                                                            id={`radio-${index}-${optionIndex}`}
+                                                            name={form.label?.toLowerCase().replace(/\s+/g, "_") || `radio_group_${index}`}
+                                                            value={option}
+                                                            required={form.isRequired}
+                                                            defaultChecked={form.default_value === option}
+                                                            onChange={(e) => handleSetData(e, form.label, form.placeholder)}
+                                                        />
+                                                        <label style={{ marginLeft: "8px" }} htmlFor={`radio-${index}-${optionIndex}`}>
+                                                            {option}
+                                                        </label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className="cs_height_22 cs_height_lg_22"></div>
+                                        </div>
+                                    ) : form.fieldType === "checkbox" ? (
+                                        <div className={`col-lg-${form.column ?? "6"}`}>
+                                            {form.label && (
+                                                <label>
+                                                    {form.label} {form.isRequired && "*"}
+                                                </label>
+                                            )}
+                                            <div className="cs_checkbox_group">
+                                                {form?.checkbox_options?.map((option, optionIndex) => (
+                                                    <div className="cs_checkbox_wrapper" key={`checkbox-${index}-${optionIndex}`}>
+                                                        <input
+                                                            type="checkbox"
+                                                            id={`checkbox-${index}-${optionIndex}`}
+                                                            name={form.label?.toLowerCase().replace(/\s+/g, "_") || `checkbox_group_${index}`}
+                                                            value={option}
+                                                            required={form.isRequired && optionIndex === 0}
+                                                            defaultChecked={form.default_value === option}
+                                                            onChange={(e) => handleSetData(e, form.label, form.placeholder, "checkbox")}
+                                                        />
+                                                        <label style={{ marginLeft: "8px" }} htmlFor={`checkbox-${index}-${optionIndex}`}>
+                                                            {option}
+                                                        </label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className="cs_height_22 cs_height_lg_22"></div>
+                                        </div>
+                                    ) : form.fieldType === "select" ? (
+                                        <div className={`col-lg-${form.column ?? "6"}`}>
+                                            {form.label && (
+                                                <label htmlFor="">
+                                                    {form.label} {form.isRequired && "*"}
+                                                </label>
+                                            )}
+                                            <select
+                                                className="cs_form_field_2"
+                                                required={form.isRequired}
+                                                onChange={(e) => handleSetData(e, form.label, form.placeholder)}
+                                            >
+                                                <option value="">{translate("Select an option")}</option>
+                                                {form?.select_options?.map((option, index) => (
+                                                    <option value={option} key={`options-${index}`}>
+                                                        {option}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <div className="cs_height_35 cs_height_lg_22"></div>
+                                        </div>
+                                    ) : (
+                                        <div className={`col-lg-${form.column ?? "6"}`}>
+                                            {form.fieldType !== "hidden" && form.label && (
+                                                <label>
+                                                    {form.label} {form.isRequired && "*"}
+                                                </label>
+                                            )}
+                                            <input
+                                                type={form.fieldType}
+                                                defaultValue={form.default_value}
+                                                className="cs_form_field_2"
+                                                required={form.isRequired}
+                                                onChange={(e) => handleSetData(e, form.label, form.placeholder)}
+                                                placeholder={`${form.placeholder ? form.placeholder : ""}${form.label ? "" : form.isRequired ? " *" : ""}`}
+                                            />
+                                            {form.fieldType !== "hidden" && <div className="cs_height_35 cs_height_lg_22"></div>}
+                                        </div>
                                     )}
                                 </React.Fragment>
                             ))}
+
                             {is_active_google_captcha === "1" && (
                                 <div className="cs_mb_15">
                                     <ReCAPTCHA sitekey={captchaSiteKey} onChange={handleCaptchaChange} />
                                     {captchaError && <div className="text-danger mb-3">{captchaError}</div>}
                                 </div>
                             )}
+
                             {sections_data?.submit_btn_text && (
                                 <div className="col-lg-12">
                                     <div className="cs_height_5 cs_height_lg_5"></div>
                                     <button
-                                        disabled={!captchaVerified && processing}
+                                        type="submit"
+                                        disabled={(!captchaVerified && is_active_google_captcha === "1") || processing}
                                         className="cs_btn cs_style_1 cs_type_2 cs_primary_bg cs_white_color cs_w_100_sm"
                                     >
                                         {sections_data?.submit_btn_text}
@@ -295,7 +329,7 @@ export default function ContactWithFormBuilder2({ sections_data }) {
                                     </button>
                                 </div>
                             )}
-                            {wasSuccessful && <span className="text-success mt-2">{flash.success}</span>}
+                            {wasSuccessful && flash.success && <span className="text-success mt-2">{flash.success}</span>}
                         </form>
                     </div>
                 </div>

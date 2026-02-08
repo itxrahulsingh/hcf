@@ -1,69 +1,174 @@
-.custom-select {
+.custom-select-container {
     position: relative;
-    background: none;
+    width: 100%;
+    font-family: inherit;
 }
 
-.selected-option {
+.selected-area {
+    min-height: 42px;
+    padding: 4px 12px;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    transition: all 0.2s ease;
+}
+
+.custom-select-container.is-open .selected-area {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex: 1;
+}
+
+.select-tag {
+    background: #f0f2f5;
+    border: 1px solid #dcdfe3;
     border-radius: 4px;
+    padding: 2px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.tag-img {
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+    object-fit: cover;
+}
+
+.tag-remove {
+    color: #94a3b8;
+    font-size: 16px;
+    line-height: 1;
     cursor: pointer;
-    width: 100%;
-    background-clip: padding-box;
 }
 
-.selected-option:hover,
-.selected-option:focus {
-    border-color: #8fb5e2;
+.tag-remove:hover {
+    color: #ef4444;
 }
 
-.arrow-icon {
-    margin-left: 5px;
-    border-style: solid;
-    border-width: 5px 5px 0 5px;
-    border-color: #a5a9b1 transparent transparent transparent;
-}
-.arrow-icon.up {
-    border-width: 0 5px 5px 5px;
-    border-color: transparent transparent #a5a9b1 transparent;
+.placeholder-text {
+    color: #6c757d;
+    font-size: 14px;
 }
 
-.options-container {
+.options-dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 4px);
     left: 0;
     width: 100%;
-    border: 1px solid #ccc;
-    border-top: none;
-    border-radius: 0 0 4px 4px;
-    background-color: #fff;
-    z-index: 100;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 1050;
+    overflow: hidden;
 }
 
-.options-container-option {
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-.option {
-    padding: 10px;
-    cursor: pointer;
-}
-
-.option:hover,
-.option.selected {
-    background-color: #f5f5f5 !important;
-}
-
-.option.defaultSelect {
-    background: rgba(0, 180, 255, 0.075);
+.search-wrapper {
+    padding: 8px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .search-input {
     width: 100%;
-    padding: 5px;
-    border: none;
-    border-bottom: 1px solid #ccc;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
     outline: none;
+}
+
+.options-list {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.option-item {
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.option-item:hover {
+    background: #f8fafc;
+}
+.option-item.selected {
+    background: #eff6ff;
+}
+
+.option-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    object-fit: cover;
+    background: #f1f5f9;
+}
+
+.option-label {
+    font-size: 14px;
+    color: #1e293b;
+}
+
+.arrow-icon {
+    border: solid #64748b;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    transition: transform 0.2s;
+}
+
+.arrow-icon.down {
+    transform: rotate(45deg);
+}
+.arrow-icon.up {
+    transform: rotate(-135deg);
+}
+
+/* Image in the selected tag (collapsed box) */
+.tag-img {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    object-fit: cover;
+    flex-shrink: 0; /* Prevents image from squishing */
+}
+
+/* Image wrapper in the dropdown list */
+.option-image-wrapper {
+    width: 35px;
+    height: 35px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f1f5f9;
+    flex-shrink: 0;
+}
+
+.option-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Ensure the option layout is aligned */
+.option-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 12px; /* Space between checkbox, image, and text */
 }

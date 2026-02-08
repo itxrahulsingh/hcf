@@ -8,6 +8,7 @@ use App\Models\FormResponse;
 use App\Models\FormResponseType;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage; // Added for storage
 
 class FormResponseController extends Controller
 {
@@ -15,38 +16,53 @@ class FormResponseController extends Controller
     {
         $formResponseTo = Setting::pull('form_response_to');
 
-        $formData = $request->except(['captchaToken']);
+        // 1. Get all data except internal fields
+        $formData = $request->except(['captchaToken', 'response_from', 'form_name']);
+
+        // 2. Handle File Uploads
+        foreach ($request->allFiles() as $key => $file) {
+            if ($request->hasFile($key) && $file->isValid()) {
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('submissions', $fileName, config('filesystems.default'));
+                $formData[$key] = Storage::url($path);
+            }
+        }
+
+        // 3. Prepare common data for processing
+        $responseFrom = $request->response_from;
+        $formName     = $request->form_name;
 
         if ($formResponseTo === 'email_only') {
             $data = new \stdClass;
             $data->response_data = $formData;
-            $data->response_from = $request->response_from;
+            $data->response_from = $responseFrom;
 
             event(new FormSubmitted($data));
         } elseif ($formResponseTo === 'database_only') {
             FormResponseType::updateOrCreate(
-                ['form_response' => $request->response_from],
+                ['form_response' => $responseFrom],
             );
 
-            $data = FormResponse::create([
+            FormResponse::create([
                 'response_data' => json_encode($formData),
-                'response_from' => $request->response_from,
-                'form_name' => $request->form_name,
+                'response_from' => $responseFrom,
+                'form_name'     => $formName,
             ]);
         } else {
+            // Both Email and Database
             FormResponseType::updateOrCreate(
-                ['form_response' => $request->response_from],
+                ['form_response' => $responseFrom],
             );
 
-            $data = FormResponse::create([
+            FormResponse::create([
                 'response_data' => json_encode($formData),
-                'response_from' => $request->response_from,
-                'form_name' => $request->form_name,
+                'response_from' => $responseFrom,
+                'form_name'     => $formName,
             ]);
 
             $emailData = new \stdClass;
             $emailData->response_data = $formData;
-            $emailData->response_from = $request->response_from;
+            $emailData->response_from = $responseFrom;
 
             event(new FormSubmitted($emailData));
         }

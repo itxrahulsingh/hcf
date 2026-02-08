@@ -695,7 +695,7 @@ export default function CauseDetails({
                                 <h3 className="mb-0 fw-bold">Content</h3>
                             </div> */}
                             <div
-                                className="rich-content bg-white"
+                                className="rich-content"
                                 dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.content || "") }}
                             />
                         </div>
@@ -706,13 +706,13 @@ export default function CauseDetails({
                                     <h3 className="mb-0 fw-bold">Project</h3>
                                 </div> */}
                                 <div
-                                    className="rich-content bg-white"
+                                    className="rich-content"
                                     dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.projects || "") }}
                                 />
                             </div>
                         )}
 
-                        {/* ... FAQ, Updates, Gallery ... */}
+                        {/* FAQ, Updates, Gallery */}
                         {faqItems.length > 0 && (
                             <div id="faq-section" className="cs_cause_details_wrap mt-5 pt-4 border-top">
                                 <div className="d-flex align-items-center mb-4">
@@ -747,7 +747,7 @@ export default function CauseDetails({
                                 <div className="d-flex align-items-center mb-4">
                                     <h3 className="mb-0 fw-bold">Latest Updates</h3>
                                 </div>
-                                <div className="p-4 rounded-4 bg-light border border-light-subtle">
+                                <div className="p-4 rounded-4 border border-light-subtle">
                                     <div
                                         className="rich-content"
                                         dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.updates || "") }}
@@ -834,10 +834,6 @@ export default function CauseDetails({
                         <div className={`col-xl-4`}>
                             <div className="sidebar-sticky-wrapper">
                                 <div className="donation-card">
-                                    <div className="donation-card-header">
-                                        <h3>{translate("Make a Donation")}</h3>
-                                        <p className="text-muted small mb-0">Your support changes lives.</p>
-                                    </div>
                                     <div className="donation-logic-wrapper">
                                         {cause?.custom_donation_amounts && (
                                             <div className="amount-grid">
@@ -881,12 +877,6 @@ export default function CauseDetails({
                                                     )
                                             })()}
                                         </div>
-                                        <div className="d-flex justify-content-between align-items-center mb-3 pt-3 border-top">
-                                            <span className="fw-bold text-secondary">{translate("Total Payable")}</span>
-                                            <span className="fw-bolder fs-4 text-primary">
-                                                <Amount amount={total.toFixed(2)} />
-                                            </span>
-                                        </div>
                                         <button
                                             className={`btn-donate-lg ${
                                                 carts.length === 0 || total < Number(cause?.min_amount || 1) ? "disabled" : ""
@@ -894,7 +884,7 @@ export default function CauseDetails({
                                             disabled={carts.length === 0 || total < Number(cause?.min_amount || 1)}
                                             onClick={() => setShowDonateModal(true)}
                                         >
-                                            {translate("Donate Now")}
+                                            <Amount amount={total.toFixed(2)} /> {translate("Donate Now")}
                                         </button>
                                         <div className="trust-badges">
                                             <div className="trust-item">

@@ -460,7 +460,7 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                         </div>
 
                                         <CustomMultiSelect
-                                            options={gifts.map((g) => ({ value: g.id, label: g?.content?.title || "Untitled Gift" }))}
+                                            options={gifts.map((g) => ({ value: g.id, label: g?.content?.title || "Untitled Gift", image: g?.gift_image }))}
                                             value={data.gift_ids}
                                             placeholder="Select Gifts"
                                             onChange={(selected) => setData("gift_ids", selected)}
@@ -495,7 +495,7 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                         </div>
 
                                         <CustomMultiSelect
-                                            options={products.map((p) => ({ value: p.id, label: p?.content?.title || "Untitled Product" }))}
+                                            options={products.map((p) => ({ value: p.id, label: p?.content?.title || "Untitled Product", image: p?.thumbnail_image }))}
                                             value={data.product_ids}
                                             placeholder="Select Products"
                                             onChange={(selected) => setData("product_ids", selected)}

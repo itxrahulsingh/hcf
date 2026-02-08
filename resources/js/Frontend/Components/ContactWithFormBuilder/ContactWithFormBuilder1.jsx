@@ -52,6 +52,9 @@ export default function ContactWithFormBuilder1({ sections_data }) {
             } else {
                 setData(fieldName, Array.isArray(data[fieldName]) ? data[fieldName].filter((val) => val !== checkboxValue) : [])
             }
+        } else if (fieldType === "file") {
+            const file = e.target.files[0]
+            setData(fieldName, file)
         } else {
             setData(fieldName, e.target.value)
         }
@@ -66,10 +69,12 @@ export default function ContactWithFormBuilder1({ sections_data }) {
         }
 
         post(route("form.submit"), {
+            forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {
                 reset()
-                formRef.current.reset()
+                if (formRef.current) formRef.current.reset()
+                setCaptchaVerified(false)
             }
         })
     }
@@ -139,7 +144,29 @@ export default function ContactWithFormBuilder1({ sections_data }) {
                         <form ref={formRef} className="row" onSubmit={handleSubmit}>
                             {sections_data?.forms?.map((form, index) => (
                                 <React.Fragment key={index}>
-                                    {form.fieldType === "multilineText" ? (
+                                    {form.fieldType === "file" ? (
+                                        <div className={`col-lg-${form.column ?? "6"}`}>
+                                            {form.label && (
+                                                <label>
+                                                    {form.label} {form.isRequired && "*"}
+                                                </label>
+                                            )}
+                                            <input
+                                                type="file"
+                                                className="cs_form_field"
+                                                required={form.isRequired}
+                                                accept={form.file_extensions?.map((ext) => `.${ext}`).join(",")}
+                                                onChange={(e) => handleSetData(e, form.label, form.placeholder, "file")}
+                                            />
+                                            {form.file_extensions && (
+                                                <small className="text-muted d-block mt-1">Allowed: {form.file_extensions.join(", ")}</small>
+                                            )}
+                                            {errors[form.label?.toLowerCase().replace(/\s+/g, "_")] && (
+                                                <div className="text-danger small mt-1">{errors[form.label?.toLowerCase().replace(/\s+/g, "_")]}</div>
+                                            )}
+                                            <div className="cs_height_22 cs_height_lg_22"></div>
+                                        </div>
+                                    ) : form.fieldType === "multilineText" ? (
                                         <>
                                             <div className={`col-lg-${form.column ?? "6"}`}>
                                                 {form.label && (

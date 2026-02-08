@@ -45,7 +45,9 @@ export default function Create({ languages, cause_categories, default_lang, gift
         is_special: 0,
         gift_ids: [],
         have_product: 0,
-        product_ids: [], // Initialized product_ids
+        product_ids: [],
+        product_design: cause.product_design || "portrait",
+        gift_design: cause.gift_design || "portrait",
         custom_donation_amounts: "2100,5100,11000",
         video_url: "",
         min_amount: "",
@@ -463,8 +465,26 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                 <div className="yoo-card-body">
                                     <div className="yoo-padd-lr-20">
                                         <div className="yoo-height-b20" />
+
+                                        {/* Gift Design Option */}
+                                        <div className="form-group mb-3">
+                                            <label>{translate("Gift Card Design")}</label>
+                                            <select
+                                                className="form-control"
+                                                value={data.gift_design}
+                                                onChange={(e) => setData("gift_design", e.target.value)}
+                                            >
+                                                <option value="portrait">{translate("Portrait Design")}</option>
+                                                <option value="landscape">{translate("Landscape Design")}</option>
+                                            </select>
+                                        </div>
+
                                         <CustomMultiSelect
-                                            options={gifts.map((g) => ({ value: g.id, label: g?.content?.title || "Untitled Gift" }))}
+                                            options={gifts.map((g) => ({
+                                                value: g.id,
+                                                label: g?.content?.title || "Untitled Gift",
+                                                image: g?.gift_image
+                                            }))}
                                             value={data.gift_ids}
                                             placeholder="Select Gifts"
                                             onChange={(selected) => setData("gift_ids", selected)}
@@ -484,8 +504,26 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                 <div className="yoo-card-body">
                                     <div className="yoo-padd-lr-20">
                                         <div className="yoo-height-b20" />
+
+                                        {/* Product Design Option */}
+                                        <div className="form-group mb-3">
+                                            <label>{translate("Product Card Design")}</label>
+                                            <select
+                                                className="form-control"
+                                                value={data.product_design}
+                                                onChange={(e) => setData("product_design", e.target.value)}
+                                            >
+                                                <option value="portrait">{translate("Portrait Design")}</option>
+                                                <option value="landscape">{translate("Landscape Design")}</option>
+                                            </select>
+                                        </div>
+
                                         <CustomMultiSelect
-                                            options={products.map((p) => ({ value: p.id, label: p?.content?.title || "Untitled Product" }))}
+                                            options={products.map((p) => ({
+                                                value: p.id,
+                                                label: p?.content?.title || "Untitled Product",
+                                                image: p?.thumbnail_image
+                                            }))}
                                             value={data.product_ids}
                                             placeholder="Select Products"
                                             onChange={(selected) => setData("product_ids", selected)}

@@ -5974,7 +5974,7 @@ kbd {
 }
 
 .form-control {
-    padding: 10px;
+    /* padding: 10px; */
     min-height: 38px;
     color: rgba(0, 0, 0, 0.7);
     font-size: 16px;

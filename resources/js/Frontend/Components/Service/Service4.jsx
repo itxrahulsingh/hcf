@@ -73,7 +73,7 @@ export default function Service4({ data }) {
                     </div>
                     <div className="col-lg-7 offset-xl-1">
                         <div className="cs_image_card cs_style_1">
-                            {section_image_url && <img src={section_image_url} alt="Service" className="w-100" />}
+                            {section_image_url && <img src={section_image_url} alt="Service" className="w-100" loading="lazy" decoding="async"/>}
 
                             <svg
                                 className="cs_accent_color"

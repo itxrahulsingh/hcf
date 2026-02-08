@@ -61,7 +61,7 @@ export default function Blog4({ data }) {
                                 <SwiperSlide key={index}>
                                     <div className="cs_post cs_style_2">
                                         <NavigationLink href={route("blog.show", item?.slug)} className="cs_post_thumb">
-                                            <img src={item?.thumbnail_image} alt={item?.content?.title} />
+                                            <img src={item?.thumbnail_image} alt={item?.content?.title} loading="lazy" decoding="async"/>
                                         </NavigationLink>
                                         <div className="cs_post_info">
                                             <h2 className="cs_post_title cs_fs_30 cs_normal">

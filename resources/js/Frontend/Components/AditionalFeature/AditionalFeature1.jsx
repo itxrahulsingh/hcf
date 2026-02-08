@@ -76,7 +76,7 @@ export default function AditionalFeature1({ data }) {
                                                 <div className="cs_card_in">
                                                     {item.feature_image_url && (
                                                         <div className="cs_card_thumb">
-                                                            <img src={item.feature_image_url} alt={item.feature_title} />
+                                                            <img src={item.feature_image_url} alt={item.feature_title} loading="lazy" decoding="async"/>
                                                         </div>
                                                     )}
                                                     {item.feature_title && (

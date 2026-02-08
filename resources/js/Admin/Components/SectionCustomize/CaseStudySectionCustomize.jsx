@@ -1146,7 +1146,7 @@ export default function CaseStudySectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/casestudy/casestudy_style_${value}.jpg`} alt="Thumb" />
+                                            <img src={`/static/sections/casestudy/casestudy_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                             <label htmlFor={`layout-${value}`}>Casestudy Style {value}</label>
                                         </div>
                                     </div>

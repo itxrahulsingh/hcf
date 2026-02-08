@@ -609,7 +609,7 @@ export default function ContactWithFormBuilderSectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/contact_with_form_builder/contact_style_${value}.jpg`} alt="Thumb" />
+                                            <img src={`/static/sections/contact_with_form_builder/contact_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                             <label htmlFor={`layout-${value}`}>Contact Style {value}</label>
                                         </div>
                                     </div>

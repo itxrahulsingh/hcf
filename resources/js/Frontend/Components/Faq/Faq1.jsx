@@ -35,7 +35,7 @@ export default function Faq1({ data }) {
                         <>
                             <div className="cs_height_75 cs_height_lg_30" />
                             <div className="cs_mobile_hide cs_ternary_color">
-                                <img src={image_url} alt="Shape" />
+                                <img src={image_url} alt="Shape" loading="lazy" decoding="async"/>
                             </div>
                         </>
                     )}

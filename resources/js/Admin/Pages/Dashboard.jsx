@@ -215,7 +215,7 @@ export default function Dashboard() {
                                             <tr key={i}>
                                                 <td className="ps-4 py-3">
                                                     <div className="d-flex align-items-center">
-                                                        <img src={getAvatar(order.customer_email)} className="rounded-circle border me-3" width="36" height="36" alt="" />
+                                                        <img src={getAvatar(order.customer_email)} className="rounded-circle border me-3" width="36" height="36" alt="" loading="lazy" decoding="async"/>
                                                         <div>
                                                             <div className="fw-bold text-dark fs-6 mb-0">{order.customer_name}</div>
                                                             <small className="text-secondary" style={{fontSize: '11px'}}>{moment(order.created_at).fromNow()}</small>

@@ -675,6 +675,7 @@ export default function Index({ orders, sort, filter, causes }) {
                                                 src={`/storage/${mediaModalOrder.special_image}`}
                                                 alt="Special Request"
                                                 className="img-fluid rounded"
+                                                loading="lazy" decoding="async"
                                                 style={{ maxHeight: "60vh", objectFit: "contain" }}
                                             />
                                         </div>

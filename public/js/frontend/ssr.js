@@ -562,7 +562,9 @@ function About1(_ref) {
                 className: "cs_card_img cs_shining_item",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                   src: item.feature_image_url,
-                  alt: "Thumb"
+                  alt: "Thumb",
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), item.feature_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h2", {
                 className: "cs_card_title cs_fs_30 cs_normal",
@@ -618,7 +620,9 @@ function About2(_ref) {
         className: "col-xl-5 col-lg-6",
         children: image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
           src: image_url,
-          alt: section_title
+          alt: section_title,
+          loading: "lazy",
+          decoding: "async"
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
         className: "col-lg-6 offset-xl-1",
@@ -739,7 +743,9 @@ function About3(_ref) {
         className: "cs_cta_right",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
           src: image_url,
-          alt: section_title
+          alt: section_title,
+          loading: "lazy",
+          decoding: "async"
         })
       })]
     })
@@ -782,7 +788,9 @@ function About4(_ref) {
             children: image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
               src: image_url,
               alt: section_title,
-              className: "w-100"
+              className: "w-100",
+              loading: "lazy",
+              decoding: "async"
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("svg", {
             className: "cs_shape_1 cs_accent_color",
@@ -948,7 +956,9 @@ function About5(_ref) {
           className: "position-relative",
           children: [image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
             src: image_url,
-            alt: section_title
+            alt: section_title,
+            loading: "lazy",
+            decoding: "async"
           }), (experience_year || experience_title) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
             className: "cs_experience_box cs_style_1 cs_accent_bg position-absolute",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h3", {
@@ -1363,7 +1373,9 @@ function AditionalFeature1(_ref) {
                         className: "cs_card_thumb",
                         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
                           src: item.feature_image_url,
-                          alt: item.feature_title
+                          alt: item.feature_title,
+                          loading: "lazy",
+                          decoding: "async"
                         })
                       }), item.feature_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h2", {
                         className: "cs_card_title cs_normal cs_fs_30",
@@ -1456,7 +1468,9 @@ function AditionalFeature2(_ref) {
                   className: "cs_iconbox_icon",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                     src: item.feature_image_url,
-                    alt: "Icon"
+                    alt: "Icon",
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
                   className: "cs_iconbox_right",
@@ -1482,7 +1496,9 @@ function AditionalFeature2(_ref) {
           className: "cs_right_full_width cs_space_120",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
             src: section_image_url,
-            alt: "Thumb"
+            alt: "Thumb",
+            loading: "lazy",
+            decoding: "async"
           })
         })
       })]
@@ -1539,7 +1555,9 @@ function AditionalFeature3(_ref) {
                           className: "cs_iconbox_icon cs_accent_bg cs_center",
                           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                             src: innerItem.inner_feature_icon_url,
-                            alt: "Icon"
+                            alt: "Icon",
+                            loading: "lazy",
+                            decoding: "async"
                           })
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
                           className: "cs_iconbox_right",
@@ -1565,7 +1583,9 @@ function AditionalFeature3(_ref) {
                   className: "cs_planing_thumb",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                     src: item.feature_image_url,
-                    alt: item.feature_title
+                    alt: item.feature_title,
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 })
               })]
@@ -1628,7 +1648,9 @@ function AditionalFeature4(_ref) {
                           className: "cs_iconbox_icon cs_accent_bg cs_center",
                           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                             src: innerItem.inner_feature_icon_url,
-                            alt: "Icon"
+                            alt: "Icon",
+                            loading: "lazy",
+                            decoding: "async"
                           })
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
                           className: "cs_iconbox_right",
@@ -1654,7 +1676,9 @@ function AditionalFeature4(_ref) {
                   className: "cs_planing_thumb",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                     src: item.feature_image_url,
-                    alt: item.feature_title
+                    alt: item.feature_title,
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 })
               })]
@@ -1977,7 +2001,9 @@ function Banner4(_ref) {
           className: "cs_shape_1",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
             src: image_url,
-            alt: "Icon"
+            alt: "Icon",
+            loading: "lazy",
+            decoding: "async"
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
           className: "cs_section_subtitle cs_fs_18 cs_medium",
@@ -2105,7 +2131,9 @@ function Banner6(_ref) {
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
           src: background_image_url,
           alt: "Thumbnail",
-          className: "cs_radius_50_50_0_0"
+          className: "cs_radius_50_50_0_0",
+          loading: "lazy",
+          decoding: "async"
         })
       })
     })]
@@ -2203,7 +2231,9 @@ function Blog1(_ref) {
                 className: "cs_post_thumb",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                   src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                  alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title
+                  alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                 className: "cs_post_info",
@@ -2330,7 +2360,9 @@ function Blog2(_ref) {
                   className: "cs_post_thumb",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                     src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                    alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title
+                    alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title,
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                   className: "cs_post_info",
@@ -2510,7 +2542,9 @@ function Blog3(_ref) {
                     className: "cs_post_thumb",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                       src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                      alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title
+                      alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title,
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                     className: "cs_post_info",
@@ -2628,7 +2662,9 @@ function Blog4(_ref) {
                     className: "cs_post_thumb",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                       src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                      alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title
+                      alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title,
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                     className: "cs_post_info",
@@ -2753,7 +2789,9 @@ function Blog5(_ref) {
                 className: "cs_post_thumb",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                   src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                  alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title
+                  alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                 className: "cs_post_info",
@@ -3396,7 +3434,9 @@ function CaseStudyDetails1(_ref) {
               className: "cs_case_study_details_thumb cs_radius_50_0_0_0",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                 src: image_url,
-                alt: "Casestudy"
+                alt: "Casestudy",
+                loading: "lazy",
+                decoding: "async"
               })
             })
           })
@@ -3462,7 +3502,9 @@ function CaseStudyDetails2(_ref) {
         className: "cs_radius_50_0_0_0",
         style: {
           marginBottom: "30px"
-        }
+        },
+        loading: "lazy",
+        decoding: "async"
       })
     }), banner_type === "slider" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
       className: "cs_radius_50_0_0_0 overflow-hidden cs_case_study_slider",
@@ -3479,7 +3521,9 @@ function CaseStudyDetails2(_ref) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(swiper_react__WEBPACK_IMPORTED_MODULE_1__.SwiperSlide, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
               src: galleryItem.gallery_image_url,
-              alt: "Casestudy"
+              alt: "Casestudy",
+              loading: "lazy",
+              decoding: "async"
             })
           }, index);
         })
@@ -3584,7 +3628,9 @@ function Category1(_ref) {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
               src: item.category_image_url,
               alt: "",
-              className: "cs_category_thumb"
+              className: "cs_category_thumb",
+              loading: "lazy",
+              decoding: "async"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
               className: "cs_category_info",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h3", {
@@ -3697,7 +3743,9 @@ function Cause1(_ref) {
                 className: "cs_post_thumb",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                   src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                  alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title
+                  alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                 className: "cs_post_info",
@@ -3915,6 +3963,8 @@ function Cause2(_ref) {
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                     src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
                     alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title,
+                    loading: "lazy",
+                    decoding: "async",
                     style: styles.img
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h2", {
@@ -4092,7 +4142,9 @@ function Cause3(_ref) {
                     className: "cs_post_thumb",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                       src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                      alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title
+                      alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title,
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                     className: "cs_post_info",
@@ -4210,7 +4262,9 @@ function Cause4(_ref) {
                     className: "cs_post_thumb",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                       src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                      alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title
+                      alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title,
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                     className: "cs_post_info",
@@ -4335,7 +4389,9 @@ function Cause5(_ref) {
                 className: "cs_post_thumb",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                   src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                  alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title
+                  alt: item === null || item === void 0 || (_item$content = item.content) === null || _item$content === void 0 ? void 0 : _item$content.title,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                 className: "cs_post_info",
@@ -5834,7 +5890,9 @@ function ContactWithFormBuilder4(_ref) {
           children: sections_data.image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
             src: sections_data.image_url,
             alt: "Thumbnail",
-            className: "cs_radius_100_0_0_0"
+            className: "cs_radius_100_0_0_0",
+            loading: "lazy",
+            decoding: "async"
           })
         })]
       })
@@ -6002,7 +6060,9 @@ function CoreValue(_ref) {
               className: "cs_iconbox_icon rounded-circle cs_gray_bg",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
                 src: item.feature_icon_url,
-                alt: item.feature_title
+                alt: item.feature_title,
+                loading: "lazy",
+                decoding: "async"
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h2", {
               className: "cs_iconbox_title cs_fs_30 cs_normal",
@@ -6131,7 +6191,9 @@ function CoreValue3(_ref) {
               className: "cs_iconbox_icon rounded-circle cs_gray_bg",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                 src: item.feature_icon_url,
-                alt: item.feature_title
+                alt: item.feature_title,
+                loading: "lazy",
+                decoding: "async"
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h2", {
               className: "cs_iconbox_title cs_fs_30 cs_normal",
@@ -6188,7 +6250,9 @@ function CoreValue4(_ref) {
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
             src: image_url,
             alt: "Thumbnail",
-            className: "w-100"
+            className: "w-100",
+            loading: "lazy",
+            decoding: "async"
           })
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
@@ -6223,7 +6287,9 @@ function CoreValue4(_ref) {
                   className: "cs_iconbox_icon",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
                     src: item.feature_icon_url,
-                    alt: "Icon"
+                    alt: "Icon",
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 }), item.feature_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h2", {
                   className: "cs_iconbox_title cs_fs_24 cs_normal",
@@ -6296,7 +6362,9 @@ function CoreValue5(_ref) {
               className: "cs_iconbox_icon",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
                 src: item.feature_icon_url,
-                alt: "Icon"
+                alt: "Icon",
+                loading: "lazy",
+                decoding: "async"
               })
             }), item.feature_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h2", {
               className: "cs_iconbox_title cs_fs_24 cs_normal",
@@ -6488,7 +6556,9 @@ function Cta2(_ref) {
         className: "cs_cta_thumb",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
           src: image_url,
-          alt: "Thumb"
+          alt: "Thumb",
+          loading: "lazy",
+          decoding: "async"
         })
       })]
     })]
@@ -6531,7 +6601,9 @@ function Cta3(_ref) {
         className: "cs_cta_icon",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
           src: image_url,
-          alt: title
+          alt: title,
+          loading: "lazy",
+          decoding: "async"
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "cs_cta_in position-relative",
@@ -6681,7 +6753,9 @@ function EventSchedule1(_ref) {
                 className: "cs_image_box_img overflow-hidden",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
                   src: item.event_image_url,
-                  alt: item.event_image_url
+                  alt: item.event_image_url,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
                 className: "cs_image_box_info position-relative",
@@ -6787,7 +6861,9 @@ function Faq1(_ref) {
             className: "cs_mobile_hide cs_ternary_color",
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
               src: image_url,
-              alt: "Shape"
+              alt: "Shape",
+              loading: "lazy",
+              decoding: "async"
             })
           })]
         })]
@@ -6991,7 +7067,9 @@ function Footer() {
                 className: "cs_text_widget",
                 children: [customize.general.site_favicon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
                   src: customize.general.site_logo_light,
-                  alt: "Logo"
+                  alt: "Logo",
+                  loading: "lazy",
+                  decoding: "async"
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Widget_ContactInfoWidget__WEBPACK_IMPORTED_MODULE_4__["default"], {})]
               })
             })
@@ -7424,7 +7502,9 @@ function Header10() {
                 href: "/",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
                   src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_light,
-                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name
+                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
@@ -7640,7 +7720,9 @@ function Header2() {
                 href: "/",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
                   src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_light,
-                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name
+                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                 className: "cs_nav",
@@ -7910,7 +7992,9 @@ function Header3() {
                 href: "/",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
                   src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_light,
-                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name
+                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
@@ -7955,7 +8039,9 @@ function Header3() {
           href: "/",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
             src: customize === null || customize === void 0 || (_customize$general3 = customize.general) === null || _customize$general3 === void 0 ? void 0 : _customize$general3.site_logo_light,
-            alt: customize === null || customize === void 0 || (_customize$general4 = customize.general) === null || _customize$general4 === void 0 ? void 0 : _customize$general4.site_name
+            alt: customize === null || customize === void 0 || (_customize$general4 = customize.general) === null || _customize$general4 === void 0 ? void 0 : _customize$general4.site_name,
+            loading: "lazy",
+            decoding: "async"
           })
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("nav", {
@@ -8201,7 +8287,9 @@ function Header4() {
                 href: "/",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
                   src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_light,
-                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name
+                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
@@ -8425,7 +8513,9 @@ function Header5() {
                 href: "/",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
                   src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_dark,
-                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name
+                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                 className: "cs_nav",
@@ -8677,7 +8767,9 @@ function Header6() {
                 href: "/",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
                   src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_light,
-                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name
+                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
@@ -8901,7 +8993,9 @@ function Header7() {
                 href: "/",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
                   src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_dark,
-                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name
+                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
@@ -9125,7 +9219,9 @@ function Header8() {
                 href: "/",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
                   src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_dark,
-                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name
+                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                 className: "cs_nav",
@@ -9343,7 +9439,9 @@ function Header9() {
                 href: "/",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("img", {
                   src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_light,
-                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name
+                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
@@ -9426,7 +9524,9 @@ function Header9() {
           href: "/",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("img", {
             src: customize === null || customize === void 0 || (_customize$general3 = customize.general) === null || _customize$general3 === void 0 ? void 0 : _customize$general3.site_logo_light,
-            alt: customize === null || customize === void 0 || (_customize$general4 = customize.general) === null || _customize$general4 === void 0 ? void 0 : _customize$general4.site_name
+            alt: customize === null || customize === void 0 || (_customize$general4 = customize.general) === null || _customize$general4 === void 0 ? void 0 : _customize$general4.site_name,
+            loading: "lazy",
+            decoding: "async"
           })
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("nav", {
@@ -9608,7 +9708,9 @@ function SideHeader(_ref) {
         href: "/",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("img", {
           src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_dark,
-          alt: "Logo"
+          alt: "Logo",
+          loading: "lazy",
+          decoding: "async"
         })
       }), Boolean(Number(customize === null || customize === void 0 || (_customize$sidebar = customize.sidebar) === null || _customize$sidebar === void 0 ? void 0 : _customize$sidebar.is_show_contact_info)) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
@@ -9838,7 +9940,9 @@ function Header(_ref) {
                 href: "/",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("img", {
                   src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_dark,
-                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name
+                  alt: customize === null || customize === void 0 || (_customize$general2 = customize.general) === null || _customize$general2 === void 0 ? void 0 : _customize$general2.site_name,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
                 className: "cs_nav",
@@ -10751,7 +10855,9 @@ function Hero3(_ref) {
           className: "cs_hero_avatar",
           children: [avatar_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
             src: avatar_image_url,
-            alt: avatar_name
+            alt: avatar_name,
+            loading: "lazy",
+            decoding: "async"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
             className: "cs_hero_avatar_right",
             children: [avatar_name && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h3", {
@@ -10925,7 +11031,9 @@ function Hero5(_ref) {
               className: "cs_hover_layer_1",
               style: {
                 transform: transform1
-              }
+              },
+              loading: "lazy",
+              decoding: "async"
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
             className: "container",
@@ -10962,12 +11070,16 @@ function Hero5(_ref) {
                   children: [item.avatar_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                       src: item.avatar_image_url,
-                      alt: "Avatar"
+                      alt: "Avatar",
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   }), item.avatar_image_url_2 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                       src: item.avatar_image_url_2,
-                      alt: "Avatar"
+                      alt: "Avatar",
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   })]
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
@@ -11411,7 +11523,9 @@ function HorizontalAditionalFeature(_ref) {
                   className: "cs_iconbox_icon",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                     src: featureItem.inner_feature_icon_url,
-                    alt: "Icon"
+                    alt: "Icon",
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
                   className: "cs_iconbox_right",
@@ -11437,7 +11551,9 @@ function HorizontalAditionalFeature(_ref) {
           className: "cs_right_full_width cs_space_120",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
             src: image_url,
-            alt: "Thumb"
+            alt: "Thumb",
+            loading: "lazy",
+            decoding: "async"
           })
         })
       })]
@@ -12680,7 +12796,9 @@ function Partner1(_ref) {
               children: item.partner_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                 src: item.partner_image_url,
                 alt: "Partner Brand",
-                style: styles.img
+                style: styles.img,
+                loading: "lazy",
+                decoding: "async"
               })
             })
           }, index);
@@ -12722,7 +12840,9 @@ function Partner2(_ref) {
               className: "cs_brand cs_style_2",
               children: item.partner_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
                 src: item.partner_image_url,
-                alt: "Brand"
+                alt: "Brand",
+                loading: "lazy",
+                decoding: "async"
               })
             }, index);
           })
@@ -12733,7 +12853,9 @@ function Partner2(_ref) {
               className: "cs_brand cs_style_2",
               children: item.partner_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
                 src: item.partner_image_url,
-                alt: "Brand"
+                alt: "Brand",
+                loading: "lazy",
+                decoding: "async"
               })
             }, index);
           })
@@ -12875,6 +12997,8 @@ function LightGallery(_ref) {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                 src: item.gallery_image_url,
                 alt: "",
+                loading: "lazy",
+                decoding: "async",
                 style: {
                   transform: "scale(".concat(zoomLevel, ")"),
                   transition: "transform 0.3s ease"
@@ -13212,7 +13336,9 @@ function PhotoGallery3(_ref) {
             },
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
               src: item.gallery_image_url,
-              alt: ""
+              alt: "",
+              loading: "lazy",
+              decoding: "async"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
               className: "cs_gallery_hover",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {})]
@@ -13451,7 +13577,9 @@ function PopularProduct1(_ref) {
                   className: "cs_product_thumb",
                   children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("img", {
                     src: product.thumbnail_image,
-                    alt: product.seo_title || "Product Image"
+                    alt: product.seo_title || "Product Image",
+                    loading: "lazy",
+                    decoding: "async"
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
                     className: "cs_product_overlay"
                   }), product.quantity === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
@@ -13621,7 +13749,9 @@ function Portfolio1(_ref) {
                 className: "cs_post_thumb",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                   src: item.portfolio_image_url,
-                  alt: item.portfolio_title
+                  alt: item.portfolio_title,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
                 className: "cs_post_info",
@@ -13690,6 +13820,8 @@ function PortfolioDetails1(_ref) {
       children: image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
         src: image_url,
         alt: "Casestudy",
+        loading: "lazy",
+        decoding: "async",
         className: "cs_radius_50_0_0_0",
         style: {
           marginBottom: "30px"
@@ -13710,6 +13842,8 @@ function PortfolioDetails1(_ref) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(swiper_react__WEBPACK_IMPORTED_MODULE_1__.SwiperSlide, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
               src: galleryItem.gallery_image_url,
+              loading: "lazy",
+              decoding: "async",
               alt: "Casestudy"
             })
           }, index);
@@ -13800,6 +13934,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_translate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/utils/translate */ "./resources/js/utils/translate.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -13867,15 +14005,14 @@ function BlogComment(_ref) {
                 className: "comments-box",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
                   className: "comments-avatar",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
-                    alt: "",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", _defineProperty(_defineProperty({
+                    loading: "lazy",
+                    decoding: "async",
                     src: gravatar_url__WEBPACK_IMPORTED_MODULE_1___default()(comment.comment_author_email),
                     className: "avatar avatar-110 photo",
                     height: 110,
-                    width: 110,
-                    loading: "lazy",
-                    decoding: "async"
-                  })
+                    width: 110
+                  }, "loading", "lazy"), "decoding", "async"))
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                   className: "comment-text",
                   children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
@@ -14167,7 +14304,9 @@ function Pricing1(_ref) {
                     className: "cs_center",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
                       src: item.package_icon_url,
-                      alt: ""
+                      alt: "",
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   })]
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("ul", {
@@ -14179,7 +14318,9 @@ function Pricing1(_ref) {
                         className: "cs_feature_icon cs_accent_color",
                         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
                           src: featureItem.package_feature_icon_url,
-                          alt: ""
+                          alt: "",
+                          loading: "lazy",
+                          decoding: "async"
                         })
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
                         children: featureItem.package_feature_text
@@ -14296,7 +14437,9 @@ function Pricing2(_ref) {
                     className: "cs_center",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
                       src: item.package_icon_url,
-                      alt: ""
+                      alt: "",
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   })]
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("ul", {
@@ -14308,7 +14451,9 @@ function Pricing2(_ref) {
                         className: "cs_feature_icon cs_accent_color",
                         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
                           src: featureItem.package_feature_icon_url,
-                          alt: ""
+                          alt: "",
+                          loading: "lazy",
+                          decoding: "async"
                         })
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
                         children: featureItem.package_feature_text
@@ -16149,7 +16294,9 @@ function Service(_ref) {
               className: "cs_image_box_img overflow-hidden",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
                 src: item.service_image_url,
-                alt: "Service"
+                alt: "Service",
+                loading: "lazy",
+                decoding: "async"
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
               className: "cs_image_box_info position-relative",
@@ -16293,7 +16440,9 @@ function Service2(_ref) {
                 className: "cs_card_img cs_shining_item",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                   src: item.service_image_url,
-                  alt: item.service_title
+                  alt: item.service_title,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), item.service_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h2", {
                 className: "cs_card_title cs_fs_30 cs_normal",
@@ -16406,7 +16555,9 @@ function Service3(_ref) {
                   className: "cs_card_img",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                     src: item.service_image_url,
-                    alt: item.service_title
+                    alt: item.service_title,
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 }), item.service_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h2", {
                   className: "cs_card_title cs_fs_30 cs_normal",
@@ -16536,7 +16687,9 @@ function Service4(_ref) {
             children: [section_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
               src: section_image_url,
               alt: "Service",
-              className: "w-100"
+              className: "w-100",
+              loading: "lazy",
+              decoding: "async"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("svg", {
               className: "cs_accent_color",
               width: 143,
@@ -16734,7 +16887,9 @@ function Service6(_ref) {
                 className: "cs_card_img",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
                   src: item.service_image_url,
-                  alt: item.service_title
+                  alt: item.service_title,
+                  loading: "lazy",
+                  decoding: "async"
                 })
               }), item.service_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
                 className: "cs_card_title cs_fs_30 cs_normal",
@@ -16905,6 +17060,8 @@ function Team1(_ref) {
             children: [item.team_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
               className: "cs_team_member_thumb",
               src: item.team_image_url,
+              loading: "lazy",
+              decoding: "async",
               alt: item.team_member_name
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
               className: "cs_team_info",
@@ -17021,7 +17178,9 @@ function Team2(_ref) {
               children: [item.team_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
                 className: "cs_team_member_thumb",
                 src: item.team_image_url,
-                alt: item.team_member_name
+                alt: item.team_member_name,
+                loading: "lazy",
+                decoding: "async"
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
                 className: "cs_team_info",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
@@ -17187,7 +17346,9 @@ function Team3(_ref) {
                 children: [item.team_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                   className: "cs_team_member_thumb",
                   src: item.team_image_url,
-                  alt: item.team_member_name
+                  alt: item.team_member_name,
+                  loading: "lazy",
+                  decoding: "async"
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                   className: "cs_team_info",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
@@ -17285,7 +17446,9 @@ function Team4(_ref) {
               children: [item.team_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
                 className: "cs_team_member_thumb",
                 src: item.team_image_url,
-                alt: item.team_member_name
+                alt: item.team_member_name,
+                loading: "lazy",
+                decoding: "async"
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
                 className: "cs_team_info",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
@@ -17367,7 +17530,9 @@ function TeamDetails1(_ref) {
         children: member_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
           src: member_image_url,
           alt: member_name,
-          className: "cs_radius_50_50_0_0"
+          className: "cs_radius_50_50_0_0",
+          loading: "lazy",
+          decoding: "async"
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "col-lg-7",
@@ -17545,7 +17710,9 @@ function Testimonial1(_ref) {
                     className: "cs_testimonial_info d-flex align-items-center",
                     children: [item.testimonial_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                       src: item.testimonial_image_url,
-                      alt: item.avatar_name
+                      alt: item.avatar_name,
+                      loading: "lazy",
+                      decoding: "async"
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
                         className: "cs_fs_24 cs_normal mb-0",
@@ -17853,7 +18020,9 @@ function Testimonial2(_ref) {
               className: "cs_avatar_box",
               children: [item.testimonial_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                 src: item.testimonial_image_url,
-                alt: item.avatar_name
+                alt: item.avatar_name,
+                loading: "lazy",
+                decoding: "async"
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                 className: "cs_avatar_box_right",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h3", {
@@ -18055,7 +18224,9 @@ function Testimonial3(_ref) {
                     className: "cs_testimonial_info d-flex align-items-center",
                     children: [item.testimonial_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                       src: item.testimonial_image_url,
-                      alt: item.avatar_name
+                      alt: item.avatar_name,
+                      loading: "lazy",
+                      decoding: "async"
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
                         className: "cs_fs_24 cs_normal mb-0",
@@ -18238,7 +18409,9 @@ function Testimonial4(_ref) {
                   className: "cs_testimonial_info d-flex align-items-center",
                   children: [item.testimonial_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
                     src: item.testimonial_image_url,
-                    alt: item.avatar_name
+                    alt: item.avatar_name,
+                    loading: "lazy",
+                    decoding: "async"
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h3", {
                       className: "cs_fs_24 cs_normal mb-0",
@@ -18305,7 +18478,9 @@ function Testimonial4(_ref) {
         children: image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
           src: image_url,
           alt: "Thumb",
-          className: "w-100"
+          className: "w-100",
+          loading: "lazy",
+          decoding: "async"
         })
       })]
     })
@@ -18506,7 +18681,9 @@ function TrendingProduct1(_ref) {
                   className: "cs_product_thumb",
                   children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("img", {
                     src: product.thumbnail_image,
-                    alt: product.seo_title || "Product Image"
+                    alt: product.seo_title || "Product Image",
+                    loading: "lazy",
+                    decoding: "async"
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
                     className: "cs_product_overlay"
                   }), product.quantity === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
@@ -19011,7 +19188,9 @@ function WhyChooseUs1(_ref) {
                     className: "cs_iconbox_icon",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
                       src: item.feature_icon_url,
-                      alt: "Icon"
+                      alt: "Icon",
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   }), item.feature_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h2", {
                     className: "cs_iconbox_title cs_fs_24 cs_normal",
@@ -19100,7 +19279,9 @@ function WhyChooseUs2(_ref) {
                     className: "cs_iconbox_icon",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
                       src: item.feature_icon_url,
-                      alt: "Icon"
+                      alt: "Icon",
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   }), item.feature_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h2", {
                     className: "cs_iconbox_title cs_fs_24 cs_normal",
@@ -19224,7 +19405,9 @@ function WhyChooseUs3(_ref) {
                     className: "cs_iconbox_icon cs_center cs_accent_bg",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                       src: item.feature_icon_url,
-                      alt: "Icon"
+                      alt: "Icon",
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
                     children: [item.feature_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h2", {
@@ -19324,7 +19507,9 @@ function WhyChooseUs4(_ref) {
                     className: "cs_iconbox_icon cs_center cs_accent_bg",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                       src: item.feature_icon_url,
-                      alt: "Icon"
+                      alt: "Icon",
+                      loading: "lazy",
+                      decoding: "async"
                     })
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
                     children: [item.feature_title && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h2", {
@@ -19940,7 +20125,9 @@ function WorkingProcess1(_ref) {
         children: image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
           src: image_url,
           alt: "Thumbnail",
-          className: "w-100"
+          className: "w-100",
+          loading: "lazy",
+          decoding: "async"
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
         className: "col-lg-6 offset-xl-1",
@@ -20043,7 +20230,9 @@ function WorkingProcess1(_ref) {
         children: image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
           src: image_url,
           alt: "Thumbnail",
-          className: "w-100"
+          className: "w-100",
+          loading: "lazy",
+          decoding: "async"
         })
       })]
     })]
@@ -20122,7 +20311,9 @@ function WorkingProcess3(_ref) {
               className: "cs_card_thumb",
               children: item.feature_image_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                 src: item.feature_image_url,
-                alt: "Thumb"
+                alt: "Thumb",
+                loading: "lazy",
+                decoding: "async"
               })
             })]
           })
@@ -20203,7 +20394,9 @@ function AuthLayout(_ref) {
             className: "cs_login_logo",
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("img", {
               src: customize === null || customize === void 0 || (_customize$general = customize.general) === null || _customize$general === void 0 ? void 0 : _customize$general.site_logo_dark,
-              alt: ""
+              alt: "",
+              loading: "lazy",
+              decoding: "async"
             })
           }), children]
         })
@@ -20415,6 +20608,8 @@ function CauseLayout(_ref) {
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
           src: causeDetailsBannerImageUrl,
           alt: (causeDetails === null || causeDetails === void 0 || (_causeDetails$content = causeDetails.content) === null || _causeDetails$content === void 0 ? void 0 : _causeDetails$content.title) || "Cause Banner",
+          loading: "lazy",
+          decoding: "async",
           className: "cause-banner-image"
         })
       })
@@ -22046,6 +22241,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Frontend_Layouts_FrontendLayout__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/Frontend/Layouts/FrontendLayout */ "./resources/js/Frontend/Layouts/FrontendLayout.jsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__);
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 
 
 
@@ -22119,16 +22318,15 @@ function BlogDetails(_ref) {
               author: blog === null || blog === void 0 || (_blog$user2 = blog.user) === null || _blog$user2 === void 0 ? void 0 : _blog$user2.id
             }
           }),
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
-            alt: "",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", _defineProperty(_defineProperty({
+            loading: "lazy",
+            decoding: "async",
             src: gravatar_url__WEBPACK_IMPORTED_MODULE_5___default()(blog === null || blog === void 0 || (_blog$user3 = blog.user) === null || _blog$user3 === void 0 ? void 0 : _blog$user3.email, {
               size: 400
             }),
             height: 180,
-            width: 180,
-            loading: "lazy",
-            decoding: "async"
-          })
+            width: 180
+          }, "loading", "lazy"), "decoding", "async"))
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h3", {
           className: "cs_fs_30 cs_normal",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_0__.Link, {
@@ -22287,7 +22485,9 @@ function Index(_ref) {
                   className: "cs_post_thumb",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("img", {
                     src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                    alt: "Post"
+                    alt: "Post",
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
                   className: "cs_post_info",
@@ -22480,7 +22680,9 @@ var Index = function Index(_ref) {
                           className: "cs_cart_table_media",
                           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("img", {
                             src: cartItem.image || cartItem.thumbnail_image,
-                            alt: cartItem.name || cartItem.title
+                            alt: cartItem.name || cartItem.title,
+                            loading: "lazy",
+                            decoding: "async"
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("h3", {
                             children: cartItem.name || cartItem.title
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("small", {
@@ -22752,7 +22954,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 function CauseDetails(_ref) {
-  var _cause$content$title, _cause$content3, _cause$content4, _cause$content5, _cause$content6, _cause$category, _cause$user, _cause$content7, _cause$content8, _cause$gifts, _cause$products, _cause$content9, _cause$content10, _cause$content11, _cause$content12, _cause$content13, _cause$content14, _selectedGateway$cont;
+  var _cause$content$title, _cause$content3, _cause$content4, _cause$content5, _cause$content6, _cause$category, _cause$user, _cause$content7, _cause$content8, _cause$gifts, _cause$gifts2, _cause$products, _cause$content9, _cause$content10, _cause$content11, _cause$content12, _cause$content13, _cause$content14, _selectedGateway$cont;
   var cause = _ref.cause,
     categories = _ref.categories,
     recent_post = _ref.recent_post,
@@ -22783,6 +22985,21 @@ function CauseDetails(_ref) {
     discount = coupon.discount_type === "fixed" ? value : subtotal * value / 100;
   }
   var total = subtotal - discount;
+  var ALLOW_MULTIPLE_SELECTIONS = false;
+  var handleSingleSelection = function handleSingleSelection(newItem, itemType) {
+    if (!ALLOW_MULTIPLE_SELECTIONS) {
+      var existingItem = carts.find(function (item) {
+        return item.type === itemType;
+      });
+      if (existingItem && existingItem.id !== newItem.id) {
+        dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
+          id: existingItem.id,
+          type: itemType
+        }));
+      }
+    }
+    dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)(newItem));
+  };
 
   // --- 2. Configurations & Settings ---
   var page_settings = JSON.parse(localStorage.getItem("page_settings")) || {};
@@ -22844,7 +23061,6 @@ function CauseDetails(_ref) {
       orderNotes: "",
       coupon: coupon,
       items: carts,
-      // Initial state
       agreed: false,
       is_80g: false,
       paymentMethod: "",
@@ -22952,19 +23168,13 @@ function CauseDetails(_ref) {
       }
     }
   }, [data.paymentMethod]);
-
-  // Handle Donation Input Changes (Input + Preset Buttons)
   var handleDonationChange = function handleDonationChange(value) {
     setLocalAmount(value);
     var numericVal = parseFloat(value);
-
-    // Remove existing donation first to prevent stacking/loops
     dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
       id: cause.id,
       type: "cause"
     }));
-
-    // Add new valid donation
     if (value && !isNaN(numericVal) && numericVal > 0) {
       dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
         id: cause.id,
@@ -23080,8 +23290,13 @@ function CauseDetails(_ref) {
       url: null
     }]
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Frontend_Layouts_FrontendLayout__WEBPACK_IMPORTED_MODULE_11__["default"], {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)(_Frontend_Layouts_CauseLayout__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)(_Frontend_Layouts_FrontendLayout__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    children: [(cause === null || cause === void 0 ? void 0 : cause.custom_style) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_0__.Head, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("style", {
+        type: "text/css",
+        children: cause.custom_style
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)(_Frontend_Layouts_CauseLayout__WEBPACK_IMPORTED_MODULE_2__["default"], {
       pageHeaderData: pageHeaderData,
       causeDetails: true,
       causeDetailsTitle: cause === null || cause === void 0 || (_cause$content6 = cause.content) === null || _cause$content6 === void 0 ? void 0 : _cause$content6.title,
@@ -23208,11 +23423,11 @@ function CauseDetails(_ref) {
               className: "mb-4",
               children: "Select a Gift"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-              className: "row g-4",
+              className: "row g-4 ".concat((cause === null || cause === void 0 || (_cause$gifts2 = cause.gifts) === null || _cause$gifts2 === void 0 ? void 0 : _cause$gifts2.length) <= 2 ? "justify-content-center" : ""),
               children: cause.gifts.map(function (gift, idx) {
                 var _gift$variations, _gift$content, _gift$content2, _gift$content3;
                 var isVaried = gift.have_variations === 1 && ((_gift$variations = gift.variations) === null || _gift$variations === void 0 ? void 0 : _gift$variations.length) > 0;
-                var colClass = isVaried ? "col-12 col-md-6" : "col-6 col-sm-4 col-md-3";
+                var colClass = isVaried ? "col-12 col-md-6" : (cause === null || cause === void 0 ? void 0 : cause.gift_design) == 'portrait' ? "col-6 col-sm-4 col-md-3" : "col-6 ";
                 var cartItem = !isVaried ? carts.find(function (i) {
                   return i.id === gift.id && i.type === "gift";
                 }) : null;
@@ -23220,12 +23435,14 @@ function CauseDetails(_ref) {
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                   className: colClass,
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
-                    className: "cause-card h-100 d-flex flex-column shadow-sm",
+                    className: "cause-card h-100 d-flex ".concat((cause === null || cause === void 0 ? void 0 : cause.gift_design) == "portrait" ? "flex-column" : "", " shadow-sm"),
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                       className: "cause-card-img-wrapper",
                       children: gift.gift_image ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("img", {
                         src: gift.gift_image,
-                        alt: (_gift$content = gift.content) === null || _gift$content === void 0 ? void 0 : _gift$content.title
+                        alt: (_gift$content = gift.content) === null || _gift$content === void 0 ? void 0 : _gift$content.title,
+                        loading: "lazy",
+                        decoding: "async"
                       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                         className: "d-flex align-items-center justify-content-center h-100 bg-light text-muted",
                         children: "No Image"
@@ -23240,58 +23457,54 @@ function CauseDetails(_ref) {
                         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("p", {
                           children: (_gift$content3 = gift.content) === null || _gift$content3 === void 0 ? void 0 : _gift$content3.description
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-                          className: "d-flex flex-column gap-2 mt-2",
+                          className: "row mt-2",
                           children: gift.variations.map(function (variant, vIdx) {
-                            var variantCartId = "".concat(gift.id, "-var-").concat(vIdx);
+                            var variantId = "".concat(gift.id, "-var-").concat(vIdx);
                             var isActive = carts.some(function (i) {
-                              return i.id === variantCartId && i.type === 'gift';
+                              return i.id === variantId && i.type === "gift";
                             });
-                            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("button", {
-                              className: "btn w-100 d-flex justify-content-between align-items-center px-3 py-2 shadow-sm border",
-                              style: {
-                                background: isActive ? "linear-gradient(45deg, #ff8c00, #ffaa33)" : "#fff",
-                                color: isActive ? "#fff" : "#333",
-                                borderColor: isActive ? "transparent" : "#dee2e6",
-                                transition: "all 0.3s ease"
-                              },
-                              onClick: function onClick() {
-                                gift.variations.forEach(function (_, otherIdx) {
-                                  var otherId = "".concat(gift.id, "-var-").concat(otherIdx);
-                                  if (carts.some(function (c) {
-                                    return c.id === otherId && c.type === 'gift';
-                                  })) {
+                            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                              className: "col-6 pb-2",
+                              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("button", {
+                                type: "button",
+                                className: "w-100 py-2 rounded-3 border-0 transition-all",
+                                style: {
+                                  background: isActive ? "linear-gradient(45deg, #e64a19, #f4511e)" : "linear-gradient(45deg, rgb(255 51 51), rgb(237, 143, 3))",
+                                  color: "#fff",
+                                  boxShadow: isActive ? "inset 0 4px 8px rgba(0,0,0,0.3)" : "0 4px 12px rgba(240, 152, 25, 0.25)"
+                                },
+                                onClick: function onClick() {
+                                  if (isActive) {
                                     dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
-                                      id: otherId,
-                                      type: 'gift'
+                                      id: variantId,
+                                      type: "gift"
                                     }));
-                                  }
-                                });
-                                if (!isActive) {
-                                  var _gift$content4;
-                                  dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
-                                    id: variantCartId,
-                                    type: 'gift',
-                                    content: _objectSpread(_objectSpread({}, gift), {}, {
-                                      amount: variant.amount,
-                                      content: _objectSpread(_objectSpread({}, gift.content), {}, {
+                                  } else {
+                                    var _gift$content4;
+                                    handleSingleSelection({
+                                      id: variantId,
+                                      type: "gift",
+                                      content: _objectSpread(_objectSpread({}, gift), {}, {
+                                        amount: variant.amount,
                                         title: "".concat((_gift$content4 = gift.content) === null || _gift$content4 === void 0 ? void 0 : _gift$content4.title, " - ").concat(variant.title)
-                                      })
-                                    }),
-                                    quantity: 1,
-                                    cause_id: cause.id
-                                  }));
-                                }
-                              },
-                              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
-                                className: "fw-medium small",
-                                children: variant.title
-                              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
-                                className: "fw-bold",
-                                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
-                                  amount: variant.amount
-                                })
-                              })]
-                            }, vIdx);
+                                      }),
+                                      quantity: 1,
+                                      price: variant.amount,
+                                      cause_id: cause.id
+                                    }, "gift");
+                                  }
+                                },
+                                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                                  className: "fw-bold small opacity-90",
+                                  children: variant.title
+                                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                                  className: "fw-bolder",
+                                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
+                                    amount: variant.amount
+                                  })
+                                })]
+                              })
+                            }, variantId);
                           })
                         })]
                       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.Fragment, {
@@ -23325,16 +23538,14 @@ function CauseDetails(_ref) {
                             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("button", {
                               className: "qty-btn",
                               onClick: function onClick() {
-                                return cartItem ? dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.increaseCart)({
-                                  id: gift.id,
-                                  type: "gift"
-                                })) : dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+                                return handleSingleSelection({
                                   id: gift.id,
                                   type: "gift",
                                   content: gift,
                                   quantity: gift.min_qty || 1,
+                                  price: gift.amount,
                                   cause_id: cause.id
-                                }));
+                                }, "gift");
                               },
                               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
                                 icon: "ic:round-plus"
@@ -23363,13 +23574,13 @@ function CauseDetails(_ref) {
                 var quantity = cartItem ? cartItem.quantity : 1;
                 var finalPrice = Number(product.discount_price || product.price || 0);
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
-                  className: "col-12 col-sm-6 col-md-4",
+                  className: "col-12 col-sm-6 ".concat((cause === null || cause === void 0 ? void 0 : cause.product_design) == "portrait" ? "col-md-4" : ""),
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
-                    className: "cause-card h-100 d-flex flex-column shadow-sm border-0 overflow-hidden",
+                    className: "cause-card h-100 d-flex ".concat((cause === null || cause === void 0 ? void 0 : cause.product_design) == "portrait" ? "flex-column" : "", "  shadow-sm border-0 overflow-hidden"),
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "cause-card-img-wrapper position-relative",
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
-                        className: "position-absolute top-0 start-0 w-100 d-flex flex-column",
+                        className: "top-0 start-0 w-100 d-flex flex-column",
                         style: {
                           zIndex: 5
                         },
@@ -23399,13 +23610,19 @@ function CauseDetails(_ref) {
                         src: product.thumbnail_image,
                         alt: (_product$content = product.content) === null || _product$content === void 0 ? void 0 : _product$content.title,
                         className: "w-100 object-fit-cover",
-                        style: {
+                        loading: "lazy",
+                        decoding: "async",
+                        style: (cause === null || cause === void 0 ? void 0 : cause.product_design) == "portrait" ? {
                           height: "200px"
+                        } : {
+                          height: "150px"
                         }
                       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                         className: "d-flex align-items-center justify-content-center bg-light text-muted h-100",
-                        style: {
-                          minHeight: "200px"
+                        style: (cause === null || cause === void 0 ? void 0 : cause.product_design) == "portrait" ? {
+                          height: "200px"
+                        } : {
+                          height: "150px"
                         },
                         children: "No Image"
                       })]
@@ -23455,13 +23672,14 @@ function CauseDetails(_ref) {
                               return cartItem ? dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.increaseCart)({
                                 id: product.id,
                                 type: "product"
-                              })) : dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+                              })) : handleSingleSelection({
                                 id: product.id,
                                 type: "product",
                                 content: product,
-                                quantity: product.min_quantity || 1,
+                                quantity: cartItem ? 1 : product.min_quantity || 1,
+                                price: finalPrice,
                                 cause_id: cause.id
-                              }));
+                              }, "product");
                             },
                             children: "+"
                           })]
@@ -23479,22 +23697,23 @@ function CauseDetails(_ref) {
                             overflow: "hidden"
                           }
                         })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                      }), ["birthday"].includes(cause.type) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                         className: "mt-auto pt-2 border-top",
-                        children: ["birthday"].includes(cause.type) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("button", {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("button", {
                           className: "btn btn-primary w-100 rounded-pill fw-bold shadow-sm",
                           style: {
                             padding: "10px"
                           },
                           onClick: function onClick() {
                             if (!cartItem) {
-                              dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
+                              handleSingleSelection({
                                 id: product.id,
                                 type: "product",
                                 content: product,
                                 quantity: product.min_quantity || 1,
+                                price: finalPrice,
                                 cause_id: cause.id
-                              }));
+                              }, "product");
                             }
                             setShowDonateModal(true);
                           },
@@ -23654,7 +23873,9 @@ function CauseDetails(_ref) {
                       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.Fragment, {
                         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("img", {
                           src: item.url,
-                          className: "w-100 h-100 object-fit-cover"
+                          className: "w-100 h-100 object-fit-cover",
+                          loading: "lazy",
+                          decoding: "async"
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                           className: "hover-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center pointer-events-none",
                           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_iconify_react__WEBPACK_IMPORTED_MODULE_6__.Icon, {
@@ -23708,10 +23929,7 @@ function CauseDetails(_ref) {
                     className: "input-group input-group-lg border rounded-3 overflow-hidden",
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
                       className: "input-group-text bg-light border-0 fw-bold text-muted",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
-                        amount: 0,
-                        showSymbolOnly: true
-                      })
+                      children: "\u20B9"
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                       type: "number",
                       className: "form-control border-0 fw-bold fs-5 text-dark",
@@ -23779,6 +23997,7 @@ function CauseDetails(_ref) {
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("iframe", {
                   src: convertYouTube(cause.video_url),
                   title: "Cause Video",
+                  loading: "lazy",
                   allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
                   allowFullScreen: true
                 })
@@ -24254,7 +24473,7 @@ function CauseDetails(_ref) {
           })
         })
       })]
-    })
+    })]
   });
 }
 
@@ -24377,7 +24596,9 @@ function Index(_ref) {
                   className: "cs_post_thumb",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("img", {
                     src: item === null || item === void 0 ? void 0 : item.thumbnail_image,
-                    alt: "Post"
+                    alt: "Post",
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
                   className: "cs_post_info",
@@ -27263,7 +27484,9 @@ var Index = function Index(_ref) {
                     className: "cs_product_thumb",
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("img", {
                       src: product.thumbnail_image,
-                      alt: product.seo_title || "Product Image"
+                      alt: product.seo_title || "Product Image",
+                      loading: "lazy",
+                      decoding: "async"
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
                       className: "cs_product_overlay"
                     }), product.quantity === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
@@ -27527,7 +27750,9 @@ var Show = function Show(_ref) {
                   className: "cs_single_product_thumb_item",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsx)("img", {
                     src: image,
-                    alt: "Thumb"
+                    alt: "Thumb",
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 }, index)
               });
@@ -27548,7 +27773,9 @@ var Show = function Show(_ref) {
                   className: "cs_single_product_thumb_mini",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsx)("img", {
                     src: image,
-                    alt: "Thumb"
+                    alt: "Thumb",
+                    loading: "lazy",
+                    decoding: "async"
                   })
                 }, index)
               });
@@ -27736,7 +27963,9 @@ var Show = function Show(_ref) {
                             alt: "Avatar",
                             style: {
                               borderRadius: "50%"
-                            }
+                            },
+                            loading: "lazy",
+                            decoding: "async"
                           })
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsxs)("div", {
                           className: "cs_review_media_right",
@@ -28544,7 +28773,9 @@ function edit() {
               marginBottom: "10px",
               width: "150px"
             },
-            alt: ""
+            alt: "",
+            loading: "lazy",
+            decoding: "async"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
             className: "col-lg-12",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("label", {
@@ -28777,7 +29008,9 @@ function Index(_ref) {
                     },
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("img", {
                       src: product === null || product === void 0 ? void 0 : product.product_image,
-                      alt: ""
+                      alt: "",
+                      loading: "lazy",
+                      decoding: "async"
                     }), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
                       children: product === null || product === void 0 ? void 0 : product.product_name
                     })]

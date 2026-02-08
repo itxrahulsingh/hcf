@@ -4,6 +4,7 @@
 /public/build
 /public/hot
 /public/storage
+/public/js/chunks
 /storage/*.key
 /vendor
 .env

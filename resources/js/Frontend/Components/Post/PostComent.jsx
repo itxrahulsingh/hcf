@@ -40,7 +40,7 @@ export default function BlogComment({ blog, commnets }) {
                                     <div className="comments-box">
                                         <div className="comments-avatar">
                                             <img
-                                                alt=""
+                                                loading="lazy" decoding="async"
                                                 src={gravatarUrl(comment.comment_author_email)}
                                                 className="avatar avatar-110 photo"
                                                 height={110}

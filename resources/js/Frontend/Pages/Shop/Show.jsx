@@ -75,7 +75,7 @@ const Show = ({ product, categories, tags, meta_title, meta_description, meta_im
                             {JSON.parse(product.slider_images).map((image, index) => (
                                 <SwiperSlide>
                                     <div key={index} className="cs_single_product_thumb_item">
-                                        <img src={image} alt="Thumb" />
+                                        <img src={image} alt="Thumb" loading="lazy" decoding="async"/>
                                     </div>
                                 </SwiperSlide>
                             ))}
@@ -95,7 +95,7 @@ const Show = ({ product, categories, tags, meta_title, meta_description, meta_im
                                 {JSON.parse(product.slider_images).map((image, index) => (
                                     <SwiperSlide>
                                         <div key={index} className="cs_single_product_thumb_mini">
-                                            <img src={image} alt="Thumb" />
+                                            <img src={image} alt="Thumb" loading="lazy" decoding="async"/>
                                         </div>
                                     </SwiperSlide>
                                 ))}
@@ -231,7 +231,7 @@ const Show = ({ product, categories, tags, meta_title, meta_description, meta_im
                                                 <div className="cs_client_review">
                                                     <div className="cs_review_media">
                                                         <div className="cs_review_media_thumb">
-                                                            <img src={gravatarUrl(review?.email)} alt="Avatar" style={{ borderRadius: "50%" }} />
+                                                            <img src={gravatarUrl(review?.email)} alt="Avatar" style={{ borderRadius: "50%" }} loading="lazy" decoding="async"/>
                                                         </div>
                                                         <div className="cs_review_media_right">
                                                             <div className="cs_rating cs_size_sm cs_accent_color">

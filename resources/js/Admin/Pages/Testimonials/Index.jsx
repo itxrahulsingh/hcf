@@ -224,7 +224,7 @@ export default function Index({ testimonials, sort, filtered_lang, languages }) 
                                                                     width: "50px"
                                                                 }}
                                                                 src={testimonial?.client_image}
-                                                                alt=""
+                                                                loading="lazy" decoding="async"
                                                             />
                                                         </td>
                                                         <td>{testimonial?.content?.name}</td>

@@ -29,7 +29,7 @@ export default function SingleMediaUploader({ onSelected, handleRemoved, default
             <div onClick={() => setShowUploaderPopup(true)} className={`upload-area${size_sm ? " upload-area-sm" : ""}`}>
                 {previewImageUrl ? (
                     <div className="image-preview">
-                        <img src={previewImageUrl} className="preview-image" alt="Preview" />
+                        <img src={previewImageUrl} className="preview-image" alt="Preview" loading="lazy" decoding="async"/>
                         <button onClick={removeImage} className="remove-button">
                             <IonIcon icon={trashOutline} />
                         </button>

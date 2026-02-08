@@ -65,7 +65,7 @@ export default function Service2({ data }) {
                             <div className="cs_card cs_style_1 cs_shining">
                                 {item.service_image_url && (
                                     <div className="cs_card_img cs_shining_item">
-                                        <img src={item.service_image_url} alt={item.service_title} />
+                                        <img src={item.service_image_url} alt={item.service_title} loading="lazy" decoding="async"/>
                                     </div>
                                 )}
 

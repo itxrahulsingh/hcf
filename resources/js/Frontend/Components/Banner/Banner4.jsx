@@ -8,7 +8,7 @@ export default function Banner4({ data }) {
                 <div className="cs_section_heading cs_style_1">
                     {image_url && (
                         <div className="cs_shape_1">
-                            <img src={image_url} alt="Icon" />
+                            <img src={image_url} alt="Icon" loading="lazy" decoding="async"/>
                         </div>
                     )}
                     <p

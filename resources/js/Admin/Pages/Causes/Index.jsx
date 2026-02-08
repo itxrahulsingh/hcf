@@ -284,7 +284,8 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                         <img
                                                             src={cause?.thumbnail_image || "static/no-image.jpg"}
                                                             alt={cause?.content?.title}
-                                                            style={{ width: "80px" }}
+                                                            loading="lazy" decoding="async"
+                                                            width={80}
                                                         />
                                                     </td>
                                                     <td className="sorting_1">{cause?.content?.title}</td>

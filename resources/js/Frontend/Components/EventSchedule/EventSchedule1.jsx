@@ -37,7 +37,7 @@ export default function EventSchedule1({ data }) {
                             <div className="cs_image_box cs_style_1">
                                 <div className="cs_image_box_number cs_primary_font cs_fs_53">{item.event_serial_number}</div>
                                 <div className="cs_image_box_img overflow-hidden">
-                                    <img src={item.event_image_url} alt={item.event_image_url} />
+                                    <img src={item.event_image_url} alt={item.event_image_url} loading="lazy" decoding="async"/>
                                 </div>
                                 <div className="cs_image_box_info position-relative">
                                     {item.event_time && (

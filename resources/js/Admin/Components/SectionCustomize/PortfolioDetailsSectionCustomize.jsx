@@ -430,7 +430,7 @@ export default function PortfolioDetailsSectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/project_details/style_${value}.jpg`} alt="Thumb" />
+                                            <img src={`/static/sections/project_details/style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                             <label htmlFor={`layout-${value}`}>Portfolio Details Style {value}</label>
                                         </div>
                                     </div>

@@ -39,7 +39,7 @@ export default function CaseStudyDetails1({ data }) {
                     <div className="col-lg-5">
                         <div className="cs_top_sticky_100">
                             <div className="cs_case_study_details_thumb cs_radius_50_0_0_0">
-                                <img src={image_url} alt="Casestudy" />
+                                <img src={image_url} alt="Casestudy" loading="lazy" decoding="async"/>
                             </div>
                         </div>
                     </div>

@@ -13,18 +13,21 @@ $secondary_font = \App\Models\Setting::pull('secondary_font');
 --secondary: {{ $secondary_color }} !important;
 --primary-font: {{$primary_font}}, sans-serif;
 --secondary-font: {{$secondary_font}}, sans-serif;
---hcf-primary: linear-gradient(107deg, #FF4305 0%, #F58700 100%) !important;
+--hcf-primary: linear-gradient(45deg, rgb(255 51 51), rgb(237, 143, 3)); !important;
 }
 
+.hcf-gradient{
+background: linear-gradient(45deg, rgb(255 51 51), rgb(237, 143, 3));
+}
 /* =========================================
-   1. RESPONSIVE HERO BANNER
-   ========================================= */
+1. RESPONSIVE HERO BANNER
+========================================= */
 .cause-banner-wrapper {
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    background-color: #f0f0f0;
-    margin-top: 0; /* Adjust if your header covers it */
+width: 100%;
+position: relative;
+overflow: hidden;
+background-color: #f0f0f0;
+margin-top: 0; /* Adjust if your header covers it */
 }
 /* Mobile Height */
 .cause-banner-wrapper { height: 250px; }
@@ -34,140 +37,140 @@ $secondary_font = \App\Models\Setting::pull('secondary_font');
 @media (min-width: 1200px) { .cause-banner-wrapper { height: 500px; } }
 
 .cause-banner-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
+width: 100%;
+height: 100%;
+object-fit: cover;
+object-position: center;
+display: block;
 }
 
 /* =========================================
-   2. STICKY NAVIGATION BAR
-   ========================================= */
+2. STICKY NAVIGATION BAR
+========================================= */
 .cause-sticky-nav {
-    <!-- position: -webkit-sticky; /* Safari support */ -->
-    <!-- position: sticky; -->
-    top: 100px;
-    z-index: 1020;
-    background-color: #fff;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border-bottom: 1px solid #eee;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    margin:20px 0;
+<!-- position: -webkit-sticky; /* Safari support */ -->
+<!-- position: sticky; -->
+top: 100px;
+z-index: 1020;
+background-color: #fff;
+box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+border-bottom: 1px solid #eee;
+height: 60px;
+display: flex;
+align-items: center;
+margin:20px 0;
 }
 
 .cause-sticky-nav .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-    width: 100%;
+display: flex;
+align-items: center;
+justify-content: space-between;
+height: 100%;
+width: 100%;
 }
 
 .cause-nav-list {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 20px;
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none; /* Firefox */
-    -webkit-overflow-scrolling: touch;
-    height: 100%;
+display: flex;
+list-style: none;
+margin: 0;
+padding: 0;
+gap: 20px;
+overflow-x: auto;
+white-space: nowrap;
+scrollbar-width: none; /* Firefox */
+-webkit-overflow-scrolling: touch;
+height: 100%;
 }
 .cause-nav-list::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
 .cause-nav-item {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #555;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
+font-weight: 600;
+font-size: 0.9rem;
+color: #555;
+cursor: pointer;
+display: flex;
+align-items: center;
+height: 100%;
+border-bottom: 3px solid transparent;
+transition: all 0.3s ease;
 }
 
 .cause-nav-item:hover, .cause-nav-item.active {
-    color: #ff8c00;
-    border-bottom-color: #ff8c00;
+color: #ff8c00;
+border-bottom-color: #ff8c00;
 }
 
 /* Social Widget Wrapper (Desktop Only) */
 .nav-social-wrapper {
-    margin-left: 20px;
-    padding-left: 20px;
-    border-left: 1px solid #eee;
-    display: none;
+margin-left: 20px;
+padding-left: 20px;
+border-left: 1px solid #eee;
+display: none;
 }
 @media (min-width: 992px) { .nav-social-wrapper { display: block; } }
 
 
 /* =========================================
-   3. MOBILE DONATION ELEMENTS
-   ========================================= */
+3. MOBILE DONATION ELEMENTS
+========================================= */
 /* Top Card (Input) - Visible Mobile Only */
 .mobile-donation-card {
-    background: #fdfdfd;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+background: #fdfdfd;
+border: 1px solid #eee;
+border-radius: 12px;
+padding: 20px;
+margin-top: 20px;
+box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
 
 /* Sticky Bottom Footer - Visible Mobile Only */
 .mobile-sticky-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #fff;
-    padding: 12px 15px;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-    z-index: 1030;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    border-top: 1px solid #f0f0f0;
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+background: #fff;
+padding: 12px 15px;
+box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+z-index: 1030;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 15px;
+border-top: 1px solid #f0f0f0;
 }
 
 /* Add padding to body on mobile so footer doesn't hide content */
 @media (max-width: 991px) {
-    body { padding-bottom: 80px; }
+body { padding-bottom: 80px; }
 }
 
 /* Hide these on Desktop */
 @media (min-width: 992px) {
-    .mobile-donation-card,
-    .mobile-sticky-footer {
-        display: none !important;
-    }
+.mobile-donation-card,
+.mobile-sticky-footer {
+display: none !important;
+}
 }
 
 
 /* =========================================
-   4. DESKTOP SIDEBAR DONATION CARD
-   ========================================= */
+4. DESKTOP SIDEBAR DONATION CARD
+========================================= */
 .sidebar-sticky-wrapper {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 90px; /* Adjust based on header/nav height */
-    z-index: 10;
+position: -webkit-sticky;
+position: sticky;
+top: 90px; /* Adjust based on header/nav height */
+z-index: 10;
 }
 
 .donation-card {
-    background: #ffffff;
-    border: 1px solid #eee;
-    border-radius: 16px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
-    padding: 24px;
-    overflow: hidden;
+background: #ffffff;
+border: 1px solid #eee;
+border-radius: 16px;
+box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+padding: 24px;
+overflow: hidden;
 }
 
 .donation-card-header { margin-bottom: 20px; text-align: center; }
@@ -175,22 +178,22 @@ $secondary_font = \App\Models\Setting::pull('secondary_font');
 
 /* Amount Buttons */
 .amount-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 10px;
+margin-bottom: 20px;
 }
 
 .amount-btn {
-    border: 1px solid #e0e0e0;
-    background: #fff;
-    color: #555;
-    padding: 10px 5px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    width: 100%;
+border: 1px solid #e0e0e0;
+background: #fff;
+color: #555;
+padding: 10px 5px;
+border-radius: 8px;
+font-weight: 600;
+font-size: 0.9rem;
+transition: all 0.2s ease;
+width: 100%;
 }
 .amount-btn:hover { border-color: #ff8c00; color: #ff8c00; background: #fffaf5; }
 .amount-btn.active { background: #ff8c00; color: #fff; border-color: #ff8c00; box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3); }
@@ -198,26 +201,26 @@ $secondary_font = \App\Models\Setting::pull('secondary_font');
 /* Inputs */
 .donation-card .input-group:focus-within,
 .mobile-donation-card .input-group:focus-within {
-    border-color: #ff8c00 !important;
-    box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.15) !important;
+border-color: #ff8c00 !important;
+box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.15) !important;
 }
 .donation-card input[type=number]::-webkit-inner-spin-button,
 .donation-card input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
 /* Donate Button Style */
 .btn-donate-lg {
-    background: linear-gradient(45deg, #ff8c00, #ffaa33);
-    color: white;
-    border: none;
-    width: 100%;
-    padding: 14px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border-radius: 50px;
-    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
-    transition: transform 0.2s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+background: linear-gradient(45deg, #ff8c00, #ffaa33);
+color: white;
+border: none;
+width: 100%;
+padding: 14px;
+font-size: 1.1rem;
+font-weight: 700;
+border-radius: 50px;
+box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
+transition: transform 0.2s;
+text-transform: uppercase;
+letter-spacing: 0.5px;
 }
 .btn-donate-lg:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 140, 0, 0.5); color: white; }
 .btn-donate-lg:disabled, .btn-donate-lg.disabled { background: #e0e0e0; color: #999; cursor: not-allowed; box-shadow: none; pointer-events: none; }
@@ -227,47 +230,39 @@ $secondary_font = \App\Models\Setting::pull('secondary_font');
 .trust-item { display: flex; align-items: center; gap: 5px; }
 
 .sidebar-video-card {
-    border-radius: 12px;
-    overflow: hidden;
-    margin-top: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+border-radius: 12px;
+overflow: hidden;
+margin-top: 20px;
+box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 /* =========================================
-   5. CARDS (GIFTS & PRODUCTS)
-   ========================================= */
+5. CARDS (GIFTS & PRODUCTS)
+========================================= */
 .cause-card {
-    border: 1px solid #eee;
-    background: #fff;
-    transition: all 0.3s ease;
-    border-radius: 12px;
-    overflow: hidden;
+border: 1px solid #eee;
+background: #fff;
+transition: all 0.3s ease;
+border-radius: 12px;
 }
 .cause-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.08) !important; border-color: #ffdec2; }
 
 .cause-card-img-wrapper {
-    height: 180px;
-    width: 100%;
-    background-color: #f9f9f9;
-    position: relative;
-    overflow: hidden;
+background-color: #f9f9f9;
+position: relative;
+overflow: hidden;
 }
 .cause-card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
 .cause-card:hover .cause-card-img-wrapper img { transform: scale(1.05); }
 
 .cause-card-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #222;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    height: 18px;
-    margin-bottom: 0.5rem;
+font-size: 1rem;
+font-weight: 600;
+color: #222;
+margin-bottom: 0.5rem;
 }
 .cause-card-price { color: #ff8c00; font-weight: 700; font-size: 1.1rem; }
-.cause-card-desc { font-size: 0.85rem; color: #666; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 10px; }
+.cause-card-desc { font-size: 0.85rem; color: #666; margin-bottom: 10px; }
 
 /* Qty Controls */
 .qty-control { background: #f8f9fa; border-radius: 50px; padding: 2px; border: 1px solid #e9ecef; }
@@ -276,14 +271,14 @@ $secondary_font = \App\Models\Setting::pull('secondary_font');
 
 
 /* =========================================
-   6. TRANSPARENCY GALLERY (MIXED MEDIA)
-   ========================================= */
+6. TRANSPARENCY GALLERY (MIXED MEDIA)
+========================================= */
 .transparency-gallery-section {
-    /* Soft Orange Gradient */
-    background: linear-gradient(135deg, #fff8f3 0%, #ffecd9 100%);
-    border: 1px solid #ffdec2;
-    position: relative;
-    overflow: hidden;
+/* Soft Orange Gradient */
+background: linear-gradient(135deg, #fff8f3 0%, #ffecd9 100%);
+border: 1px solid #ffdec2;
+position: relative;
+overflow: hidden;
 }
 .transparency-gallery-section .section-title { color: #333; font-size: 1.75rem; }
 .transparency-gallery-section .separator { width: 60px; height: 3px; background-color: #ff8c00; border-radius: 2px; }
@@ -295,8 +290,8 @@ $secondary_font = \App\Models\Setting::pull('secondary_font');
 
 
 /* =========================================
-   7. COMPACT MODAL STYLES
-   ========================================= */
+7. COMPACT MODAL STYLES
+========================================= */
 .modal-content { border: none; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
 .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid #f0f0f0; background: #fff; border-radius: 12px 12px 0 0; }
 .modal-body { padding: 1.25rem; }
@@ -320,8 +315,8 @@ $secondary_font = \App\Models\Setting::pull('secondary_font');
 
 
 /* =========================================
-   8. RICH CONTENT
-   ========================================= */
+8. RICH CONTENT
+========================================= */
 .rich-content img { max-width: 100%; height: auto; border-radius: 12px; margin: 1.5rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .rich-content iframe, .rich-content video { width: 100%; aspect-ratio: 16 / 9; height: auto; border-radius: 12px; margin: 1.5rem 0; }
 {{ $custom_css }}

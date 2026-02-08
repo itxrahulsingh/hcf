@@ -92,6 +92,7 @@ const Index = ({ meta_tags, tagline, site_name, meta_title, title, meta_descript
                                                             <img
                                                                 src={cartItem.image || cartItem.thumbnail_image}
                                                                 alt={cartItem.name || cartItem.title}
+                                                                loading="lazy" decoding="async"
                                                             />
                                                             <h3>{cartItem.name || cartItem.title}</h3>
                                                             <small className="text-muted">

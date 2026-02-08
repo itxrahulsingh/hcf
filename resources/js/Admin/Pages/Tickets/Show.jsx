@@ -137,6 +137,7 @@ export default function Show({ ticket }) {
                                                                     borderRadius: "50%"
                                                                 }}
                                                                 alt="profile"
+                                                                loading="lazy" decoding="async"
                                                             />
                                                         </div>
                                                         <div className="comment-header ml-3">
@@ -193,6 +194,7 @@ export default function Show({ ticket }) {
                                                                 height: "50px",
                                                                 borderRadius: "50%"
                                                             }}
+                                                            loading="lazy" decoding="async"
                                                             alt="profile"
                                                         />
                                                     </div>

@@ -66,11 +66,11 @@ export default function MediaLibrarySingleFile({ file, isFile, index, fileUpload
 
     let previewElement = null
     if (isImage()) {
-        previewElement = <img draggable={false} src={file.media_url} alt="" />
+        previewElement = <img draggable={false} src={file.media_url} alt="" loading="lazy" decoding="async"/>
     } else if (isVideo()) {
         previewElement = (
             <div className="icon-preview">
-                <img src="/static/images/media/video.png" alt="" />
+                <img src="/static/images/media/video.png" alt="" loading="lazy" decoding="async"/>
                 <div className="preview-file-name">
                     <p>{file.title}</p>
                 </div>
@@ -79,7 +79,7 @@ export default function MediaLibrarySingleFile({ file, isFile, index, fileUpload
     } else if (isPdf()) {
         previewElement = (
             <div className="icon-preview">
-                <img src="/static/images/media/document.png" alt="" />
+                <img src="/static/images/media/document.png" alt="" loading="lazy" decoding="async"/>
                 <div className="preview-file-name">
                     <p>{file.title}</p>
                 </div>
@@ -88,7 +88,7 @@ export default function MediaLibrarySingleFile({ file, isFile, index, fileUpload
     } else if (isCode()) {
         previewElement = (
             <div className="icon-preview">
-                <img src="/static/images/media/code.png" alt="" />
+                <img src="/static/images/media/code.png" alt="" loading="lazy" decoding="async"/>
                 <div className="preview-file-name">
                     <p>{file.title}</p>
                 </div>
@@ -97,7 +97,7 @@ export default function MediaLibrarySingleFile({ file, isFile, index, fileUpload
     } else if (isText()) {
         previewElement = (
             <div className="icon-preview">
-                <img src="/static/images/media/text.png" alt="" />
+                <img src="/static/images/media/text.png" alt="" loading="lazy" decoding="async"/>
                 <div className="preview-file-name">
                     <p>{file.title}</p>
                 </div>
@@ -106,7 +106,7 @@ export default function MediaLibrarySingleFile({ file, isFile, index, fileUpload
     } else if (isZip()) {
         previewElement = (
             <div className="icon-preview">
-                <img src="/static/images/media/archive.png" alt="" />
+                <img src="/static/images/media/archive.png" alt="" loading="lazy" decoding="async"/>
                 <div className="preview-file-name">
                     <p>{file.title}</p>
                 </div>
@@ -115,7 +115,7 @@ export default function MediaLibrarySingleFile({ file, isFile, index, fileUpload
     } else if (isAudio()) {
         previewElement = (
             <div className="icon-preview">
-                <img src="/static/images/media/audio.png" alt="" />
+                <img src="/static/images/media/audio.png" alt="" loading="lazy" decoding="async"/>
                 <div className="preview-file-name">
                     <p>{file.title}</p>
                 </div>
@@ -124,7 +124,7 @@ export default function MediaLibrarySingleFile({ file, isFile, index, fileUpload
     } else if (isSpreadsheet()) {
         previewElement = (
             <div className="icon-preview">
-                <img src="/static/images/media/spreadsheet.png" alt="" />
+                <img src="/static/images/media/spreadsheet.png" alt="" loading="lazy" decoding="async"/>
                 <div className="preview-file-name">
                     <p>{file.title}</p>
                 </div>
@@ -133,7 +133,7 @@ export default function MediaLibrarySingleFile({ file, isFile, index, fileUpload
     } else {
         previewElement = (
             <div className="icon-preview">
-                <img src="/static/images/media/default.png" alt="" />
+                <img src="/static/images/media/default.png" alt="" loading="lazy" decoding="async"/>
                 <div className="preview-file-name">
                     <p>{file.title}</p>
                 </div>

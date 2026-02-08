@@ -91,7 +91,7 @@ export default function Header3() {
                                             {profileDropdownOpen && (
                                                 <div className="cs_header_user_dropdown">
                                                     <div className="cs_header_user_info">
-                                                        <img src={gravatarUrl(auth?.user?.email)} alt="" />
+                                                        <img src={gravatarUrl(auth?.user?.email)} alt="" loading="lazy" decoding="async"/>
                                                         <h4 className="">{auth?.user?.name}</h4>
                                                         <p className="">{auth?.user?.email}</p>
                                                     </div>
@@ -141,7 +141,7 @@ export default function Header3() {
                             </div>
                             <div className="cs_main_header_center">
                                 <Link className="cs_site_branding" to="/" href="/">
-                                    <img src={customize?.general?.site_logo_light} alt={customize?.general?.site_name} />
+                                    <img src={customize?.general?.site_logo_light} alt={customize?.general?.site_name} loading="lazy" decoding="async"/>
                                 </Link>
                             </div>
                             <div className="cs_main_header_right">
@@ -167,7 +167,7 @@ export default function Header3() {
                 </button>
                 <div className="cs_hamburger_brand">
                     <Link className="cs_site_branding" to="/" href="/">
-                        <img src={customize?.general?.site_logo_light} alt={customize?.general?.site_name} />
+                        <img src={customize?.general?.site_logo_light} alt={customize?.general?.site_name} loading="lazy" decoding="async"/>
                     </Link>
                 </div>
                 <nav className="cs_hamburger_menu cs_white_color">

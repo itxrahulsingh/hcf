@@ -52,7 +52,7 @@ export default function Testimonial4({ data }) {
                                     />
                                     <div className="cs_height_30 cs_height_lg_30" />
                                     <div className="cs_testimonial_info d-flex align-items-center">
-                                        {item.testimonial_image_url && <img src={item.testimonial_image_url} alt={item.avatar_name} />}
+                                        {item.testimonial_image_url && <img src={item.testimonial_image_url} alt={item.avatar_name} loading="lazy" decoding="async"/>}
                                         <div>
                                             <h3 className="cs_fs_24 cs_normal mb-0">{item.avatar_name}</h3>
                                             <p className="mb-0">{item.avatar_designation}</p>
@@ -95,7 +95,7 @@ export default function Testimonial4({ data }) {
                         </svg>
                     </div>
                 </div>
-                <div className="col-lg-5 offset-lg-1">{image_url && <img src={image_url} alt="Thumb" className="w-100" />}</div>
+                <div className="col-lg-5 offset-lg-1">{image_url && <img src={image_url} alt="Thumb" className="w-100" loading="lazy" decoding="async"/>}</div>
             </div>
         </div>
     )

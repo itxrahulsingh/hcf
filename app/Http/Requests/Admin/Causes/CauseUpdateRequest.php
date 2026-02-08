@@ -34,6 +34,7 @@ class CauseUpdateRequest extends FormRequest
             'meta_title' => ['nullable', 'string'],
             'meta_tags' => ['nullable', 'string'],
             'meta_description' => ['nullable', 'string'],
+            'custom_style' => ['nullable', 'string'],
         ];
 
         $languages = json_decode(Setting::pull('languages'));

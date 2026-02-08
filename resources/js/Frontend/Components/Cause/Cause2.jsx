@@ -139,6 +139,7 @@ export default function Cause2({ data }) {
                                         <img
                                             src={item?.thumbnail_image}
                                             alt={item?.content?.title}
+                                            loading="lazy" decoding="async"
                                             style={styles.img}
                                         />
                                     </NavigationLink>

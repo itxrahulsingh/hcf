@@ -22,7 +22,6 @@ class SettingRepository
      */
     private function getSettingByGroup($groupName): array
     {
-
         $settings = $this->model->where('setting_group', $groupName)->get();
         $data = [];
         foreach ($settings as $setting) {
@@ -105,7 +104,6 @@ class SettingRepository
 
     public function updateEnvByKey($data = [])
     {
-
         $path = base_path('.env');
         if (file_exists($path)) {
             foreach ($data as $key => $value) {

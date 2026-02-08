@@ -21,7 +21,7 @@ export default function AditionalFeature3({ data }) {
                                                 <div className="cs_iconbox cs_style_6">
                                                     {innerItem.inner_feature_icon_url && (
                                                         <div className="cs_iconbox_icon cs_accent_bg cs_center">
-                                                            <img src={innerItem.inner_feature_icon_url} alt="Icon" />
+                                                            <img src={innerItem.inner_feature_icon_url} alt="Icon" loading="lazy" decoding="async"/>
                                                         </div>
                                                     )}
                                                     <div className="cs_iconbox_right">
@@ -50,7 +50,7 @@ export default function AditionalFeature3({ data }) {
                                 <div className="col-lg-6 offset-lg-1">
                                     {item.feature_image_url && (
                                         <div className="cs_planing_thumb">
-                                            <img src={item.feature_image_url} alt={item.feature_title} />
+                                            <img src={item.feature_image_url} alt={item.feature_title} loading="lazy" decoding="async"/>
                                         </div>
                                     )}
                                 </div>

@@ -290,7 +290,7 @@ export default function PricingSectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/pricing/pricing_style_${value}.jpg`} alt="Thumb" />
+                                            <img src={`/static/sections/pricing/pricing_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                             <label htmlFor={`layout-${value}`}>Pricing Style {value}</label>
                                         </div>
                                     </div>

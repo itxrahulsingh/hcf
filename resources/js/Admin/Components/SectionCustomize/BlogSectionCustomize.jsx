@@ -373,7 +373,7 @@ export default function BlogCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/blog/blog_style_${value}.jpg`} alt="Thumb" />
+                                            <img src={`/static/sections/blog/blog_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                             <label htmlFor={`layout-${value}`}>Blog Style {value}</label>
                                         </div>
                                     </div>

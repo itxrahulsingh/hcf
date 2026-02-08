@@ -86,7 +86,7 @@ export default function Index({
                                                 })}
                                                 className="cs_post_thumb"
                                             >
-                                                <img src={item?.thumbnail_image} alt="Post" />
+                                                <img src={item?.thumbnail_image} alt="Post" loading="lazy" decoding="async"/>
                                             </Link>
                                         )}
                                         <div className="cs_post_info">

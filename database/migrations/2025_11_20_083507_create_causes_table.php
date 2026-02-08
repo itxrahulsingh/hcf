@@ -21,8 +21,10 @@ return new class extends Migration
             $table->string('gallery_images', 512)->nullable();
             $table->boolean('have_gift')->default(false)->comment('Whether the cause has gift option');
             $table->string('gift_ids', 150)->nullable();
+            $table->string('gift_design',50)->default('portrait');
             $table->boolean('have_product')->default(false)->comment('Whether the cause has product option');
             $table->string('product_ids', 150)->nullable();
+            $table->string('product_design',50)->default('portrait');
             $table->boolean('is_special')->default(false);
             $table->string('custom_donation_amounts', 100)->nullable();
             $table->string('video_url', 255)->nullable();
@@ -30,6 +32,7 @@ return new class extends Migration
             $table->decimal('goal_amount', 14, 2)->default(0)->comment('Goal amount for the cause');
             $table->string('type', 50)->nullable()->comment('Type of the cause, e.g., birthday etc.');
             $table->date('deadline')->nullable();
+            $table->longText('custom_style')->nullable()->comment('Custom CSS for the cause page');
             $table->boolean('status')->comment('0 means unpublished, 1 means published')->default(0);
             $table->string('meta_image', 255)->nullable();
             $table->string('meta_title', 255)->nullable()->comment('meta title for seo');

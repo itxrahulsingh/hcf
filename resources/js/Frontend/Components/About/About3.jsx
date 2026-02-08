@@ -37,7 +37,7 @@ export default function About3({ data }) {
                     )}
                 </div>
                 <div className="cs_cta_right">
-                    <img src={image_url} alt={section_title} />
+                    <img src={image_url} alt={section_title} loading="lazy" decoding="async"/>
                 </div>
             </div>
         </div>

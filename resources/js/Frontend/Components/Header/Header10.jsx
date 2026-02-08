@@ -70,7 +70,7 @@ export default function Header10() {
                         <div className="cs_main_header_in">
                             <div className="cs_main_header_left">
                                 <Link className="cs_site_branding" to="/" href="/">
-                                    <img src={customize?.general?.site_logo_light} alt={customize?.general?.site_name} />
+                                    <img src={customize?.general?.site_logo_light} alt={customize?.general?.site_name} loading="lazy" decoding="async"/>
                                 </Link>
                             </div>
                             <div className="cs_main_header_right">
@@ -101,7 +101,7 @@ export default function Header10() {
                                             {profileDropdownOpen && (
                                                 <div className="cs_header_user_dropdown">
                                                     <div className="cs_header_user_info">
-                                                        <img src={gravatarUrl(auth?.user?.email)} alt="" />
+                                                        <img src={gravatarUrl(auth?.user?.email)} alt="" loading="lazy" decoding="async"/>
                                                         <h4 className="">{auth?.user?.name}</h4>
                                                         <p className="">{auth?.user?.email}</p>
                                                     </div>

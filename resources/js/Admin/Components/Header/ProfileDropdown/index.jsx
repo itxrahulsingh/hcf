@@ -42,7 +42,7 @@ export default function ProfileDropdown() {
                     <h4>{props.auth.user.name}</h4>
                 </div>
                 <div className="yoo-profile-nav-img">
-                    <img src={gravatarUrl(props.auth.user.email)} alt="profile" />
+                    <img src={gravatarUrl(props.auth.user.email)} alt="profile" loading="lazy" decoding="async"/>
                 </div>
             </div>
             <ul className={`yoo-dropdown yoo-style1 ${isCollapse && "active"}`} ref={outsideClickDetectorRef}>

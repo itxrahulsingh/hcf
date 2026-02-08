@@ -27,7 +27,7 @@ export default function AuthLayout({ children }) {
                 <div className="cs_card_left">
                     <div className="cs_card_card_out">
                         <NavigationLink href={route("home")} className="cs_login_logo">
-                            <img src={customize?.general?.site_logo_dark} alt="" />
+                            <img src={customize?.general?.site_logo_dark} alt="" loading="lazy" decoding="async"/>
                         </NavigationLink>
                         {children}
                     </div>

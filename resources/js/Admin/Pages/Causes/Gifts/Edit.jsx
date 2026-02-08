@@ -216,7 +216,6 @@ export default function Edit({ gift, default_lang, languages }) {
                                             )}
                                         </div>
                                     )}
-                                    {/* ----------------------------------------------- */}
 
                                     <div className="form-group">
                                         <label htmlFor="min_qty">{translate("Minimum Quantity")} *</label>
@@ -229,12 +228,13 @@ export default function Edit({ gift, default_lang, languages }) {
                                             onChange={(e) => setData("min_qty", e.target.value)}
                                         />
                                     </div>
+
                                     <div className="form-group">
                                         <label htmlFor="description">
                                             {translate("Description")} ({languages[selectedLang].name}) *
                                         </label>
                                         <TextInput
-                                            title={`${translate("Enter Gift title")} *`}
+                                            title={`${translate("Enter gift description")} *`}
                                             type="text"
                                             id="description"
                                             error={errors[`${selectedLang}_description`]}

@@ -91,6 +91,7 @@ export default function LightGallery({ modalToggle, setModalToggle, galleryList,
                                     <img
                                         src={item.gallery_image_url}
                                         alt=""
+                                        loading="lazy" decoding="async"
                                         style={{
                                             transform: `scale(${zoomLevel})`,
                                             transition: "transform 0.3s ease"

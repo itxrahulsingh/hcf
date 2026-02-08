@@ -32,7 +32,7 @@ export default function About1({ data }) {
                             <div className="cs_card cs_style_1 cs_shining">
                                 {item.feature_image_url && (
                                     <div className="cs_card_img cs_shining_item">
-                                        <img src={item.feature_image_url} alt="Thumb" />
+                                        <img src={item.feature_image_url} alt="Thumb" loading="lazy" decoding="async"/>
                                     </div>
                                 )}
                                 {item.feature_title && (

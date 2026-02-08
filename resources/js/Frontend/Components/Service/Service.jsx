@@ -52,7 +52,7 @@ export default function Service({ data }) {
                                 }}
                             />
                             <NavigationLink href={item.service_btn_url} className="cs_image_box_img overflow-hidden">
-                                <img src={item.service_image_url} alt="Service" />
+                                <img src={item.service_image_url} alt="Service" loading="lazy" decoding="async"/>
                             </NavigationLink>
                             <div className="cs_image_box_info position-relative">
                                 <h2 className="cs_image_box_title cs_fs_30 cs_normal">

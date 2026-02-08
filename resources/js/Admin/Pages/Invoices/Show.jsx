@@ -165,6 +165,7 @@ export default function Show({ invoice }) {
                                                                     <img
                                                                         src={item.item_image}
                                                                         alt={item.item_name}
+                                                                        loading="lazy" decoding="async"
                                                                         style={{ width: "40px", height: "40px", objectFit: "cover", marginRight: "10px", borderRadius: "4px" }}
                                                                     />
                                                                 )}

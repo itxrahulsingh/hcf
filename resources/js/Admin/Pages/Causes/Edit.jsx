@@ -57,7 +57,9 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
         _method: "put",
         ...cause,
         gift_ids: getInitialIds("gift_ids"),
-        product_ids: getInitialIds("product_ids"), // Initialized product_ids
+        product_ids: getInitialIds("product_ids"),
+        product_design: cause.product_design || "portrait",
+        gift_design: cause.gift_design || "portrait",
         gallery_images: Array.isArray(cause.gallery_images) ? cause.gallery_images : [],
         status: Number(cause.status || 0),
         is_special: Number(cause.is_special || 0),
@@ -333,6 +335,26 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                             <label>{translate("SEO Tags")}</label>
                                             <TextInput type="text" value={data.meta_tags} onChange={(e) => setData("meta_tags", e.target.value)} />
                                         </div>
+                                        <div className="col-md-12 mt-3">
+                                            <div className="form-group">
+                                                <label>{translate("Custom CSS Style")}</label>
+                                                <textarea
+                                                    className="form-control"
+                                                    rows="6"
+                                                    placeholder=".my-custom-class { color: red; }"
+                                                    onChange={(e) => setData("custom_style", e.target.value)}
+                                                    style={{ fontFamily: "monospace", fontSize: "13px" }}
+                                                >
+                                                    {data.custom_style}
+                                                </textarea>
+                                                <small className="text-muted">
+                                                    {translate(
+                                                        "Enter CSS code without <style> tags. This will be applied to the cause details page."
+                                                    )}
+                                                </small>
+                                                <FormValidationError message={errors.custom_style} />
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="yoo-height-b20" />
                                 </div>
@@ -418,11 +440,25 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                         {data.have_gift === 1 && (
                             <div className="yoo-card yoo-style1 mt-4">
                                 <div className="yoo-card-heading">
-                                    <h2 className="yoo-card-title">{translate("Gifts")}</h2>
+                                    <h2 className="yoo-card-title">{translate("Gifts Configuration")}</h2>
                                 </div>
                                 <div className="yoo-card-body">
                                     <div className="yoo-padd-lr-20">
                                         <div className="yoo-height-b20" />
+
+                                        {/* Gift Design Option */}
+                                        <div className="form-group mb-3">
+                                            <label>{translate("Gift Card Design")}</label>
+                                            <select
+                                                className="form-control"
+                                                value={data.gift_design}
+                                                onChange={(e) => setData("gift_design", e.target.value)}
+                                            >
+                                                <option value="portrait">{translate("Portrait Design")}</option>
+                                                <option value="landscape">{translate("Landscape Design")}</option>
+                                            </select>
+                                        </div>
+
                                         <CustomMultiSelect
                                             options={gifts.map((g) => ({ value: g.id, label: g?.content?.title || "Untitled Gift" }))}
                                             value={data.gift_ids}
@@ -436,15 +472,28 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                             </div>
                         )}
 
-                        {/* NEW: Products Selection (Update View) */}
                         {data.have_product === 1 && (
                             <div className="yoo-card yoo-style1 mt-4">
                                 <div className="yoo-card-heading">
-                                    <h2 className="yoo-card-title">{translate("Products")}</h2>
+                                    <h2 className="yoo-card-title">{translate("Products Configuration")}</h2>
                                 </div>
                                 <div className="yoo-card-body">
                                     <div className="yoo-padd-lr-20">
                                         <div className="yoo-height-b20" />
+
+                                        {/* Product Design Option */}
+                                        <div className="form-group mb-3">
+                                            <label>{translate("Product Card Design")}</label>
+                                            <select
+                                                className="form-control"
+                                                value={data.product_design}
+                                                onChange={(e) => setData("product_design", e.target.value)}
+                                            >
+                                                <option value="portrait">{translate("Portrait Design")}</option>
+                                                <option value="landscape">{translate("Landscape Design")}</option>
+                                            </select>
+                                        </div>
+
                                         <CustomMultiSelect
                                             options={products.map((p) => ({ value: p.id, label: p?.content?.title || "Untitled Product" }))}
                                             value={data.product_ids}
@@ -528,6 +577,7 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                             {translate("Update")}
                                         </button>
                                     </div>
+                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
                                 </div>
                             </div>
                         </div>

@@ -211,7 +211,7 @@ export default function Index({ brands, sort, filtered_lang, languages }) {
                                                             />
                                                         </td>
                                                         <td>
-                                                            <img src={brand?.brand_image} alt={brand?.content?.title} style={{ width: "80px" }} />
+                                                            <img src={brand?.brand_image} alt={brand?.content?.title} style={{ width: "80px" }} loading="lazy" decoding="async"/>
                                                         </td>
                                                         <td>{brand?.content?.title}</td>
                                                         <td>{moment(brand.created_at).format("ll")}</td>

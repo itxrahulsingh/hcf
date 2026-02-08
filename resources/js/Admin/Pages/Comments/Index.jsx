@@ -210,7 +210,7 @@ export default function Index({ comments, sort }) {
                                                                         src={gravatarUrl(comment.comment_author_email, {
                                                                             size: 40
                                                                         })}
-                                                                        loading="lazy"
+                                                                        loading="lazy" decoding="async"
                                                                         alt=""
                                                                     />
                                                                 </div>

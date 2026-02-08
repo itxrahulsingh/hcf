@@ -74,7 +74,7 @@ export default function Index({
                                     <div className="cs_post cs_style_1">
                                         {item?.thumbnail_image && (
                                             <Link href={route("cause.show", { slug: item.slug })} className="cs_post_thumb">
-                                                <img src={item?.thumbnail_image} alt="Post" />
+                                                <img src={item?.thumbnail_image} alt="Post" loading="lazy" decoding="async"/>
                                             </Link>
                                         )}
                                         <div className="cs_post_info">

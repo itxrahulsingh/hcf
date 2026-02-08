@@ -108,6 +108,7 @@ export default function Partner1({ data }) {
                                         src={item.partner_image_url}
                                         alt="Partner Brand"
                                         style={styles.img}
+                                        loading="lazy" decoding="async"
                                     />
                                 )}
                             </div>

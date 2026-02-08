@@ -52,7 +52,7 @@ export default function Pricing2({ data }) {
                                             {item.package_name}
                                             {item.package_icon_url && (
                                                 <i className="cs_center">
-                                                    <img src={item.package_icon_url} alt="" />
+                                                    <img src={item.package_icon_url} alt="" loading="lazy" decoding="async"/>
                                                 </i>
                                             )}
                                         </h2>
@@ -61,7 +61,7 @@ export default function Pricing2({ data }) {
                                                 <li key={featureIndex} className={featureItem.package_feature_icon_url ? "" : "p-0"}>
                                                     {featureItem.package_feature_icon_url && (
                                                         <i className="cs_feature_icon cs_accent_color">
-                                                            <img src={featureItem.package_feature_icon_url} alt="" />
+                                                            <img src={featureItem.package_feature_icon_url} alt="" loading="lazy" decoding="async"/>
                                                         </i>
                                                     )}
 

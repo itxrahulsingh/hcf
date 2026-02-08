@@ -218,7 +218,7 @@ export default function FunFactSectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/funfact/funfact_style_${value}.jpg`} alt="Thumb" />
+                                            <img src={`/static/sections/funfact/funfact_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                             <label htmlFor={`layout-${value}`}>FunFact Style {value}</label>
                                         </div>
                                     </div>

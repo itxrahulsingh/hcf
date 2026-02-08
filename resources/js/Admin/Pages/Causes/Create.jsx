@@ -57,6 +57,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
         meta_title: "",
         meta_tags: "",
         meta_description: "",
+        custom_style: "",
         // Initialize multi-language fields
         ...Object.keys(languages).reduce((acc, code) => {
             acc[code + "_title"] = ""
@@ -351,6 +352,27 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                             <label>{translate("SEO Tags")}</label>
                                             <TextInput type="text" value={data.meta_tags} onChange={(e) => setData("meta_tags", e.target.value)} />
                                         </div>
+
+                                        {/* --- ADD CUSTOM CSS SECTION HERE --- */}
+                                        <div className="col-md-12 mt-3">
+                                            <div className="form-group">
+                                                <label>{translate("Custom CSS Style")}</label>
+                                                <textarea
+                                                    className="form-control"
+                                                    rows="6"
+                                                    placeholder=".my-custom-class { color: red; }"
+                                                    value={data.custom_style}
+                                                    onChange={(e) => setData("custom_style", e.target.value)}
+                                                    style={{ fontFamily: "monospace", fontSize: "13px" }}
+                                                ></textarea>
+                                                <small className="text-muted">
+                                                    {translate(
+                                                        "Enter CSS code without <style> tags. This will be applied to the cause details page."
+                                                    )}
+                                                </small>
+                                                <FormValidationError message={errors.custom_style} />
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="yoo-height-b20" />
                                 </div>
@@ -548,6 +570,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                             {translate("Publish")}
                                         </button>
                                     </div>
+                                    <div className="yoo-height-b20 yoo-height-lg-b20" />
                                 </div>
                             </div>
                         </div>

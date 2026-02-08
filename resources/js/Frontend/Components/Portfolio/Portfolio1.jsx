@@ -35,7 +35,7 @@ export default function Portfolio1({ data }) {
                             <div className="cs_post cs_style_1">
                                 {item.portfolio_image_url && (
                                     <NavigationLink href={item.action_url} className="cs_post_thumb">
-                                        <img src={item.portfolio_image_url} alt={item.portfolio_title} />
+                                        <img src={item.portfolio_image_url} alt={item.portfolio_title} loading="lazy" decoding="async"/>
                                     </NavigationLink>
                                 )}
                                 <div className="cs_post_info">

@@ -32,7 +32,7 @@ export default function Banner6({ data }) {
             {background_image_url && (
                 <div className="cs_half_white">
                     <div className="container">
-                        <img src={background_image_url} alt="Thumbnail" className="cs_radius_50_50_0_0" />
+                        <img src={background_image_url} alt="Thumbnail" className="cs_radius_50_50_0_0" loading="lazy" decoding="async"/>
                     </div>
                 </div>
             )}

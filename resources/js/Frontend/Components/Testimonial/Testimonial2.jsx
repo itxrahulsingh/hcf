@@ -183,7 +183,7 @@ export default function Testimonial2({ data }) {
                     {testimonial_list?.map((item, index) => (
                         <SwiperSlide key={index}>
                             <div className="cs_avatar_box">
-                                {item.testimonial_image_url && <img src={item.testimonial_image_url} alt={item.avatar_name} />}
+                                {item.testimonial_image_url && <img src={item.testimonial_image_url} alt={item.avatar_name} loading="lazy" decoding="async"/>}
                                 <div className="cs_avatar_box_right">
                                     <h3 className="cs_fs_24 mb-0 cs_normal">{item.avatar_name}</h3>
                                     <p className="mb-0 cs_secondary_color">{item.avatar_designation}</p>

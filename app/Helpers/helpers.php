@@ -159,8 +159,8 @@ if (!function_exists('upload_file')) {
         $fileName  = "{$slug}-{$unique}.{$extension}";
         $fullPath  = $folder . '/' . $fileName;
 
-        $maxWidth = Setting::where('setting_key', 'image_max_width')->value('setting_value') ?? 2000;
-        $quality  = Setting::where('setting_key', 'image_compression_quality')->value('setting_value') ?? 80;
+        $maxWidth =  2000;
+        $quality  =  80;
 
         if ($isImage) {
             try {

@@ -20,6 +20,7 @@ class CauseStoreRequest extends FormRequest
             'banner_image' => ['required', 'max:2048'],
             'gallery_images' => ['nullable', 'array'],
             'gallery_images.*' => ['max:2048'],
+            'custom_style' => ['nullable'],
             'status' => ['required'],
         ];
 

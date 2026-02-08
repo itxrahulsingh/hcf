@@ -180,6 +180,7 @@ export default function Edit({ order }) {
                                                         src={order.special_image}
                                                         alt="current"
                                                         className="d-block mt-1"
+                                                        loading="lazy" decoding="async"
                                                         style={{ height: "60px", borderRadius: "4px" }}
                                                     />
                                                 </div>

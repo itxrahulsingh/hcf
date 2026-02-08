@@ -44,7 +44,7 @@ export default function Index({ products }) {
                                     return (
                                         <tr key={index}>
                                             <td style={{ display: "flex", gap: "10px" }}>
-                                                <img src={product?.product_image} alt="" /> <span>{product?.product_name}</span>
+                                                <img src={product?.product_image} alt="" loading="lazy" decoding="async"/> <span>{product?.product_name}</span>
                                             </td>
                                             <td>
                                                 {product?.already_reviewed ? (

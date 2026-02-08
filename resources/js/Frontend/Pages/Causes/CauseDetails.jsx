@@ -1,4 +1,4 @@
-import { Link, useForm } from "@inertiajs/react"
+import { Link, useForm, Head } from "@inertiajs/react"
 import moment from "moment"
 import CauseLayout from "@/Frontend/Layouts/CauseLayout"
 import { addCart, decreaseCart, increaseCart, removeCart, clearCart } from "@/Redux/features/Cart/cart"
@@ -48,6 +48,18 @@ export default function CauseDetails({
     }
     const total = subtotal - discount
 
+    const ALLOW_MULTIPLE_SELECTIONS = false
+
+    const handleSingleSelection = (newItem, itemType) => {
+        if (!ALLOW_MULTIPLE_SELECTIONS) {
+            const existingItem = carts.find((item) => item.type === itemType)
+            if (existingItem && existingItem.id !== newItem.id) {
+                dispatch(removeCart({ id: existingItem.id, type: itemType }))
+            }
+        }
+        dispatch(addCart(newItem))
+    }
+
     // --- 2. Configurations & Settings ---
     const page_settings = JSON.parse(localStorage.getItem("page_settings")) || {}
     const { is_show_cause_details_sidebar } = page_settings
@@ -82,7 +94,7 @@ export default function CauseDetails({
         pancard: "",
         orderNotes: "",
         coupon: coupon,
-        items: carts, // Initial state
+        items: carts,
         agreed: false,
         is_80g: false,
         paymentMethod: "",
@@ -173,15 +185,11 @@ export default function CauseDetails({
         }
     }, [data.paymentMethod])
 
-    // Handle Donation Input Changes (Input + Preset Buttons)
     const handleDonationChange = (value) => {
         setLocalAmount(value)
         const numericVal = parseFloat(value)
-
-        // Remove existing donation first to prevent stacking/loops
         dispatch(removeCart({ id: cause.id, type: "cause" }))
 
-        // Add new valid donation
         if (value && !isNaN(numericVal) && numericVal > 0) {
             dispatch(
                 addCart({
@@ -295,6 +303,11 @@ export default function CauseDetails({
 
     return (
         <FrontendLayout>
+            {cause?.custom_style && (
+                <Head>
+                    <style type="text/css">{cause.custom_style}</style>
+                </Head>
+            )}
             <CauseLayout
                 pageHeaderData={pageHeaderData}
                 causeDetails={true}
@@ -394,20 +407,20 @@ export default function CauseDetails({
                         {cause?.have_gift == 1 && cause?.gifts?.length > 0 && (
                             <div className="cs_cause_details_wrap">
                                 <h3 className="mb-4">Select a Gift</h3>
-                                <div className="row g-4">
+                                <div className={`row g-4 ${cause?.gifts?.length <= 2 ? "justify-content-center" : ""}`}>
                                     {cause.gifts.map((gift, idx) => {
-                                        const isVaried = gift.have_variations === 1 && gift.variations?.length > 0;
-                                        const colClass = isVaried ? "col-12 col-md-6" : "col-6 col-sm-4 col-md-3";
+                                        const isVaried = gift.have_variations === 1 && gift.variations?.length > 0
+                                        const colClass = isVaried ? "col-12 col-md-6" : cause?.gift_design == 'portrait' ? "col-6 col-sm-4 col-md-3" : "col-6 "
 
-                                        const cartItem = !isVaried ? carts.find((i) => i.id === gift.id && i.type === "gift") : null;
-                                        const quantity = cartItem ? cartItem.quantity : 0;
+                                        const cartItem = !isVaried ? carts.find((i) => i.id === gift.id && i.type === "gift") : null
+                                        const quantity = cartItem ? cartItem.quantity : 0
 
                                         return (
                                             <div key={idx} className={colClass}>
-                                                <div className="cause-card h-100 d-flex flex-column shadow-sm">
+                                                <div className={`cause-card h-100 d-flex ${cause?.gift_design == "portrait" ? "flex-column" : ""} shadow-sm`}>
                                                     <div className="cause-card-img-wrapper">
                                                         {gift.gift_image ? (
-                                                            <img src={gift.gift_image} alt={gift.content?.title} />
+                                                            <img src={gift.gift_image} alt={gift.content?.title} loading="lazy" decoding="async" />
                                                         ) : (
                                                             <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
                                                                 No Image
@@ -419,46 +432,53 @@ export default function CauseDetails({
                                                         {isVaried ? (
                                                             <div className="mt-auto">
                                                                 <p>{gift.content?.description}</p>
-                                                                <div className="d-flex flex-column gap-2 mt-2">
+                                                                <div className="row mt-2">
                                                                     {gift.variations.map((variant, vIdx) => {
-                                                                        const variantCartId = `${gift.id}-var-${vIdx}`;
-                                                                        const isActive = carts.some(i => i.id === variantCartId && i.type === 'gift');
+                                                                        const variantId = `${gift.id}-var-${vIdx}`
+                                                                        const isActive = carts.some((i) => i.id === variantId && i.type === "gift")
 
                                                                         return (
-                                                                            <button
-                                                                                key={vIdx}
-                                                                                className={`btn w-100 d-flex justify-content-between align-items-center px-3 py-2 shadow-sm border`}
-                                                                                style={{
-                                                                                    background: isActive ? "linear-gradient(45deg, #ff8c00, #ffaa33)" : "#fff",
-                                                                                    color: isActive ? "#fff" : "#333",
-                                                                                    borderColor: isActive ? "transparent" : "#dee2e6",
-                                                                                    transition: "all 0.3s ease"
-                                                                                }}
-                                                                                onClick={() => {
-                                                                                    gift.variations.forEach((_, otherIdx) => {
-                                                                                        const otherId = `${gift.id}-var-${otherIdx}`;
-                                                                                        if (carts.some(c => c.id === otherId && c.type === 'gift')) {
-                                                                                            dispatch(removeCart({ id: otherId, type: 'gift' }));
+                                                                            <div key={variantId} className="col-6 pb-2">
+                                                                                <button
+                                                                                    type="button"
+                                                                                    className={`w-100 py-2 rounded-3 border-0 transition-all`}
+                                                                                    style={{
+                                                                                        background: isActive
+                                                                                            ? "linear-gradient(45deg, #e64a19, #f4511e)"
+                                                                                            : "linear-gradient(45deg, rgb(255 51 51), rgb(237, 143, 3))",
+                                                                                        color: "#fff",
+                                                                                        boxShadow: isActive
+                                                                                            ? "inset 0 4px 8px rgba(0,0,0,0.3)"
+                                                                                            : "0 4px 12px rgba(240, 152, 25, 0.25)"
+                                                                                    }}
+                                                                                    onClick={() => {
+                                                                                        if (isActive) {
+                                                                                            dispatch(removeCart({ id: variantId, type: "gift" }))
+                                                                                        } else {
+                                                                                            handleSingleSelection(
+                                                                                                {
+                                                                                                    id: variantId,
+                                                                                                    type: "gift",
+                                                                                                    content: {
+                                                                                                        ...gift,
+                                                                                                        amount: variant.amount,
+                                                                                                        title: `${gift.content?.title} - ${variant.title}`
+                                                                                                    },
+                                                                                                    quantity: 1,
+                                                                                                    price: variant.amount,
+                                                                                                    cause_id: cause.id
+                                                                                                },
+                                                                                                "gift"
+                                                                                            )
                                                                                         }
-                                                                                    });
-                                                                                    if (!isActive) {
-                                                                                        dispatch(addCart({
-                                                                                            id: variantCartId,
-                                                                                            type: 'gift',
-                                                                                            content: {
-                                                                                                ...gift,
-                                                                                                amount: variant.amount,
-                                                                                                content: { ...gift.content, title: `${gift.content?.title} - ${variant.title}` }
-                                                                                            },
-                                                                                            quantity: 1,
-                                                                                            cause_id: cause.id
-                                                                                        }));
-                                                                                    }
-                                                                                }}
-                                                                            >
-                                                                                <span className="fw-medium small">{variant.title}</span>
-                                                                                <span className="fw-bold"><Amount amount={variant.amount} /></span>
-                                                                            </button>
+                                                                                    }}
+                                                                                >
+                                                                                    <div className="fw-bold small opacity-90">{variant.title}</div>
+                                                                                    <div className="fw-bolder">
+                                                                                        <Amount amount={variant.amount} />
+                                                                                    </div>
+                                                                                </button>
+                                                                            </div>
                                                                         )
                                                                     })}
                                                                 </div>
@@ -483,17 +503,17 @@ export default function CauseDetails({
                                                                         <button
                                                                             className="qty-btn"
                                                                             onClick={() =>
-                                                                                cartItem
-                                                                                    ? dispatch(increaseCart({ id: gift.id, type: "gift" }))
-                                                                                    : dispatch(
-                                                                                        addCart({
-                                                                                            id: gift.id,
-                                                                                            type: "gift",
-                                                                                            content: gift,
-                                                                                            quantity: gift.min_qty || 1,
-                                                                                            cause_id: cause.id
-                                                                                        })
-                                                                                    )
+                                                                                handleSingleSelection(
+                                                                                    {
+                                                                                        id: gift.id,
+                                                                                        type: "gift",
+                                                                                        content: gift,
+                                                                                        quantity: gift.min_qty || 1,
+                                                                                        price: gift.amount,
+                                                                                        cause_id: cause.id
+                                                                                    },
+                                                                                    "gift"
+                                                                                )
                                                                             }
                                                                         >
                                                                             <Icon icon="ic:round-plus" />
@@ -511,7 +531,6 @@ export default function CauseDetails({
                             </div>
                         )}
 
-
                         {/* Products Section */}
                         {cause?.have_product == 1 && cause.products?.length > 0 && (
                             <div className="mt-5">
@@ -522,11 +541,11 @@ export default function CauseDetails({
                                         const quantity = cartItem ? cartItem.quantity : 1
                                         const finalPrice = Number(product.discount_price || product.price || 0)
                                         return (
-                                            <div key={idx} className="col-12 col-sm-6 col-md-4">
-                                                <div className="cause-card h-100 d-flex flex-column shadow-sm border-0 overflow-hidden">
+                                            <div key={idx} className={`col-12 col-sm-6 ${cause?.product_design == "portrait" ? "col-md-4" : ""}`}>
+                                                <div className={`cause-card h-100 d-flex ${cause?.product_design == "portrait" ? "flex-column" : ""}  shadow-sm border-0 overflow-hidden`}>
                                                     <div className="cause-card-img-wrapper position-relative">
                                                         <div
-                                                            className="position-absolute top-0 start-0 w-100 d-flex flex-column"
+                                                            className="top-0 start-0 w-100 d-flex flex-column"
                                                             style={{ zIndex: 5 }}
                                                         >
                                                             {product.is_popular == 1 && (
@@ -562,12 +581,14 @@ export default function CauseDetails({
                                                                 src={product.thumbnail_image}
                                                                 alt={product.content?.title}
                                                                 className="w-100 object-fit-cover"
-                                                                style={{ height: "200px" }}
+                                                                loading="lazy"
+                                                                decoding="async"
+                                                                style={cause?.product_design == "portrait" ? { height: "200px" } : { height: "150px" }}
                                                             />
                                                         ) : (
                                                             <div
                                                                 className="d-flex align-items-center justify-content-center bg-light text-muted h-100"
-                                                                style={{ minHeight: "200px" }}
+                                                                style={cause?.product_design == "portrait" ? { height: "200px" } : { height: "150px" }}
                                                             >
                                                                 No Image
                                                             </div>
@@ -602,14 +623,16 @@ export default function CauseDetails({
                                                                     onClick={() =>
                                                                         cartItem
                                                                             ? dispatch(increaseCart({ id: product.id, type: "product" }))
-                                                                            : dispatch(
-                                                                                  addCart({
+                                                                            : handleSingleSelection(
+                                                                                  {
                                                                                       id: product.id,
                                                                                       type: "product",
                                                                                       content: product,
-                                                                                      quantity: product.min_quantity || 1,
+                                                                                      quantity: cartItem ? 1 : product.min_quantity || 1,
+                                                                                      price: finalPrice,
                                                                                       cause_id: cause.id
-                                                                                  })
+                                                                                  },
+                                                                                  "product"
                                                                               )
                                                                     }
                                                                 >
@@ -632,21 +655,23 @@ export default function CauseDetails({
                                                             />
                                                         </div>
 
-                                                        <div className="mt-auto pt-2 border-top">
-                                                            {["birthday"].includes(cause.type) && (
+                                                        {["birthday"].includes(cause.type) && (
+                                                            <div className="mt-auto pt-2 border-top">
                                                                 <button
                                                                     className={`btn btn-primary w-100 rounded-pill fw-bold shadow-sm`}
                                                                     style={{ padding: "10px" }}
                                                                     onClick={() => {
                                                                         if (!cartItem) {
-                                                                            dispatch(
-                                                                                addCart({
+                                                                            handleSingleSelection(
+                                                                                {
                                                                                     id: product.id,
                                                                                     type: "product",
                                                                                     content: product,
                                                                                     quantity: product.min_quantity || 1,
+                                                                                    price: finalPrice,
                                                                                     cause_id: cause.id
-                                                                                })
+                                                                                },
+                                                                                "product"
                                                                             )
                                                                         }
                                                                         setShowDonateModal(true)
@@ -654,8 +679,8 @@ export default function CauseDetails({
                                                                 >
                                                                     <i className="fa fa-heart me-2"></i> {translate("Donate Now")}
                                                                 </button>
-                                                            )}
-                                                        </div>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -784,7 +809,12 @@ export default function CauseDetails({
                                                         />
                                                     ) : (
                                                         <>
-                                                            <img src={item.url} className="w-100 h-100 object-fit-cover" />
+                                                            <img
+                                                                src={item.url}
+                                                                className="w-100 h-100 object-fit-cover"
+                                                                loading="lazy"
+                                                                decoding="async"
+                                                            />
                                                             <div className="hover-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center pointer-events-none">
                                                                 <Icon icon="mdi:eye" className="text-white fs-2 opacity-0" />
                                                             </div>
@@ -830,7 +860,7 @@ export default function CauseDetails({
                                             <label className="form-label fw-bold small text-muted mb-1">{translate("Or Enter Custom Amount")}</label>
                                             <div className="input-group input-group-lg border rounded-3 overflow-hidden">
                                                 <span className="input-group-text bg-light border-0 fw-bold text-muted">
-                                                    <Amount amount={0} showSymbolOnly={true} />
+                                                    ₹
                                                 </span>
                                                 <input
                                                     type="number"
@@ -885,6 +915,7 @@ export default function CauseDetails({
                                             <iframe
                                                 src={convertYouTube(cause.video_url)}
                                                 title="Cause Video"
+                                                loading="lazy"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowFullScreen
                                             />

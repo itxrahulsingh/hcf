@@ -6,7 +6,7 @@ export default function CoreValue4({ data }) {
                 <div className="col-xl-6">
                     {image_url && (
                         <div className="cs_pr_70">
-                            <img src={image_url} alt="Thumbnail" className="w-100" />
+                            <img src={image_url} alt="Thumbnail" className="w-100" loading="lazy" decoding="async"/>
                         </div>
                     )}
                 </div>
@@ -39,7 +39,7 @@ export default function CoreValue4({ data }) {
                                 <div className="cs_iconbox cs_style_2">
                                     {item.feature_icon_url && (
                                         <div className="cs_iconbox_icon">
-                                            <img src={item.feature_icon_url} alt="Icon" />
+                                            <img src={item.feature_icon_url} alt="Icon" loading="lazy" decoding="async"/>
                                         </div>
                                     )}
 

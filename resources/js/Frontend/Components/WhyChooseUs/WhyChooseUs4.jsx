@@ -48,7 +48,7 @@ export default function WhyChooseUs4({ data }) {
                                     <div className="cs_iconbox cs_style_5">
                                         {item.feature_icon_url && (
                                             <div className="cs_iconbox_icon cs_center cs_accent_bg">
-                                                <img src={item.feature_icon_url} alt="Icon" />
+                                                <img src={item.feature_icon_url} alt="Icon" loading="lazy" decoding="async"/>
                                             </div>
                                         )}
                                         <div>

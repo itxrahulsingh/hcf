@@ -36,7 +36,7 @@ export default function Header() {
                 <div className="yoo-main-header-in">
                     <div className="yoo-main-header-left">
                         <Link href={route("admin.dashboard")} className="yoo-logo-link yoo-light-logo">
-                            <img src={customize?.general?.site_logo_light} alt="Logo" />
+                            <img src={customize?.general?.site_logo_light} alt="Logo" loading="lazy" decoding="async"/>
                         </Link>
                     </div>
                     <div className="yoo-main-header-right">

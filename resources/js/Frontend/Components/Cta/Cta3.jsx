@@ -7,7 +7,7 @@ export default function Cta3({ data }) {
             <div className="cs_cta cs_style_3 position-relative cs_bg_filed" style={{ backgroundImage: `url(${background_image_url})` }}>
                 {image_url && (
                     <div className="cs_cta_icon">
-                        <img src={image_url} alt={title} />
+                        <img src={image_url} alt={title} loading="lazy" decoding="async"/>
                     </div>
                 )}
                 <div className="cs_cta_in position-relative">

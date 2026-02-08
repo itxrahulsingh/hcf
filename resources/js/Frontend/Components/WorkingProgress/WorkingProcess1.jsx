@@ -29,7 +29,7 @@ export default function WorkingProcess1({ data }) {
             )}
 
             <div className="row align-items-center cs_gap_y_40">
-                <div className="col-xl-5 col-lg-6">{image_url && <img src={image_url} alt="Thumbnail" className="w-100" />}</div>
+                <div className="col-xl-5 col-lg-6">{image_url && <img src={image_url} alt="Thumbnail" className="w-100" loading="lazy" decoding="async"/>}</div>
                 <div className="col-lg-6 offset-xl-1">
                     <ul className="cs_list cs_style_3 cs_mp0">
                         {feature_list?.map((item, index) => (

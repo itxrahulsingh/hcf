@@ -53,7 +53,7 @@ export default function WorkingProcess1({ data }) {
                         ))}
                     </ul>
                 </div>
-                <div className="col-xl-5 offset-xl-1 col-lg-6">{image_url && <img src={image_url} alt="Thumbnail" className="w-100" />}</div>
+                <div className="col-xl-5 offset-xl-1 col-lg-6">{image_url && <img src={image_url} alt="Thumbnail" className="w-100" loading="lazy" decoding="async"/>}</div>
             </div>
         </div>
     )

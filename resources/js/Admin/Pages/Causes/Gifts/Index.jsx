@@ -211,7 +211,7 @@ export default function Index({ gifts, sort, filtered_lang, languages }) {
                                                             />
                                                         </td>
                                                         <td>
-                                                            <img src={gift?.gift_image || 'static/no-image.jpg'} alt={gift?.content?.title} style={{ width: "80px" }} />
+                                                            <img src={gift?.gift_image || 'static/no-image.jpg'} alt={gift?.content?.title} style={{ width: "80px" }} loading="lazy" decoding="async"/>
                                                         </td>
                                                         <td>{gift?.content?.title}</td>
                                                         <td>{moment(gift.created_at).format("ll")}</td>

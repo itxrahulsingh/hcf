@@ -13,7 +13,7 @@ export default function SideHeader({ sideHeaderToggle, setSideHeaderToggle, cust
             <div className="cs_side_header_in">
                 {Boolean(Number(customize.sidebar.is_show_logo)) && (
                     <Link className="cs_site_branding" to="/" href="/">
-                        <img src={customize?.general?.site_logo_dark} alt="Logo" />
+                        <img src={customize?.general?.site_logo_dark} alt="Logo" loading="lazy" decoding="async"/>
                     </Link>
                 )}
                 {Boolean(Number(customize?.sidebar?.is_show_contact_info)) && (

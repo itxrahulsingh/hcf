@@ -51,7 +51,7 @@ export default function WorkingProcess3({ data }) {
                                     }}
                                 />
                             </div>
-                            <div className="cs_card_thumb">{item.feature_image_url && <img src={item.feature_image_url} alt="Thumb" />}</div>
+                            <div className="cs_card_thumb">{item.feature_image_url && <img src={item.feature_image_url} alt="Thumb" loading="lazy" decoding="async"/>}</div>
                         </div>
                     </React.Fragment>
                 ))}

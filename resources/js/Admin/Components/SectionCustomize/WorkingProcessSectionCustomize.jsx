@@ -392,7 +392,7 @@ export default function WorkingProcessSectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/working_process/working_process_style_${value}.jpg`} alt="Thumb" />
+                                            <img src={`/static/sections/working_process/working_process_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                             <label htmlFor={`layout-${value}`}>Working Process Style {value}</label>
                                         </div>
                                     </div>

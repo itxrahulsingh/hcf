@@ -8,14 +8,14 @@ export default function PortfolioDetails1({ data }) {
     return (
         <div className="container">
             {banner_type === "static" && (
-                <>{image_url && <img src={image_url} alt="Casestudy" className="cs_radius_50_0_0_0" style={{ marginBottom: "30px" }} />}</>
+                <>{image_url && <img src={image_url} alt="Casestudy" loading="lazy" decoding="async" className="cs_radius_50_0_0_0" style={{ marginBottom: "30px" }} />}</>
             )}
             {banner_type === "slider" && (
                 <div className="cs_radius_50_0_0_0 overflow-hidden cs_case_study_slider" style={{ marginBottom: "30px" }}>
                     <Swiper navigation={true} modules={[Navigation]} className="mySwiper" loop={true} speed={800}>
                         {gallery_list?.map((galleryItem, index) => (
                             <SwiperSlide key={index}>
-                                <img src={galleryItem.gallery_image_url} alt="Casestudy" />
+                                <img src={galleryItem.gallery_image_url} loading="lazy" decoding="async" alt="Casestudy" />
                             </SwiperSlide>
                         ))}
                     </Swiper>

@@ -942,7 +942,7 @@ export default function AboutSectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/about/about_style_${value}.jpg`} alt="Thumb" />
+                                            <img src={`/static/sections/about/about_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                             <label htmlFor={`layout-${value}`}>About Style {value}</label>
                                         </div>
                                     </div>

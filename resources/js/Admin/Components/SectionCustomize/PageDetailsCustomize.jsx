@@ -99,7 +99,7 @@ export default function PageDetailsCustomize() {
                                     className="form-check-input"
                                 />
                                 <div className="cs_section_image_in">
-                                    <img src={`/static/sections/headers/style_${value}.jpg`} alt="Thumb" />
+                                    <img src={`/static/sections/headers/style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                     {value === "0" ? "" : <label htmlFor={`header-${value}`}>Header Style {value}</label>}
                                 </div>
                             </div>
@@ -190,7 +190,7 @@ export default function PageDetailsCustomize() {
                                     className="form-check-input"
                                 />
                                 <div className="cs_section_image_in">
-                                    <img src={`/static/sections/footers/style_${value}.jpg`} alt="Thumb" />
+                                    <img src={`/static/sections/footers/style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
 
                                     {value === "0" ? "" : <label htmlFor={`footer-${value}`}>Footer Style {value}</label>}
                                 </div>

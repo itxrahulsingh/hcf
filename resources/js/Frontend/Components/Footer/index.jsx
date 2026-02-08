@@ -43,7 +43,7 @@ export default function Footer() {
                             <div className="cs_footer_grid_item">
                                 <div className="cs_footer_item">
                                     <div className="cs_text_widget">
-                                        {customize.general.site_favicon && <img src={customize.general.site_logo_light} alt="Logo" />}
+                                        {customize.general.site_favicon && <img src={customize.general.site_logo_light} alt="Logo" loading="lazy" decoding="async"/>}
                                         <ContactInfoWidget />
                                     </div>
                                 </div>

@@ -173,6 +173,7 @@ export default function Show({ order }) {
                                                                 <img
                                                                     src={special_image}
                                                                     alt="Special"
+                                                                    loading="lazy" decoding="async"
                                                                     style={{ height: "100px", width: "auto", borderRadius: "4px" }}
                                                                 />
                                                                 <div className="text-center small mt-1 text-primary">
@@ -239,6 +240,7 @@ export default function Show({ order }) {
                                                                     <img
                                                                         src={item.item_image}
                                                                         alt=""
+                                                                        loading="lazy" decoding="async"
                                                                         className="rounded mr-2"
                                                                         style={{ width: "40px", height: "40px", objectFit: "cover" }}
                                                                     />

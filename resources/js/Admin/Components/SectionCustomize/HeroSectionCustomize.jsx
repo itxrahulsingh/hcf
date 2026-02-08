@@ -1978,7 +1978,7 @@ export default function HeroSectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/hero/hero_style_${value}.jpg`} alt="Thumb" />
+                                            <img src={`/static/sections/hero/hero_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                             <label htmlFor={`layout-${value}`}>Hero Style {value}</label>
                                         </div>
                                     </div>

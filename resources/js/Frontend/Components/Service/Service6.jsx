@@ -38,7 +38,7 @@ export default function Service6({ data }) {
                             <div className="cs_card cs_style_4">
                                 {item.service_image_url && (
                                     <div className="cs_card_img">
-                                        <img src={item.service_image_url} alt={item.service_title} />
+                                        <img src={item.service_image_url} alt={item.service_title} loading="lazy" decoding="async"/>
                                     </div>
                                 )}
 

@@ -304,7 +304,7 @@ export default function CTASectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/cta/cta_style_${value}.jpg`} alt="Thumb" />
+                                            <img src={`/static/sections/cta/cta_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
                                             <label htmlFor={`layout-${value}`}>CTA Style {value}</label>
                                         </div>
                                     </div>

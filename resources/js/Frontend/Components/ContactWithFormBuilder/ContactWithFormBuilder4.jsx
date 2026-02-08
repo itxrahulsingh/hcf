@@ -266,7 +266,7 @@ export default function ContactWithFormBuilder4({ sections_data }) {
                         </form>
                     </div>
                     <div className="col-xl-5 offset-xl-1 col-lg-6">
-                        {sections_data.image_url && <img src={sections_data.image_url} alt="Thumbnail" className="cs_radius_100_0_0_0" />}
+                        {sections_data.image_url && <img src={sections_data.image_url} alt="Thumbnail" className="cs_radius_100_0_0_0" loading="lazy" decoding="async"/>}
                     </div>
                 </div>
             </div>

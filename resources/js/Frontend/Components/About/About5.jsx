@@ -19,7 +19,7 @@ export default function About5({ data }) {
             <div className="row align-items-center cs_gap_y_40">
                 <div className="col-lg-5">
                     <div className="position-relative">
-                        {image_url && <img src={image_url} alt={section_title} />}
+                        {image_url && <img src={image_url} alt={section_title} loading="lazy" decoding="async"/>}
                         {(experience_year || experience_title) && (
                             <div className="cs_experience_box cs_style_1 cs_accent_bg position-absolute">
                                 <h3

@@ -293,7 +293,7 @@ const Index = ({
                                 <div key={index} className="col-lg-4 col-sm-6">
                                     <div className="cs_product_card cs_style_1">
                                         <div className="cs_product_thumb">
-                                            <img src={product.thumbnail_image} alt={product.seo_title || "Product Image"} />
+                                            <img src={product.thumbnail_image} alt={product.seo_title || "Product Image"} loading="lazy" decoding="async"/>
                                             <div className="cs_product_overlay" />
                                             {product.quantity === 0 ? (
                                                 <div className="cs_out_of_stock_message">{translate("Out of Stock")}</div>

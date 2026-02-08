@@ -16,7 +16,7 @@ export default function index({ themes }) {
                     {themes.map((theme, index) => (
                         <div key={index} className="col-xl-3 col-lg-4 col-sm-6 mb-4 single-theme-list">
                             <div className="theme-wrap">
-                                <img src={theme.thumbnail_image} alt="" />
+                                <img src={theme.thumbnail_image} alt="" loading="lazy" decoding="async"/>
                                 <div className="theme-bottom-bar">
                                     <h2 className="theme-name">
                                         {theme.is_active === "1" && <span>Active: </span>}

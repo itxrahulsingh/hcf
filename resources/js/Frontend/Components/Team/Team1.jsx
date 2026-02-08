@@ -52,7 +52,7 @@ export default function Team1({ data }) {
                 {team_list?.map((item, index) => (
                     <div className="cs_grid_item" key={index}>
                         <div className="cs_team cs_style_3">
-                            {item.team_image_url && <img className="cs_team_member_thumb" src={item.team_image_url} alt={item.team_member_name} />}
+                            {item.team_image_url && <img className="cs_team_member_thumb" src={item.team_image_url} loading="lazy" decoding="async" alt={item.team_member_name} />}
                             <div className="cs_team_info">
                                 <div className="cs_team_info_in">
                                     <p className="cs_team_member_designation">{item.team_member_designation}</p>

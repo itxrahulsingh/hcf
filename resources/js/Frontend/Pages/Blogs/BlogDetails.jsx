@@ -67,7 +67,7 @@ export default function BlogDetails({ blog, meta_title, meta_description, meta_i
                             filter: { author: blog?.user?.id }
                         })}
                     >
-                        <img alt="" src={gravatarUrl(blog?.user?.email, { size: 400 })} height={180} width={180} loading="lazy" decoding="async" />
+                        <img loading="lazy" decoding="async" src={gravatarUrl(blog?.user?.email, { size: 400 })} height={180} width={180} loading="lazy" decoding="async" />
                     </Link>
                     {/* <span className="designation">{translate("Written by")}</span> */}
                     <h3 className="cs_fs_30 cs_normal">

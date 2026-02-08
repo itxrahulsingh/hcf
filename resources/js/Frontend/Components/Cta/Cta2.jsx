@@ -42,7 +42,7 @@ export default function Cta2({ data }) {
                 )}
                 {image_url && (
                     <div className="cs_cta_thumb">
-                        <img src={image_url} alt="Thumb" />
+                        <img src={image_url} alt="Thumb" loading="lazy" decoding="async"/>
                     </div>
                 )}
             </div>

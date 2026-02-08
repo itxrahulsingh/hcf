@@ -16,7 +16,7 @@ export default function TeamDetails1({ data }) {
     return (
         <div className="container">
             <div className="row align-items-center cs_gap_y_45">
-                <div className="col-lg-5">{member_image_url && <img src={member_image_url} alt={member_name} className="cs_radius_50_50_0_0" />}</div>
+                <div className="col-lg-5">{member_image_url && <img src={member_image_url} alt={member_name} className="cs_radius_50_50_0_0" loading="lazy" decoding="async"/>}</div>
                 <div className="col-lg-7">
                     <div className="cs_team_details cs_pl_70">
                         <h2

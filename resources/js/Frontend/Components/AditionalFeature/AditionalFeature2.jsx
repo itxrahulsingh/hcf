@@ -46,7 +46,7 @@ export default function AditionalFeature2({ data }) {
                                     <div className="cs_iconbox cs_style_3 w-100">
                                         {item.feature_image_url && (
                                             <div className="cs_iconbox_icon">
-                                                <img src={item.feature_image_url} alt="Icon" />
+                                                <img src={item.feature_image_url} alt="Icon" loading="lazy" decoding="async"/>
                                             </div>
                                         )}
                                         <div className="cs_iconbox_right">
@@ -72,7 +72,7 @@ export default function AditionalFeature2({ data }) {
                 <div className="col-lg-6">
                     {section_image_url && (
                         <div className="cs_right_full_width cs_space_120">
-                            <img src={section_image_url} alt="Thumb" />
+                            <img src={section_image_url} alt="Thumb" loading="lazy" decoding="async"/>
                         </div>
                     )}
                 </div>

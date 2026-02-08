@@ -41,7 +41,7 @@ export default function PhotoGallery3({ data }) {
                 <div className="cs_gallery cs_style_3">
                     {gallery_list?.map((item, index) => (
                         <div className="cs_gallery_item" key={index} onClick={() => slideTo(index)}>
-                            <img src={item.gallery_image_url} alt="" />
+                            <img src={item.gallery_image_url} alt="" loading="lazy" decoding="async"/>
                             <div className="cs_gallery_hover">
                                 <span></span>
                                 <span></span>

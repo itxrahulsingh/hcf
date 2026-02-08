@@ -91,7 +91,7 @@ export default function Hero3({ data }) {
                 </div>
                 <div className="cs_hero_avatar_wrap">
                     <div className="cs_hero_avatar">
-                        {avatar_image_url && <img src={avatar_image_url} alt={avatar_name} />}
+                        {avatar_image_url && <img src={avatar_image_url} alt={avatar_name} loading="lazy" decoding="async"/>}
                         <div className="cs_hero_avatar_right">
                             {avatar_name && (
                                 <h3

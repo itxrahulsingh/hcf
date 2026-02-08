@@ -85,7 +85,7 @@ export default function Team3({ data }) {
                             <SwiperSlide key={index}>
                                 <div className="cs_team cs_style_3">
                                     {item.team_image_url && (
-                                        <img className="cs_team_member_thumb" src={item.team_image_url} alt={item.team_member_name} />
+                                        <img className="cs_team_member_thumb" src={item.team_image_url} alt={item.team_member_name} loading="lazy" decoding="async"/>
                                     )}
                                     <div className="cs_team_info">
                                         <div className="cs_team_info_in">

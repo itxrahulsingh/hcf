@@ -215,7 +215,7 @@ export default function Index({ categories, sort, filtered_lang, languages }) {
                                                             />
                                                         </td>
                                                         <td>
-                                                            <img src={category?.thumbnail_image} alt={category?.content?.title} style={{ width: "80px" }} />
+                                                            <img src={category?.thumbnail_image} alt={category?.content?.title} style={{ width: "80px" }} loading="lazy" decoding="async"/>
                                                         </td>
                                                         <td>{category?.content?.title}</td>
                                                         <td>{moment(category.created_at).format("ll")}</td>

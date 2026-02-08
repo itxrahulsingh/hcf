@@ -34,7 +34,7 @@ export default function MultipleMediaUploader({ onSelected, handleRemoved, defau
             <div className="upload-wrapper">
                 {previewImageUrls.map((previewImageUrl, index) => (
                     <div className="multi-image-preview" key={index}>
-                        <img src={previewImageUrl} className="multi-preview-image" alt="Preview" />
+                        <img src={previewImageUrl} className="multi-preview-image" alt="Preview" loading="lazy" decoding="async"/>
                         <button type="button" onClick={() => removeImage(index)} className="remove-button">
                             <IonIcon icon={trashOutline} />
                         </button>

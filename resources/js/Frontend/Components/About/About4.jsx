@@ -5,7 +5,7 @@ export default function About4({ data }) {
             <div className="row align-items-center cs_gap_y_40">
                 <div className="col-lg-6">
                     <div className="cs_image_card cs_style_2">
-                        <div className="cs_image_card_in">{image_url && <img src={image_url} alt={section_title} className="w-100" />}</div>
+                        <div className="cs_image_card_in">{image_url && <img src={image_url} alt={section_title} className="w-100" loading="lazy" decoding="async"/>}</div>
                         <svg
                             className="cs_shape_1 cs_accent_color"
                             width={148}

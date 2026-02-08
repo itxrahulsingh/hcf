@@ -32,7 +32,7 @@ export default function CauseLayout({
             {causeDetails ? (
                 <>
                     <div className="cause-banner-wrapper">
-                        <img src={causeDetailsBannerImageUrl} alt={causeDetails?.content?.title || "Cause Banner"} className="cause-banner-image" />
+                        <img src={causeDetailsBannerImageUrl} alt={causeDetails?.content?.title || "Cause Banner"} loading="lazy" decoding="async" className="cause-banner-image" />
                     </div>
                 </>
             ) : (

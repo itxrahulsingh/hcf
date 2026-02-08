@@ -7,14 +7,14 @@ export default function Partner2({ data }) {
                     <div className={`cs_moving_section cs_moving_duration_40 cs_brand_2_wrap${animation_direction ? " cs_reverse_animation" : ""}`}>
                         {partner_list?.map((item, index) => (
                             <div className="cs_brand cs_style_2" key={index}>
-                                {item.partner_image_url && <img src={item.partner_image_url} alt="Brand" />}
+                                {item.partner_image_url && <img src={item.partner_image_url} alt="Brand" loading="lazy" decoding="async"/>}
                             </div>
                         ))}
                     </div>
                     <div className={`cs_moving_section cs_moving_duration_40 cs_brand_2_wrap${animation_direction ? " cs_reverse_animation" : ""}`}>
                         {partner_list?.map((item, index) => (
                             <div className="cs_brand cs_style_2" key={index}>
-                                {item.partner_image_url && <img src={item.partner_image_url} alt="Brand" />}
+                                {item.partner_image_url && <img src={item.partner_image_url} alt="Brand" loading="lazy" decoding="async"/>}
                             </div>
                         ))}
                     </div>

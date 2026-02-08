@@ -74,7 +74,7 @@ export default function Index({ reviews }) {
                                                         <tr className={`odd ${review?.is_approved === '0' ? "un-approved-comment" : ""}`} key={index}>
                                                             <td>
                                                                 <div className="yoo-table-medias yoo-style1" style={{ display: "flex", gap: "10px" }}>
-                                                                    <img src={review?.product?.thumbnail_image} alt="" style={{ width: "50px", height: "50px" }} /> <span>{review?.product?.content?.title}</span>
+                                                                    <img src={review?.product?.thumbnail_image} alt="" style={{ width: "50px", height: "50px" }} loading="lazy" decoding="async"/> <span>{review?.product?.content?.title}</span>
                                                                 </div>
                                                             </td>
                                                             <td>

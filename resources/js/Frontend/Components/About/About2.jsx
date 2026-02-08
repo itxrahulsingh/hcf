@@ -3,7 +3,7 @@ export default function About2({ data }) {
     return (
         <div className="container">
             <div className="row cs_gap_y_40">
-                <div className="col-xl-5 col-lg-6">{image_url && <img src={image_url} alt={section_title} />}</div>
+                <div className="col-xl-5 col-lg-6">{image_url && <img src={image_url} alt={section_title} loading="lazy" decoding="async"/>}</div>
                 <div className="col-lg-6 offset-xl-1">
                     <div className="cs_section_heading cs_style_1">
                         {section_subtitle && (

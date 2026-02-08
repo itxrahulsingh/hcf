@@ -44,7 +44,7 @@ export default function Hero5({ data }) {
                     <div className="cs_hero cs_style_5 cs_center cs_hobble" onMouseMove={handleMouseMove} onMouseOut={handleMouseOut}>
                         <div className="cs_hero_img">
                             {item.imageUrl && (
-                                <img src={item.imageUrl} alt={item.title} className="cs_hover_layer_1" style={{ transform: transform1 }} />
+                                <img src={item.imageUrl} alt={item.title} className="cs_hover_layer_1" style={{ transform: transform1 }} loading="lazy" decoding="async"/>
                             )}
                         </div>
                         <div className="container">
@@ -87,12 +87,12 @@ export default function Hero5({ data }) {
                                     <div className="cs_hero_review_avatars">
                                         {item.avatar_image_url && (
                                             <div>
-                                                <img src={item.avatar_image_url} alt="Avatar" />
+                                                <img src={item.avatar_image_url} alt="Avatar" loading="lazy" decoding="async"/>
                                             </div>
                                         )}
                                         {item.avatar_image_url_2 && (
                                             <div>
-                                                <img src={item.avatar_image_url_2} alt="Avatar" />
+                                                <img src={item.avatar_image_url_2} alt="Avatar" loading="lazy" decoding="async"/>
                                             </div>
                                         )}
                                     </div>

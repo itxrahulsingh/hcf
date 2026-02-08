@@ -30,7 +30,7 @@ export default function Category1({ data }) {
                 {category_list?.map((item, index) => (
                     <div className="cs_category_item" key={index}>
                         <div className="cs_category_1">
-                            <img src={item.category_image_url} alt="" className="cs_category_thumb" />
+                            <img src={item.category_image_url} alt="" className="cs_category_thumb" loading="lazy" decoding="async"/>
                             <div className="cs_category_info">
                                 <h3 className="cs_category_title cs_fs_30 cs_white_color cs_normal">
                                     <NavigationLink href={item.category_btn_url}>{item.category_title}</NavigationLink>

@@ -61,7 +61,7 @@ function FileUpload({ select, value = "" }) {
             >
                 {previewImageUrl ? (
                     <div className="image-preview">
-                        <img src={previewImageUrl} className="preview-image" alt="Preview" />
+                        <img src={previewImageUrl} className="preview-image" alt="Preview" loading="lazy" decoding="async"/>
                         <button onClick={removeImage} className="remove-button">
                             <IonIcon icon={trashOutline} />
                         </button>

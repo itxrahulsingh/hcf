@@ -31,7 +31,7 @@ export default function CoreValue5({ data }) {
                         <div className="cs_iconbox cs_style_7">
                             {item.feature_icon_url && (
                                 <div className="cs_iconbox_icon">
-                                    <img src={item.feature_icon_url} alt="Icon" />
+                                    <img src={item.feature_icon_url} alt="Icon" loading="lazy" decoding="async"/>
                                 </div>
                             )}
                             {item.feature_title && (

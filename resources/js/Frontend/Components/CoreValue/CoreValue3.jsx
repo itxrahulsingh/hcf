@@ -41,7 +41,7 @@ export default function CoreValue3({ data }) {
                         <div className="cs_iconbox cs_style_1 cs_type_1">
                             {item.feature_icon_url && (
                                 <div className="cs_iconbox_icon rounded-circle cs_gray_bg">
-                                    <img src={item.feature_icon_url} alt={item.feature_title} />
+                                    <img src={item.feature_icon_url} alt={item.feature_title} loading="lazy" decoding="async"/>
                                 </div>
                             )}
                             <h2

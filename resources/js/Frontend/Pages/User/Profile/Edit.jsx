@@ -36,7 +36,7 @@ export default function edit() {
             <div className="cs_dashboard_right">
                 <div className="cs_dashboard_card">
                     <form onSubmit={handleFormSubmit} className="row cs_gap_y_20">
-                        <img src={user?.image_url} style={{ marginBottom: "10px", width: "150px" }} alt="" />
+                        <img src={user?.image_url} style={{ marginBottom: "10px", width: "150px" }} alt="" loading="lazy" decoding="async"/>
                         <div className="col-lg-12">
                             <label htmlFor="avatar">{translate("Avatar")}*</label>
                             <input

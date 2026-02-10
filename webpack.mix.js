@@ -45,6 +45,13 @@ mix.js("resources/js/Admin/app.jsx", "public/js/admin")
 
 mix.copyDirectory("resources/static", "public/static")
 
+mix.copyDirectory("node_modules/tinymce/models", "public/js/tinymce/models");
+mix.copyDirectory("node_modules/tinymce/skins", "public/js/tinymce/skins");
+mix.copyDirectory("node_modules/tinymce/themes", "public/js/tinymce/themes");
+mix.copyDirectory("node_modules/tinymce/plugins", "public/js/tinymce/plugins");
+mix.copyDirectory("node_modules/tinymce/icons", "public/js/tinymce/icons");
+mix.copy("node_modules/tinymce/tinymce.min.js", "public/js/tinymce/tinymce.min.js");
+
 if (mix.inProduction()) {
     mix.version();
 }

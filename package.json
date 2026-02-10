@@ -31,6 +31,7 @@
         "@inertiajs/server": "^0.1.0",
         "@ionic/react": "^7.1.2",
         "@reduxjs/toolkit": "^1.9.5",
+        "@tinymce/tinymce-react": "^6.3.0",
         "chart.js": "^4.5.1",
         "d3-scale": "^4.0.2",
         "dompurify": "^3.2.2",
@@ -70,6 +71,7 @@
         "slick-carousel": "^1.8.1",
         "sweetalert2": "^11.7.12",
         "swiper": "^11.0.3",
+        "tinymce": "^8.3.2",
         "webpack-node-externals": "^3.0.0"
     }
 }

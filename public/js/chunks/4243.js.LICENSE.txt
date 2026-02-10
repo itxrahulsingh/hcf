@@ -4,15 +4,8 @@ object-assign
 @license MIT
 */
 
-/* istanbul ignore next -- @preserve */
-
 /*!
  * (C) Ionic http://ionicframework.com - MIT License
- */
-
-/*!
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md.
  */
 
 /*!
@@ -39,11 +32,6 @@ object-assign
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-
-/**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**

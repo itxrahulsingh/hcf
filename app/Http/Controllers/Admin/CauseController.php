@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\Causes\CauseUpdateRequest;
 use App\Models\Cause;
 use App\Models\CauseCategory;
 use App\Models\Gift;
-use App\Models\Product; // Added Import
+use App\Models\Product;
 use App\Models\Setting;
 use App\Repositories\Admin\CauseRepository;
 use Illuminate\Http\Request;

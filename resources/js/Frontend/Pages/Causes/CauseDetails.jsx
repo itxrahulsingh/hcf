@@ -301,6 +301,9 @@ export default function CauseDetails({
         ]
     }
 
+    const variationGifts = cause?.gifts?.filter((g) => g.have_variations === 1 && g.variations?.length > 0) || []
+    const standardGifts = cause?.gifts?.filter((g) => g.have_variations !== 1 || !g.variations || g.variations.length === 0) || []
+
     return (
         <FrontendLayout>
             {cause?.custom_style && (
@@ -406,50 +409,56 @@ export default function CauseDetails({
                         {/* Gifts Section */}
                         {cause?.have_gift == 1 && cause?.gifts?.length > 0 && (
                             <div className="cs_cause_details_wrap">
-                                <h3 className="mb-4">Select a Gift</h3>
-                                <div className={`row g-4 ${cause?.gifts?.length <= 2 ? "justify-content-center" : ""}`}>
-                                    {cause.gifts.map((gift, idx) => {
-                                        const isVaried = gift.have_variations === 1 && gift.variations?.length > 0
-                                        const colClass = isVaried ? "col-12 col-md-6" : cause?.gift_design == 'portrait' ? "col-6 col-sm-4 col-md-3" : "col-6 "
+                                <h3 className="mb-4">{translate("Select a Gift")}</h3>
 
-                                        const cartItem = !isVaried ? carts.find((i) => i.id === gift.id && i.type === "gift") : null
-                                        const quantity = cartItem ? cartItem.quantity : 0
+                                {/* ROW 1: Variation Gifts */}
+                                {variationGifts.length > 0 && (
+                                    <div className="row g-4 mb-5">
+                                        {variationGifts.map((gift, idx) => {
+                                            return (
+                                                <div key={`var-${idx}`} className="col-12 col-md-6">
+                                                    {" "}
+                                                    {/* Increased to 6 columns */}
+                                                    <div className="cause-card h-100 d-flex flex-column shadow-sm border-0 overflow-hidden">
+                                                        <div className="cause-card-img-wrapper" style={{ height: "220px" }}>
+                                                            {gift.gift_image ? (
+                                                                <img
+                                                                    src={gift.gift_image}
+                                                                    alt={gift.content?.title}
+                                                                    className="w-100 h-100 object-fit-cover"
+                                                                    loading="lazy"
+                                                                />
+                                                            ) : (
+                                                                <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
+                                                                    No Image
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="card-body p-3 d-flex flex-column">
+                                                            <div className="cause-card-title fw-bold fs-5 mb-2">{gift.content?.title}</div>
+                                                            <p className="small text-muted mb-3">{gift.content?.description}</p>
 
-                                        return (
-                                            <div key={idx} className={colClass}>
-                                                <div className={`cause-card h-100 d-flex ${cause?.gift_design == "portrait" ? "flex-column" : ""} shadow-sm`}>
-                                                    <div className="cause-card-img-wrapper">
-                                                        {gift.gift_image ? (
-                                                            <img src={gift.gift_image} alt={gift.content?.title} loading="lazy" decoding="async" />
-                                                        ) : (
-                                                            <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
-                                                                No Image
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div className="card-body p-3 d-flex flex-column">
-                                                        <div className="cause-card-title">{gift.content?.title}</div>
-                                                        {isVaried ? (
                                                             <div className="mt-auto">
-                                                                <p>{gift.content?.description}</p>
-                                                                <div className="row mt-2">
+                                                                {/* The 2-Column Button Grid */}
+                                                                <div className="row g-2">
                                                                     {gift.variations.map((variant, vIdx) => {
                                                                         const variantId = `${gift.id}-var-${vIdx}`
                                                                         const isActive = carts.some((i) => i.id === variantId && i.type === "gift")
-
                                                                         return (
-                                                                            <div key={variantId} className="col-6 pb-2">
+                                                                            <div key={variantId} className="col-6">
+                                                                                {" "}
+                                                                                {/* col-6 creates the 1,2 / 3,4 layout */}
                                                                                 <button
                                                                                     type="button"
-                                                                                    className={`w-100 py-2 rounded-3 border-0 transition-all`}
+                                                                                    className="w-100 py-3 px-2 rounded-3 border-0 text-white transition-all d-flex flex-column align-items-center justify-content-center"
                                                                                     style={{
                                                                                         background: isActive
                                                                                             ? "linear-gradient(45deg, #e64a19, #f4511e)"
-                                                                                            : "linear-gradient(45deg, rgb(255 51 51), rgb(237, 143, 3))",
-                                                                                        color: "#fff",
+                                                                                            : "linear-gradient(45deg, #FF512F, #F09819)",
                                                                                         boxShadow: isActive
                                                                                             ? "inset 0 4px 8px rgba(0,0,0,0.3)"
-                                                                                            : "0 4px 12px rgba(240, 152, 25, 0.25)"
+                                                                                            : "0 3px 8px rgba(240, 152, 25, 0.2)",
+                                                                                        minHeight: "70px"
                                                                                     }}
                                                                                     onClick={() => {
                                                                                         if (isActive) {
@@ -461,7 +470,6 @@ export default function CauseDetails({
                                                                                                     type: "gift",
                                                                                                     content: {
                                                                                                         ...gift,
-                                                                                                        amount: variant.amount,
                                                                                                         title: `${gift.content?.title} - ${variant.title}`
                                                                                                     },
                                                                                                     quantity: 1,
@@ -473,61 +481,103 @@ export default function CauseDetails({
                                                                                         }
                                                                                     }}
                                                                                 >
-                                                                                    <div className="fw-bold small opacity-90">{variant.title}</div>
-                                                                                    <div className="fw-bolder">
+                                                                                    <span className="fw-bold small text-truncate w-100 mb-1">
+                                                                                        {variant.title}
+                                                                                    </span>
+                                                                                    <span className="fw-bolder fs-6">
                                                                                         <Amount amount={variant.amount} />
-                                                                                    </div>
+                                                                                    </span>
                                                                                 </button>
                                                                             </div>
                                                                         )
                                                                     })}
                                                                 </div>
                                                             </div>
-                                                        ) : (
-                                                            <>
-                                                                <div className="d-flex justify-content-between mb-3">
-                                                                    <span className="cause-card-price">
-                                                                        <Amount amount={Number(gift.amount || 0).toFixed(2)} />
-                                                                    </span>
-                                                                </div>
-                                                                <div className="mt-auto">
-                                                                    <div className="qty-control d-flex justify-content-between align-items-center w-100">
-                                                                        <button
-                                                                            className="qty-btn"
-                                                                            disabled={!cartItem || quantity === 0}
-                                                                            onClick={() => dispatch(decreaseCart({ id: gift.id, type: "gift" }))}
-                                                                        >
-                                                                            <Icon icon="ic:round-minus" />
-                                                                        </button>
-                                                                        <span className="fw-bold mx-2">{quantity}</span>
-                                                                        <button
-                                                                            className="qty-btn"
-                                                                            onClick={() =>
-                                                                                handleSingleSelection(
-                                                                                    {
-                                                                                        id: gift.id,
-                                                                                        type: "gift",
-                                                                                        content: gift,
-                                                                                        quantity: gift.min_qty || 1,
-                                                                                        price: gift.amount,
-                                                                                        cause_id: cause.id
-                                                                                    },
-                                                                                    "gift"
-                                                                                )
-                                                                            }
-                                                                        >
-                                                                            <Icon icon="ic:round-plus" />
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </>
-                                                        )}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                )}
+
+                                {/* ROW 2: Standard Gifts - APPLIES PORTRAIT/LANDSCAPE */}
+                                {standardGifts.length > 0 && (
+                                    <div className="row g-4">
+                                        {standardGifts.map((gift, idx) => {
+                                            const isPortrait = cause?.gift_design === "portrait"
+                                            const colClass = isPortrait ? "col-6 col-md-3" : "col-12 col-md-6"
+                                            const cartItem = carts.find((i) => i.id === gift.id && i.type === "gift")
+                                            const quantity = cartItem ? cartItem.quantity : 0
+
+                                            return (
+                                                <div key={`std-${idx}`} className={colClass}>
+                                                    <div
+                                                        className={`cause-card h-100 d-flex shadow-sm border-0 ${isPortrait ? "flex-column" : "flex-row"}`}
+                                                    >
+                                                        <div
+                                                            className="cause-card-img-wrapper"
+                                                            style={!isPortrait ? { width: "35%", minHeight: "120px" } : {}}
+                                                        >
+                                                            {gift.gift_image ? (
+                                                                <img
+                                                                    src={gift.gift_image}
+                                                                    alt={gift.content?.title}
+                                                                    className="w-100 h-100 object-fit-cover"
+                                                                />
+                                                            ) : (
+                                                                <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
+                                                                    No Image
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="card-body p-3 d-flex flex-column justify-content-center">
+                                                            <div className="cause-card-title small fw-bold mb-1">{gift.content?.title}</div>
+                                                            <div className="cause-card-price text-primary fw-bold mb-2">
+                                                                <Amount amount={Number(gift.amount || 0).toFixed(0)} />
+                                                            </div>
+                                                            <div className="mt-auto">
+                                                                <div
+                                                                    className="qty-control d-flex justify-content-between align-items-center bg-light rounded-pill px-2 py-1"
+                                                                    style={{ maxWidth: "120px" }}
+                                                                >
+                                                                    <button
+                                                                        type="button"
+                                                                        className="qty-btn border-0 bg-transparent p-0"
+                                                                        disabled={quantity === 0}
+                                                                        onClick={() => dispatch(decreaseCart({ id: gift.id, type: "gift" }))}
+                                                                    >
+                                                                        <Icon icon="ic:round-minus" />
+                                                                    </button>
+                                                                    <span className="fw-bold small mx-2">{quantity}</span>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="qty-btn border-0 bg-transparent p-0"
+                                                                        onClick={() =>
+                                                                            handleSingleSelection(
+                                                                                {
+                                                                                    id: gift.id,
+                                                                                    type: "gift",
+                                                                                    content: gift,
+                                                                                    quantity: gift.min_qty || 1,
+                                                                                    price: gift.amount,
+                                                                                    cause_id: cause.id
+                                                                                },
+                                                                                "gift"
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <Icon icon="ic:round-plus" />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -542,12 +592,11 @@ export default function CauseDetails({
                                         const finalPrice = Number(product.discount_price || product.price || 0)
                                         return (
                                             <div key={idx} className={`col-12 col-sm-6 ${cause?.product_design == "portrait" ? "col-md-4" : ""}`}>
-                                                <div className={`cause-card h-100 d-flex ${cause?.product_design == "portrait" ? "flex-column" : ""}  shadow-sm border-0 overflow-hidden`}>
+                                                <div
+                                                    className={`cause-card h-100 d-flex ${cause?.product_design == "portrait" ? "flex-column" : ""}  shadow-sm border-0 overflow-hidden`}
+                                                >
                                                     <div className="cause-card-img-wrapper position-relative">
-                                                        <div
-                                                            className="top-0 start-0 w-100 d-flex flex-column"
-                                                            style={{ zIndex: 5 }}
-                                                        >
+                                                        <div className="top-0 start-0 w-100 d-flex flex-column" style={{ zIndex: 5 }}>
                                                             {product.is_popular == 1 && (
                                                                 <div
                                                                     className="w-100 text-center text-white text-uppercase fw-bold py-1 shadow-sm"
@@ -583,12 +632,16 @@ export default function CauseDetails({
                                                                 className="w-100 object-fit-cover"
                                                                 loading="lazy"
                                                                 decoding="async"
-                                                                style={cause?.product_design == "portrait" ? { height: "200px" } : { height: "150px" }}
+                                                                style={
+                                                                    cause?.product_design == "portrait" ? { height: "200px" } : { height: "150px" }
+                                                                }
                                                             />
                                                         ) : (
                                                             <div
                                                                 className="d-flex align-items-center justify-content-center bg-light text-muted h-100"
-                                                                style={cause?.product_design == "portrait" ? { height: "200px" } : { height: "150px" }}
+                                                                style={
+                                                                    cause?.product_design == "portrait" ? { height: "200px" } : { height: "150px" }
+                                                                }
                                                             >
                                                                 No Image
                                                             </div>
@@ -694,10 +747,7 @@ export default function CauseDetails({
                             {/* <div className="d-flex align-items-center mb-4">
                                 <h3 className="mb-0 fw-bold">Content</h3>
                             </div> */}
-                            <div
-                                className="rich-content"
-                                dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.content || "") }}
-                            />
+                            <div className="rich-content" dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.content || "") }} />
                         </div>
 
                         {cause?.content?.projects && (
@@ -705,10 +755,7 @@ export default function CauseDetails({
                                 {/* <div className="d-flex align-items-center mb-4">
                                     <h3 className="mb-0 fw-bold">Project</h3>
                                 </div> */}
-                                <div
-                                    className="rich-content"
-                                    dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.projects || "") }}
-                                />
+                                <div className="rich-content" dangerouslySetInnerHTML={{ __html: ProcessContent(cause?.content?.projects || "") }} />
                             </div>
                         )}
 
@@ -855,9 +902,7 @@ export default function CauseDetails({
                                         <div className="mb-3">
                                             <label className="form-label fw-bold small text-muted mb-1">{translate("Or Enter Custom Amount")}</label>
                                             <div className="input-group input-group-lg border rounded-3 overflow-hidden">
-                                                <span className="input-group-text bg-light border-0 fw-bold text-muted">
-                                                    ₹
-                                                </span>
+                                                <span className="input-group-text bg-light border-0 fw-bold text-muted">₹</span>
                                                 <input
                                                     type="number"
                                                     className="form-control border-0 fw-bold fs-5 text-dark"

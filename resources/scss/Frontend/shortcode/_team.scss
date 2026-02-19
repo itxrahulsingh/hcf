@@ -55,14 +55,8 @@
   }
 }
 .cs_team.cs_style_2 {
-  .cs_team_member_thumb {
-    border-radius: 50px 50px 0 0;
-  }
   .cs_team_info {
-    padding-top: 28px;
-    @media (max-width: 991px) {
-      padding-top: 20px;
-    }
+    padding: 10px;
   }
   .cs_team_member_designation {
     border-color: var(--ternary);

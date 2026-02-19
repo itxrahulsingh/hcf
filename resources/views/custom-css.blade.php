@@ -319,4 +319,183 @@ overflow: hidden;
 ========================================= */
 .rich-content img { max-width: 100%; height: auto; border-radius: 12px; margin: 1.5rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .rich-content iframe, .rich-content video { width: 100%; aspect-ratio: 16 / 9; height: auto; border-radius: 12px; margin: 1.5rem 0; }
+
+/* =========================================
+TEAM GROUPING & SLIDING HOVER
+========================================= */
+
+/* 1. Filter Buttons */
+.cs_team_filter_wrap {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.cs_filter_btn {
+    padding: 8px 22px;
+    border-radius: 50px;
+    background: #ffffff;
+    border: 1px solid #eee;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.cs_filter_btn:hover { border-color: #ff8c00; color: #ff8c00; }
+.cs_filter_btn.active {
+    background: linear-gradient(45deg, rgb(255 51 51), rgb(237, 143, 3));
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+}
+
+/* 2. Team Card & Sliding Overlay */
+.cs_team.cs_style_2 {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #fff;
+    transition: transform 0.3s ease;
+}
+
+.cs_team_hover_description {
+    position: absolute;
+    bottom: -100%; /* Hidden at bottom */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 140, 0, 0.97); /* Solid Aesthetic Orange */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+}
+
+.cs_team_hover_description p {
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+
+/* 3. Interaction */
+.cs_team.cs_style_2:hover .cs_team_hover_description {
+    bottom: 0; /* Slide Up */
+    opacity: 1;
+    visibility: visible;
+}
+.cs_team.cs_style_2:hover .cs_team_hover_description p { opacity: 1; }
+
+/* Simple fade animation for filter switching */
+.col-xl-3.col-sm-6 {
+    animation: csFadeUp 0.4s ease-out forwards;
+}
+@keyframes csFadeUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+ /* Gallery Filter Buttons */
+.cs_gallery_filter_wrap {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.cs_filter_btn {
+    padding: 8px 25px;
+    border-radius: 50px;
+    border: 1px solid #eee;
+    background: #fff;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cs_filter_btn.active {
+    background: linear-gradient(45deg, rgb(255 51 51), rgb(237, 143, 3));
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);
+}
+
+/* 4-Column Item Styling */
+.cs_gallery_item.cs_type_mixed {
+    height: 280px; /* Fixed height for consistent 4-column look */
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Video Play Icon */
+.cs_video_play_icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff3333;
+    font-size: 20px;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.cs_gallery_item:hover .cs_video_play_icon {
+    transform: translate(-50%, -50%) scale(1.1);
+    background: #ff3333;
+    color: #fff;
+}
+
+/* Hover Content */
+.cs_gallery_text {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 3;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.cs_gallery_item:hover .cs_gallery_text {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.cs_video_container {
+    width: 80vw;
+    height: 80vh;
+    max-width: 1000px;
+    max-height: 560px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 767px) {
+    .cs_video_container {
+        width: 95vw;
+        height: 50vh;
+    }
+}
 {{ $custom_css }}

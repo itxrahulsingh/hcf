@@ -9,51 +9,46 @@ export default function LightGallery({ modalToggle, setModalToggle, galleryList,
     const [swiperRef, setSwiperRef] = useState(null)
     const [isFullscreen, setIsFullscreen] = useState(false)
 
-    const handleZoomIn = () => {
-        setZoomLevel((prevZoom) => prevZoom * 1.1)
+    // Helper to convert YouTube links to Embed links
+    const getEmbedUrl = (url) => {
+        if (!url) return ""
+        let videoId = ""
+        const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)/
+        const match = url.match(regExp)
+
+        if (match) {
+            videoId = url.split(match[0])[1]?.split(/[?&]/)[0]
+        } else {
+            videoId = url.split("/").pop()
+        }
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`
     }
 
-    const handleZoomOut = () => {
-        if (zoomLevel > 1) {
-            setZoomLevel((prevZoom) => prevZoom / 1.1)
-        }
-    }
+    const handleZoomIn = () => setZoomLevel((prev) => prev * 1.1)
+    const handleZoomOut = () => zoomLevel > 1 && setZoomLevel((prev) => prev / 1.1)
 
     const handleDownload = (imageUrl) => {
         const link = document.createElement("a")
         link.href = imageUrl
-        link.download = imageUrl.substring(imageUrl.lastIndexOf("/") + 1)
+        link.download = "download"
         link.click()
     }
 
     const toggleAutoplay = () => {
         if (swiperRef && swiperRef.autoplay) {
-            if (isPlaying) {
-                swiperRef.autoplay.stop()
-            } else {
-                swiperRef.autoplay.start()
-            }
+            isPlaying ? swiperRef.autoplay.stop() : swiperRef.autoplay.start()
             setIsPlaying(!isPlaying)
         }
     }
 
     const toggleFullScreen = () => {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen()
-        } else {
-            document.exitFullscreen()
-        }
-    }
-
-    const handleFullscreenChange = () => {
-        setIsFullscreen(!!document.fullscreenElement)
+        !document.fullscreenElement ? document.documentElement.requestFullscreen() : document.exitFullscreen()
     }
 
     useEffect(() => {
+        const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement)
         document.addEventListener("fullscreenchange", handleFullscreenChange)
-        return () => {
-            document.removeEventListener("fullscreenchange", handleFullscreenChange)
-        }
+        return () => document.removeEventListener("fullscreenchange", handleFullscreenChange)
     }, [])
 
     const handleCloseModal = () => {
@@ -64,39 +59,43 @@ export default function LightGallery({ modalToggle, setModalToggle, galleryList,
     return (
         modalToggle && (
             <div className="cs_gallery_modal">
-                <div className="cs_gallery_modal_overlay"></div>
+                <div className="cs_gallery_modal_overlay" onClick={handleCloseModal}></div>
                 <div className="cs_gallery_modal_slider_wrap">
                     <Swiper
                         onSwiper={setSwiperRef}
                         pagination={{ type: "fraction" }}
                         navigation={true}
                         modules={[Pagination, Mousewheel, Navigation, Autoplay]}
-                        loop={true}
-                        mousewheel={true}
                         className="mySwiper"
                         speed={1000}
                         initialSlide={initialSlideIndex}
-                        autoplay={
-                            isPlaying
-                                ? {
-                                      delay: 3000,
-                                      disableOnInteraction: false
-                                  }
-                                : false
-                        }
+                        autoplay={isPlaying ? { delay: 3000, disableOnInteraction: false } : false}
                     >
                         {galleryList?.map((item, index) => (
                             <SwiperSlide key={index}>
                                 <div className="cs_gallery_modal_item">
-                                    <img
-                                        src={item.gallery_image_url}
-                                        alt=""
-                                        loading="lazy" decoding="async"
-                                        style={{
-                                            transform: `scale(${zoomLevel})`,
-                                            transition: "transform 0.3s ease"
-                                        }}
-                                    />
+                                    {item.media_type === "video" ? (
+                                        <div className="cs_video_container" style={{ transform: `scale(${zoomLevel})` }}>
+                                            <iframe
+                                                width="100%"
+                                                height="100%"
+                                                src={getEmbedUrl(item.video_url)}
+                                                title={item.gallery_title}
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowFullScreen
+                                            ></iframe>
+                                        </div>
+                                    ) : (
+                                        <img
+                                            src={item.gallery_image_url}
+                                            alt={item.gallery_title}
+                                            style={{
+                                                transform: `scale(${zoomLevel})`,
+                                                transition: "transform 0.3s ease"
+                                            }}
+                                        />
+                                    )}
                                 </div>
                                 <h4 className="cs_gallery_modal_title">{item.gallery_title}</h4>
                             </SwiperSlide>
@@ -105,26 +104,21 @@ export default function LightGallery({ modalToggle, setModalToggle, galleryList,
                 </div>
                 <div className="cs_gallery_controler">
                     <button onClick={handleZoomIn} className="cs_gallery_controler_btn">
-                        <Icon icon="lucide:zoom-in" width="22" height="22" />
+                        <Icon icon="lucide:zoom-in" />
                     </button>
                     <button onClick={handleZoomOut} className="cs_gallery_controler_btn">
-                        <Icon icon="lucide:zoom-out" width="22" height="22" />
+                        <Icon icon="lucide:zoom-out" />
                     </button>
-                    <button onClick={() => handleDownload(galleryList[initialSlideIndex]?.gallery_image_url)} className="cs_gallery_controler_btn">
-                        <Icon icon="lucide:download" width="22" height="22" />
-                    </button>
-                    <button onClick={toggleAutoplay} className={`cs_gallery_controler_btn ${isPlaying ? "active" : ""}`}>
-                        {isPlaying ? (
-                            <Icon icon="lucide:circle-pause" width="22" height="22" />
-                        ) : (
-                            <Icon icon="lucide:circle-play" width="22" height="22" />
-                        )}
-                    </button>
-                    <button onClick={toggleFullScreen} className="cs_gallery_controler_btn">
-                        {isFullscreen ? <Icon icon="lucide:scan-line" width="22" height="22" /> : <Icon icon="lucide:scan" width="22" height="22" />}
-                    </button>
+                    {galleryList[initialSlideIndex]?.media_type !== "video" && (
+                        <button
+                            onClick={() => handleDownload(galleryList[initialSlideIndex]?.gallery_image_url)}
+                            className="cs_gallery_controler_btn"
+                        >
+                            <Icon icon="lucide:download" />
+                        </button>
+                    )}
                     <button onClick={handleCloseModal} className="cs_gallery_controler_btn">
-                        <Icon icon="lucide:x" width="22" height="22" />
+                        <Icon icon="lucide:x" />
                     </button>
                 </div>
             </div>

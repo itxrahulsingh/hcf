@@ -6,7 +6,32 @@ import moment from "moment"
 
 export default function Cause3({ data }) {
     const { section_title, section_subtitle, pagination_style } = data
-    const causes = localStorage.getItem("causes") ? JSON.parse(localStorage.getItem("causes")) : []
+
+    // 1. Get settings from the admin 'data' prop
+    const limit = parseInt(data?.record_limit) || 4
+    const orderBy = data?.order_by || "latest"
+
+    // 2. Retrieve raw causes from localStorage
+    let processedCauses = localStorage.getItem("causes") ? JSON.parse(localStorage.getItem("causes")) : []
+
+    // 3. Apply Sorting Logic
+    if (orderBy === "latest") {
+        processedCauses.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    } else if (orderBy === "oldest") {
+        processedCauses.sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+    } else if (orderBy === "alphabetical") {
+        processedCauses.sort((a, b) => {
+            const titleA = a.content?.title?.toLowerCase() || ""
+            const titleB = b.content?.title?.toLowerCase() || ""
+            return titleA.localeCompare(titleB)
+        })
+    } else if (orderBy === "random") {
+        processedCauses.sort(() => Math.random() - 0.5)
+    }
+
+    // 4. Apply Limit Logic
+    const finalCauses = processedCauses.slice(0, limit)
+
     return (
         <>
             <div className="container">
@@ -66,26 +91,32 @@ export default function Cause3({ data }) {
                                 clickable: true
                             }}
                             speed={800}
-                            loop={true}
+                            loop={finalCauses.length > 1} // Only loop if multiple items exist
                             modules={[Pagination, Navigation]}
                             navigation={{
                                 nextEl: ".cs_right_arrow",
                                 prevEl: ".cs_left_arrow",
                                 disabledClass: "swiper-button-disabled"
                             }}
-                            className={`mySwiper${pagination_style === "pagination_0" ? " cs_swiper_pagination_wrap_0" : ""}${pagination_style === "pagination_1" ? " cs_swiper_pagination_wrap_1" : ""
-                                }${pagination_style === "pagination_2" ? " cs_swiper_pagination_wrap_2" : ""}${pagination_style === "pagination_3" ? " cs_swiper_pagination_wrap_3" : ""
-                                }`}
+                            className={`mySwiper${pagination_style === "pagination_0" ? " cs_swiper_pagination_wrap_0" : ""}${
+                                pagination_style === "pagination_1" ? " cs_swiper_pagination_wrap_1" : ""
+                            }${pagination_style === "pagination_2" ? " cs_swiper_pagination_wrap_2" : ""}${
+                                pagination_style === "pagination_3" ? " cs_swiper_pagination_wrap_3" : ""
+                            }`}
                         >
-                            {causes?.map((item, index) => (
+                            {finalCauses?.map((item, index) => (
                                 <SwiperSlide key={index}>
                                     <div className="cs_post cs_style_1">
                                         <NavigationLink href={route("cause.show", item?.slug)} className="cs_post_thumb">
-                                            <img src={item?.thumbnail_image} alt={item?.content?.title} loading="lazy" decoding="async"/>
+                                            <img src={item?.thumbnail_image} alt={item?.content?.title} loading="lazy" decoding="async" />
                                         </NavigationLink>
                                         <div className="cs_post_info">
                                             <div className="cs_post_meta">
-                                                <span className="cs_medium cs_fs_18 cs_primary_color">{item?.category?.content?.title}</span>
+                                                <span className="cs_medium cs_fs_18 cs_primary_color">
+                                                    <NavigationLink href={route("cause.show", item?.slug)}>
+                                                        {item?.category?.content?.title}
+                                                    </NavigationLink>
+                                                </span>
                                                 <span>{moment(item?.created_at).format("ll")}</span>
                                             </div>
                                             <h2 className="cs_post_title cs_fs_30 cs_normal mb-0">

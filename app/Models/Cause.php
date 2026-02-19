@@ -14,7 +14,6 @@ class Cause extends Model
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    // Added 'products' to appends
     protected $appends = ['banner_image_url', 'gifts', 'products', 'total_orders', 'total_order_amount'];
 
     protected $casts = [

@@ -321,7 +321,6 @@ export default function CauseDetails({
                 causeDetailsUser={cause?.user?.name}
                 is_show_cause_details_sidebar={is_show_cause_details_sidebar}
             >
-                {/* ... (Sticky Nav code remains same) ... */}
                 <div className="cause-sticky-nav">
                     <div className="container">
                         <ul className="cause-nav-list">
@@ -359,7 +358,7 @@ export default function CauseDetails({
                 </div>
 
                 <div className="row">
-                    <div className={`${cause.type === "birthday" ? "col-md-12" : "col-md-8"}`}>
+                    <div className={`${["birthday", "anniversary"].includes(cause?.type) ? "col-md-12" : "col-md-8"}`}>
                         <div className="mobile-donation-card d-lg-none" id="donate-section">
                             <h5 className="fw-bold mb-3">{translate("Make a Donation")}</h5>
                             {cause?.custom_donation_amounts && (
@@ -413,7 +412,7 @@ export default function CauseDetails({
 
                                 {/* ROW 1: Variation Gifts */}
                                 {variationGifts.length > 0 && (
-                                    <div className="row g-4 mb-5">
+                                    <div className="row g-4 mb-5 justify-content-center">
                                         {variationGifts.map((gift, idx) => {
                                             return (
                                                 <div key={`var-${idx}`} className="col-12 col-md-6">
@@ -588,7 +587,7 @@ export default function CauseDetails({
                                 <div className="row g-4">
                                     {cause.products.map((product, idx) => {
                                         const cartItem = carts.find((i) => i.id === product.id && i.type === "product")
-                                        const quantity = cartItem ? cartItem.quantity : 1
+                                        const quantity = cartItem ? cartItem.quantity : 0
                                         const finalPrice = Number(product.discount_price || product.price || 0)
                                         return (
                                             <div key={idx} className={`col-12 col-sm-6 ${cause?.product_design == "portrait" ? "col-md-4" : ""}`}>
@@ -664,7 +663,7 @@ export default function CauseDetails({
                                                                 <button
                                                                     className="qty-btn btn btn-sm border-0 p-0 text-muted"
                                                                     style={{ width: "24px" }}
-                                                                    disabled={!cartItem || quantity === 1}
+                                                                    disabled={!cartItem || quantity === 0}
                                                                     onClick={() => dispatch(decreaseCart({ id: product.id, type: "product" }))}
                                                                 >
                                                                     -
@@ -698,17 +697,10 @@ export default function CauseDetails({
                                                             <div
                                                                 dangerouslySetInnerHTML={{
                                                                     __html: removeHTMLTags(product?.content?.short_description || "")
-                                                                }}
-                                                                style={{
-                                                                    display: "-webkit-box",
-                                                                    WebkitLineClamp: 2,
-                                                                    WebkitBoxOrient: "vertical",
-                                                                    overflow: "hidden"
-                                                                }}
-                                                            />
+                                                                }} />
                                                         </div>
 
-                                                        {["birthday"].includes(cause.type) && (
+                                                        {["birthday", "anniversary"].includes(cause.type) && (
                                                             <div className="mt-auto pt-2 border-top">
                                                                 <button
                                                                     className={`btn btn-primary w-100 rounded-pill fw-bold shadow-sm`}
@@ -900,7 +892,7 @@ export default function CauseDetails({
                                             </div>
                                         )}
                                         <div className="mb-3">
-                                            <label className="form-label fw-bold small text-muted mb-1">{translate("Or Enter Custom Amount")}</label>
+                                            {/* <label className="form-label fw-bold small text-muted mb-1">{translate("Or Enter Custom Amount")}</label>
                                             <div className="input-group input-group-lg border rounded-3 overflow-hidden">
                                                 <span className="input-group-text bg-light border-0 fw-bold text-muted">₹</span>
                                                 <input
@@ -910,7 +902,7 @@ export default function CauseDetails({
                                                     value={localAmount}
                                                     onChange={(e) => handleDonationChange(e.target.value)}
                                                 />
-                                            </div>
+                                            </div> */}
                                             {(() => {
                                                 const minAmount = Number(cause?.min_amount || 1)
                                                 if (total > 0 && total < minAmount)

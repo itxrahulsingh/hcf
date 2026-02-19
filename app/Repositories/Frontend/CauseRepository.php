@@ -55,6 +55,6 @@ class CauseRepository
      */
     public function getPublishedCauses()
     {
-        return $this->model->where('status', '1')->with('content', 'user', 'category.content')->take(10)->inRandomOrder()->latest()->get();
+        return $this->model->where('status', '1')->with('content', 'user', 'category.content')->take(10)->latest()->get();
     }
 }

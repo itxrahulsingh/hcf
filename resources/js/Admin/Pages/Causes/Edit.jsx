@@ -96,16 +96,10 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
 
         put(route("admin.causes.update", cause.id), {
             preserveScroll: true,
-            transform: (currentFormData) => {
-                const payload = { ...currentFormData }
-
-                Object.keys(languages).forEach((lang) => {
-                    const currentLangFaqs = faqs[lang] || []
-                    const cleaned = currentLangFaqs.map((f) => ({
-                        title: (f.title || "").toString(),
-                        content: (f.content || "").toString()
-                    }))
-                    payload[`${lang}_faq`] = JSON.stringify(cleaned)
+            transform: (data) => {
+                const payload = { ...data }
+                Object.keys(faqs).forEach((langCode) => {
+                    payload[`${langCode}_faq`] = faqs[langCode]
                 })
 
                 return payload
@@ -460,7 +454,11 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                         </div>
 
                                         <CustomMultiSelect
-                                            options={gifts.map((g) => ({ value: g.id, label: g?.content?.title || "Untitled Gift", image: g?.gift_image }))}
+                                            options={gifts.map((g) => ({
+                                                value: g.id,
+                                                label: g?.content?.title || "Untitled Gift",
+                                                image: g?.gift_image
+                                            }))}
                                             value={data.gift_ids}
                                             placeholder="Select Gifts"
                                             onChange={(selected) => setData("gift_ids", selected)}
@@ -495,7 +493,11 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                         </div>
 
                                         <CustomMultiSelect
-                                            options={products.map((p) => ({ value: p.id, label: p?.content?.title || "Untitled Product", image: p?.thumbnail_image }))}
+                                            options={products.map((p) => ({
+                                                value: p.id,
+                                                label: p?.content?.title || "Untitled Product",
+                                                image: p?.thumbnail_image
+                                            }))}
                                             value={data.product_ids}
                                             placeholder="Select Products"
                                             onChange={(selected) => setData("product_ids", selected)}

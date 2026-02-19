@@ -1,6 +1,4 @@
 import React from "react"
-import { Swiper, SwiperSlide } from "swiper/react"
-import { Pagination, Navigation } from "swiper/modules"
 import NavigationLink from "@/Components/NavigationLink"
 
 // Inline styles for pixel-perfect adjustments
@@ -13,11 +11,11 @@ const styles = {
         fontWeight: "700",
         marginBottom: "40px",
         boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-        fontSize: "clamp(14px, 2vw, 20px)" // Responsive font size
+        fontSize: "clamp(14px, 2vw, 20px)"
     },
     headerLeft: {
         width: "50%",
-        backgroundColor: "#3b5998", // Dark Blue
+        backgroundColor: "#3b5998",
         padding: "12px",
         textAlign: "center",
         display: "flex",
@@ -26,16 +24,15 @@ const styles = {
     },
     headerRight: {
         width: "50%",
-        backgroundColor: "#7e3f98", // Purple
+        backgroundColor: "#7e3f98",
         padding: "12px",
         textAlign: "center",
         display: "flex",
         alignItems: "center",
         justifyContent: "center"
     },
-    // Card Container to ensure equal height
     cardContainer: {
-        height: "100%",
+        height: "100%", // Added to ensure all cards are equal height
         display: "flex",
         flexDirection: "column",
         border: "1px solid #f0f0f0",
@@ -50,7 +47,7 @@ const styles = {
         overflow: "hidden",
         borderRadius: "10px",
         marginBottom: "15px",
-        flexShrink: 0 // Prevent image squishing
+        flexShrink: 0
     },
     img: {
         width: "100%",
@@ -58,21 +55,18 @@ const styles = {
         objectFit: "cover",
         transition: "transform 0.5s ease"
     },
-    // Title Styling - Smaller & Clamped
     title: {
-        fontSize: "17px", // Reduced from 20px
+        fontSize: "15px",
         fontWeight: "700",
         lineHeight: "1.4",
         color: "#222",
-        marginBottom: "15px",
+        textDecoration: "none",
         display: "-webkit-box",
-        WebkitLineClamp: "2", // Limit to 2 lines
+        WebkitLineClamp: "2",
         WebkitBoxOrient: "vertical",
         overflow: "hidden",
-        height: "48px", // Fixed height for alignment
-        textDecoration: "none"
+        marginBottom: "15px"
     },
-    // Button Styling
     donateBtn: {
         background: "linear-gradient(90deg, #e65c00 0%, #f9d423 100%)",
         color: "white",
@@ -81,7 +75,7 @@ const styles = {
         fontWeight: "700",
         borderRadius: "8px",
         width: "100%",
-        marginTop: "auto", // Pushes button to the bottom
+        marginTop: "auto", // Pushes button to bottom
         display: "block",
         textAlign: "center",
         textTransform: "uppercase",
@@ -93,8 +87,25 @@ const styles = {
 }
 
 export default function Cause2({ data }) {
-    const { navigation_style } = data
-    const causes = localStorage.getItem("causes") ? JSON.parse(localStorage.getItem("causes")) : []
+    const limit = parseInt(data?.record_limit) || 4
+    const orderBy = data?.order_by || "latest"
+    let processedCauses = localStorage.getItem("causes") ? JSON.parse(localStorage.getItem("causes")) : []
+
+    if (orderBy === "latest") {
+        processedCauses.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    } else if (orderBy === "oldest") {
+        processedCauses.sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+    } else if (orderBy === "alphabetical") {
+        processedCauses.sort((a, b) => {
+            const titleA = a.content?.title?.toLowerCase() || ""
+            const titleB = b.content?.title?.toLowerCase() || ""
+            return titleA.localeCompare(titleB)
+        })
+    } else if (orderBy === "random") {
+        processedCauses.sort(() => Math.random() - 0.5)
+    }
+
+    const finalCauses = processedCauses.slice(0, limit)
 
     return (
         <section className="cs_shape_wrap_4 position-relative">
@@ -103,82 +114,31 @@ export default function Cause2({ data }) {
             <div className="container">
                 {/* Custom Split Header */}
                 <div style={styles.splitHeader} className="cs_split_header">
-                    <div style={styles.headerLeft}>
-                        Tax Benefit
-                    </div>
-                    <div style={styles.headerRight}>
-                        100% Transparency
-                    </div>
+                    <div style={styles.headerLeft}>Tax Benefit</div>
+                    <div style={styles.headerRight}>100% Transparency</div>
                 </div>
 
-                <div className="position-relative">
-                    <Swiper
-                        slidesPerView={1}
-                        spaceBetween={24}
-                        pagination={{ clickable: true }}
-                        speed={800}
-                        loop={true}
-                        modules={[Pagination, Navigation]}
-                        navigation={{
-                            nextEl: ".cs_right_arrow",
-                            prevEl: ".cs_left_arrow",
-                            disabledClass: "swiper-button-disabled"
-                        }}
-                        className="mySwiper pb-5"
-                        breakpoints={{
-                            576: { slidesPerView: 1 },
-                            768: { slidesPerView: 3 },
-                            991: { slidesPerView: 4 },
-                            1200: { slidesPerView: 4 }
-                        }}
-                    >
-                        {causes?.map((item, index) => (
-                            <SwiperSlide key={index} style={{ height: "auto" }}>
-                                <div style={styles.cardContainer} className="cs_zoom_effect_wrap">
-                                    <NavigationLink href={route("cause.show", item?.slug)} style={styles.imgWrapper} className="cs_zoom_effect">
-                                        <img
-                                            src={item?.thumbnail_image}
-                                            alt={item?.content?.title}
-                                            loading="lazy" decoding="async"
-                                            style={styles.img}
-                                        />
+                <div className="row cs_gap_y_30">
+                    {finalCauses?.map((item, index) => (
+                        <div className="col-xl-3 col-lg-4 col-sm-6" key={index}>
+                            <div style={styles.cardContainer} className="cs_zoom_effect_wrap">
+                                <NavigationLink href={route("cause.show", item?.slug)} style={styles.imgWrapper} className="cs_zoom_effect">
+                                    <img src={item?.thumbnail_image} alt={item?.content?.title} loading="lazy" decoding="async" style={styles.img} />
+                                </NavigationLink>
+                                <h2 className="mb-0 p-0 fs-6">
+                                    <NavigationLink href={route("cause.show", item?.slug)} style={styles.title} title={item?.content?.title}>
+                                        {item?.content?.title}
                                     </NavigationLink>
-                                    <h2 className="mb-0">
-                                        <NavigationLink
-                                            href={route("cause.show", item?.slug)}
-                                            style={styles.title}
-                                            title={item?.content?.title}
-                                        >
-                                            {item?.content?.title}
-                                        </NavigationLink>
-                                    </h2>
-                                    <NavigationLink
-                                        href={route("cause.show", item?.slug)}
-                                        style={styles.donateBtn}
-                                        className="cs_donate_btn_hover"
-                                    >
-                                        DONATE NOW
-                                    </NavigationLink>
-                                </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
-                    {navigation_style === "navigation_1" && (
-                        <div className="cs_slider_arrows cs_style2 cs_mobile_hide mt-4 justify-content-center">
-                            <div className="cs_left_arrow cs_accent_color">
-                                <svg width={52} height={24} viewBox="0 0 52 24" fill="none">
-                                    <path d="M0.939339 10.9393C0.353554 11.5251 0.353554 12.4749 0.939339 13.0607L10.4853 22.6066C11.0711 23.1924 12.0208 23.1924 12.6066 22.6066C13.1924 22.0208 13.1924 21.0711 12.6066 20.4853L4.12132 12L12.6066 3.51472C13.1924 2.92893 13.1924 1.97919 12.6066 1.3934C12.0208 0.807611 11.0711 0.807611 10.4853 1.3934L0.939339 10.9393ZM52 10.5L2 10.5V13.5L52 13.5V10.5Z" fill="currentColor"/>
-                                </svg>
-                            </div>
-                            <div className="cs_right_arrow cs_accent_color">
-                                <svg width={52} height={24} viewBox="0 0 52 24" fill="none">
-                                    <path d="M51.0607 13.0607C51.6464 12.4749 51.6464 11.5251 51.0607 10.9393L41.5147 1.3934C40.9289 0.807611 39.9792 0.807611 39.3934 1.3934C38.8076 1.97919 38.8076 2.92893 39.3934 3.51472L47.8787 12L39.3934 20.4853C38.8076 21.0711 38.8076 22.0208 39.3934 22.6066C39.9792 23.1924 40.9289 23.1924 41.5147 22.6066L51.0607 13.0607ZM0 13.5H50V10.5H0V13.5Z" fill="currentColor"/>
-                                </svg>
+                                </h2>
+                                <NavigationLink href={route("cause.show", item?.slug)} style={styles.donateBtn} className="cs_donate_btn_hover">
+                                   {data?.action_text || "DONATE NOW"}
+                                </NavigationLink>
                             </div>
                         </div>
-                    )}
+                    ))}
                 </div>
             </div>
+
             <div className="cs_height_120 cs_height_lg_80" />
         </section>
     )

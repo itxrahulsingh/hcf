@@ -6,7 +6,27 @@ import Button from "../Button"
 
 export default function Cause5({ data }) {
     const { section_title, section_subtitle, action_text, pagination_style } = data
-    const causes = localStorage.getItem("causes") ? JSON.parse(localStorage.getItem("causes")) : []
+
+    const limit = parseInt(data?.record_limit) || 4;
+    const orderBy = data?.order_by || "latest";
+    let processedCauses = localStorage.getItem("causes") ? JSON.parse(localStorage.getItem("causes")) : [];
+
+    if (orderBy === "latest") {
+        processedCauses.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } else if (orderBy === "oldest") {
+        processedCauses.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    } else if (orderBy === "alphabetical") {
+        processedCauses.sort((a, b) => {
+            const titleA = a.content?.title?.toLowerCase() || "";
+            const titleB = b.content?.title?.toLowerCase() || "";
+            return titleA.localeCompare(titleB);
+        });
+    } else if (orderBy === "random") {
+        processedCauses.sort(() => Math.random() - 0.5);
+    }
+
+    const finalCauses = processedCauses.slice(0, limit);
+
     return (
         <>
             <div className="container">
@@ -42,7 +62,7 @@ export default function Cause5({ data }) {
                         clickable: true
                     }}
                     speed={800}
-                    loop={true}
+                    loop={finalCauses.length > 1} // Only loop if there's more than one item
                     modules={[Pagination, Navigation]}
                     navigation={{
                         nextEl: ".cs_right_arrow",
@@ -67,7 +87,7 @@ export default function Cause5({ data }) {
                         }
                     }}
                 >
-                    {causes?.map((item, index) => (
+                    {finalCauses?.map((item, index) => (
                         <SwiperSlide key={index}>
                             <div className="cs_post cs_style_2">
                                 <NavigationLink href={route("cause.show", item?.slug)} className="cs_post_thumb">
@@ -77,7 +97,7 @@ export default function Cause5({ data }) {
                                     <h2 className="cs_post_title cs_fs_30 cs_normal">
                                         <NavigationLink href={route("cause.show", item?.slug)}>{item?.content?.title}</NavigationLink>
                                     </h2>
-                                    <p className="cs_post_subtitle">{item?.content?.content.replace(/<[^>]*>/g, "").substring(0, 200)}</p>
+                                    <p className="cs_post_subtitle">{item?.content?.content?.replace(/<[^>]*>/g, "").substring(0, 200)}</p>
                                     {action_text && (
                                         <Button
                                             href={route("cause.show", item?.slug)}

@@ -48,6 +48,36 @@ export default function CauseCustomize({ index }) {
                         }
                     ></textarea>
                 </div>
+                <div className="row">
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Number of Records to Show</label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="50"
+                                value={data.record_limit || ""}
+                                onChange={(e) => setData({ ...data, record_limit: e.target.value })}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Display Order</label>
+                            <select
+                                className="form-control"
+                                value={data.order_by || "latest"}
+                                onChange={(e) => setData({ ...data, order_by: e.target.value })}
+                            >
+                                <option value="latest">Latest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="alphabetical">Alphabetical (A-Z)</option>
+                                <option value="random">Random</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div className="form-group">
                     <label>Cursor Pagination Style</label>
                     <select
@@ -94,6 +124,36 @@ export default function CauseCustomize({ index }) {
                             })
                         }
                     ></textarea>
+                </div>
+                <div className="row">
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Number of Records to Show</label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="50"
+                                value={data.record_limit || ""}
+                                onChange={(e) => setData({ ...data, record_limit: e.target.value })}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Display Order</label>
+                            <select
+                                className="form-control"
+                                value={data.order_by || "latest"}
+                                onChange={(e) => setData({ ...data, order_by: e.target.value })}
+                            >
+                                <option value="latest">Latest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="alphabetical">Alphabetical (A-Z)</option>
+                                <option value="random">Random</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div className="form-group">
                     <label>Action Button Text</label>
@@ -167,6 +227,36 @@ export default function CauseCustomize({ index }) {
                         }
                     ></textarea>
                 </div>
+                <div className="row">
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Number of Records to Show</label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="50"
+                                value={data.record_limit || ""}
+                                onChange={(e) => setData({ ...data, record_limit: e.target.value })}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Display Order</label>
+                            <select
+                                className="form-control"
+                                value={data.order_by || "latest"}
+                                onChange={(e) => setData({ ...data, order_by: e.target.value })}
+                            >
+                                <option value="latest">Latest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="alphabetical">Alphabetical (A-Z)</option>
+                                <option value="random">Random</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
                 <div className="form-group">
                     <label>Cursor Pagination Style</label>
@@ -214,6 +304,36 @@ export default function CauseCustomize({ index }) {
                             })
                         }
                     ></textarea>
+                </div>
+                <div className="row">
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Number of Records to Show</label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="50"
+                                value={data.record_limit || ""}
+                                onChange={(e) => setData({ ...data, record_limit: e.target.value })}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Display Order</label>
+                            <select
+                                className="form-control"
+                                value={data.order_by || "latest"}
+                                onChange={(e) => setData({ ...data, order_by: e.target.value })}
+                            >
+                                <option value="latest">Latest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="alphabetical">Alphabetical (A-Z)</option>
+                                <option value="random">Random</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div className="form-group">
                     <label>Action Button Text</label>
@@ -271,6 +391,36 @@ export default function CauseCustomize({ index }) {
                         }
                     ></textarea>
                 </div>
+                <div className="row">
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Number of Records to Show</label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="50"
+                                value={data.record_limit || ""}
+                                onChange={(e) => setData({ ...data, record_limit: e.target.value })}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Display Order</label>
+                            <select
+                                className="form-control"
+                                value={data.order_by || "latest"}
+                                onChange={(e) => setData({ ...data, order_by: e.target.value })}
+                            >
+                                <option value="latest">Latest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="alphabetical">Alphabetical (A-Z)</option>
+                                <option value="random">Random</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div className="form-group">
                     <label>Action Button Text</label>
                     <input
@@ -310,7 +460,9 @@ export default function CauseCustomize({ index }) {
                 section_title: sectionData?.data?.section_title ?? "",
                 section_subtitle: sectionData?.data?.section_subtitle ?? "",
                 action_text: sectionData?.data?.action_text ?? "",
-                is_show_sidebar: sectionData?.data?.is_show_sidebar ?? true
+                is_show_sidebar: sectionData?.data?.is_show_sidebar ?? true,
+                record_limit: sectionData?.data?.record_limit ?? "4",
+                order_by: sectionData?.data?.order_by ?? "latest"
             })
         }
     }, [currentLang, sectionData, index])
@@ -373,7 +525,7 @@ export default function CauseCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/blog/blog_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
+                                            <img src={`/static/sections/blog/blog_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async" />
                                             <label htmlFor={`layout-${value}`}>Cause Style {value}</label>
                                         </div>
                                     </div>

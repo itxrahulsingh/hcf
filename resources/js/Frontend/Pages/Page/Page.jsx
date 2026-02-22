@@ -128,10 +128,7 @@ export default function Page() {
 
         handleResize()
 
-        // Add event listener for window resize
         window.addEventListener("resize", handleResize)
-
-        // Cleanup the event listener on component unmount
         return () => window.removeEventListener("resize", handleResize)
     }, [])
 

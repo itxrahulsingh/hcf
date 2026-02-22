@@ -11,6 +11,7 @@ import {
     closeOutline,
     giftOutline
 } from "ionicons/icons"
+import { useSelector } from "react-redux"
 import { IonIcon } from "@ionic/react"
 import { useState, useEffect } from "react"
 import { router } from "@inertiajs/react"
@@ -76,6 +77,121 @@ const RemarksCell = ({ order, canEdit }) => {
     )
 }
 
+const generateDonationSticker = (order, type, logoUrl) => {
+    const canvas = document.createElement("canvas")
+    const ctx = canvas.getContext("2d")
+    canvas.width = 1280
+    canvas.height = 720
+
+    const configs = {
+        birthday: {
+            frame: "/static/images/sticker/birthday-frame.jpeg",
+            badgeText: "May God bless you",
+            badgeColor: "#FFE600",
+            titleText: "Happy Birthday"
+        },
+        anniversary: {
+            frame: "/static/images/sticker/anniversary-frame.jpeg",
+            badgeText: "We bless you",
+            badgeColor: "#FFC0CB",
+            titleText: "Happy Anniversary"
+        }
+    }
+
+    const activeConfig = configs[type] || configs.birthday
+    const frameImg = new Image()
+    const logoImg = new Image()
+
+    frameImg.src = activeConfig.frame
+    logoImg.src = logoUrl
+
+    frameImg.onload = () => {
+        ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height)
+
+        const renderFinal = (userImg = null) => {
+            const hasImage = !!userImg
+            const centerX = hasImage ? 380 : 640
+
+            if (logoImg.complete) {
+                const logoW = 200
+                const logoH = (logoImg.height * logoW) / logoImg.width
+                ctx.drawImage(logoImg, centerX - logoW / 2, 60, logoW, logoH)
+            }
+
+            ctx.fillStyle = "#000"
+            ctx.textAlign = "center"
+            ctx.font = "bold 80px sans-serif"
+            ctx.fillText(activeConfig.titleText, centerX, 220)
+
+            if (order.special_name) {
+                ctx.font = "bold 80px sans-serif"
+                ctx.fillText(order.special_name, centerX, 330)
+            }
+
+            if (order.special_message) {
+                ctx.font = "italic 35px sans-serif"
+                ctx.fillStyle = "#444"
+                wrapText(ctx, order.special_message, centerX, 410, 600, 45)
+            }
+
+            if (hasImage) {
+                const imgX = 750,
+                    imgY = 80,
+                    imgW = 450,
+                    imgH = 550
+                ctx.fillStyle = "#ffffff"
+                ctx.fillRect(imgX - 5, imgY - 5, imgW + 10, imgH + 10)
+                ctx.drawImage(userImg, imgX, imgY, imgW, imgH)
+            }
+
+            ctx.fillStyle = activeConfig.badgeColor
+            ctx.font = "bold 40px sans-serif"
+            const textWidth = ctx.measureText(activeConfig.badgeText).width
+            const rectW = textWidth + 60,
+                rectH = 80
+            const rectX = centerX - rectW / 2,
+                rectY = 580
+
+            ctx.beginPath()
+            ctx.roundRect(rectX, rectY, rectW, rectH, 40)
+            ctx.fill()
+            ctx.fillStyle = "#000"
+            ctx.fillText(activeConfig.badgeText, centerX, rectY + 55)
+
+             const link = document.createElement("a")
+            link.download = `${type}_sticker_${order.special_name}.png`
+            link.href = canvas.toDataURL("image/png")
+            link.click()
+        }
+
+        if (order.special_image) {
+            const userImg = new Image()
+            userImg.crossOrigin = "anonymous"
+            userImg.src = `/storage/${order.special_image}`
+            userImg.onload = () => renderFinal(userImg)
+            userImg.onerror = () => renderFinal(null)
+        } else {
+            renderFinal(null)
+        }
+    }
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(" ")
+    let line = ""
+    for (let n = 0; n < words.length; n++) {
+        let testLine = line + words[n] + " "
+        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+            ctx.fillText(line, x, y)
+            line = words[n] + " "
+            y += lineHeight
+        } else {
+            line = testLine
+        }
+    }
+    ctx.fillText(line, x, y)
+}
+
 export default function Index({ orders, sort, filter, causes }) {
     const { causeTypes } = usePage().props
     const [searchQuery, setSearchQuery] = useState("")
@@ -86,6 +202,8 @@ export default function Index({ orders, sort, filter, causes }) {
     const [selectedPaymentStatus, setSelectedPaymentStatus] = useState(filter?.payment_status || "All Payment")
     const [isMarkAll, setIsMarkAll] = useState(false)
     const [markItems, setMarkItems] = useState([])
+    const customize = useSelector((state) => state.customize)
+    const siteLogo = customize?.general?.site_logo_light
 
     // State for Media Modal
     const [mediaModalOrder, setMediaModalOrder] = useState(null)
@@ -480,7 +598,6 @@ export default function Index({ orders, sort, filter, causes }) {
                                                             <div className={`yoo-check-mark ${markItems.includes(order.id) && "active"}`} />
                                                         </td>
 
-                                                        {/* Special Date (Normal Font Size as Basic Details) */}
                                                         <td>
                                                             {order.special_date ? (
                                                                 <span className="text-dark font-weight-bold" style={{ fontSize: "14px" }}>
@@ -618,6 +735,24 @@ export default function Index({ orders, sort, filter, causes }) {
                                                                     {hasPermission("orders.delete") && (
                                                                         <DeleteButton href={route("admin.orders.destroy", order)} />
                                                                     )}
+                                                                    {order.special_name &&
+                                                                        (order.type === "birthday" || order.type === "anniversary") && (
+                                                                            <button
+                                                                                onClick={() => generateDonationSticker(order, order.type, siteLogo)}
+                                                                                className="badge border-0 p-2"
+                                                                                style={{
+                                                                                    backgroundColor:
+                                                                                        order.type === "birthday" ? "#FFE600" : "#FFC0CB",
+                                                                                    cursor: "pointer",
+                                                                                    borderRadius: "4px"
+                                                                                }}
+                                                                            >
+                                                                                <IonIcon
+                                                                                    icon={giftOutline}
+                                                                                    style={{ color: "#000", fontSize: "18px" }}
+                                                                                />
+                                                                            </button>
+                                                                        )}
                                                                 </div>
                                                             </td>
                                                         )}

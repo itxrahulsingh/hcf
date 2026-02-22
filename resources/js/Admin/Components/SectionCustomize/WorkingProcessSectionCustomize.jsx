@@ -23,13 +23,16 @@ export default function WorkingProcessSectionCustomize({ index }) {
         }
     }
 
-    // List Item Accordion
     const [openIndex, setOpenIndex] = useState(0)
     const handleToggle = (index) => {
         setOpenIndex((prevIndex) => (prevIndex === index ? -1 : index))
     }
 
-    // Remove Feature
+    const [openMediaIndex, setOpenMediaIndex] = useState(0)
+    const handleMediaToggle = (index) => {
+        setOpenMediaIndex((prevIndex) => (prevIndex === index ? -1 : index))
+    }
+
     const removeFeature = (removeIndex) => {
         setData(
             produce((draft) => {
@@ -37,7 +40,6 @@ export default function WorkingProcessSectionCustomize({ index }) {
             })
         )
     }
-    // Clone Feature
     const cloneFeature = (cloneIndex) => {
         setData(
             produce((draft) => {
@@ -50,7 +52,6 @@ export default function WorkingProcessSectionCustomize({ index }) {
         )
     }
 
-    // Add New Feature
     const addNewFeature = () => {
         setData(
             produce((draft) => {
@@ -65,11 +66,45 @@ export default function WorkingProcessSectionCustomize({ index }) {
         )
     }
 
-    // conditional rendering
+    const addMedia = () => {
+        setData(
+            produce((draft) => {
+                if (!draft.media_list) {
+                    draft.media_list = []
+                }
+                draft.media_list.push({
+                    file_url: "",
+                    file_type: "image"
+                })
+                setOpenMediaIndex(draft.media_list.length - 1)
+            })
+        )
+    }
+
+    const removeMedia = (removeIndex) => {
+        setData(
+            produce((draft) => {
+                draft.media_list = draft.media_list.filter((_, index) => index !== removeIndex)
+            })
+        )
+    }
+
     let customizer = ""
-    if (data.layout === "1" || data.layout === "2") {
+    if (data.layout === "1" || data.layout === "2" || data.layout === "3") {
         customizer = (
             <>
+                <div className="form-group">
+                    <label>Content Position</label>
+                    <select
+                        className="form-control"
+                        value={data.content_position}
+                        onChange={(e) => setData({ ...data, content_position: e.target.value })}
+                    >
+                        <option value="left text-right">Media Left / Content Right</option>
+                        <option value="right text-left">Content Left / Media Right</option>
+                    </select>
+                </div>
+
                 <div className="form-group">
                     <label>Section Title</label>
                     <input
@@ -94,8 +129,9 @@ export default function WorkingProcessSectionCustomize({ index }) {
                         }
                     ></textarea>
                 </div>
+
                 <div className="form-group">
-                    <label>Background image (554x668 px)</label>
+                    <label>Background image / Static Side Image</label>
                     <SingleMediaUploader
                         onSelected={(e) => {
                             setData(
@@ -114,103 +150,77 @@ export default function WorkingProcessSectionCustomize({ index }) {
                         defaultValue={data.image_url}
                     />
                 </div>
-                <div className="cs_loop_list">
-                    <label>Feature List</label>
+
+                <div className="cs_loop_list mb-4">
+                    <label>Media Slider (Images & Videos)</label>
                     <div className="cs_loop_list_in">
-                        {data.feature_list?.map((item, index) => (
+                        {data.media_list?.map((item, index) => (
                             <div className="cs_loop_item" key={index}>
                                 <div className="cs_loop_item_head">
-                                    <span onClick={() => handleToggle(index)}>
-                                        <span>{item.feature_title ? item.feature_title : "List Item"}</span>
+                                    <span onClick={() => handleMediaToggle(index)}>
+                                        <span>
+                                            {item.file_type ? item.file_type.toUpperCase() : "Media"} #{index + 1}
+                                        </span>
                                     </span>
                                     <div className="cs_loop_item_control_btns">
-                                        <button className="cs_clone_loop_item" onClick={() => cloneFeature(index)}>
-                                            <Icon icon="lucide:copy" width="18" height="18" />
+                                        <button className="cs_remove_loop_item" onClick={() => removeMedia(index)}>
+                                            <Icon icon="lucide:x" width="18" height="18" />
                                         </button>
-                                        {data.feature_list.length === 1 ? (
-                                            ""
-                                        ) : (
-                                            <button className="cs_remove_loop_item" onClick={() => removeFeature(index)}>
-                                                <Icon icon="lucide:x" width="18" height="18" />
-                                            </button>
-                                        )}
                                     </div>
                                 </div>
-                                {openIndex === index && (
+                                {openMediaIndex === index && (
                                     <div className="cs_loop_item_body">
                                         <div className="form-group">
-                                            <label>Feature Title</label>
-                                            <input
-                                                type="text"
-                                                value={item.feature_title}
-                                                onChange={(e) => {
+                                            <label>Media Type</label>
+                                            <select
+                                                className="form-control"
+                                                value={item.file_type}
+                                                onChange={(e) =>
                                                     setData(
                                                         produce((draft) => {
-                                                            draft.feature_list[index].feature_title = e.target.value
+                                                            draft.media_list[index].file_type = e.target.value
                                                         })
                                                     )
-                                                }}
-                                                className="form-control"
-                                            />
+                                                }
+                                            >
+                                                <option value="image">Image</option>
+                                                <option value="video">Video (MP4)</option>
+                                            </select>
                                         </div>
                                         <div className="form-group">
-                                            <label>Feature Subtitle</label>
-                                            <textarea
-                                                cols="30"
-                                                rows="10"
-                                                className="form-control"
-                                                value={item.feature_subtitle}
-                                                onChange={(e) => {
+                                            <label>Upload Media</label>
+                                            <SingleMediaUploader
+                                                onSelected={(e) =>
                                                     setData(
                                                         produce((draft) => {
-                                                            draft.feature_list[index].feature_subtitle = e.target.value
+                                                            draft.media_list[index].file_url = e
                                                         })
                                                     )
-                                                }}
-                                            ></textarea>
+                                                }
+                                                handleRemoved={() =>
+                                                    setData(
+                                                        produce((draft) => {
+                                                            draft.media_list[index].file_url = ""
+                                                        })
+                                                    )
+                                                }
+                                                defaultValue={item.file_url}
+                                            />
                                         </div>
                                     </div>
                                 )}
                             </div>
                         ))}
                         <div className="cs_loop_list_btn">
-                            <button className="btn btn-sm btn-primary" onClick={addNewFeature}>
-                                Add new
+                            <button className="btn btn-sm btn-outline-primary w-100" onClick={addMedia}>
+                                + Add Media to Slider
                             </button>
                         </div>
                     </div>
                 </div>
-            </>
-        )
-    } else if (data.layout === "3") {
-        customizer = (
-            <>
-                <div className="form-group">
-                    <label>Section Title</label>
-                    <input
-                        type="text"
-                        value={data.section_title}
-                        onChange={(e) => setData({ ...data, section_title: e.target.value })}
-                        className="form-control"
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Section Subtitle</label>
-                    <textarea
-                        cols="30"
-                        rows="3"
-                        className="form-control"
-                        value={data.section_subtitle}
-                        onChange={(e) =>
-                            setData({
-                                ...data,
-                                section_subtitle: e.target.value
-                            })
-                        }
-                    ></textarea>
-                </div>
+
                 <div className="cs_loop_list">
-                    <label>Feature List</label>
+                    <label>Feature List (Content Cards)</label>
                     <div className="cs_loop_list_in">
                         {data.feature_list?.map((item, index) => (
                             <div className="cs_loop_item" key={index}>
@@ -234,27 +244,6 @@ export default function WorkingProcessSectionCustomize({ index }) {
                                 {openIndex === index && (
                                     <div className="cs_loop_item_body">
                                         <div className="form-group">
-                                            <label>Feature Image</label>
-                                            <SingleMediaUploader
-                                                onSelected={(e) => {
-                                                    setData(
-                                                        produce((draft) => {
-                                                            draft.feature_list[index].feature_image_url = e
-                                                        })
-                                                    )
-                                                }}
-                                                handleRemoved={() =>
-                                                    setData(
-                                                        produce((draft) => {
-                                                            draft.feature_list[index].feature_image_url = ""
-                                                        })
-                                                    )
-                                                }
-                                                defaultValue={item.feature_image_url}
-                                                size_sm
-                                            />
-                                        </div>
-                                        <div className="form-group">
                                             <label>Feature Title</label>
                                             <input
                                                 type="text"
@@ -273,7 +262,7 @@ export default function WorkingProcessSectionCustomize({ index }) {
                                             <label>Feature Subtitle</label>
                                             <textarea
                                                 cols="30"
-                                                rows="10"
+                                                rows="5"
                                                 className="form-control"
                                                 value={item.feature_subtitle}
                                                 onChange={(e) => {
@@ -285,28 +274,13 @@ export default function WorkingProcessSectionCustomize({ index }) {
                                                 }}
                                             ></textarea>
                                         </div>
-                                        <div className="form-group">
-                                            <label>Feature Number</label>
-                                            <input
-                                                type="text"
-                                                value={item.feature_number}
-                                                onChange={(e) => {
-                                                    setData(
-                                                        produce((draft) => {
-                                                            draft.feature_list[index].feature_number = e.target.value
-                                                        })
-                                                    )
-                                                }}
-                                                className="form-control"
-                                            />
-                                        </div>
                                     </div>
                                 )}
                             </div>
                         ))}
                         <div className="cs_loop_list_btn">
                             <button className="btn btn-sm btn-primary" onClick={addNewFeature}>
-                                Add new
+                                Add new card
                             </button>
                         </div>
                     </div>
@@ -319,9 +293,11 @@ export default function WorkingProcessSectionCustomize({ index }) {
         if (index) {
             setData({
                 layout: sectionData?.data?.layout ?? "1",
+                content_position: sectionData?.data?.content_position ?? "left text-right",
                 section_title: sectionData?.data?.section_title ?? "",
                 section_subtitle: sectionData?.data?.section_subtitle ?? "",
                 image_url: sectionData?.data?.image_url ?? "",
+                media_list: sectionData?.data?.media_list ?? [],
                 feature_list: sectionData?.data?.feature_list ?? [
                     {
                         feature_title: "",
@@ -392,7 +368,12 @@ export default function WorkingProcessSectionCustomize({ index }) {
                                             className="form-check-input"
                                         />
                                         <div className="cs_section_image_in">
-                                            <img src={`/static/sections/working_process/working_process_style_${value}.jpg`} alt="Thumb" loading="lazy" decoding="async"/>
+                                            <img
+                                                src={`/static/sections/working_process/working_process_style_${value}.jpg`}
+                                                alt="Thumb"
+                                                loading="lazy"
+                                                decoding="async"
+                                            />
                                             <label htmlFor={`layout-${value}`}>Working Process Style {value}</label>
                                         </div>
                                     </div>

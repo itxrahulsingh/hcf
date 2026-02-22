@@ -97,7 +97,7 @@ export default function CauseDetails({
         items: carts,
         agreed: false,
         is_80g: false,
-        paymentMethod: "",
+        paymentMethod: payment_gateway.is_razorpay_active ? "razorpay" : "",
         transactionId: "",
         receiptFile: null,
         special_name: "",
@@ -304,6 +304,15 @@ export default function CauseDetails({
     const variationGifts = cause?.gifts?.filter((g) => g.have_variations === 1 && g.variations?.length > 0) || []
     const standardGifts = cause?.gifts?.filter((g) => g.have_variations !== 1 || !g.variations || g.variations.length === 0) || []
 
+    const toTitleCase = (str) => {
+        return str
+            .toLowerCase()
+            .split(" ")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ")
+    }
+    const [hoveredGift, setHoveredGift] = useState(null)
+
     return (
         <FrontendLayout>
             {cause?.custom_style && (
@@ -433,7 +442,7 @@ export default function CauseDetails({
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <div className="card-body p-3 d-flex flex-column">
+                                                        <div className="card-body p-2 d-flex flex-column">
                                                             <div className="cause-card-title fw-bold fs-5 mb-2">{gift.content?.title}</div>
                                                             <p className="small text-muted mb-3">{gift.content?.description}</p>
 
@@ -530,28 +539,55 @@ export default function CauseDetails({
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <div className="card-body p-3 d-flex flex-column justify-content-center">
+                                                        <div className="card-body p-2 d-flex flex-column justify-content-center">
                                                             <div className="cause-card-title small fw-bold mb-1">{gift.content?.title}</div>
-                                                            <div className="cause-card-price text-primary fw-bold mb-2">
-                                                                <Amount amount={Number(gift.amount || 0).toFixed(0)} />
-                                                            </div>
-                                                            <div className="mt-auto">
+                                                            {!isPortrait && (
+                                                                <div className="small fw-bold mb-2 text-muted d-flex align-items-center gap-1">
+                                                                    {translate("Description")}
+                                                                    <div className="position-relative d-inline-block">
+                                                                        <Icon
+                                                                            icon="mdi:help-circle-outline"
+                                                                            width="17"
+                                                                            className="text-primary cursor-pointer"
+                                                                            onMouseEnter={() => setHoveredGift(gift.id)}
+                                                                            onMouseLeave={() => setHoveredGift(null)}
+                                                                        />
+
+                                                                        {/* The Tooltip Box */}
+                                                                        {hoveredGift === gift.id && (
+                                                                            <div className="custom-floating-tooltip shadow-lg">
+                                                                                {gift.content?.description}
+                                                                                <div className="tooltip-arrow-down"></div>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            <div className={`d-flex align-items-center justify-content-between mt-auto`}>
+                                                                <div className="text-primary fw-bold">
+                                                                    <Amount amount={Number(gift.amount || 0).toFixed(0)} />
+                                                                </div>
+
                                                                 <div
-                                                                    className="qty-control d-flex justify-content-between align-items-center bg-light rounded-pill px-2 py-1"
-                                                                    style={{ maxWidth: "120px" }}
+                                                                    className="d-flex justify-content-between align-items-center bg-light rounded-pill px-2 py-1 border"
+                                                                    style={{ width: "90px" }}
                                                                 >
                                                                     <button
                                                                         type="button"
-                                                                        className="qty-btn border-0 bg-transparent p-0"
+                                                                        className="border-0 bg-transparent p-0 d-flex"
                                                                         disabled={quantity === 0}
                                                                         onClick={() => dispatch(decreaseCart({ id: gift.id, type: "gift" }))}
                                                                     >
-                                                                        <Icon icon="ic:round-minus" />
+                                                                        <Icon
+                                                                            icon="ic:round-minus"
+                                                                            className={quantity === 0 ? "text-muted" : "text-dark"}
+                                                                        />
                                                                     </button>
-                                                                    <span className="fw-bold small mx-2">{quantity}</span>
+
+                                                                    <span className="fw-bold small">{quantity}</span>
                                                                     <button
                                                                         type="button"
-                                                                        className="qty-btn border-0 bg-transparent p-0"
+                                                                        className="border-0 bg-transparent p-0 d-flex"
                                                                         onClick={() =>
                                                                             handleSingleSelection(
                                                                                 {
@@ -566,7 +602,7 @@ export default function CauseDetails({
                                                                             )
                                                                         }
                                                                     >
-                                                                        <Icon icon="ic:round-plus" />
+                                                                        <Icon icon="ic:round-plus" className="text-primary" />
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -647,7 +683,7 @@ export default function CauseDetails({
                                                         )}
                                                     </div>
 
-                                                    <div className="card-body p-3 d-flex flex-column">
+                                                    <div className="card-body p-2 d-flex flex-column">
                                                         <div className="cause-card-title mb-2 fw-bold text-dark">{product.content?.title}</div>
 
                                                         <div className="d-flex justify-content-between align-items-center mb-3 bg-light p-2 rounded-3">
@@ -697,7 +733,8 @@ export default function CauseDetails({
                                                             <div
                                                                 dangerouslySetInnerHTML={{
                                                                     __html: removeHTMLTags(product?.content?.short_description || "")
-                                                                }} />
+                                                                }}
+                                                            />
                                                         </div>
 
                                                         {["birthday", "anniversary"].includes(cause.type) && (
@@ -1003,7 +1040,10 @@ export default function CauseDetails({
                                                     id="donorName"
                                                     placeholder="Name"
                                                     value={data.name}
-                                                    onChange={(e) => setData("name", e.target.value)}
+                                                    onChange={(e) => {
+                                                        const cleanValue = e.target.value.replace(/[^a-zA-Z\s]/g, "")
+                                                        setData("name", toTitleCase(cleanValue))
+                                                    }}
                                                 />
                                                 <label htmlFor="donorName">{translate("Full Name")} *</label>
                                             </div>
@@ -1011,12 +1051,16 @@ export default function CauseDetails({
                                         <div className="col-md-6">
                                             <div className="form-floating">
                                                 <input
-                                                    type="tel"
-                                                    className={`form-control ${errors.phone ? "is-invalid" : ""}`}
+                                                    type="text"
+                                                    className={`Log form-control ${errors.phone ? "is-invalid" : ""}`}
                                                     id="donorPhone"
                                                     placeholder="Phone"
                                                     value={data.phone}
-                                                    onChange={(e) => setData("phone", e.target.value)}
+                                                    maxLength="10"
+                                                    onChange={(e) => {
+                                                        const numericValue = e.target.value.replace(/\D/g, "")
+                                                        setData("phone", numericValue)
+                                                    }}
                                                 />
                                                 <label htmlFor="donorPhone">{translate("Phone Number")} *</label>
                                             </div>
@@ -1042,7 +1086,9 @@ export default function CauseDetails({
                                                     id="donorAddress"
                                                     placeholder="Address"
                                                     value={data.address}
-                                                    onChange={(e) => setData("address", e.target.value)}
+                                                    onChange={(e) => {
+                                                        setData("address", toTitleCase(e.target.value))
+                                                    }}
                                                 />
                                                 <label htmlFor="donorAddress">{translate("Address")} *</label>
                                             </div>
@@ -1157,14 +1203,31 @@ export default function CauseDetails({
                                             <div className="form-floating">
                                                 <input
                                                     type="text"
-                                                    className="form-control"
+                                                    className={`form-control ${errors.pancard ? "is-invalid" : ""}`}
                                                     id="pancard"
-                                                    placeholder="Pancard"
+                                                    placeholder="ABCDE1234F"
                                                     maxLength="10"
                                                     value={data.pancard || ""}
-                                                    onChange={(e) => setData("pancard", e.target.value.toUpperCase())}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value.toUpperCase()
+                                                        if (val.length <= 5) {
+                                                            setData("pancard", val.replace(/[^A-Z]/g, ""))
+                                                        } else if (val.length <= 9) {
+                                                            const firstPart = val.slice(0, 5)
+                                                            const secondPart = val.slice(5).replace(/\D/g, "")
+                                                            setData("pancard", firstPart + secondPart)
+                                                        } else {
+                                                            const firstPart = val.slice(0, 5)
+                                                            const secondPart = val.slice(5, 9)
+                                                            const lastPart = val.slice(9, 10).replace(/[^A-Z]/g, "")
+                                                            setData("pancard", firstPart + secondPart + lastPart)
+                                                        }
+                                                    }}
                                                 />
-                                                <label htmlFor="pancard">{translate("PAN Card Number")} *</label>
+                                                <label htmlFor="pancard">{translate("PAN Card (ABCDE1234F)")} *</label>
+                                                {data.pancard && data.pancard.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(data.pancard) && (
+                                                    <div className="text-danger small mt-1">Invalid Indian PAN format</div>
+                                                )}
                                             </div>
                                         </div>
                                     )}

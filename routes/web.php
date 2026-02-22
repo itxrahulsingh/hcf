@@ -55,6 +55,7 @@ Route::get('debug', [DebugController::class, 'any']);
 Route::get('/payment/success/{order}', [PaymentController::class, 'paymentSuccess'])->name('payment.success.page');
 Route::get('/order/success/{order}', [PaymentController::class, 'orderSuccess'])->name('order.success.page');
 Route::get('/donation/success/{order_id}', [PaymentController::class, 'donationSuccess'])->name('donation.success.page');
+Route::get('/donation/cancel/{order_id}', [PaymentController::class, 'donationCancel'])->name('donation.cancel.page');
 Route::get('/payment/cancel', [PaymentController::class, 'paymentCancel'])->name('payment.cancel.page');
 
 // Frontend search routes

@@ -498,4 +498,50 @@ TEAM GROUPING & SLIDING HOVER
         height: 50vh;
     }
 }
+
+/* Custom Floating Tooltip Style */
+.custom-floating-tooltip {
+    position: absolute;
+    bottom: 30px; /* Space above the icon */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff4e6; /* Light Professional Orange */
+    color: #000000;      /* Pure Black Text */
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    width: 240px;
+    z-index: 999;
+    text-align: center;
+    font-weight: 500; /* Medium weight for clarity */
+    border: 1px solid #ffe8cc; /* Subtle border for definition */
+    animation: fadeInTooltip 0.2s ease-out;
+}
+
+/* Tooltip Animation: Smooth slide up */
+@keyframes fadeInTooltip {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Tooltip Arrow pointing down */
+.tooltip-arrow-down {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: #fff4e6 transparent transparent transparent;
+}
+
+/* Definition for cleaner UI */
+.cursor-pointer { cursor: pointer; }
 {{ $custom_css }}

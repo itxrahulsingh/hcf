@@ -88,7 +88,7 @@ class PaymentRepository
                     $order->payment_status = '3';
                     $order->save();
 
-                    return redirect()->route('payment.cancel.page');
+                    return redirect()->route('donation.cancel.page', ['order_id' => $order->order_number]);
                 }
                 $paymentHistory = PaymentHistory::findOrFail($request->identifier);
                 $paymentHistory->update([

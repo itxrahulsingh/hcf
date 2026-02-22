@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Events\DonationFailed;
 use App\Events\DonationSuccess;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
@@ -168,6 +169,37 @@ class PaymentController extends Controller
         $data['site_name'] = $site_name;
 
         return Inertia::render('Checkout/DonationSuccess', $data);
+    }
+
+    public function donationCancel(Request $request)
+    {
+        $current_page_url = request()->url();
+        $meta_tags = 'donation cancel';
+        $site_name = Setting::pull('site_name');
+        $tagline = __('Donation Failed');
+
+        $order = Order::where('order_number', $request->order_id)->first();
+        $data['order'] = $order;
+
+        DonationFailed::dispatch($order);
+
+        SEOMeta::setTitle($tagline);
+        SEOMeta::setCanonical($current_page_url);
+        SEOMeta::addMeta('robots', 'index, follow');
+        SEOMeta::addKeyword(explode(',', $meta_tags));
+
+        OpenGraph::setUrl($current_page_url);
+        OpenGraph::setSiteName($site_name);
+        OpenGraph::addProperty('type', 'website');
+
+        TwitterCard::setSite(config('app.twiiter_username'));
+        TwitterCard::setType('summary_large_image');
+        SEOMeta::addMeta('viewport', 'width=device-width, initial-scale=1');
+        $data['meta_tags'] = $meta_tags;
+        $data['tagline'] = $tagline;
+        $data['site_name'] = $site_name;
+
+        return Inertia::render('Checkout/DonationCancel', $data);
     }
 
     public function paymentCancel()

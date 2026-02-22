@@ -14,7 +14,8 @@ import {
     imageOutline,
     videocamOutline,
     documentTextOutline,
-    giftOutline
+    giftOutline,
+    eyeOutline
 } from "ionicons/icons"
 import moment from "moment"
 import React from "react"

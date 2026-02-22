@@ -9,7 +9,7 @@
             "currency": "INR",
             "name": "{{ $paymentHistory->name }}",
             "description": "Pay to {{ env('APP_NAME') }}",
-            "order_id": "{{ $order_id }}", // Razorpay Order ID
+            "order_id": "{{ $order_id }}",
 
             "prefill": {
                 "name": "{{ $paymentHistory->name }}",
@@ -18,12 +18,12 @@
             },
 
             // Redirect URL after successful payment
-            "callback_url": "{{ route('payment.success', ['method' => 'razorpay', 'identifier' => $paymentHistory,'type' => $type]) }}",
+            "callback_url": "{!! route('payment.success', ['method' => 'razorpay', 'identifier' => $paymentHistory,'type' => $type]) !!}",
 
             // Cancel URL
             "modal": {
                 "ondismiss": function() {
-                    window.location.href = "{{ route('payment.cancel', ['method' => 'razorpay', 'identifier' => $paymentHistory,'type' => $type]) }}";
+                    window.location.href = "{!! route('payment.cancel', ['method' => 'razorpay', 'identifier' => $paymentHistory,'type' => $type]) !!}";
                 }
             },
 

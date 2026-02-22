@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
     general: {
@@ -10,7 +10,7 @@ const initialState = {
         primary_color: "#18333b",
         secondary_color: "#67797e",
         is_page_breadcrumbs: true,
-        enable_rtl: false,
+        enable_rtl: false
     },
     sidebar: {
         is_show_logo: true,
@@ -18,8 +18,7 @@ const initialState = {
         contact_title: "",
         contact_subtitle: "",
         is_show_subscribe: true,
-        is_show_social_media: true,
-
+        is_show_social_media: true
     },
     footer: {
         footer_is_show_social_media: true,
@@ -28,19 +27,20 @@ const initialState = {
         footer_is_show_useful_links_section: true,
         footer_is_show_service_section: true,
         footer_is_show_resources_section: true,
-        copyright_text: "",
+        addresses: [{ title: "Main Office", details: "" }],
+        copyright_text: ""
     },
     social_links: {
-        social_list: [],
+        social_list: []
     },
     subscriber: {
         subscribe_title: "",
-        subscribe_description: "",
+        subscribe_description: ""
     },
     contact: {
         contact_phone_number: "",
         contact_email: "",
-        contact_address: "",
+        contact_address: ""
     },
     custom_css: "",
     html_embed_code: ""
@@ -72,10 +72,11 @@ const customizeSlice = createSlice({
             state.custom_css = action.payload
         },
         updateHtmlEmbedCode(state, action) {
-            state.html_embed_code = action.payload;
+            state.html_embed_code = action.payload
         }
     }
 })
 
-export default customizeSlice.reducer;
-export const { updateFooter, updateGeneral, updateSidebar, updateContact, updateSubscribe, updateSocialLink, updateCustomCss, updateHtmlEmbedCode } = customizeSlice.actions
+export default customizeSlice.reducer
+export const { updateFooter, updateGeneral, updateSidebar, updateContact, updateSubscribe, updateSocialLink, updateCustomCss, updateHtmlEmbedCode } =
+    customizeSlice.actions

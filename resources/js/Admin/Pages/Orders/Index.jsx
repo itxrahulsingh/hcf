@@ -208,203 +208,201 @@ export default function Index({ orders, sort, filter, causes }) {
                                 <div className="yooDataTableWrap">
                                     <div className="dataTables_heading">
                                         {/* FILTERS START */}
-                                        {hasPermission("orders.delete") && (
-                                            <div className="dataTables_heading_left">
-                                                <div className="yoo-group-btn">
-                                                    <div className="position-relative">
-                                                        {(hasPermission("orders.delete") || hasPermission("orders.edit")) && (
-                                                            <DropDownButton selectedOption={selectedOption} disabled={!markItems.length}>
-                                                                {hasPermission("orders.delete") && (
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => setSelectedOption("Delete")}
-                                                                        className={`dropdown-item ${selectedOption === "Delete" ? "active" : ""}`}
-                                                                    >
-                                                                        {translate("Delete")}
-                                                                    </button>
-                                                                )}
-
-                                                                {hasPermission("orders.edit") && (
-                                                                    <>
-                                                                        {[
-                                                                            "Mark as Pending",
-                                                                            "Mark as Confirmed",
-                                                                            "Mark as Canceled",
-                                                                            "Mark as Completed"
-                                                                        ].map((option) => (
-                                                                            <button
-                                                                                key={option}
-                                                                                type="button"
-                                                                                onClick={() => setSelectedOption(option)}
-                                                                                className={`dropdown-item ${selectedOption === option ? "active" : ""}`}
-                                                                            >
-                                                                                {translate(option)}
-                                                                            </button>
-                                                                        ))}
-                                                                    </>
-                                                                )}
-                                                            </DropDownButton>
-                                                        )}
-                                                    </div>
-                                                    <button
-                                                        disabled={!markItems.length}
-                                                        onClick={() => handleBulkAction()}
-                                                        className="btn btn-success btn-sm"
-                                                    >
-                                                        Apply
-                                                    </button>
-                                                </div>
-                                                <div>
-                                                    <div className="position-relative">
-                                                        <DropDownButton selectedOption={selectedStatus}>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedStatus("All")}
-                                                                className={`dropdown-item ${selectedStatus === "All" ? "active" : ""}`}
-                                                            >
-                                                                {translate("All Order Status")}
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedStatus("Pending")}
-                                                                className={`dropdown-item ${selectedStatus === "Pending" ? "active" : ""}`}
-                                                            >
-                                                                Pending
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedStatus("Confirmed")}
-                                                                className={`dropdown-item ${selectedStatus === "Confirmed" ? "active" : ""}`}
-                                                            >
-                                                                {translate("Confirmed")}
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedStatus("Canceled")}
-                                                                className={`dropdown-item ${selectedStatus === "Canceled" ? "active" : ""}`}
-                                                            >
-                                                                {translate("Canceled")}
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedStatus("Completed")}
-                                                                className={`dropdown-item ${selectedStatus === "Completed" ? "active" : ""}`}
-                                                            >
-                                                                {translate("Completed")}
-                                                            </button>
-                                                        </DropDownButton>
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <div className="position-relative">
-                                                        <DropDownButton
-                                                            selectedOption={
-                                                                selectedType === "All"
-                                                                    ? translate("All Types")
-                                                                    : causeTypes[selectedType]
-                                                                      ? translate(causeTypes[selectedType])
-                                                                      : selectedType
-                                                            }
-                                                        >
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedType("All")}
-                                                                className={`dropdown-item ${selectedType === "All" ? "active" : ""}`}
-                                                            >
-                                                                {translate("All Types")}
-                                                            </button>
-
-                                                            {causeTypes &&
-                                                                Object.entries(causeTypes).map(([key, label]) => (
-                                                                    <button
-                                                                        key={key}
-                                                                        type="button"
-                                                                        onClick={() => setSelectedType(key)}
-                                                                        className={`dropdown-item ${selectedType === key ? "active" : ""}`}
-                                                                    >
-                                                                        {translate(label)}
-                                                                    </button>
-                                                                ))}
-                                                        </DropDownButton>
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <div className="position-relative">
-                                                        <DropDownButton
-                                                            selectedOption={
-                                                                selectedCause === "All"
-                                                                    ? translate("All Causes")
-                                                                    : causes.find((c) => c.id === selectedCause)?.content?.title ||
-                                                                      translate("All Causes")
-                                                            }
-                                                        >
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedCause("All")}
-                                                                className={`dropdown-item ${selectedCause === "All" ? "active" : ""}`}
-                                                            >
-                                                                {translate("All Causes")}
-                                                            </button>
-
-                                                            {causes.map((cause) => (
+                                        <div className="dataTables_heading_left">
+                                            <div className="yoo-group-btn">
+                                                <div className="position-relative">
+                                                    {(hasPermission("orders.delete") || hasPermission("orders.edit")) && (
+                                                        <DropDownButton selectedOption={selectedOption} disabled={!markItems.length}>
+                                                            {hasPermission("orders.delete") && (
                                                                 <button
-                                                                    key={cause.id}
                                                                     type="button"
-                                                                    onClick={() => setSelectedCause(cause.id)}
-                                                                    className={`dropdown-item ${selectedCause === cause.id ? "active" : ""}`}
+                                                                    onClick={() => setSelectedOption("Delete")}
+                                                                    className={`dropdown-item ${selectedOption === "Delete" ? "active" : ""}`}
                                                                 >
-                                                                    {cause.content?.title || "Untitled Cause"}
+                                                                    {translate("Delete")}
                                                                 </button>
-                                                            ))}
+                                                            )}
+
+                                                            {hasPermission("orders.edit") && (
+                                                                <>
+                                                                    {[
+                                                                        "Mark as Pending",
+                                                                        "Mark as Confirmed",
+                                                                        "Mark as Canceled",
+                                                                        "Mark as Completed"
+                                                                    ].map((option) => (
+                                                                        <button
+                                                                            key={option}
+                                                                            type="button"
+                                                                            onClick={() => setSelectedOption(option)}
+                                                                            className={`dropdown-item ${selectedOption === option ? "active" : ""}`}
+                                                                        >
+                                                                            {translate(option)}
+                                                                        </button>
+                                                                    ))}
+                                                                </>
+                                                            )}
                                                         </DropDownButton>
-                                                    </div>
+                                                    )}
                                                 </div>
-
-                                                <div className="yoo-group-btn">
-                                                    <div className="position-relative">
-                                                        <DropDownButton selectedOption={paymentStatusOptions[selectedPaymentStatus]}>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedPaymentStatus("All Payment")}
-                                                                className={`dropdown-item ${selectedPaymentStatus === "All Payment" ? "active" : ""}`}
-                                                            >
-                                                                {translate("All Payment")}
-                                                            </button>
-
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedPaymentStatus("1")}
-                                                                className={`dropdown-item ${selectedPaymentStatus === "1" ? "active" : ""}`}
-                                                            >
-                                                                {translate("Awaiting Payment")}
-                                                            </button>
-
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedPaymentStatus("2")}
-                                                                className={`dropdown-item ${selectedPaymentStatus === "2" ? "active" : ""}`}
-                                                            >
-                                                                {translate("Success")}
-                                                            </button>
-
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setSelectedPaymentStatus("3")}
-                                                                className={`dropdown-item ${selectedPaymentStatus === "3" ? "active" : ""}`}
-                                                            >
-                                                                {translate("Cancel")}
-                                                            </button>
-                                                        </DropDownButton>
-                                                    </div>
-
-                                                    <button onClick={() => getResults(searchQuery)} className="btn btn-success btn-sm">
-                                                        {translate("Filter")}
-                                                    </button>
+                                                <button
+                                                    disabled={!markItems.length}
+                                                    onClick={() => handleBulkAction()}
+                                                    className="btn btn-success btn-sm"
+                                                >
+                                                    Apply
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <div className="position-relative">
+                                                    <DropDownButton selectedOption={selectedStatus}>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedStatus("All")}
+                                                            className={`dropdown-item ${selectedStatus === "All" ? "active" : ""}`}
+                                                        >
+                                                            {translate("All Order Status")}
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedStatus("Pending")}
+                                                            className={`dropdown-item ${selectedStatus === "Pending" ? "active" : ""}`}
+                                                        >
+                                                            Pending
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedStatus("Confirmed")}
+                                                            className={`dropdown-item ${selectedStatus === "Confirmed" ? "active" : ""}`}
+                                                        >
+                                                            {translate("Confirmed")}
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedStatus("Canceled")}
+                                                            className={`dropdown-item ${selectedStatus === "Canceled" ? "active" : ""}`}
+                                                        >
+                                                            {translate("Canceled")}
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedStatus("Completed")}
+                                                            className={`dropdown-item ${selectedStatus === "Completed" ? "active" : ""}`}
+                                                        >
+                                                            {translate("Completed")}
+                                                        </button>
+                                                    </DropDownButton>
                                                 </div>
                                             </div>
-                                        )}
+
+                                            <div>
+                                                <div className="position-relative">
+                                                    <DropDownButton
+                                                        selectedOption={
+                                                            selectedType === "All"
+                                                                ? translate("All Types")
+                                                                : causeTypes[selectedType]
+                                                                  ? translate(causeTypes[selectedType])
+                                                                  : selectedType
+                                                        }
+                                                    >
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedType("All")}
+                                                            className={`dropdown-item ${selectedType === "All" ? "active" : ""}`}
+                                                        >
+                                                            {translate("All Types")}
+                                                        </button>
+
+                                                        {causeTypes &&
+                                                            Object.entries(causeTypes).map(([key, label]) => (
+                                                                <button
+                                                                    key={key}
+                                                                    type="button"
+                                                                    onClick={() => setSelectedType(key)}
+                                                                    className={`dropdown-item ${selectedType === key ? "active" : ""}`}
+                                                                >
+                                                                    {translate(label)}
+                                                                </button>
+                                                            ))}
+                                                    </DropDownButton>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <div className="position-relative">
+                                                    <DropDownButton
+                                                        selectedOption={
+                                                            selectedCause === "All"
+                                                                ? translate("All Causes")
+                                                                : causes.find((c) => c.id === selectedCause)?.content?.title ||
+                                                                  translate("All Causes")
+                                                        }
+                                                    >
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedCause("All")}
+                                                            className={`dropdown-item ${selectedCause === "All" ? "active" : ""}`}
+                                                        >
+                                                            {translate("All Causes")}
+                                                        </button>
+
+                                                        {causes.map((cause) => (
+                                                            <button
+                                                                key={cause.id}
+                                                                type="button"
+                                                                onClick={() => setSelectedCause(cause.id)}
+                                                                className={`dropdown-item ${selectedCause === cause.id ? "active" : ""}`}
+                                                            >
+                                                                {cause.content?.title || "Untitled Cause"}
+                                                            </button>
+                                                        ))}
+                                                    </DropDownButton>
+                                                </div>
+                                            </div>
+
+                                            <div className="yoo-group-btn">
+                                                <div className="position-relative">
+                                                    <DropDownButton selectedOption={paymentStatusOptions[selectedPaymentStatus]}>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedPaymentStatus("All Payment")}
+                                                            className={`dropdown-item ${selectedPaymentStatus === "All Payment" ? "active" : ""}`}
+                                                        >
+                                                            {translate("All Payment")}
+                                                        </button>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedPaymentStatus("1")}
+                                                            className={`dropdown-item ${selectedPaymentStatus === "1" ? "active" : ""}`}
+                                                        >
+                                                            {translate("Awaiting Payment")}
+                                                        </button>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedPaymentStatus("2")}
+                                                            className={`dropdown-item ${selectedPaymentStatus === "2" ? "active" : ""}`}
+                                                        >
+                                                            {translate("Success")}
+                                                        </button>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedPaymentStatus("3")}
+                                                            className={`dropdown-item ${selectedPaymentStatus === "3" ? "active" : ""}`}
+                                                        >
+                                                            {translate("Cancel")}
+                                                        </button>
+                                                    </DropDownButton>
+                                                </div>
+
+                                                <button onClick={() => getResults(searchQuery)} className="btn btn-success btn-sm">
+                                                    {translate("Filter")}
+                                                </button>
+                                            </div>
+                                        </div>
                                         {/* FILTERS END */}
 
                                         <div className="dataTables_heading_right">
@@ -675,7 +673,8 @@ export default function Index({ orders, sort, filter, causes }) {
                                                 src={`/storage/${mediaModalOrder.special_image}`}
                                                 alt="Special Request"
                                                 className="img-fluid rounded"
-                                                loading="lazy" decoding="async"
+                                                loading="lazy"
+                                                decoding="async"
                                                 style={{ maxHeight: "60vh", objectFit: "contain" }}
                                             />
                                         </div>

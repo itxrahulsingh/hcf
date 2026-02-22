@@ -94,11 +94,17 @@ class SettingRepository
     {
         $settingKeys = array_keys($values);
         foreach ($settingKeys as $settingKey) {
+
+            $value = $values[$settingKey];
+            if (is_array($value)) {
+                $value = json_encode($value);
+            }
             $this->model->updateOrCreate(
                 ['setting_key' => $settingKey, 'setting_group' => $settingGroup],
-                ['setting_value' => $values[$settingKey]]
+                ['setting_value' => $value]
             );
-            Cache::forget('settings:'.$settingKey);
+
+            Cache::forget('settings:' . $settingKey);
         }
     }
 
@@ -123,9 +129,9 @@ class SettingRepository
             if (strpos($contents, $key) !== false) {
                 // If the value contains double quotes, handle it differently
                 if (strpos($value, '"') !== false) {
-                    $pattern = preg_quote($key.'='.env($key), '/');
-                    $replacement = $key.'='.$value;
-                    $contents = preg_replace('/'.$pattern.'/', $replacement, $contents);
+                    $pattern = preg_quote($key . '=' . env($key), '/');
+                    $replacement = $key . '=' . $value;
+                    $contents = preg_replace('/' . $pattern . '/', $replacement, $contents);
                 } else {
                     // If the value does not contain double quotes, replace normally
                     $contents = preg_replace("/{$key}=(.*)/", "{$key}={$value}", $contents);

@@ -81,16 +81,13 @@ if (! function_exists('format_currency')) {
 if (! function_exists('generate_invoice_number')) {
 
     /**
-     * Generate invoice number (auto or manual)
-     *
-     * @param string $type  auto|manual
-     * @return array
+     * Generate invoice number
+     * * @param string $type The specific donation type (manual, valentine_day, etc.)
      */
     function generate_invoice_number(string $type = 'auto')
     {
         $autoPrefix   = get_options('invoice_prefix') ?? 'INV';
         $manualPrefix = get_options('manual_invoice_prefix') ?? 'MINV';
-
         $fyStartMonth = get_options('financial_year_start_month') ?? 4;
 
         $now = now();
@@ -99,28 +96,21 @@ if (! function_exists('generate_invoice_number')) {
         $financialYear = $startYear . "-" . $endYear;
 
         $invoiceCount = DB::transaction(function () use ($startYear, $type) {
-            $last = Invoice::where('financial_year_start', $startYear)
-                ->where('type', $type)
-                ->lockForUpdate()
-                ->max('invoice_count');
+            $query = Invoice::where('financial_year_start', $startYear);
+            if ($type === 'manual') {
+                $query->where('type', 'manual');
+            } else {
+                $query->where('type', '!=', 'manual');
+            }
 
+            $last = $query->lockForUpdate()->max('invoice_count');
             return ($last ?? 0) + 1;
         });
 
         if ($type === 'manual') {
-            $invoiceNumber = sprintf(
-                "%s/%s/%04d",
-                $manualPrefix,
-                $financialYear,
-                $invoiceCount
-            );
+            $invoiceNumber = sprintf("%s/%s/%04d", $manualPrefix, $financialYear, $invoiceCount);
         } else {
-            $invoiceNumber = sprintf(
-                "%s/%s/%05d",
-                $autoPrefix,
-                $financialYear,
-                $invoiceCount
-            );
+            $invoiceNumber = sprintf("%s/%s/%05d", $autoPrefix, $financialYear, $invoiceCount);
         }
 
         return [

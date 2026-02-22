@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { useSelector } from "react-redux"
 import translate from "@/utils/translate"
 import { usePage } from "@inertiajs/react"
@@ -9,11 +9,28 @@ import SocialWidget from "../Widget/SocialWidget"
 import organizeMenusIntoHierarchy from "@/utils/organizeMenusIntoHierarchy"
 import MenuItem from "../Widget/MenuItem"
 import CookiePolicy from "../Cookie/CookiePolicy"
+import { Icon } from "@iconify/react"
+
 export default function Footer() {
     const { lang } = usePage().props
     const customize = useSelector((state) => state.customize)
     const { currentLang } = useSelector((state) => state.pages)
     const currentLanguage = currentLang ?? lang.default_lang
+
+    // --- Safe Parsing Helper for Addresses ---
+    const addresses = useMemo(() => {
+        const rawAddresses = customize?.footer?.addresses
+        if (Array.isArray(rawAddresses)) return rawAddresses
+        if (typeof rawAddresses === "string") {
+            try {
+                return JSON.parse(rawAddresses)
+            } catch (e) {
+                return []
+            }
+        }
+        return []
+    }, [customize?.footer?.addresses])
+
     const servicesMenu = localStorage.getItem("services_menu") ? JSON.parse(localStorage.getItem("services_menu")) : []
     const services_menu = servicesMenu ? organizeMenusIntoHierarchy(servicesMenu[currentLanguage]) : []
 
@@ -38,12 +55,16 @@ export default function Footer() {
                             titleClass="cs_newsletter_title cs_fs_53 cs_normal mb-0 cs_white_color"
                         />
                     )}
-                    <div className="cs_footer_grid_4">
+
+                    {/* Updated grid class to accommodate 5 columns if necessary or stay with 4 */}
+                    <div className="cs_footer_grid_5">
                         {customize?.footer?.footer_is_show_contact_logo_section && (
                             <div className="cs_footer_grid_item">
                                 <div className="cs_footer_item">
                                     <div className="cs_text_widget">
-                                        {customize.general.site_favicon && <img src={customize.general.site_logo_light} alt="Logo" loading="lazy" decoding="async"/>}
+                                        {customize.general.site_favicon && (
+                                            <img src={customize.general.site_logo_light} alt="Logo" loading="lazy" decoding="async" />
+                                        )}
                                         <ContactInfoWidget />
                                     </div>
                                 </div>
@@ -67,6 +88,34 @@ export default function Footer() {
                             <div className="cs_footer_grid_item">
                                 <div className="cs_footer_item">
                                     <MenuWidget menus={resources_menu} title={translate("Resources")} />
+                                </div>
+                            </div>
+                        )}
+
+                        {customize?.footer?.footer_is_show_address && addresses.length > 0 && (
+                            <div className="cs_footer_grid_item">
+                                <div className="cs_footer_item">
+                                    <h2 className="cs_widget_title cs_secondary_font cs_medium text-uppercase cs_fs_18 cs_white_color">{translate("Our Locations")}</h2>
+                                    <div className="cs_footer_address_list">
+                                        {addresses.map((item, index) => (
+                                            <div key={index} className="cs_address_block mb-2">
+                                                <div className="cs_address_title fw-bold text-white mb-1" style={{ fontSize: "15px" }}>
+                                                    {item.title}
+                                                </div>
+                                                <div
+                                                    className="cs_address_text cs_ternary_color small d-flex align-items-start"
+                                                    style={{ lineHeight: "1.4" }}
+                                                >
+                                                    <Icon
+                                                        icon="mdi:home-variant-outline"
+                                                        className="me-2 text-primary mt-1"
+                                                        style={{ minWidth: "18px", fontSize: "16px" }}
+                                                    />
+                                                    <span>{item.details}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -100,6 +149,29 @@ export default function Footer() {
                 </div>
             </div>
             <CookiePolicy />
+
+            {/* CSS to handle the 5th column grid responsiveness */}
+            <style
+                dangerouslySetInnerHTML={{
+                    __html: `
+                @media (min-width: 1200px) {
+                    .cs_footer_grid_5 {
+                        display: grid;
+                        grid-template-columns: repeat(5, 1fr);
+                        gap: 30px;
+                    }
+                }
+                @media (max-width: 1199px) and (min-width: 992px) {
+                    .cs_footer_grid_5 {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 30px;
+                    }
+                }
+                .cs_address_title { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; display: inline-block; }
+            `
+                }}
+            />
         </footer>
     )
 }

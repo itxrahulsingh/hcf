@@ -544,4 +544,32 @@ TEAM GROUPING & SLIDING HOVER
 
 /* Definition for cleaner UI */
 .cursor-pointer { cursor: pointer; }
+
+
+/* Square Social Buttons */
+.cs_social_square {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+    color: #fff !important;
+    border-radius: 6px; /* Professional rounded square */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cs_social_square:hover {
+    background: #fff; /* Flip to white on hover */
+    color: var(--accent-color, #ff8c00) !important; /* Use your brand orange */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure the top header aligns them properly */
+.cs_top_header_right {
+    display: flex;
+    align-items: center;
+}
 {{ $custom_css }}

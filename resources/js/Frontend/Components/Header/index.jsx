@@ -4,6 +4,7 @@ import organizeMenusIntoHierarchy from "@/utils/organizeMenusIntoHierarchy"
 import MenuItem from "@/Admin/Components/Header/MenuItem"
 import { useSelector } from "react-redux"
 import SideHeader from "./SideHeader"
+import Button from "../Button"
 import GlobalSearch from "./GlobalSearch"
 import LanguageDropdown from "./LanguageDropdown"
 import gravatarUrl from "gravatar-url"
@@ -14,12 +15,13 @@ import { Icon } from "@iconify/react"
 export default function Header({ cart }) {
     const { cart_slug } = usePage().props
     const { carts } = useSelector((state) => state.carts)
-    const { lang, auth } = usePage().props
     const { currentLang, pageInfo } = useSelector((state) => state.pages)
+    const { lang, auth } = usePage().props
     const currentLangPageInfo = pageInfo[currentLang]
     const customize = useSelector((state) => state.customize)
     const [sideHeaderToggle, setSideHeaderToggle] = useState(false)
     const [mobileToggle, setMobileToggle] = useState(false)
+    const [hamburgerToggle, setHamburgerToggle] = useState(false)
     const [isSticky, setIsSticky] = useState()
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
     const currentLanguage = currentLang ?? lang.default_lang
@@ -62,10 +64,23 @@ export default function Header({ cart }) {
         return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [profileDropdownOpen])
 
+    const getSocialIcon = (title) => {
+        const lowerTitle = title.toLowerCase()
+        if (lowerTitle.includes("facebook")) return "lucide:facebook"
+        if (lowerTitle.includes("instagram")) return "lucide:instagram"
+        if (lowerTitle.includes("youtube")) return "lucide:youtube"
+        if (lowerTitle.includes("twitter") || lowerTitle.includes("x")) return "lucide:twitter"
+        if (lowerTitle.includes("linkedin")) return "lucide:linkedin"
+        if (lowerTitle.includes("whatsapp")) return "ic:baseline-whatsapp"
+
+        // Default icon if no match found
+        return "lucide:share-2"
+    }
+
     return (
         <>
             <header className={`cs_site_header cs_style_1 cs_primary_color cs_sticky_header cs_white_bg${isSticky ? " cs_sticky_active" : ""}`}>
-                 <div className="cs_top_header cs_accent_bg">
+                <div className="cs_top_header cs_accent_bg">
                     <div className="container">
                         <div className="cs_top_header_in">
                             <div className="cs_top_header_left">
@@ -111,10 +126,17 @@ export default function Header({ cart }) {
                                 </ul>
                             </div>
                             <div className="cs_top_header_right">
-                                <div className="cs_header_social">
+                                <div className="cs_header_social d-flex gap-2">
                                     {customize?.social_links?.social_list?.map((item, index) => (
-                                        <a href={item?.social_url} target="_blank" key={index}>
-                                            {item?.social_title}
+                                        <a
+                                            href={item?.social_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            key={index}
+                                            title={item?.social_title}
+                                            className="cs_social_square"
+                                        >
+                                            <Icon icon={getSocialIcon(item?.social_title)} width="16" height="16" />
                                         </a>
                                     ))}
                                 </div>
@@ -127,7 +149,12 @@ export default function Header({ cart }) {
                         <div className="cs_main_header_in">
                             <div className="cs_main_header_left">
                                 <Link className="cs_site_branding" to="/" href="/">
-                                    <img src={customize?.general?.site_logo_dark} alt={customize?.general?.site_name} loading="lazy" decoding="async"/>
+                                    <img
+                                        src={customize?.general?.site_logo_dark}
+                                        alt={customize?.general?.site_name}
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
                                 </Link>
                                 <div className="cs_nav">
                                     <nav className={`cs_nav_list_wrap${mobileToggle ? " cs_active" : ""}`}>
@@ -206,8 +233,16 @@ export default function Header({ cart }) {
                                         </Link>
                                     )}
                                     {Object.entries(lang.languages).length > 1 && <LanguageDropdown />}
-                                    <button
-                                        className="cs_hamburger_btn cs_hamburger_info_btn" aria-label="Open main menu"
+                                    <div className="cs_main_header_right">
+                                        <Button
+                                            href={currentLangPageInfo?.header_action_button_url}
+                                            btnText={currentLangPageInfo?.header_action_button_text}
+                                            btnClass="cs_btn cs_style_1 cs_type_2 cs_primary_bg cs_white_color"
+                                        />
+                                    </div>
+                                    {/* <button
+                                        className="cs_hamburger_btn cs_hamburger_info_btn"
+                                        aria-label="Open main menu"
                                         onClick={() => setSideHeaderToggle(!sideHeaderToggle)}
                                     >
                                         <span className="cs_hamburger_btn_in">
@@ -216,7 +251,7 @@ export default function Header({ cart }) {
                                             <span />
                                             <span />
                                         </span>
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
                         </div>

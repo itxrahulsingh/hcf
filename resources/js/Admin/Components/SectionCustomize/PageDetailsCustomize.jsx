@@ -126,7 +126,7 @@ export default function PageDetailsCustomize() {
                     </label>
                 </div>
             )}
-            {(data.header_layout == "3" || data.header_layout == "8" || data.header_layout == "10") && (
+            {(data.header_layout == "1" || data.header_layout == "3" || data.header_layout == "8" || data.header_layout == "10") && (
                 <>
                     <div className="form-group">
                         <label>Header Action Button Text</label>

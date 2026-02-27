@@ -19,7 +19,7 @@ class GiftRepository
     protected Gift $model;
 
     /**
-     *  Constructor for gift repository
+     * Constructor for gift repository
      */
     public function __construct(Gift $gift)
     {
@@ -61,13 +61,14 @@ class GiftRepository
     }
 
     /**
-     * Create gift
+     * Create gift - Restored with Unit Addition
      */
     public function create(Request $request): void
     {
         $gift = $this->model->create([
             'gift_image' => $request->input('gift_image'),
             'amount' => $request->input('amount'),
+            'unit' => $request->input('unit'), // Added Global Unit
             'min_qty' => $request->input('min_qty'),
             'have_variations' => $request->input('have_variations', 0),
             'variations' => $request->input('variations', []),
@@ -87,7 +88,7 @@ class GiftRepository
     }
 
     /**
-     * Get edited data
+     * Get edited data - Restored with Unit Addition
      */
     public function getEditData(Gift $gift): array
     {
@@ -95,6 +96,7 @@ class GiftRepository
             'id' => $gift->id,
             'gift_image' => $gift->gift_image,
             'amount' => $gift->amount,
+            'unit' => $gift->unit, // Added Unit for Edit form
             'min_qty' => $gift->min_qty,
             'have_variations' => $gift->have_variations,
             'variations' => $gift->variations ?? [],
@@ -120,9 +122,7 @@ class GiftRepository
     }
 
     /**
-     * gift update
-     *
-     * @throws \Exception
+     * Gift update - Restored with full content update logic
      */
     public function update(Request $request, Gift $gift): void
     {
@@ -136,6 +136,7 @@ class GiftRepository
         $gift->update([
             'gift_image' => $request->input('gift_image'),
             'amount' => $request->input('amount'),
+            'unit' => $request->input('unit'),
             'min_qty' => $request->input('min_qty'),
             'have_variations' => $request->input('have_variations', 0),
             'variations' => $variations ?? [],
@@ -150,16 +151,16 @@ class GiftRepository
 
             $gift->contents()->updateOrCreate(
                 ['language_code' => $languageCode],
-                ['title' => $title],
-                ['description' => $description]
+                [
+                    'title' => $title,
+                    'description' => $description
+                ]
             );
         }
     }
 
     /**
      * Delete gift
-     *
-     * @throws \Exception
      */
     public function destroy(Gift $gift): void
     {

@@ -187,12 +187,13 @@ export default function Index({ gifts, sort, filtered_lang, languages }) {
                                                             <span className="yoo-last" />
                                                         </div>
                                                     </th>
-                                                    <ThSortable width="20%" sort={sort} onSorted={() => getResults(searchQuery)} column="image">
+                                                    <ThSortable width="15%" sort={sort} onSorted={() => getResults(searchQuery)} column="image">
                                                         {translate("Image")}
                                                     </ThSortable>
-                                                    <ThSortable width="40%" sort={sort} onSorted={() => getResults(searchQuery)} column="title">
+                                                    <ThSortable width="35%" sort={sort} onSorted={() => getResults(searchQuery)} column="title">
                                                         {translate("Title")}
                                                     </ThSortable>
+                                                    <th width="15%">{translate("Pricing & Unit")}</th>
                                                     <ThSortable width="15%" sort={sort} onSorted={() => getResults(searchQuery)} column="created_at">
                                                         {translate("Date")}
                                                     </ThSortable>
@@ -206,33 +207,63 @@ export default function Index({ gifts, sort, filtered_lang, languages }) {
                                                     <tr className="odd" key={index}>
                                                         <td className="sorting_1" onClick={() => handleMark(gift.id)}>
                                                             <div
-                                                                className={`yoo-check-mark ${markItems.some((item) => item === gift.id) && "active"
-                                                                    }`}
+                                                                className={`yoo-check-mark ${markItems.some((item) => item === gift.id) && "active"}`}
                                                             />
                                                         </td>
                                                         <td>
-                                                            <img src={gift?.gift_image || 'static/no-image.jpg'} alt={gift?.content?.title} style={{ width: "80px" }} loading="lazy" decoding="async"/>
+                                                            <img
+                                                                src={gift?.gift_image || "static/no-image.jpg"}
+                                                                alt={gift?.content?.title}
+                                                                style={{ width: "60px", borderRadius: "4px" }}
+                                                                loading="lazy"
+                                                                decoding="async"
+                                                            />
                                                         </td>
-                                                        <td>{gift?.content?.title}</td>
+                                                        <td>
+                                                            <div className="font-weight-bold">{gift?.content?.title}</div>
+                                                            {gift.have_variations === 1 && (
+                                                                <small className="text-primary d-block">
+                                                                    {gift.variations?.length} {translate("Variations Available")}
+                                                                </small>
+                                                            )}
+                                                        </td>
+                                                        <td>
+                                                            <div className="d-flex flex-column gap-1">
+                                                                <span className="font-weight-bold text-dark">
+                                                                    ₹{gift.amount}
+                                                                </span>
+                                                                <div className="d-flex gap-1 align-items-center mt-1">
+                                                                    {gift.unit && (
+                                                                        <span
+                                                                            className="badge badge-light border text-muted px-2"
+                                                                            style={{ fontSize: "11px" }}
+                                                                        >
+                                                                            Per {gift.unit}
+                                                                        </span>
+                                                                    )}
+                                                                    {gift.have_variations === 1 ? (
+                                                                        <span
+                                                                            className="badge badge-success border text-black px-2"
+                                                                            style={{ fontSize: "11px" }}
+                                                                        >
+                                                                            {translate("Multi-Price")}
+                                                                        </span>
+                                                                    ) : (
+                                                                        <span
+                                                                            className="badge badge-light border text-muted px-2"
+                                                                            style={{ fontSize: "11px" }}
+                                                                        >
+                                                                            {translate("Fixed")}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </td>
                                                         <td>{moment(gift.created_at).format("ll")}</td>
                                                         <td>
-                                                            <div
-                                                                className="d-flex"
-                                                                style={{
-                                                                    gap: "5px"
-                                                                }}
-                                                            >
-                                                                <Link
-                                                                    href={route("admin.gifts.edit", gift)}
-                                                                    className="badge badge-primary"
-                                                                >
-                                                                    <IonIcon
-                                                                        icon={createOutline}
-                                                                        style={{
-                                                                            height: "16px",
-                                                                            width: "16px"
-                                                                        }}
-                                                                    />
+                                                            <div className="d-flex" style={{ gap: "5px" }}>
+                                                                <Link href={route("admin.gifts.edit", gift)} className="badge badge-primary">
+                                                                    <IonIcon icon={createOutline} style={{ height: "16px", width: "16px" }} />
                                                                 </Link>
                                                                 <DeleteButton href={route("admin.gifts.destroy", gift)} />
                                                             </div>

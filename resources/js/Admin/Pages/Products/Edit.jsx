@@ -122,7 +122,7 @@ export default function Edit({ languages, product_categories, default_lang, prod
                                 <div className="yoo-padd-lr-20">
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
                                     <div className="row">
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <label htmlFor="price">
                                                 {translate("Regular Price")} ({props.currency?.currency_code || "USD"}) *
                                             </label>
@@ -136,7 +136,7 @@ export default function Edit({ languages, product_categories, default_lang, prod
                                                 onChange={(e) => setData("price", e.target.value)}
                                             />
                                         </div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <label htmlFor="discount_price">
                                                 {translate("Discount Price")} ({props.currency?.currency_code || "USD"}) *
                                             </label>
@@ -148,6 +148,17 @@ export default function Edit({ languages, product_categories, default_lang, prod
                                                 error={errors?.discount_price}
                                                 value={data.discount_price}
                                                 onChange={(e) => setData("discount_price", e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <label htmlFor="unit">{translate("Unit")} (e.g. Kg, Pc, Ltr)</label>
+                                            <TextInput
+                                                title="Enter Unit"
+                                                type="text"
+                                                id="unit"
+                                                error={errors?.unit}
+                                                value={data.unit}
+                                                onChange={(e) => setData("unit", e.target.value)}
                                             />
                                         </div>
                                     </div>

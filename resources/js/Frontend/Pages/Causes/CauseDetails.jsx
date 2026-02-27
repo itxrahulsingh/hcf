@@ -95,8 +95,8 @@ export default function CauseDetails({
         orderNotes: "",
         coupon: coupon,
         items: carts,
-        agreed: false,
-        is_80g: false,
+        agreed: true,
+        is_80g: true,
         paymentMethod: payment_gateway.is_razorpay_active ? "razorpay" : "",
         transactionId: "",
         receiptFile: null,
@@ -330,41 +330,43 @@ export default function CauseDetails({
                 causeDetailsUser={cause?.user?.name}
                 is_show_cause_details_sidebar={is_show_cause_details_sidebar}
             >
-                <div className="cause-sticky-nav">
-                    <div className="container">
-                        <ul className="cause-nav-list">
-                            <li className="cause-nav-item" onClick={() => scrollToSection("donate-section")}>
-                                <Icon icon="mdi:gift-outline" className="me-2 fs-5" />
-                                {translate("Overview & Donate")}
-                            </li>
-                            <li className="cause-nav-item" onClick={() => scrollToSection("content-section")}>
-                                <Icon icon="mdi:format-align-left" className="me-2 fs-5" />
-                                {translate("Content")}
-                            </li>
-                            {cause?.content?.projects && (
-                                <li className="cause-nav-item" onClick={() => scrollToSection("project-section")}>
-                                    <Icon icon="mdi:clipboard-list-outline" className="me-2 fs-5" />
-                                    {translate("Project")}
+                {!["birthday", "anniversary"].includes(cause?.type) && cause?.content?.content && (
+                    <div className="cause-sticky-nav">
+                        <div className="container">
+                            <ul className="cause-nav-list">
+                                <li className="cause-nav-item" onClick={() => scrollToSection("donate-section")}>
+                                    <Icon icon="mdi:gift-outline" className="me-2 fs-5" />
+                                    {translate("Overview & Donate")}
                                 </li>
-                            )}
-                            {faqItems.length > 0 && (
-                                <li className="cause-nav-item" onClick={() => scrollToSection("faq-section")}>
-                                    <Icon icon="mdi:chat-question-outline" className="me-2 fs-5" />
-                                    {translate("FAQ")}
+                                <li className="cause-nav-item" onClick={() => scrollToSection("content-section")}>
+                                    <Icon icon="mdi:format-align-left" className="me-2 fs-5" />
+                                    {translate("Content")}
                                 </li>
-                            )}
-                            {cause?.content?.updates && (
-                                <li className="cause-nav-item" onClick={() => scrollToSection("updates-section")}>
-                                    <Icon icon="mdi:bell-ring-outline" className="me-2 fs-5" />
-                                    {translate("Updates")}
-                                </li>
-                            )}
-                        </ul>
-                        <div className="nav-social-wrapper">
-                            <SocialWidget />
+                                {cause?.content?.projects && (
+                                    <li className="cause-nav-item" onClick={() => scrollToSection("project-section")}>
+                                        <Icon icon="mdi:clipboard-list-outline" className="me-2 fs-5" />
+                                        {translate("Project")}
+                                    </li>
+                                )}
+                                {faqItems.length > 0 && (
+                                    <li className="cause-nav-item" onClick={() => scrollToSection("faq-section")}>
+                                        <Icon icon="mdi:chat-question-outline" className="me-2 fs-5" />
+                                        {translate("FAQ")}
+                                    </li>
+                                )}
+                                {cause?.content?.updates && (
+                                    <li className="cause-nav-item" onClick={() => scrollToSection("updates-section")}>
+                                        <Icon icon="mdi:bell-ring-outline" className="me-2 fs-5" />
+                                        {translate("Updates")}
+                                    </li>
+                                )}
+                            </ul>
+                            <div className="nav-social-wrapper">
+                                <SocialWidget />
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
                 <div className="row">
                     <div className={`${["birthday", "anniversary"].includes(cause?.type) ? "col-md-12" : "col-md-8"}`}>
@@ -455,7 +457,6 @@ export default function CauseDetails({
                                                                         return (
                                                                             <div key={variantId} className="col-6">
                                                                                 {" "}
-                                                                                {/* col-6 creates the 1,2 / 3,4 layout */}
                                                                                 <button
                                                                                     type="button"
                                                                                     className="w-100 py-3 px-2 rounded-3 border-0 text-white transition-all d-flex flex-column align-items-center justify-content-center"
@@ -521,7 +522,7 @@ export default function CauseDetails({
                                             return (
                                                 <div key={`std-${idx}`} className={colClass}>
                                                     <div
-                                                        className={`cause-card h-100 d-flex shadow-sm border-0 ${isPortrait ? "flex-column" : "flex-row"}`}
+                                                        className={`cause-card h-100 d-flex shadow-sm border-0 position-relative ${isPortrait ? "flex-column" : "flex-row"}`}
                                                     >
                                                         <div
                                                             className="cause-card-img-wrapper"
@@ -541,7 +542,9 @@ export default function CauseDetails({
                                                         </div>
                                                         <div className="card-body p-2 d-flex flex-column justify-content-center">
                                                             <div className="cause-card-title small fw-bold mb-1">{gift.content?.title}</div>
-                                                            {!isPortrait && (
+
+                                                            {/* FIX: Only show Description section if content exists */}
+                                                            {!isPortrait && gift.content?.description && (
                                                                 <div className="small fw-bold mb-2 text-muted d-flex align-items-center gap-1">
                                                                     {translate("Description")}
                                                                     <div className="position-relative d-inline-block">
@@ -553,7 +556,7 @@ export default function CauseDetails({
                                                                             onMouseLeave={() => setHoveredGift(null)}
                                                                         />
 
-                                                                        {/* The Tooltip Box */}
+                                                                        {/* FIX: The Tooltip Box with proper styling to prevent overlap */}
                                                                         {hoveredGift === gift.id && (
                                                                             <div className="custom-floating-tooltip shadow-lg">
                                                                                 {gift.content?.description}
@@ -563,9 +566,11 @@ export default function CauseDetails({
                                                                     </div>
                                                                 </div>
                                                             )}
+
                                                             <div className={`d-flex align-items-center justify-content-between mt-auto`}>
                                                                 <div className="text-primary fw-bold">
-                                                                    <Amount amount={Number(gift.amount || 0).toFixed(0)} />
+                                                                    <Amount amount={Number(gift.amount || 0).toFixed(0)} />{" "}
+                                                                    {gift.unit ? "/" + gift.unit : ""}
                                                                 </div>
 
                                                                 <div
@@ -689,7 +694,7 @@ export default function CauseDetails({
                                                         <div className="d-flex justify-content-between align-items-center mb-3 bg-light p-2 rounded-3">
                                                             <span className="cause-card-price fw-bold text-primary">
                                                                 <Amount amount={finalPrice.toFixed(2)} />{" "}
-                                                                <span className="text-muted fs-6 fw-normal small">/ Unit</span>
+                                                                <span className="text-muted fs-6 fw-normal small">/ {product.unit ?? "Unit"}</span>
                                                             </span>
 
                                                             <div
@@ -1207,6 +1212,7 @@ export default function CauseDetails({
                                                     id="pancard"
                                                     placeholder="ABCDE1234F"
                                                     maxLength="10"
+                                                    required={data.is_80g}
                                                     value={data.pancard || ""}
                                                     onChange={(e) => {
                                                         const val = e.target.value.toUpperCase()
@@ -1232,8 +1238,10 @@ export default function CauseDetails({
                                         </div>
                                     )}
 
-                                    <span className="section-label">{translate("Payment Method")}</span>
-                                    <div className="payment-grid">
+                                    <span className="section-label" style={{ display: "none" }}>
+                                        {translate("Payment Method")}
+                                    </span>
+                                    <div className="payment-grid" style={{ display: "none" }}>
                                         {payment_gateway.is_cod_active && (
                                             <div
                                                 className={`payment-option-card ${data.paymentMethod === "cod" ? "selected" : ""}`}
@@ -1335,7 +1343,7 @@ export default function CauseDetails({
                                                 <ReCAPTCHA sitekey={captchaSiteKey} onChange={handleCaptchaChange} />
                                             </div>
                                         )}
-                                        <div className="form-check mb-3">
+                                        <div className="form-check mb-3" style={{ display: "none" }}>
                                             <input
                                                 className="form-check-input"
                                                 type="checkbox"

@@ -16,6 +16,8 @@ class Gift extends Model
     protected $casts = [
         'variations' => 'array',
         'have_variations' => 'integer',
+        'amount' => 'float',
+        'min_qty' => 'integer',
     ];
 
     /**

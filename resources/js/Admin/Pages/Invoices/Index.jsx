@@ -214,20 +214,21 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
 
     const [isMarkAll, setIsMarkAll] = useState(false)
     const [markItems, setMarkItems] = useState([])
-
-    // Search
     const getResults = (search) => {
         router.get(
-            route("admin.invoices.index", {
-                search: search ?? setSearchQuery,
+            route("admin.invoices.index"),
+            {
+                search: search !== undefined ? search : searchQuery,
                 sort: sort,
                 filter: {
                     cause_id: selectedCause,
                     date_range: dateRange
                 }
-            }),
-            {},
-            { preserveState: true }
+            },
+            {
+                preserveState: true,
+                replace: true
+            }
         )
     }
 
@@ -704,15 +705,21 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                         </strong>
                                                     </td>
                                                     <td className="text-center">
-                                                        <a
-                                                            href={route("admin.orders.download.invoice", invoice.order)}
-                                                            download
-                                                            className="btn btn-sm btn-outline-secondary"
-                                                            title={translate("Download Invoice")}
-                                                            style={{ padding: "4px 8px" }}
-                                                        >
-                                                            <IonIcon icon={downloadOutline} style={{ fontSize: "16px" }} />
-                                                        </a>
+                                                        {invoice.order ? (
+                                                            <a
+                                                                href={route("admin.orders.download.invoice", invoice.order)}
+                                                                download
+                                                                className="btn btn-sm btn-outline-secondary"
+                                                                title={translate("Download Invoice")}
+                                                                style={{ padding: "4px 8px" }}
+                                                            >
+                                                                <IonIcon icon={downloadOutline} style={{ fontSize: "16px" }} />
+                                                            </a>
+                                                        ) : (
+                                                            <span className="text-muted small" title="No linked order">
+                                                                N/A
+                                                            </span>
+                                                        )}
                                                     </td>
                                                     <td className="text-center">
                                                         <Link

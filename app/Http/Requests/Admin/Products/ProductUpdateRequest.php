@@ -33,7 +33,6 @@ class ProductUpdateRequest extends FormRequest
             'seo_description' => ['nullable', 'string'],
         ];
 
-        // Append language-specific validation rules
         $languages = json_decode(Setting::pull('languages'));
         foreach ($languages as $language) {
             $langCode = $language->code;

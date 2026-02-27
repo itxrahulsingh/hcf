@@ -16,6 +16,7 @@ export default function Create({ default_lang, languages }) {
     const { data, setData, errors, post, processing } = useForm({
         gift_image: "",
         amount: "",
+        unit: "",
         min_qty: "",
         have_variations: 0,
         variations: [],
@@ -109,10 +110,18 @@ export default function Create({ default_lang, languages }) {
                                         <label>{translate("Upload gift image")} *</label>
                                         <SingleMediaUploader
                                             onSelected={(e) => {
-                                                setData(produce((draft) => { draft.gift_image = e }))
+                                                setData(
+                                                    produce((draft) => {
+                                                        draft.gift_image = e
+                                                    })
+                                                )
                                             }}
                                             handleRemoved={() =>
-                                                setData(produce((draft) => { draft.gift_image = "" }))
+                                                setData(
+                                                    produce((draft) => {
+                                                        draft.gift_image = ""
+                                                    })
+                                                )
                                             }
                                             defaultValue={data.gift_image}
                                         />
@@ -135,16 +144,33 @@ export default function Create({ default_lang, languages }) {
                                     </div>
 
                                     {/* Default Amount */}
-                                    <div className="form-group">
-                                        <label htmlFor="amount">{translate("Default Amount")} *</label>
-                                        <TextInput
-                                            title={`${translate("Amount")}`}
-                                            type="number"
-                                            id="amount"
-                                            error={errors?.amount}
-                                            value={data.amount}
-                                            onChange={(e) => setData("amount", e.target.value)}
-                                        />
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="amount">{translate("Default Amount")} *</label>
+                                                <TextInput
+                                                    title={translate("Amount")}
+                                                    type="number"
+                                                    id="amount"
+                                                    error={errors?.amount}
+                                                    value={data.amount}
+                                                    onChange={(e) => setData("amount", e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="unit">{translate("Unit (e.g. Kg, Pkt, Unit)")}</label>
+                                                <TextInput
+                                                    title={translate("Enter unit name")}
+                                                    type="text"
+                                                    id="unit"
+                                                    error={errors?.unit}
+                                                    value={data.unit}
+                                                    onChange={(e) => setData("unit", e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div className="form-group d-flex align-items-center justify-content-between mb-3 border p-3 rounded bg-light">
@@ -152,7 +178,7 @@ export default function Create({ default_lang, languages }) {
                                         <div
                                             className={`yoo-switch ${data.have_variations === 1 ? "active" : ""}`}
                                             onClick={() => setData("have_variations", data.have_variations === 1 ? 0 : 1)}
-                                            style={{cursor: 'pointer'}}
+                                            style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
                                         </div>
@@ -229,14 +255,18 @@ export default function Create({ default_lang, languages }) {
                                         <label htmlFor="description">
                                             {translate("Description")} ({languages[selectedLang].name}) *
                                         </label>
-                                        <TextInput
-                                            title={`${translate("Enter gift description")} *`}
-                                            type="text"
+                                        <textarea
                                             id="description"
-                                            error={errors[`${selectedLang}_description`]}
+                                            rows="4"
+                                            className={`form-control ${errors[`${selectedLang}_description`] ? "is-invalid" : ""}`}
+                                            placeholder={translate("Enter gift description")}
                                             value={data[`${selectedLang}_description`]}
                                             onChange={(e) => setData(`${selectedLang}_description`, e.target.value)}
-                                        />
+                                            style={{ fontSize: "14px", borderRadius: "8px", border: "1px solid #e2e8f0" }}
+                                        ></textarea>
+                                        {errors[`${selectedLang}_description`] && (
+                                            <div className="invalid-feedback d-block">{errors[`${selectedLang}_description`]}</div>
+                                        )}
                                     </div>
                                     <SuccessButton isLoading={processing && data.status === "1"}>{translate("Add New Gift")}</SuccessButton>
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />

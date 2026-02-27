@@ -22,6 +22,7 @@ export default function Create({ languages, product_categories, default_lang, br
         slug: "",
         price: "",
         discount_price: "",
+        unit: "",
         thumbnail_image: "",
         slider_images: [],
         status: "1",
@@ -144,8 +145,9 @@ export default function Create({ languages, product_categories, default_lang, br
                                 <div className="yoo-padd-lr-20">
                                     <div className="yoo-height-b20 yoo-height-lg-b20" />
 
+                                    {/* Regular Price, Discount Price, and Unit in Single Row */}
                                     <div className="row">
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <label htmlFor="price">
                                                 {translate("Regular Price")} ({props.currency?.currency_code || "USD"}) *
                                             </label>
@@ -159,9 +161,9 @@ export default function Create({ languages, product_categories, default_lang, br
                                                 onChange={(e) => setData("price", e.target.value)}
                                             />
                                         </div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <label htmlFor="discount_price">
-                                                {translate("Discount Price")} ({props.currency?.currency_code || "USD"}) *
+                                                {translate("Discount Price")} ({props.currency?.currency_code || "USD"})
                                             </label>
                                             <TextInput
                                                 title="Enter Discount Price"
@@ -171,6 +173,17 @@ export default function Create({ languages, product_categories, default_lang, br
                                                 error={errors?.discount_price}
                                                 value={data.discount_price}
                                                 onChange={(e) => setData("discount_price", e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <label htmlFor="unit">{translate("Unit")} (e.g. Kg, Pc, Ltr)</label>
+                                            <TextInput
+                                                title="Enter Unit"
+                                                type="text"
+                                                id="unit"
+                                                error={errors?.unit}
+                                                value={data.unit}
+                                                onChange={(e) => setData("unit", e.target.value)}
                                             />
                                         </div>
                                     </div>

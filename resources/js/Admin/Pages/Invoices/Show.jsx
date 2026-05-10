@@ -6,7 +6,7 @@ import { Head, useForm, Link } from "@inertiajs/react"
 import moment from "moment"
 import React from "react"
 
-export default function Show({ invoice }) {
+export default function Show({ invoice, canEdit = false }) {
     // 1. Destructure Invoice specific fields
     const {
         id,
@@ -21,9 +21,7 @@ export default function Show({ invoice }) {
         financial_year,
         is_80g,
         total_price,
-        payment_method,
         payment_date,
-        status, // Invoice Status (Paid, Unpaid, etc.)
         order // Relationship to Order
     } = invoice
 
@@ -32,16 +30,20 @@ export default function Show({ invoice }) {
     const orderNumber = order?.order_number
     const couponCode = order?.coupon_code
     const discount = order?.discount || 0
-    const transactionId = order?.transaction_id
 
-    // 3. Form for updating Invoice Status
-    const { data, setData, errors, put } = useForm({
-        status: status,
-        payment_method: payment_method
+    // 3. Form for updating editable invoice details
+    const { data, setData, errors, put, processing } = useForm({
+        customer_name: customer_name || "",
+        customer_email: customer_email || "",
+        customer_phone: customer_phone || "",
+        pancard: pancard || "",
+        shipping_address: shipping_address || "",
+        state: state || ""
     })
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        if (!canEdit) return
         // Routes to Invoice Update
         put(route("admin.invoices.update", invoice))
     }
@@ -56,7 +58,8 @@ export default function Show({ invoice }) {
                 </div>
                 <div className="yoo-height-b20 yoo-height-lg-b20"></div>
 
-                <div className="row">
+                <form onSubmit={handleSubmit}>
+                    <div className="row">
                     {/* Left Column: Invoice Info */}
                     <div className="col-lg-8">
                         <div className="yoo-card yoo-style1">
@@ -116,30 +119,70 @@ export default function Show({ invoice }) {
                                     <div className="row mb-4">
                                         <div className="col-md-4 mb-3">
                                             <div className="invoice-title text-muted">{translate("Customer Name")}</div>
-                                            <div className="invoice-content font-weight-bold">{customer_name}</div>
+                                            <input
+                                                type="text"
+                                                className={`form-control ${errors.customer_name ? "is-invalid" : ""}`}
+                                                value={data.customer_name}
+                                                disabled={!canEdit}
+                                                onChange={(e) => setData("customer_name", e.target.value)}
+                                            />
+                                            <FromValidationError message={errors.customer_name} />
                                         </div>
                                         <div className="col-md-4 mb-3">
                                             <div className="invoice-title text-muted">{translate("Email")}</div>
-                                            <div className="invoice-content">
-                                                <a href={`mailto:${customer_email}`}>{customer_email}</a>
-                                            </div>
+                                            <input
+                                                type="email"
+                                                className={`form-control ${errors.customer_email ? "is-invalid" : ""}`}
+                                                value={data.customer_email}
+                                                disabled={!canEdit}
+                                                onChange={(e) => setData("customer_email", e.target.value)}
+                                            />
+                                            <FromValidationError message={errors.customer_email} />
                                         </div>
                                         <div className="col-md-4 mb-3">
                                             <div className="invoice-title text-muted">{translate("Phone")}</div>
-                                            <div className="invoice-content">
-                                                <a href={`tel:${customer_phone}`}>{customer_phone}</a>
-                                            </div>
+                                            <input
+                                                type="text"
+                                                className={`form-control ${errors.customer_phone ? "is-invalid" : ""}`}
+                                                value={data.customer_phone}
+                                                disabled={!canEdit}
+                                                onChange={(e) => setData("customer_phone", e.target.value)}
+                                            />
+                                            <FromValidationError message={errors.customer_phone} />
                                         </div>
                                         <div className="col-md-4 mb-3">
                                             <div className="invoice-title text-muted">{translate("PAN Card")}</div>
-                                            <div className="invoice-content">{pancard || "N/A"}</div>
+                                            <input
+                                                type="text"
+                                                className={`form-control ${errors.pancard ? "is-invalid" : ""}`}
+                                                value={data.pancard}
+                                                disabled={!canEdit}
+                                                onChange={(e) => setData("pancard", e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10))}
+                                            />
+                                            <FromValidationError message={errors.pancard} />
+                                            {data.pancard && data.pancard.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(data.pancard) && (
+                                                <div className="text-danger small mt-1">Invalid PAN format. Use ABCDE1234F</div>
+                                            )}
                                         </div>
                                         <div className="col-md-8 mb-3">
                                             <div className="invoice-title text-muted">{translate("Address")}</div>
-                                            <div className="invoice-content">
-                                                {shipping_address}
-                                                {state && <span className="d-block text-muted small">{state}</span>}
-                                            </div>
+                                            <textarea
+                                                className={`form-control ${errors.shipping_address ? "is-invalid" : ""}`}
+                                                rows={2}
+                                                value={data.shipping_address}
+                                                disabled={!canEdit}
+                                                onChange={(e) => setData("shipping_address", e.target.value)}
+                                            />
+                                            <FromValidationError message={errors.shipping_address} />
+                                            <div className="invoice-title text-muted mt-2">{translate("State")}</div>
+                                            <input
+                                                type="text"
+                                                className={`form-control ${errors.state ? "is-invalid" : ""}`}
+                                                value={data.state}
+                                                disabled={!canEdit}
+                                                onChange={(e) => setData("state", e.target.value)}
+                                            />
+                                            <FromValidationError message={errors.state} />
                                         </div>
                                     </div>
 
@@ -225,75 +268,19 @@ export default function Show({ invoice }) {
                                             </a>
                                         </div>
                                     )}
+                                    {canEdit && (
+                                        <div className="mt-4">
+                                            <button type="submit" className="btn btn-success" disabled={processing}>
+                                                {translate("Update Invoice")}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    {/* Right Column: Status & Payment */}
-                    <div className="col-lg-4">
-                        <form onSubmit={handleSubmit}>
-                            <div className="yoo-card yoo-style1">
-                                <div className="yoo-card-heading">
-                                    <div className="yoo-card-heading-left">
-                                        <h2 className="yoo-card-title">{translate("Invoice Status")}</h2>
-                                    </div>
-                                </div>
-                                <div className="yoo-card-body">
-                                    <div className="yoo-padd-lr-20">
-
-                                        {/* Status Field */}
-                                        <div className="form-group mb-3">
-                                            <label htmlFor="status" className="font-weight-bold">{translate("Status")}</label>
-                                            <select
-                                                id="status"
-                                                value={data.status}
-                                                className="form-control"
-                                                onChange={(e) => setData("status", e.target.value)}
-                                            >
-                                                <option value="Paid">{translate("Paid")}</option>
-                                                <option value="Unpaid">{translate("Unpaid")}</option>
-                                                <option value="Cancelled">{translate("Cancelled")}</option>
-                                                <option value="Refunded">{translate("Refunded")}</option>
-                                            </select>
-                                            <FromValidationError message={errors.status} />
-                                        </div>
-
-                                        {/* Payment Method Field */}
-                                        <div className="form-group mb-3">
-                                            <label htmlFor="payment_method" className="font-weight-bold">{translate("Payment Method")}</label>
-                                            <select
-                                                id="payment_method"
-                                                value={data.payment_method}
-                                                className="form-control"
-                                                onChange={(e) => setData("payment_method", e.target.value)}
-                                            >
-                                                <option value="Card">{translate("Card")}</option>
-                                                <option value="Cash">{translate("Cash")}</option>
-                                                <option value="Bank Transfer">{translate("Bank Transfer")}</option>
-                                                <option value="Cheque">{translate("Cheque")}</option>
-                                                <option value="Online">{translate("Online")}</option>
-                                            </select>
-                                            <FromValidationError message={errors.payment_method} />
-                                        </div>
-
-                                        {/* Transaction Details (Read Only) */}
-                                        {transactionId && (
-                                            <div className="alert alert-light border mt-3">
-                                                <small className="text-muted d-block">{translate("Transaction ID")}</small>
-                                                <strong>{transactionId}</strong>
-                                            </div>
-                                        )}
-
-                                        <button type="submit" className="btn btn-success btn-block mt-3 mb-3">
-                                            {translate("Update Invoice")}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
                 </div>
+                </form>
             </div>
         </AdminLayouts>
     )

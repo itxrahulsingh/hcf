@@ -12,7 +12,8 @@ import {
     checkmarkCircleOutline,
     refreshOutline,
     alertCircleOutline,
-    timeOutline
+    timeOutline,
+    createOutline
 } from "ionicons/icons"
 import { IonIcon } from "@ionic/react"
 import { useState, useEffect } from "react"
@@ -746,6 +747,11 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                 <th width="5%" className="text-center">
                                                     {translate("Send")}
                                                 </th>
+                                                {hasPermission("invoices.edit") && (
+                                                    <th style={{ width: "5%" }} className="text-center">
+                                                        {translate("Edit")}
+                                                    </th>
+                                                )}
                                                 {hasPermission("invoices.delete") && (
                                                     <th style={{ width: "5%" }} className="text-center">
                                                         {translate("Action")}
@@ -764,7 +770,13 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                             Type: {invoice.type == "manual" ? "Manual" : "Automatic"}
                                                         </span>
                                                         <div className="yoo-table-medias yoo-style1 text-primary font-weight-bold">
-                                                            #{invoice.invoice_number}
+                                                            {hasPermission("invoices.show") ? (
+                                                                <Link href={route("admin.invoices.show", invoice)}>
+                                                                    #{invoice.invoice_number}
+                                                                </Link>
+                                                            ) : (
+                                                                <>#{invoice.invoice_number}</>
+                                                            )}
                                                         </div>
                                                     </td>
                                                     <td>
@@ -831,6 +843,18 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                             <IonIcon icon={paperPlaneOutline} style={{ fontSize: "16px" }} />
                                                         </Link>
                                                     </td>
+                                                    {hasPermission("invoices.edit") && (
+                                                        <td className="text-center">
+                                                            <Link
+                                                                href={route("admin.invoices.edit", invoice)}
+                                                                className="btn btn-sm btn-outline-primary"
+                                                                title={translate("Edit Invoice")}
+                                                                style={{ padding: "4px 8px" }}
+                                                            >
+                                                                <IonIcon icon={createOutline} style={{ fontSize: "16px" }} />
+                                                            </Link>
+                                                        </td>
+                                                    )}
                                                     {hasPermission("invoices.delete") && (
                                                         <td className="text-center">
                                                             <DeleteButton href={route("admin.invoices.destroy", invoice)} />

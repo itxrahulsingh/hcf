@@ -23,7 +23,9 @@ class InvoiceController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('can:invoices.index', ['only' => ['index', 'resendInvoice']]);
+        $this->middleware('can:invoices.index', ['only' => ['index', 'export', 'bulkDownload']]);
+        $this->middleware('can:invoices.show', ['only' => ['show']]);
+        $this->middleware('can:invoices.edit', ['only' => ['edit', 'update', 'resendInvoice', 'updateRemarks']]);
         $this->middleware('can:invoices.delete', ['only' => ['destroy', 'bulkDelete']]);
     }
 
@@ -67,6 +69,53 @@ class InvoiceController extends Controller
     {
         DonationSuccess::dispatch($invoice);
         return back()->with('success', 'Invoice resent to customer successfully!');
+    }
+
+    /**
+     * View invoice details.
+     */
+    public function show(Invoice $invoice): Response
+    {
+        $invoice->load('order.orderitems');
+
+        return Inertia::render('Invoices/Show', [
+            'invoice' => $invoice,
+            'canEdit' => false,
+        ]);
+    }
+
+    /**
+     * Edit invoice details.
+     */
+    public function edit(Invoice $invoice): Response
+    {
+        $invoice->load('order.orderitems');
+
+        return Inertia::render('Invoices/Show', [
+            'invoice' => $invoice,
+            'canEdit' => true,
+        ]);
+    }
+
+    /**
+     * Update invoice details.
+     */
+    public function update(Request $request, Invoice $invoice): RedirectResponse
+    {
+        $validated = $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_email' => 'nullable|email|max:255',
+            'customer_phone' => 'nullable|string|max:20',
+            'shipping_address' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'pancard' => ['nullable', 'regex:/^[A-Z]{5}[0-9]{4}[A-Z]$/'],
+        ]);
+
+        $validated['pancard'] = strtoupper(trim((string) ($validated['pancard'] ?? ''))) ?: null;
+
+        $invoice->update($validated);
+
+        return back()->with('success', 'Invoice details updated successfully!');
     }
 
     /**

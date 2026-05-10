@@ -468,8 +468,11 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
 /** Invoice Routes **/
 Route::group(['prefix' => 'invoices', 'as' => 'invoices.'], function () {
     Route::get('/', [InvoiceController::class, 'index'])->name('index')->can('invoices.index');
+    Route::get('/show/{invoice}', [InvoiceController::class, 'show'])->name('show')->can('invoices.show');
+    Route::get('/edit/{invoice}', [InvoiceController::class, 'edit'])->name('edit')->can('invoices.edit');
+    Route::put('/update/{invoice}', [InvoiceController::class, 'update'])->name('update')->can('invoices.edit');
     Route::get('/export', [InvoiceController::class, 'export'])->name('export')->can('invoices.index');
-    Route::post('/resend-invoice/{invoice}', [InvoiceController::class, 'resendInvoice'])->name('resend');
+    Route::post('/resend-invoice/{invoice}', [InvoiceController::class, 'resendInvoice'])->name('resend')->can('invoices.edit');
     Route::post('/update-remarks/{invoice}', [InvoiceController::class, 'updateRemarks'])->name('update.remarks')->can('invoices.edit');
     Route::delete('/destroy/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy')->can('invoices.delete');
     Route::delete('/bulk-delete', [InvoiceController::class, 'bulkDelete'])->name('bulk.delete')->can('invoices.delete');

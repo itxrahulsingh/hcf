@@ -407,7 +407,7 @@ const Index = ({ payment_gateway, meta_tags, tagline, site_name, terms_condition
                                 </div>
                                 {errors.agreed && <span style={{ color: "red" }}>{errors.agreed}</span>}
                                 <div className="cs_height_20 cs_height_lg_20" />
-                                <button className="cs_product_btn cs_semi_bold w-100" disabled={!captchaError && processing}>
+                                <button className="cs_product_btn cs_semi_bold w-100" disabled={processing || (!captchaVerified && is_active_google_captcha === "1")}>
                                     {translate("Place Order")}
                                 </button>
                             </form>

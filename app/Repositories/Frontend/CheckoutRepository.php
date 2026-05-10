@@ -3,9 +3,12 @@
 namespace App\Repositories\Frontend;
 
 use App\Http\Requests\CheckoutRequest;
+use App\Models\Cause;
 use App\Models\Coupon;
+use App\Models\Gift;
 use App\Models\ManualPaymentGateway;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Services\PaymentGateway\FlutterWave;
 use App\Services\PaymentGateway\Paypal;
@@ -14,6 +17,7 @@ use App\Services\PaymentGateway\SSLCommerz;
 use App\Services\PaymentGateway\Stripe;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class CheckoutRepository
@@ -21,26 +25,17 @@ class CheckoutRepository
     public function checkout(CheckoutRequest $request)
     {
         $currency_code = Setting::pull('currency_code') ?? 'INR';
+        $checkoutType = $this->determineCheckoutType($request);
+        [$order_items, $subtotal, $cause, $orderType] = $this->resolveOrderItems($request, $checkoutType);
 
-        $subtotal = array_reduce(
-            $request->items,
-            fn($carry, $item) =>
-            $carry + ($item['price'] * $item['quantity']),
-            0
-        );
+        $discount = $this->resolveDiscount($request, $subtotal);
+        $total = max($subtotal - $discount, 0);
 
-        // Apply coupon if exists
-        $discount = 0;
-        if ($request->coupon) {
-            $coupon = Coupon::where('code', $request->coupon['code'])->first();
-            if ($coupon) {
-                $discount = $coupon->type === 'fixed'
-                    ? $coupon->discount_value
-                    : ($subtotal * $coupon->discount_value) / 100;
-            }
+        if ($cause && $total < (float) ($cause->min_amount ?? 1)) {
+            throw ValidationException::withMessages([
+                'items' => __('Donation total must be at least :amount.', ['amount' => $cause->min_amount]),
+            ]);
         }
-
-        $total = $subtotal - $discount;
 
         // Handle receipt file upload
         $receiptFilePath = null;
@@ -76,33 +71,11 @@ class CheckoutRepository
             'special_image' => $specialFilePath,
             'special_video' => $request->special_video ?? null,
             'special_date' => $request->special_date ?? null,
-            'is_80g' => $request->is_80g,
+            'is_80g' => $request->boolean('is_80g'),
             'pancard' => $request->pancard,
-            'type' => $request->type ?? 'normal',
-            'cause_id' => $request->cause_id ?? null,
+            'type' => $orderType,
+            'cause_id' => $cause?->id,
         ]);
-
-        // Prepare order items for polymorphic table
-        $order_items = array_map(function ($item) {
-
-            $itemTypeClass = match ($item['type']) {
-                'product' => \App\Models\Product::class,
-                'gift' => \App\Models\Gift::class,
-                'cause' => \App\Models\Cause::class,
-                default => \App\Models\Product::class,
-            };
-
-            return [
-                'item_id' => $item['id'],
-                'item_type' => $itemTypeClass,
-                'item_name' => $item['title'] ?? $item['name'] ?? 'Item',
-                'item_price' => $item['price'],
-                'quantity' => $item['quantity'] ?? 1,
-                'total_price' => ($item['price'] * ($item['quantity'] ?? 1)),
-                'sku' => $item['sku'] ?? null,
-                'item_image' => $item['thumbnail_image'] ?? null,
-            ];
-        }, $request->items);
 
         $order->orderitems()->createMany($order_items);
 
@@ -128,8 +101,8 @@ class CheckoutRepository
                         ],
                     ]],
                     'application_context' => [
-                        'cancel_url' => route('payment.cancel', ['method' => 'paypal', 'identifier' => $order->id]),
-                        'return_url' => route('payment.success', ['method' => 'paypal', 'identifier' => $order->id]),
+                        'cancel_url' => route('payment.cancel', ['method' => 'paypal', 'identifier' => $order->id, 'type' => $checkoutType]),
+                        'return_url' => route('payment.success', ['method' => 'paypal', 'identifier' => $order->id, 'type' => $checkoutType]),
                     ],
                 ];
                 $response = $paypal->initializePayment($body);
@@ -149,15 +122,20 @@ class CheckoutRepository
                         'quantity' => 1,
                     ]],
                     'mode' => 'payment',
-                    'success_url' => route('payment.success', ['method' => 'stripe', 'identifier' => $order->id]),
-                    'cancel_url' => route('payment.cancel', ['method' => 'stripe', 'identifier' => $order->id]),
+                    'success_url' => route('payment.success', ['method' => 'stripe', 'identifier' => $order->id, 'type' => $checkoutType]) . '?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => route('payment.cancel', ['method' => 'stripe', 'identifier' => $order->id, 'type' => $checkoutType]),
                 ];
                 $response = $stripe->initializePayment($body);
                 Session::put('paymentId', $response->id);
+                $order->update([
+                    'payment_data' => [
+                        'stripe_session_id' => $response->id,
+                    ],
+                ]);
                 return Inertia::location($response->url);
 
             case 'sslcommerz':
-                $sslcmz = new SSLCommerz($order->id);
+                $sslcmz = new SSLCommerz($order->id, $checkoutType);
                 $body = [
                     'total_amount' => $total,
                     'currency' => $currency_code,
@@ -185,7 +163,7 @@ class CheckoutRepository
                         'phonenumber' => $request->phone,
                     ],
                     'tx_ref' => $order->order_number,
-                    'redirect_url' => route('payment.success', ['method' => 'flutterwave', 'identifier' => $order->id]),
+                    'redirect_url' => route('payment.success', ['method' => 'flutterwave', 'identifier' => $order->id, 'type' => $checkoutType]),
                 ];
                 $response = $flutterwave->initializePayment($data);
                 return Inertia::location($response['data']['link']);
@@ -198,9 +176,165 @@ class CheckoutRepository
                     'currency' => $currency_code,
                 ];
                 $order_id = $razorpay->initilizePatment($data);
-                $url = route('payment.razorpay.pay', ['order_id' => $order_id, 'payment_id' => $order->id, 'type' => 'donation']);
+                $order->update(['rzp_order_id' => $order_id]);
+                $url = route('payment.razorpay.pay', ['order_id' => $order_id, 'payment_id' => $order->id, 'type' => $checkoutType]);
                 return Inertia::location($url);
         }
+    }
+
+    private function determineCheckoutType(CheckoutRequest $request): string
+    {
+        return $request->filled('cause_id') ? 'donation' : 'product';
+    }
+
+    private function resolveDiscount(CheckoutRequest $request, float $subtotal): float
+    {
+        $couponCode = data_get($request->coupon, 'code');
+        if (! $couponCode) {
+            return 0;
+        }
+
+        $coupon = Coupon::where('code', $couponCode)->first();
+        if (! $coupon) {
+            throw ValidationException::withMessages([
+                'coupon' => __('Invalid coupon code.'),
+            ]);
+        }
+
+        $discountType = $coupon->discount_type ?? $coupon->type;
+        $discount = $discountType === 'fixed'
+            ? (float) $coupon->discount_value
+            : ($subtotal * (float) $coupon->discount_value) / 100;
+
+        return min($discount, $subtotal);
+    }
+
+    private function resolveOrderItems(CheckoutRequest $request, string $checkoutType): array
+    {
+        $items = [];
+        $subtotal = 0;
+        $cause = $request->filled('cause_id') ? Cause::with('content')->findOrFail($request->cause_id) : null;
+        $allowedGiftIds = $this->decodeIds($cause?->gift_ids);
+        $allowedProductIds = $this->decodeIds($cause?->product_ids);
+        $orderType = $cause?->type ?? 'normal';
+
+        foreach ($request->items as $item) {
+            $quantity = max((int) ($item['quantity'] ?? 1), 1);
+
+            switch ($item['type']) {
+                case 'product':
+                    $product = Product::with('content')->find($item['id']);
+                    if (! $product) {
+                        throw ValidationException::withMessages(['items' => __('Selected product is no longer available.')]);
+                    }
+                    if ($checkoutType === 'donation' && ! in_array((int) $product->id, $allowedProductIds, true)) {
+                        throw ValidationException::withMessages(['items' => __('Selected product does not belong to this donation campaign.')]);
+                    }
+                    $price = (float) ($product->discount_price ?? $product->price ?? 0);
+                    $items[] = [
+                        'item_id' => $product->id,
+                        'item_type' => Product::class,
+                        'item_name' => $product->content?->title ?? 'Product',
+                        'item_price' => $price,
+                        'quantity' => $quantity,
+                        'total_price' => $price * $quantity,
+                        'sku' => $product->sku ?? null,
+                        'item_image' => $product->thumbnail_image ?? null,
+                    ];
+                    $subtotal += $price * $quantity;
+                    break;
+
+                case 'gift':
+                    [$giftId, $variationIndex] = $this->parseGiftIdentifier($item['id']);
+                    $gift = Gift::with('content')->find($giftId);
+                    if (! $gift) {
+                        throw ValidationException::withMessages(['items' => __('Selected gift is no longer available.')]);
+                    }
+                    if ($checkoutType === 'donation' && ! in_array((int) $gift->id, $allowedGiftIds, true)) {
+                        throw ValidationException::withMessages(['items' => __('Selected gift does not belong to this donation campaign.')]);
+                    }
+
+                    $price = (float) $gift->amount;
+                    $itemId = $gift->id;
+                    $name = $gift->content?->title ?? 'Gift';
+                    if ($variationIndex !== null) {
+                        $variation = data_get($gift->variations, $variationIndex);
+                        if (! $variation) {
+                            throw ValidationException::withMessages(['items' => __('Selected gift variation is no longer available.')]);
+                        }
+                        $price = (float) data_get($variation, 'amount', 0);
+                        $name = trim($name . ' - ' . data_get($variation, 'title', 'Variation'));
+                        $itemId = $gift->id;
+                    }
+
+                    $items[] = [
+                        'item_id' => $itemId,
+                        'item_type' => Gift::class,
+                        'item_name' => $name,
+                        'item_price' => $price,
+                        'quantity' => $quantity,
+                        'total_price' => $price * $quantity,
+                        'sku' => null,
+                        'item_image' => $gift->gift_image ?? null,
+                    ];
+                    $subtotal += $price * $quantity;
+                    break;
+
+                case 'cause':
+                    if (! $cause || (int) $item['id'] !== (int) $cause->id) {
+                        throw ValidationException::withMessages(['items' => __('Donation amount is not linked to the selected campaign.')]);
+                    }
+                    $price = round((float) ($item['price'] ?? 0), 2);
+                    if ($price <= 0) {
+                        throw ValidationException::withMessages(['items' => __('Donation amount must be greater than zero.')]);
+                    }
+                    $items[] = [
+                        'item_id' => $cause->id,
+                        'item_type' => Cause::class,
+                        'item_name' => $cause->content?->title ?? 'Donation',
+                        'item_price' => $price,
+                        'quantity' => 1,
+                        'total_price' => $price,
+                        'sku' => null,
+                        'item_image' => $cause->thumbnail_image ?? null,
+                    ];
+                    $subtotal += $price;
+                    break;
+            }
+        }
+
+        if (empty($items)) {
+            throw ValidationException::withMessages([
+                'items' => __('Your cart is empty.'),
+            ]);
+        }
+
+        return [$items, $subtotal, $cause, $orderType];
+    }
+
+    private function decodeIds($value): array
+    {
+        if (is_array($value)) {
+            return array_map('intval', $value);
+        }
+
+        if (is_string($value) && $value !== '') {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                return array_map('intval', $decoded);
+            }
+        }
+
+        return [];
+    }
+
+    private function parseGiftIdentifier($giftIdentifier): array
+    {
+        if (is_string($giftIdentifier) && preg_match('/^(\d+)-var-(\d+)$/', $giftIdentifier, $matches)) {
+            return [(int) $matches[1], (int) $matches[2]];
+        }
+
+        return [(int) $giftIdentifier, null];
     }
 
     // Old checkout method retained for reference

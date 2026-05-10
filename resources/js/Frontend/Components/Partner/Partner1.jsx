@@ -29,8 +29,6 @@ const styles = {
         maxHeight: "100%",
         objectFit: "contain",
         transition: "all 0.4s ease",
-        filter: "grayscale(100%)",
-        opacity: 0.7
     }
 }
 
@@ -58,7 +56,7 @@ export default function Partner1({ data }) {
                 {section_title && (
                     <div className="text-center">
                         <h2
-                            className="cs_section_title cs_fs_53 cs_normal mb-0"
+                            className="cs_section_title cs_fs_53 cs_bold mb-3"
                             style={styles.sectionTitle}
                             dangerouslySetInnerHTML={{ __html: section_title }}
                         />

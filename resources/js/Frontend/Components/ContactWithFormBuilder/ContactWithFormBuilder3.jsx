@@ -95,7 +95,7 @@ export default function ContactWithFormBuilder3({ sections_data }) {
 
     return (
         <>
-            <div className="container">
+            <div className="container 3">
                 <div className="row cs_gap_y_60">
                     <div className="col-lg-5">
                         {(sections_data.section_subtitle || sections_data.section_title) && (

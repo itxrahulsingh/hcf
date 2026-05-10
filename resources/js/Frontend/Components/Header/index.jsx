@@ -144,7 +144,7 @@ export default function Header({ cart }) {
                         </div>
                     </div>
                 </div>
-                <div className="cs_main_header">
+                <div className="cs_main_header py-2">
                     <div className="container">
                         <div className="cs_main_header_in">
                             <div className="cs_main_header_left">

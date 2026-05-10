@@ -233,7 +233,7 @@ export default function CauseDetails({
             setCaptchaError(translate("Please complete the captcha verification"))
             return
         }
-        post(route("checkout.store"), { onSuccess: () => {} })
+        post(route("checkout.store"), { onSuccess: () => { } })
     }
 
     const scrollToSection = (id) => {
@@ -418,89 +418,61 @@ export default function CauseDetails({
 
                         {/* Gifts Section */}
                         {cause?.have_gift == 1 && cause?.gifts?.length > 0 && (
-                            <div className="cs_cause_details_wrap">
-                                <h3 className="mb-4">{translate("Select a Gift")}</h3>
+                            <div className="cs_cause_details_wrap mt-5 mt-md-0">
+                                <h3 className="mb-2">{translate("Select a Gift")}</h3>
 
-                                {/* ROW 1: Variation Gifts */}
                                 {variationGifts.length > 0 && (
-                                    <div className="row g-4 mb-5 justify-content-center">
+                                    <div className="row justify-content-center">
                                         {variationGifts.map((gift, idx) => {
                                             return (
-                                                <div key={`var-${idx}`} className="col-12 col-md-6">
-                                                    {" "}
-                                                    {/* Increased to 6 columns */}
-                                                    <div className="cause-card h-100 d-flex flex-column shadow-sm border-0 overflow-hidden">
-                                                        <div className="cause-card-img-wrapper" style={{ height: "220px" }}>
+                                                <div key={`var-${idx}`} className="col-md-6 my-2 my-md-3">
+                                                    <div className="product-design design2">
+                                                        <div className="product-img">
                                                             {gift.gift_image ? (
-                                                                <img
-                                                                    src={gift.gift_image}
-                                                                    alt={gift.content?.title}
-                                                                    className="w-100 h-100 object-fit-cover"
-                                                                    loading="lazy"
-                                                                />
+                                                                <img loading="lazy" className="product-image" src={gift.gift_image} alt={gift.content?.title} />
                                                             ) : (
                                                                 <div className="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
                                                                     No Image
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <div className="card-body p-2 d-flex flex-column">
-                                                            <div className="cause-card-title fw-bold fs-5 mb-2">{gift.content?.title}</div>
-                                                            <p className="small text-muted mb-3">{gift.content?.description}</p>
-
-                                                            <div className="mt-auto">
-                                                                {/* The 2-Column Button Grid */}
-                                                                <div className="row g-2">
-                                                                    {gift.variations.map((variant, vIdx) => {
-                                                                        const variantId = `${gift.id}-var-${vIdx}`
-                                                                        const isActive = carts.some((i) => i.id === variantId && i.type === "gift")
-                                                                        return (
-                                                                            <div key={variantId} className="col-6">
-                                                                                {" "}
-                                                                                <button
-                                                                                    type="button"
-                                                                                    className="w-100 py-3 px-2 rounded-3 border-0 text-white transition-all d-flex flex-column align-items-center justify-content-center"
-                                                                                    style={{
-                                                                                        background: isActive
-                                                                                            ? "linear-gradient(45deg, #e64a19, #f4511e)"
-                                                                                            : "linear-gradient(45deg, #FF512F, #F09819)",
-                                                                                        boxShadow: isActive
-                                                                                            ? "inset 0 4px 8px rgba(0,0,0,0.3)"
-                                                                                            : "0 3px 8px rgba(240, 152, 25, 0.2)",
-                                                                                        minHeight: "70px"
-                                                                                    }}
-                                                                                    onClick={() => {
-                                                                                        if (isActive) {
-                                                                                            dispatch(removeCart({ id: variantId, type: "gift" }))
-                                                                                        } else {
-                                                                                            handleSingleSelection(
-                                                                                                {
-                                                                                                    id: variantId,
-                                                                                                    type: "gift",
-                                                                                                    content: {
-                                                                                                        ...gift,
-                                                                                                        title: `${gift.content?.title} - ${variant.title}`
-                                                                                                    },
-                                                                                                    quantity: 1,
-                                                                                                    price: variant.amount,
-                                                                                                    cause_id: cause.id
-                                                                                                },
-                                                                                                "gift"
-                                                                                            )
-                                                                                        }
-                                                                                    }}
-                                                                                >
-                                                                                    <span className="fw-bold small text-truncate w-100 mb-1">
-                                                                                        {variant.title}
-                                                                                    </span>
-                                                                                    <span className="fw-bolder fs-6">
-                                                                                        <Amount amount={variant.amount} />
-                                                                                    </span>
-                                                                                </button>
-                                                                            </div>
-                                                                        )
-                                                                    })}
-                                                                </div>
+                                                        <div className="product-content">
+                                                            <h6 className="d-block">{gift.content?.title}</h6>
+                                                            <p className="price-details d-block"><span>{gift.content?.description}</span></p>
+                                                            <div className="donation-wrapper" style={{ "--item": 2 }}>
+                                                                {gift.variations.map((variant, vIdx) => {
+                                                                    const variantId = `${gift.id}-var-${vIdx}`
+                                                                    const isActive = carts.some((i) => i.id === variantId && i.type === "gift")
+                                                                    return (
+                                                                        <div
+                                                                            key={variantId}
+                                                                            className={`price-item donation-amount ${isActive ? "checked" : ''}`}
+                                                                            onClick={() => {
+                                                                                if (isActive) {
+                                                                                    dispatch(removeCart({ id: variantId, type: "gift" }))
+                                                                                } else {
+                                                                                    handleSingleSelection(
+                                                                                        {
+                                                                                            id: variantId,
+                                                                                            type: "gift",
+                                                                                            content: {
+                                                                                                ...gift,
+                                                                                                title: `${gift.content?.title} - ${variant.title}`
+                                                                                            },
+                                                                                            quantity: 1,
+                                                                                            price: variant.amount,
+                                                                                            cause_id: cause.id
+                                                                                        },
+                                                                                        "gift"
+                                                                                    )
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            <span className="text-center">{variant.title} <br /> <Amount amount={variant.amount} /></span>
+                                                                        </div>
+                                                                    )
+                                                                })
+                                                                }
                                                             </div>
                                                         </div>
                                                     </div>
@@ -509,10 +481,11 @@ export default function CauseDetails({
                                         })}
                                     </div>
                                 )}
+                                {/* ROW 1: Variation Gifts */}
 
                                 {/* ROW 2: Standard Gifts - APPLIES PORTRAIT/LANDSCAPE */}
                                 {standardGifts.length > 0 && (
-                                    <div className="row g-4">
+                                    <div className="row g-4 my-2">
                                         {standardGifts.map((gift, idx) => {
                                             const isPortrait = cause?.gift_design === "portrait"
                                             const colClass = isPortrait ? "col-6 col-md-3" : "col-12 col-md-6"
@@ -526,7 +499,7 @@ export default function CauseDetails({
                                                     >
                                                         <div
                                                             className="cause-card-img-wrapper"
-                                                            style={!isPortrait ? { width: "35%", minHeight: "120px" } : {}}
+                                                            style={!isPortrait ? { width: "35%", minHeight: "120px", height: "100%" } : {}}
                                                         >
                                                             {gift.gift_image ? (
                                                                 <img
@@ -540,7 +513,7 @@ export default function CauseDetails({
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <div className="card-body p-2 d-flex flex-column justify-content-center">
+                                                        <div className="card-body py-2 px-4 d-flex flex-column justify-content-center">
                                                             <div className="cause-card-title small fw-bold mb-1">{gift.content?.title}</div>
 
                                                             {/* FIX: Only show Description section if content exists */}
@@ -551,7 +524,7 @@ export default function CauseDetails({
                                                                         <Icon
                                                                             icon="mdi:help-circle-outline"
                                                                             width="17"
-                                                                            className="text-primary cursor-pointer"
+                                                                            className="text-highlight cursor-pointer"
                                                                             onMouseEnter={() => setHoveredGift(gift.id)}
                                                                             onMouseLeave={() => setHoveredGift(null)}
                                                                         />
@@ -567,15 +540,15 @@ export default function CauseDetails({
                                                                 </div>
                                                             )}
 
-                                                            <div className={`d-flex align-items-center justify-content-between mt-auto`}>
-                                                                <div className="text-primary fw-bold">
+                                                            <div className={`d-flex align-items-center justify-content-between`}>
+                                                                <div className="text-highlight fw-bold">
                                                                     <Amount amount={Number(gift.amount || 0).toFixed(0)} />{" "}
                                                                     {gift.unit ? "/" + gift.unit : ""}
                                                                 </div>
 
                                                                 <div
-                                                                    className="d-flex justify-content-between align-items-center bg-light rounded-pill px-2 py-1 border"
-                                                                    style={{ width: "90px" }}
+                                                                    className="d-flex justify-content-between align-items-center bg-light rounded-pill px-2 py-1"
+                                                                    style={{ width: "90px", border: "1px solid var(--accent)" }}
                                                                 >
                                                                     <button
                                                                         type="button"
@@ -607,7 +580,7 @@ export default function CauseDetails({
                                                                             )
                                                                         }
                                                                     >
-                                                                        <Icon icon="ic:round-plus" className="text-primary" />
+                                                                        <Icon icon="ic:round-plus" className="text-highlight" />
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -689,12 +662,12 @@ export default function CauseDetails({
                                                     </div>
 
                                                     <div className="card-body p-2 d-flex flex-column">
-                                                        <div className="cause-card-title mb-2 fw-bold text-dark">{product.content?.title}</div>
+                                                        <h4 className="cause-card-title mb-2 fw-bold text-dark">{product.content?.title}</h4>
 
-                                                        <div className="d-flex justify-content-between align-items-center mb-3 bg-light p-2 rounded-3">
-                                                            <span className="cause-card-price fw-bold text-primary">
+                                                        <div className="d-flex justify-content-between align-items-center mb-3 p-2 rounded-3">
+                                                            <span className="cause-card-price fw-bold text-highlight">
                                                                 <Amount amount={finalPrice.toFixed(2)} />{" "}
-                                                                <span className="text-muted fs-6 fw-normal small">/ {product.unit ?? "Unit"}</span>
+                                                                <span>/ {product.unit ?? "Unit"}</span>
                                                             </span>
 
                                                             <div
@@ -702,7 +675,7 @@ export default function CauseDetails({
                                                                 style={{ width: "90px", height: "32px" }}
                                                             >
                                                                 <button
-                                                                    className="qty-btn btn btn-sm border-0 p-0 text-muted"
+                                                                    className="btn btn-sm border-0 p-0 text-highlight"
                                                                     style={{ width: "24px" }}
                                                                     disabled={!cartItem || quantity === 0}
                                                                     onClick={() => dispatch(decreaseCart({ id: product.id, type: "product" }))}
@@ -711,22 +684,22 @@ export default function CauseDetails({
                                                                 </button>
                                                                 <span className="mx-auto fw-bold small text-dark">{quantity}</span>
                                                                 <button
-                                                                    className="qty-btn btn btn-sm border-0 p-0 text-primary"
+                                                                    className="btn btn-sm border-0 p-0 text-highlight"
                                                                     style={{ width: "24px" }}
                                                                     onClick={() =>
                                                                         cartItem
                                                                             ? dispatch(increaseCart({ id: product.id, type: "product" }))
                                                                             : handleSingleSelection(
-                                                                                  {
-                                                                                      id: product.id,
-                                                                                      type: "product",
-                                                                                      content: product,
-                                                                                      quantity: cartItem ? 1 : product.min_quantity || 1,
-                                                                                      price: finalPrice,
-                                                                                      cause_id: cause.id
-                                                                                  },
-                                                                                  "product"
-                                                                              )
+                                                                                {
+                                                                                    id: product.id,
+                                                                                    type: "product",
+                                                                                    content: product,
+                                                                                    quantity: cartItem ? 1 : product.min_quantity || 1,
+                                                                                    price: finalPrice,
+                                                                                    cause_id: cause.id
+                                                                                },
+                                                                                "product"
+                                                                            )
                                                                     }
                                                                 >
                                                                     +
@@ -735,7 +708,7 @@ export default function CauseDetails({
                                                         </div>
 
                                                         <div className="cause-card-desc mb-3 text-muted small">
-                                                            <div
+                                                            <p
                                                                 dangerouslySetInnerHTML={{
                                                                     __html: removeHTMLTags(product?.content?.short_description || "")
                                                                 }}
@@ -934,7 +907,7 @@ export default function CauseDetails({
                                             </div>
                                         )}
                                         <div className="mb-3">
-                                            {/* <label className="form-label fw-bold small text-muted mb-1">{translate("Or Enter Custom Amount")}</label>
+                                            <label className="form-label fw-bold small text-muted mb-1">{translate("Or Enter Custom Amount")}</label>
                                             <div className="input-group input-group-lg border rounded-3 overflow-hidden">
                                                 <span className="input-group-text bg-light border-0 fw-bold text-muted">₹</span>
                                                 <input
@@ -944,7 +917,7 @@ export default function CauseDetails({
                                                     value={localAmount}
                                                     onChange={(e) => handleDonationChange(e.target.value)}
                                                 />
-                                            </div> */}
+                                            </div>
                                             {(() => {
                                                 const minAmount = Number(cause?.min_amount || 1)
                                                 if (total > 0 && total < minAmount)
@@ -957,9 +930,8 @@ export default function CauseDetails({
                                             })()}
                                         </div>
                                         <button
-                                            className={`btn-donate-lg ${
-                                                carts.length === 0 || total < Number(cause?.min_amount || 1) ? "disabled" : ""
-                                            }`}
+                                            className={`btn-donate-lg ${carts.length === 0 || total < Number(cause?.min_amount || 1) ? "disabled" : ""
+                                                }`}
                                             disabled={carts.length === 0 || total < Number(cause?.min_amount || 1)}
                                             onClick={() => setShowDonateModal(true)}
                                         >

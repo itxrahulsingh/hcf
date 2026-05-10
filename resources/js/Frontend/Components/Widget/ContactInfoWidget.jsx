@@ -6,12 +6,17 @@ export default function ContactInfoWidget() {
     const contact = useSelector((state) => state.customize.contact)
     return (
         <>
-            {contact.contact_address && (
+            {contact?.contact_address ? (
                 <p
                     dangerouslySetInnerHTML={{
                         __html: contact.contact_address
                     }}
                 />
+            ) : (
+                <p>
+                    Homeless Care Foundation has sole aim to provide Food, Care, Dignity & Shelter to Homeless & Abandoned Individuals who are
+                    neglected by the society & have no one to take care for them.
+                </p>
             )}
             {contact.contact_phone_number && (
                 <h3>

@@ -468,6 +468,7 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
 /** Invoice Routes **/
 Route::group(['prefix' => 'invoices', 'as' => 'invoices.'], function () {
     Route::get('/', [InvoiceController::class, 'index'])->name('index')->can('invoices.index');
+    Route::get('/export', [InvoiceController::class, 'export'])->name('export')->can('invoices.index');
     Route::post('/resend-invoice/{invoice}', [InvoiceController::class, 'resendInvoice'])->name('resend');
     Route::post('/update-remarks/{invoice}', [InvoiceController::class, 'updateRemarks'])->name('update.remarks')->can('invoices.edit');
     Route::delete('/destroy/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy')->can('invoices.delete');

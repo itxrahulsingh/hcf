@@ -15,18 +15,19 @@ const cartSlice = createSlice({
     initialState,
     reducers: {
         addCart(state, action) {
-            const { id, type, content, quantity = 1, cause_id } = action.payload
+            const { id, type, content, quantity = 1, cause_id, price } = action.payload
 
             const cartIndex = state.carts.findIndex(
                 (c) => c.id === id && c.type === type
             )
 
-            let itemPrice = 0
-            if (type === "product") {
+            const explicitPrice = Number(price)
+            let itemPrice = Number.isFinite(explicitPrice) && explicitPrice > 0 ? explicitPrice : 0
+            if (!itemPrice && type === "product") {
                 itemPrice = Number(content.discount_price ?? content.price ?? 0)
-            } else if (type === "gift") {
+            } else if (!itemPrice && type === "gift") {
                 itemPrice = Number(content.amount ?? 0)
-            } else if (type === "cause") {
+            } else if (!itemPrice && type === "cause") {
                 itemPrice = Number(content.price ?? 0)
             }
 
@@ -34,7 +35,7 @@ const cartSlice = createSlice({
                 state.carts.push({
                     id,
                     type,                  // product, gift, or cause
-                    title: content.content?.title || content.content?.name,
+                    title: content.title || content.content?.title || content.content?.name,
                     price: itemPrice,
                     thumbnail_image: content.thumbnail_image || content.gift_image || null,
                     quantity,

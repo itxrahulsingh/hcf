@@ -11,10 +11,16 @@ use App\Models\Post;
 use App\Models\Service;
 use App\Models\Subscriber;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DashboardRepository
 {
+    private function getSuccessfulDonationsQuery()
+    {
+        return Order::query()->where('payment_status', 2);
+    }
+
     /**
      * Basic Counts
      */
@@ -53,15 +59,86 @@ class DashboardRepository
 
     public function getTotalRaisedAmount()
     {
-        return Order::where('payment_status', 2)->sum('total_price');
+        return $this->getSuccessfulDonationsQuery()->sum('total_price');
     }
 
     public function getThisMonthRaised()
     {
-        return Order::where('payment_status', 2)
+        return $this->getSuccessfulDonationsQuery()
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->sum('total_price');
+    }
+
+    public function getDonationCount()
+    {
+        return $this->getSuccessfulDonationsQuery()->count();
+    }
+
+    public function getPendingDonationCount()
+    {
+        return Order::query()
+            ->where(function ($query) {
+                $query->where('payment_status', 1)
+                    ->orWhere(function ($inner) {
+                        $inner->whereNull('payment_status')
+                            ->where('status', 'pending');
+                    });
+            })
+            ->count();
+    }
+
+    public function getUniqueDonorCount()
+    {
+        return $this->getSuccessfulDonationsQuery()
+            ->whereNotNull('customer_email')
+            ->where('customer_email', '!=', '')
+            ->distinct('customer_email')
+            ->count('customer_email');
+    }
+
+    public function getAverageDonationAmount()
+    {
+        return round((float) $this->getSuccessfulDonationsQuery()->avg('total_price'), 2);
+    }
+
+    public function getDonationTrend(int $days = 30)
+    {
+        $startDate = Carbon::today()->subDays($days - 1);
+
+        $records = $this->getSuccessfulDonationsQuery()
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as donations, SUM(total_price) as total')
+            ->whereDate('created_at', '>=', $startDate)
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
+
+        return collect(range(0, $days - 1))->map(function ($offset) use ($records, $startDate) {
+            $date = $startDate->copy()->addDays($offset)->toDateString();
+            $record = $records->get($date);
+
+            return [
+                'date' => Carbon::parse($date)->format('M d'),
+                'full_date' => $date,
+                'total' => (float) ($record->total ?? 0),
+                'donations' => (int) ($record->donations ?? 0),
+            ];
+        })->values();
+    }
+
+    public function getPaymentMethodBreakdown()
+    {
+        return $this->getSuccessfulDonationsQuery()
+            ->selectRaw('COALESCE(payment_method, "unknown") as payment_method, COUNT(*) as donations, SUM(total_price) as total')
+            ->groupBy('payment_method')
+            ->orderByDesc('total')
+            ->get()
+            ->map(fn ($item) => [
+                'payment_method' => $item->payment_method,
+                'donations' => (int) $item->donations,
+                'total' => (float) $item->total,
+            ]);
     }
 
     /**
@@ -78,7 +155,7 @@ class DashboardRepository
     public function getRecentDonations()
     {
         return Order::with(['cause.content'])
-            ->where('payment_status', '!=', 0)
+            ->whereIn('payment_status', [1, 2])
             ->latest()
             ->limit(8)
             ->get();
@@ -89,12 +166,46 @@ class DashboardRepository
      */
     public function getTopCauses()
     {
-        return Cause::with('content')
-            ->withCount(['orders' => function ($query) {
-                $query->where('payment_status', 2);
-            }])
-            ->orderBy('orders_count', 'desc')
+        $donationTotals = Order::query()
+            ->selectRaw('cause_id, COUNT(*) as donations_count, COALESCE(SUM(total_price), 0) as raised_total')
+            ->where('payment_status', 2)
+            ->whereNotNull('cause_id')
+            ->groupBy('cause_id');
+
+        return Cause::query()
+            ->with('content')
+            ->leftJoinSub($donationTotals, 'donation_totals', function ($join) {
+                $join->on('causes.id', '=', 'donation_totals.cause_id');
+            })
+            ->select('causes.*')
+            ->selectRaw('COALESCE(donation_totals.donations_count, 0) as donations_count')
+            ->selectRaw('COALESCE(donation_totals.raised_total, 0) as raised_total')
+            ->orderByDesc('raised_total')
             ->limit(5)
             ->get();
+    }
+
+    public function getDonationHealth()
+    {
+        $currentStart = now()->startOfMonth();
+        $previousStart = now()->copy()->subMonth()->startOfMonth();
+        $previousEnd = now()->copy()->subMonth()->endOfMonth();
+
+        $current = $this->getSuccessfulDonationsQuery()
+            ->whereBetween('created_at', [$currentStart, now()])
+            ->selectRaw('COUNT(*) as donations, SUM(total_price) as total')
+            ->first();
+
+        $previous = $this->getSuccessfulDonationsQuery()
+            ->whereBetween('created_at', [$previousStart, $previousEnd])
+            ->selectRaw('COUNT(*) as donations, SUM(total_price) as total')
+            ->first();
+
+        return [
+            'current_donations' => (int) ($current->donations ?? 0),
+            'current_total' => (float) ($current->total ?? 0),
+            'previous_donations' => (int) ($previous->donations ?? 0),
+            'previous_total' => (float) ($previous->total ?? 0),
+        ];
     }
 }

@@ -9,6 +9,10 @@ class Order extends Model
 {
     protected $guarded = [];
     protected $appends = ['receipt_file_url'];
+    protected $casts = [
+        'is_80g' => 'boolean',
+        'payment_data' => 'array',
+    ];
 
     /**
      * Get order items

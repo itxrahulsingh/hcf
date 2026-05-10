@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Repositories\Admin\InvoiceRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Export;
@@ -44,6 +45,7 @@ class InvoiceController extends Controller
         $analytics = $repository->getAnalytics($data['search'], $data['filter']);
         $data['total_turnover'] = $analytics['total_turnover'];
         $data['chart_data'] = $analytics['chart_data'];
+        $data['summary_stats'] = $repository->getSummaryStats($data['search'], $data['filter']);
 
         $data['causes'] = Cause::with('content:cause_id,title')->select('id')->get();
 
@@ -126,5 +128,65 @@ class InvoiceController extends Controller
         GenerateBulkInvoices::dispatch($ids, $export->id);
 
         return back()->with('success', 'Export started! You can track the status above the chart.');
+    }
+
+    public function export(Request $request, InvoiceRepository $repository): StreamedResponse
+    {
+        $search = $request->search ?: '';
+        $filter = [
+            'cause_id' => $request->filter['cause_id'] ?? 'All',
+            'date_range' => $request->filter['date_range'] ?? '',
+        ];
+
+        $rows = $repository->getExportRows($search, $filter);
+        $fileName = 'financial-report-' . now()->format('Y-m-d-His') . '.csv';
+
+        return response()->streamDownload(function () use ($rows) {
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, [
+                'Receipt NO',
+                'Donation Date',
+                'Donor Name',
+                'Amount',
+                'Mobile No',
+                'Donation Cause',
+                'Mode',
+                'Payment Source',
+                'Utr No',
+                'Email',
+                'Address',
+                'Pan No',
+                'Realized Amount',
+                'PG Charges',
+                'Remarks',
+                'Fresh / Repeat',
+            ]);
+
+            foreach ($rows as $row) {
+                fputcsv($handle, [
+                    $row['receipt_no'],
+                    $row['donation_date'],
+                    $row['donor_name'],
+                    $row['amount'],
+                    $row['mobile_no'],
+                    $row['donation_cause'],
+                    $row['mode'],
+                    $row['payment_source'],
+                    $row['utr_no'],
+                    $row['email'],
+                    $row['address'],
+                    $row['pan_no'],
+                    $row['realized_amount'],
+                    $row['pg_charges'],
+                    $row['remarks'],
+                    $row['fresh_repeat'],
+                ]);
+            }
+
+            fclose($handle);
+        }, $fileName, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 }

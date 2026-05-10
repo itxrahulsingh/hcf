@@ -34,13 +34,13 @@ export default function PhotoGallery1({ data }) {
     return (
         <>
             {(section_subtitle || section_title) && (
-                <div className="container">
+                <div className="container 1 mt-3 mt-md-5">
                     <div className="cs_section_heading cs_style_1 text-center">
                         {section_subtitle && (
                             <p className="cs_section_subtitle cs_fs_18 cs_medium" dangerouslySetInnerHTML={{ __html: section_subtitle }} />
                         )}
                         {section_title && (
-                            <h2 className="cs_section_title cs_fs_53 cs_normal mb-0" dangerouslySetInnerHTML={{ __html: section_title }} />
+                            <h2 className="cs_section_title cs_fs_35 cs_bold mb-0" dangerouslySetInnerHTML={{ __html: section_title }} />
                         )}
                     </div>
 
@@ -58,7 +58,7 @@ export default function PhotoGallery1({ data }) {
                 </div>
             )}
 
-            <div className="container">
+            <div className="container mb-3 mb-md-5">
                 <div className="row cs_gap_y_30">
                     {filteredList?.map((item, index) => {
                         const displayImage = item.gallery_image_url || getYoutubeThumbnail(item.video_url)

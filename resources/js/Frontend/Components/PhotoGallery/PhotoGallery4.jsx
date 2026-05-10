@@ -14,7 +14,7 @@ export default function PhotoGallery4({ data }) {
     return (
         <>
             {(section_subtitle || section_title) && (
-                <div className="container">
+                <div className="container 4">
                     <div className="cs_section_heading cs_style_1 text-center">
                         {section_subtitle && (
                             <p
@@ -27,7 +27,7 @@ export default function PhotoGallery4({ data }) {
 
                         {section_title && (
                             <h2
-                                className="cs_section_title cs_fs_53 cs_normal mb-0"
+                                className="cs_section_title cs_fs_53 cs_bold mb-0"
                                 dangerouslySetInnerHTML={{
                                     __html: section_title
                                 }}

@@ -14,8 +14,8 @@ export default function PhotoGallery2({ data }) {
     return (
         <>
             {(section_subtitle || section_title) && (
-                <div className="container">
-                    <div className="cs_section_heading cs_style_1 text-center">
+                <div className="container 2">
+                    <div className="cs_section_heading cs_style_1 mb-4 text-center">
                         {section_subtitle && (
                             <p
                                 className="cs_section_subtitle cs_fs_18 cs_medium"
@@ -27,17 +27,16 @@ export default function PhotoGallery2({ data }) {
 
                         {section_title && (
                             <h2
-                                className="cs_section_title cs_fs_53 cs_normal mb-0"
+                                className="cs_section_title cs_fs_53 cs_bold mb-0"
                                 dangerouslySetInnerHTML={{
                                     __html: section_title
                                 }}
                             />
                         )}
                     </div>
-                    <div className="cs_height_85 cs_height_lg_50" />
                 </div>
             )}
-            <div className="container">
+            <div className="container mb-5">
                 <div className="cs_gallery cs_style_2">
                     {gallery_list?.map((item, index) => (
                         <div

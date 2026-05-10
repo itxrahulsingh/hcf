@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Events\DonationFailed;
-use App\Events\DonationSuccess;
 use App\Http\Controllers\Controller;
-use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\PaymentHistory;
 use App\Models\Setting;
@@ -14,7 +11,6 @@ use Artesaos\SEOTools\Facades\OpenGraph;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\TwitterCard;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class PaymentController extends Controller
@@ -36,7 +32,7 @@ class PaymentController extends Controller
     public function razorpayPay(Request $request)
     {
         $razorpayKeyId = Setting::pull('razorpay_key_id');
-        if ($request->type == 'donation') {
+        if (in_array($request->type, ['donation', 'product'], true)) {
             $paymentHistory = Order::find($request->payment_id);
         } else {
             $paymentHistory = PaymentHistory::find($request->payment_id);
@@ -106,7 +102,8 @@ class PaymentController extends Controller
 
     public function donationSuccess(Request $request)
     {
-        $order = Order::where('order_number', $request->order_id)->first();
+        $order = Order::with(['invoice', 'cause.content'])->where('order_number', $request->order_id)->firstOrFail();
+        abort_unless((string) $order->payment_status === '2', 404);
         $data['order'] = $order;
 
         // SEO basic setup
@@ -115,41 +112,7 @@ class PaymentController extends Controller
         $site_name = Setting::pull('site_name');
         $tagline = __('Donation Success');
 
-        /* ----------------------------------------------------------
-        * LOAD INVOICE SETTINGS
-        * ---------------------------------------------------------- */
-
-        if ($order->invoice) {
-            $invoice = $order->invoice;
-        } else {
-            $invoice = DB::transaction(function () use ($order) {
-                $invData = generate_invoice_number();
-                return Invoice::create([
-                    'invoice_number'        => $invData['number'],
-                    'invoice_count'         => $invData['count'],
-                    'order_id'              => $order->id,
-                    'customer_name'         => $order->customer_name,
-                    'customer_email'        => $order->customer_email,
-                    'customer_phone'        => $order->customer_phone,
-                    'shipping_address'      => $order->shipping_address,
-                    'state'                 => $order->state,
-                    'is_80g'                => $order->is_80g ?? false,
-                    'pancard'               => $order->pancard,
-                    'financial_year'        => $invData['fy'],
-                    'financial_year_start'  => $invData['start'],
-                    'financial_year_end'    => $invData['end'],
-                    'total_price'           => $order->total_price,
-                    'payment_method'        => $order->payment_method,
-                    'type'                  => $order->type,
-                    'payment_date'          => now(),
-                    'status'                => 'paid',
-                ]);
-            });
-
-            DonationSuccess::dispatch($invoice);
-        }
-
-        $data['invoice'] = $invoice;
+        $data['invoice'] = $order->invoice;
 
         SEOMeta::setTitle($tagline);
         SEOMeta::setCanonical($current_page_url);
@@ -178,10 +141,8 @@ class PaymentController extends Controller
         $site_name = Setting::pull('site_name');
         $tagline = __('Donation Failed');
 
-        $order = Order::where('order_number', $request->order_id)->first();
+        $order = Order::with('cause.content')->where('order_number', $request->order_id)->first();
         $data['order'] = $order;
-
-        DonationFailed::dispatch($order);
 
         SEOMeta::setTitle($tagline);
         SEOMeta::setCanonical($current_page_url);

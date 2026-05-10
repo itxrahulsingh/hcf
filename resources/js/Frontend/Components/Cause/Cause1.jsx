@@ -34,7 +34,7 @@ export default function Cause1({ data }) {
 
     return (
         <>
-            <div className="container">
+            <div className="container 1">
                 {(section_subtitle || section_title) && (
                     <>
                         <div className="cs_section_heading cs_style_1 text-center">

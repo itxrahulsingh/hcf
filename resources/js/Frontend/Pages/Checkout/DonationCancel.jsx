@@ -58,7 +58,7 @@ export default function PaymentCancel({ order, meta_tags, tagline, site_name }) 
                                 {/* Action Buttons */}
                                 <div className="d-grid gap-3">
                                     <Link
-                                        href={order ? route("pages.show", order.order_number) : "/"}
+                                        href={order?.cause?.slug ? route("cause.show", order.cause.slug) : "/"}
                                         className="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm py-3"
                                         style={{ background: "linear-gradient(45deg, #ff8c00, #ffaa33)", border: "none" }}
                                     >

@@ -41,7 +41,7 @@ export default function CauseLayout({
                 )
             )}
 
-            <div className={`container cs_cause_section${causeDetails ? " cs_cause_details_content_section" : ""}`}>
+            <div className={`container py-3 py-md-5 cs_cause_section${causeDetails ? " cs_cause_details_content_section" : ""}`}>
                 {children}
                 <div className="row position-relative cs_gap_y_65">
                     {/* <div className="col-lg-8">{children}</div>

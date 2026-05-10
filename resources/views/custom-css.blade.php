@@ -160,8 +160,29 @@ display: none !important;
 .sidebar-sticky-wrapper {
 position: -webkit-sticky;
 position: sticky;
-top: 90px; /* Adjust based on header/nav height */
+top: 130px;
 z-index: 10;
+}
+
+.img-wrapper img{
+    object-fit: cover;
+}
+
+.edit-secton{
+    position: relative !important;
+}
+.sticky_img{
+    position: sticky !important;
+    top: 150px !important;
+    left: 0 !important;
+    z-index: 1 !important;
+    width:100% !important;
+}
+.edit-secton .content {
+    position: relative !important;
+    z-index: 2 !important;
+    padding: 20px !important;
+    background-color: rgb(248 246 234) !important;
 }
 
 .donation-card {
@@ -195,8 +216,17 @@ font-size: 0.9rem;
 transition: all 0.2s ease;
 width: 100%;
 }
-.amount-btn:hover { border-color: #ff8c00; color: #ff8c00; background: #fffaf5; }
-.amount-btn.active { background: #ff8c00; color: #fff; border-color: #ff8c00; box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3); }
+.amount-btn:hover { 
+    border-color: #ff8c00; 
+    color: #ff8c00; 
+    background: #fffaf5; 
+}
+.amount-btn.active { 
+    background: linear-gradient(45deg, rgb(255 51 51), rgb(237, 143, 3)); 
+    color: #fff; 
+    border-color: #ff8c00; 
+    box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3); 
+}
 
 /* Inputs */
 .donation-card .input-group:focus-within,
@@ -256,7 +286,8 @@ overflow: hidden;
 .cause-card:hover .cause-card-img-wrapper img { transform: scale(1.05); }
 
 .cause-card-title {
-font-size: 1rem;
+font-size: 22px;
+line-height: normal;
 font-weight: 600;
 color: #222;
 margin-bottom: 0.5rem;
@@ -572,4 +603,176 @@ TEAM GROUPING & SLIDING HOVER
     display: flex;
     align-items: center;
 }
+
+
+.product-design,
+.product-card {
+  height: 100%;
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .1);
+  position: relative;
+}
+.product-design.design2{
+  flex-direction: column;
+}
+.product-design .product-image{
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+}
+
+.product-card .product-img {
+    width:100%;
+    height: 100px;
+}
+
+.product-card .product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.product-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.product-content h6 {
+    margin: 0 0 10px;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.product-content p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.price-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 14px;
+}
+
+.price-details span {
+    font-weight: bold;
+}
+
+.product-qty {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.qtyBtn {
+    border: none;
+    outline: none;
+    padding: 5px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(107deg, rgb(255, 67, 5) 11.1%, rgb(245, 135, 0) 95.3%);
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.qty-wrapper {
+    width: 50px;
+    height: 26px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: var(--main-clr);
+    text-align: center;
+    cursor: default;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid var(--main-clr);
+    overflow: hidden;
+}
+
+.qty-wrapper input {
+    background-color: transparent !important;
+    border-radius: 5px;
+    text-align: center;
+    outline: none;
+    border: none;
+    width: 80px !important;
+    height: 80px !important;
+    padding: 0 !important;
+}
+
+
+.donation-wrapper {
+    --gap: 20px;
+    --item: 3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+}
+
+.price-list{
+    --gap: 10px;
+    --item: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+}
+.price-item{
+    width: calc((100% - ((var(--item) - 1) * var(--gap))) / var(--item));
+    height: auto;
+    border: 1px solid var(--main-clr);
+    background:linear-gradient(107deg, rgb(255, 67, 5) 11.1%, rgb(245, 135, 0) 95.3%) !important;
+    color: #fff;
+    padding: 5px 0;
+    border-radius: 5px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-size: 14px !important;
+    cursor: pointer;
+}
+.price-item.checked span::after {
+    content: "\f00c";
+    background: linear-gradient(107deg, rgb(255, 67, 5) 11.1%, rgb(245, 135, 0) 95.3%) !important;
+    font-family: "Font Awesome 6 Free";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+}
+
+
 {{ $custom_css }}

@@ -78,20 +78,22 @@ export default function DonationSuccess({ order, meta_tags, tagline, site_name }
                                     </table>
                                 </div>
 
-                                <div className="text-center mt-5">
-                                    <a
-                                        href={route("download.invoice", order.id)}
-                                        className="btn btn-lg px-5 py-2 fw-normal text-dark"
-                                        style={{
-                                            backgroundColor: "#fcd34d",
-                                            borderColor: "#fcd34d",
-                                            borderRadius: "4px",
-                                            fontSize: "1.1rem"
-                                        }}
-                                    >
-                                        {translate("Download Receipt")}
-                                    </a>
-                                </div>
+                                {order?.invoice && (
+                                    <div className="text-center mt-5">
+                                        <a
+                                            href={route("download.invoice", order.id)}
+                                            className="btn btn-lg px-5 py-2 fw-normal text-dark"
+                                            style={{
+                                                backgroundColor: "#fcd34d",
+                                                borderColor: "#fcd34d",
+                                                borderRadius: "4px",
+                                                fontSize: "1.1rem"
+                                            }}
+                                        >
+                                            {translate("Download Receipt")}
+                                        </a>
+                                    </div>
+                                )}
 
                                 <div className="text-center mt-3">
                                     <Link href={route("home")} className="text-muted text-decoration-none small">

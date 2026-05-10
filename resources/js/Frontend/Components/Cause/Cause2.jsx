@@ -52,7 +52,7 @@ const styles = {
     img: {
         width: "100%",
         height: "100%",
-        objectFit: "cover",
+        objectFit: "contain",
         transition: "transform 0.5s ease"
     },
     title: {
@@ -61,7 +61,9 @@ const styles = {
         lineHeight: "1.4",
         color: "#222",
         textDecoration: "none",
-        display: "-webkit-box",
+        display: "block",
+        textAlign: "center",
+        // display: "-webkit-box",
         WebkitLineClamp: "2",
         WebkitBoxOrient: "vertical",
         overflow: "hidden",
@@ -111,7 +113,7 @@ export default function Cause2({ data }) {
         <section className="cs_shape_wrap_4 position-relative">
             <div className="cs_height_120 cs_height_lg_80" />
 
-            <div className="container">
+            <div className="container 2">
                 {/* Custom Split Header */}
                 <div style={styles.splitHeader} className="cs_split_header">
                     <div style={styles.headerLeft}>Tax Benefit</div>

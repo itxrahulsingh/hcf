@@ -204,7 +204,7 @@ const ExportStatusCard = ({ exportData }) => {
     )
 }
 
-export default function Index({ invoices, sort, filter, causes, total_turnover, chart_data, latest_export }) {
+export default function Index({ invoices, sort, filter, causes, total_turnover, chart_data, latest_export, summary_stats }) {
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedOption, setSelectedOption] = useState("Bulk Action")
 
@@ -363,6 +363,44 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
         return <span className="text-muted small">-</span>
     }
 
+    const resolveMode = (invoice) => {
+        const paymentData = invoice.order?.payment_data || {}
+        const method = `${paymentData.method || invoice.payment_method || ""}`.toLowerCase()
+
+        if (method.includes("upi") || paymentData.vpa) return "UPI"
+        if (method.includes("card") || paymentData.card_id) return "Card"
+        if (!method) return "-"
+        return method.toUpperCase()
+    }
+
+    const resolvePaymentSource = (invoice) => {
+        const paymentData = invoice.order?.payment_data || {}
+        return paymentData.gateway || paymentData.source || paymentData.payment_source || invoice.payment_method || "-"
+    }
+
+    const resolveUtr = (invoice) => {
+        const paymentData = invoice.order?.payment_data || {}
+        return (
+            invoice.order?.transaction_id ||
+            paymentData?.acquirer_data?.rrn ||
+            paymentData?.acquirer_data?.bank_transaction_id ||
+            paymentData?.reference ||
+            "-"
+        )
+    }
+
+    const resolvePgCharges = (invoice) => {
+        const paymentData = invoice.order?.payment_data || {}
+        return paymentData?.fee || paymentData?.fees || paymentData?.charges || "-"
+    }
+
+    const resolveFreshRepeat = (invoice) => {
+        const donorKey = (invoice.customer_email || invoice.customer_phone || "").toLowerCase()
+        if (!donorKey) return "-"
+        const matches = invoices.data.filter((item) => ((item.customer_email || item.customer_phone || "").toLowerCase() === donorKey)).length
+        return matches > 1 ? "Repeat" : "Fresh"
+    }
+
     // Chart Options
     const chartOptions = {
         responsive: true,
@@ -457,7 +495,36 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                             gradient="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)"
                         />
                     </div>
-                    <div className="col-lg-8 mb-4">
+                    <div className="col-lg-2 col-md-4 mb-4">
+                        <StatCard
+                            title={translate("Receipts")}
+                            value={summary_stats?.total_invoices || 0}
+                            subtext={translate("Filtered")}
+                            icon={documentTextOutline}
+                            gradient="linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)"
+                        />
+                    </div>
+                    <div className="col-lg-2 col-md-4 mb-4">
+                        <StatCard
+                            title={translate("Unique Donors")}
+                            value={summary_stats?.unique_donors || 0}
+                            subtext={translate("In range")}
+                            icon={checkmarkCircleOutline}
+                            gradient="linear-gradient(135deg, #1d4ed8 0%, #60a5fa 100%)"
+                        />
+                    </div>
+                    <div className="col-lg-2 col-md-4 mb-4">
+                        <StatCard
+                            title={translate("Avg Donation")}
+                            value={<Amount amount={summary_stats?.average_donation || 0} />}
+                            subtext={`${summary_stats?.repeat_donations || 0} repeat`}
+                            icon={timeOutline}
+                            gradient="linear-gradient(135deg, #7c2d12 0%, #fb923c 100%)"
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-lg-12 mb-4">
                         <div className="yoo-card yoo-style1 h-100 border-0 shadow-sm" style={{ borderRadius: "15px" }}>
                             <div className="yoo-card-heading d-flex justify-content-between align-items-center pt-3 px-4">
                                 <div className="d-flex align-items-center">
@@ -611,6 +678,19 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                     </div>
 
                                     <div className="dataTables_heading_right">
+                                        <a
+                                            href={route("admin.invoices.export", {
+                                                search: searchQuery,
+                                                filter: {
+                                                    cause_id: selectedCause,
+                                                    date_range: dateRange
+                                                }
+                                            })}
+                                            className="btn btn-outline-primary btn-sm mr-3"
+                                        >
+                                            <IonIcon icon={downloadOutline} className="mr-2" />
+                                            {translate("Export Finance CSV")}
+                                        </a>
                                         <div id="yooDataTable_filter" className="dataTables_filter">
                                             <label>
                                                 <input
@@ -650,6 +730,12 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                     {translate("Donation Date")}
                                                 </ThSortable>
                                                 <th width="15%">{translate("Cause")}</th>
+                                                <th width="8%">{translate("Mode")}</th>
+                                                <th width="10%">{translate("Payment Source")}</th>
+                                                <th width="10%">{translate("UTR No")}</th>
+                                                <th width="8%">{translate("Realized")}</th>
+                                                <th width="8%">{translate("PG Charges")}</th>
+                                                <th width="8%">{translate("Fresh / Repeat")}</th>
                                                 <th width="20%">{translate("Remarks")}</th>
                                                 <ThSortable width="10%" sort={sort} onSorted={() => getResults(searchQuery)} column="total_price">
                                                     {translate("Amount")}
@@ -696,6 +782,18 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                                     </td>
                                                     <td>{invoice.payment_date ? moment(invoice.payment_date).format("DD MMM YYYY") : "-"}</td>
                                                     <td>{getCauseTitle(invoice)}</td>
+                                                    <td>{resolveMode(invoice)}</td>
+                                                    <td className="text-capitalize">{resolvePaymentSource(invoice)}</td>
+                                                    <td>{resolveUtr(invoice)}</td>
+                                                    <td>
+                                                        <strong className="text-success">
+                                                            <Amount amount={invoice.realized_amount || invoice.total_price} />
+                                                        </strong>
+                                                    </td>
+                                                    <td>{resolvePgCharges(invoice)}</td>
+                                                    <td>
+                                                        <span className="badge badge-light border">{resolveFreshRepeat(invoice)}</span>
+                                                    </td>
                                                     <td>
                                                         <RemarksCell invoice={invoice} canEdit={hasPermission("invoices.edit")} />
                                                     </td>

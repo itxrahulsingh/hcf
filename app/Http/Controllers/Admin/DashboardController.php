@@ -21,6 +21,13 @@ class DashboardController extends Controller
             'cause_count'      => $repository->getCauseCount(),
             'total_raised'     => $repository->getTotalRaisedAmount(),
             'month_raised'     => $repository->getThisMonthRaised(),
+            'donation_count'   => $repository->getDonationCount(),
+            'pending_donations'=> $repository->getPendingDonationCount(),
+            'unique_donors'    => $repository->getUniqueDonorCount(),
+            'average_donation' => $repository->getAverageDonationAmount(),
+            'donation_trend'   => $repository->getDonationTrend(),
+            'payment_breakdown'=> $repository->getPaymentMethodBreakdown(),
+            'donation_health'  => $repository->getDonationHealth(),
 
             'recent_donations' => $repository->getRecentDonations(),
             'top_causes'       => $repository->getTopCauses(),

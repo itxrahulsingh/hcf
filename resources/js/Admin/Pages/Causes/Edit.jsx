@@ -14,13 +14,23 @@ import translate from "@/utils/translate"
 // Added products to props
 export default function Edit({ languages, cause_categories, default_lang, gifts, products, cause, cause_types }) {
     const { props } = usePage()
-    const [selectedLang, setSelectedLang] = useState(default_lang)
-    const [tempLang, setTempLang] = useState(default_lang)
+    const normalizedLanguages = Array.isArray(languages)
+        ? languages.reduce((acc, language) => {
+              if (language?.code) {
+                  acc[language.code] = language
+              }
+              return acc
+          }, {})
+        : languages || {}
+    const languageCodes = Object.keys(normalizedLanguages)
+    const initialLanguage = default_lang && normalizedLanguages[default_lang] ? default_lang : languageCodes[0] || "en"
+    const [selectedLang, setSelectedLang] = useState(initialLanguage)
+    const [tempLang, setTempLang] = useState(initialLanguage)
 
     // --- 1. PARSE FAQs SAFELY ---
     const [faqs, setFaqs] = useState(() => {
         const result = {}
-        Object.keys(languages).forEach((code) => {
+        languageCodes.forEach((code) => {
             try {
                 let raw = cause?.[`${code}_faq`]
                 const parsed = typeof raw === "string" ? JSON.parse(raw) : raw
@@ -99,7 +109,14 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
             transform: (data) => {
                 const payload = { ...data }
                 Object.keys(faqs).forEach((langCode) => {
-                    payload[`${langCode}_faq`] = faqs[langCode]
+                    payload[`${langCode}_faq`] = JSON.stringify(
+                        (faqs[langCode] || [])
+                            .map((faq) => ({
+                                title: (faq.title || "").toString().trim(),
+                                content: (faq.content || "").toString().trim()
+                            }))
+                            .filter((faq) => faq.title || faq.content)
+                    )
                 })
 
                 return payload
@@ -115,7 +132,7 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
         if (Object.keys(errors).length > 0) {
             const firstErrorField = Object.keys(errors)[0]
             const lang = firstErrorField.split("_")[0]
-            if (languages[lang]) setSelectedLang(lang)
+            if (normalizedLanguages[lang]) setSelectedLang(lang)
         }
     }, [errors])
 
@@ -134,7 +151,7 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                         <div className="yoo-card yoo-style1">
                             <div className="yoo-card-heading">
                                 <ul className="nav nav-tabs">
-                                    {Object.entries(languages).map(([code, language]) => (
+                                    {Object.entries(normalizedLanguages).map(([code, language]) => (
                                         <li className="nav-item" key={code}>
                                             <button
                                                 type="button"
@@ -336,11 +353,10 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                                     className="form-control"
                                                     rows="6"
                                                     placeholder=".my-custom-class { color: red; }"
+                                                    value={data.custom_style || ""}
                                                     onChange={(e) => setData("custom_style", e.target.value)}
                                                     style={{ fontFamily: "monospace", fontSize: "13px" }}
-                                                >
-                                                    {data.custom_style}
-                                                </textarea>
+                                                />
                                                 <small className="text-muted">
                                                     {translate(
                                                         "Enter CSS code without <style> tags. This will be applied to the cause details page."
@@ -381,7 +397,7 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                         <label className="mb-0">{translate("Is Special")}:</label>
                                         <div
                                             className={`yoo-switch ${data.is_special === 1 ? "active" : ""}`}
-                                            onClick={() => setData((prev) => ({ ...prev, is_special: prev.is_special === 1 ? 0 : 1 }))}
+                                            onClick={() => setData("is_special", data.is_special === 1 ? 0 : 1)}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>

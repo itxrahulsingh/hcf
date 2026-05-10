@@ -94,7 +94,7 @@ export default function ContactWithFormBuilder4({ sections_data }) {
 
     return (
         <>
-            <div className="container">
+            <div className="container py-3 py-md-5">
                 <div className="row align-items-center cs_reverse_lg cs_gap_y_40">
                     <div className="col-lg-6">
                         {(sections_data.section_subtitle || sections_data.section_title) && (
@@ -113,7 +113,7 @@ export default function ContactWithFormBuilder4({ sections_data }) {
                                         }}
                                     />
                                 </div>
-                                <div className="cs_height_85 cs_height_lg_50"></div>
+                                <div className="cs_height_30 cs_height_lg_20"></div>
                             </>
                         )}
                         <form ref={formRef} className="row cs_insurance_form cs_gap_y_35" onSubmit={handleSubmit}>

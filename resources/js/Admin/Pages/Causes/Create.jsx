@@ -13,14 +13,24 @@ import translate from "@/utils/translate"
 
 // Added products to props
 export default function Create({ languages, cause_categories, default_lang, gifts, products, cause_types }) {
-    const [selectedLang, setSelectedLang] = useState(default_lang)
-    const [tempLang, setTempLang] = useState(selectedLang)
-    const languageArr = Object.entries(languages)
+    const normalizedLanguages = Array.isArray(languages)
+        ? languages.reduce((acc, language) => {
+              if (language?.code) {
+                  acc[language.code] = language
+              }
+              return acc
+          }, {})
+        : languages || {}
+    const languageCodes = Object.keys(normalizedLanguages)
+    const initialLanguage = default_lang && normalizedLanguages[default_lang] ? default_lang : languageCodes[0] || "en"
+    const [selectedLang, setSelectedLang] = useState(initialLanguage)
+    const [tempLang, setTempLang] = useState(initialLanguage)
+    const languageArr = Object.entries(normalizedLanguages)
     const { props } = usePage()
 
     // --- 1. FAQ STATE INITIALIZATION ---
     const [faqs, setFaqs] = useState(
-        Object.keys(languages).reduce((acc, code) => {
+        languageCodes.reduce((acc, code) => {
             acc[code] = [{ title: "", content: "" }]
             return acc
         }, {})
@@ -61,7 +71,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
         meta_description: "",
         custom_style: "",
         // Initialize multi-language fields
-        ...Object.keys(languages).reduce((acc, code) => {
+        ...languageCodes.reduce((acc, code) => {
             acc[code + "_title"] = ""
             acc[code + "_content"] = ""
             acc[code + "_projects"] = ""
@@ -105,12 +115,14 @@ export default function Create({ languages, cause_categories, default_lang, gift
             transform: (currData) => {
                 const transformed = { ...currData }
 
-                Object.keys(languages).forEach((lang) => {
+                languageCodes.forEach((lang) => {
                     const currentLangFaqs = faqs[lang] || []
-                    const cleaned = currentLangFaqs.map((f) => ({
-                        title: (f.title || "").toString(),
-                        content: (f.content || "").toString()
-                    }))
+                    const cleaned = currentLangFaqs
+                        .map((f) => ({
+                            title: (f.title || "").toString().trim(),
+                            content: (f.content || "").toString().trim()
+                        }))
+                        .filter((f) => f.title || f.content)
                     transformed[`${lang}_faq`] = JSON.stringify(cleaned)
                 })
 
@@ -145,7 +157,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                         <div className="yoo-card yoo-style1">
                             <div className="yoo-card-heading">
                                 <ul className="nav nav-tabs">
-                                    {Object.entries(languages).map(([code, language]) => (
+                                    {Object.entries(normalizedLanguages).map(([code, language]) => (
                                         <li className="nav-item" key={code}>
                                             <button
                                                 type="button"
@@ -407,7 +419,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         <label className="mb-0">{translate("Is Special")}:</label>
                                         <div
                                             className={`yoo-switch ${data.is_special === 1 ? "active" : ""}`}
-                                            onClick={() => setData((prev) => ({ ...prev, is_special: prev.is_special === 1 ? 0 : 1 }))}
+                                            onClick={() => setData("is_special", data.is_special === 1 ? 0 : 1)}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>

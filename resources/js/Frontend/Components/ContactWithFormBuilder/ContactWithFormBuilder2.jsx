@@ -95,7 +95,7 @@ export default function ContactWithFormBuilder2({ sections_data }) {
 
     return (
         <>
-            <div className="container">
+            <div className="container 2">
                 <div className="row cs_gap_y_40">
                     <div className="col-lg-5">
                         {sections_data.google_map_iframe && (

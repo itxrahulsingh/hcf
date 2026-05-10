@@ -1,6 +1,8 @@
 /* Plugins */
 @import "../../css/frontend/bootstrap.min.css";
 @import "../../css/frontend/swiper.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Quicksand:wght@300..700&display=swap');
+
 /* Custom CSS */
 /*--------------------------------------------------------------
 ## All Color Variable
@@ -16,6 +18,10 @@
     --border: #dddddd;
     --primary-font: "Unna", serif;
     --secondary-font: "Roboto", sans-serif;
+}
+
+*:not(.fa):not(.fa-solid):not(i):not(.ab-icon):not(.elementor-icon):not(.fas):not(.fab):not(.las):not(.far):not(.cursive2){
+    font-family: "Quicksand", sans-serif !important;
 }
 
 /*--------------------------------------------------------------
@@ -2526,7 +2532,9 @@ hr {
 .cs_white_bg {
     background-color: var(--white);
 }
-
+.cs_footer_bg{
+    background: #1c2331;
+}
 .cs_primary_bg {
     background-color: var(--primary);
 }
@@ -4728,8 +4736,12 @@ select.cs_insurance_input {
 }
 
 .cs_gallery_item {
-    height: 450px;
-    border-radius: 0 100px 0 0;
+    width: 100%;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 14px !important;
     position: relative;
     overflow: hidden;
     cursor: pointer;
@@ -11319,3 +11331,7 @@ select.cs_form_field {
 }
 
 /*# sourceMappingURL=globals.css.map */
+
+.cs_footer_bg{
+    background: #1c2331;
+}

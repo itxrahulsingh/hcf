@@ -14,7 +14,7 @@ export default function PhotoGallery3({ data }) {
     return (
         <>
             {(section_subtitle || section_title) && (
-                <div className="container">
+                <div className="container 3">
                     <div className="cs_section_heading cs_style_1 text-center">
                         {section_subtitle && (
                             <p

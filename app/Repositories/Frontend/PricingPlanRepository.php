@@ -45,8 +45,8 @@ class PricingPlanRepository
                         ],
                     ]],
                     'application_context' => [
-                        'cancel_url' => route('payment.cancel', ['method' => 'paypal', 'identifier' => $paymentHistory]),
-                        'return_url' => route('payment.success', ['method' => 'paypal', 'identifier' => $paymentHistory]),
+                        'cancel_url' => route('payment.cancel', ['method' => 'paypal', 'identifier' => $paymentHistory, 'type' => 'pricing_plan']),
+                        'return_url' => route('payment.success', ['method' => 'paypal', 'identifier' => $paymentHistory, 'type' => 'pricing_plan']),
                     ],
                 ];
 
@@ -67,8 +67,8 @@ class PricingPlanRepository
                         'quantity' => 1,
                     ]],
                     'mode' => 'payment',
-                    'success_url' => route('payment.success', ['method' => 'stripe', 'identifier' => $paymentHistory]),
-                    'cancel_url' => route('payment.cancel', ['method' => 'stripe', 'identifier' => $paymentHistory]),
+                    'success_url' => route('payment.success', ['method' => 'stripe', 'identifier' => $paymentHistory, 'type' => 'pricing_plan']) . '?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => route('payment.cancel', ['method' => 'stripe', 'identifier' => $paymentHistory, 'type' => 'pricing_plan']),
                 ];
                 try {
                     $response = $stripe->initializePayment($body);
@@ -82,7 +82,7 @@ class PricingPlanRepository
                 }
 
             case 'sslcmz':
-                $sslcmz = new SSLCommerz($paymentHistory->id);
+                $sslcmz = new SSLCommerz($paymentHistory->id, 'pricing_plan');
                 $body = [
                     'total_amount' => $pricingPlan->price,
                     'currency' => $pricingPlan->currency->code,
@@ -133,7 +133,7 @@ class PricingPlanRepository
                             'phonenumber' => $request->mobile,
                         ],
                         'tx_ref' => $paymentHistory->id,
-                        'redirect_url' => route('payment.success', ['method' => 'flutterwave', 'identifier' => $paymentHistory]),
+                        'redirect_url' => route('payment.success', ['method' => 'flutterwave', 'identifier' => $paymentHistory, 'type' => 'pricing_plan']),
                     ];
                     $response = $flutterwave->initializePayment($data);
 
@@ -145,7 +145,7 @@ class PricingPlanRepository
                 $razorpay = new Razorpay;
                 $data = ['receipt' => 'R-' . rand(000000, 999999), 'amount' => (int) $pricingPlan->price * 100, 'currency' => $pricingPlan->currency->code];
                 $order_id = $razorpay->initilizePatment($data);
-                $url = route('payment.razorpay.pay', ['order_id' => $order_id, 'payment_id' => $paymentHistory->id]);
+                $url = route('payment.razorpay.pay', ['order_id' => $order_id, 'payment_id' => $paymentHistory->id, 'type' => 'pricing_plan']);
 
                 return Inertia::location($url);
         }

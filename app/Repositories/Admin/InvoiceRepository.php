@@ -5,6 +5,7 @@ namespace App\Repositories\Admin;
 use App\Models\Invoice;
 use App\Repositories\Traits\ModelRepositoryTraits;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -24,7 +25,7 @@ class InvoiceRepository
      */
     private function buildBaseQuery($search, array $filter = [])
     {
-        $query = $this->model->with(['order.cause'])->newQuery();
+        $query = $this->model->with(['order.cause.content'])->newQuery();
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -125,6 +126,121 @@ class InvoiceRepository
             'total_turnover' => $totalTurnover,
             'chart_data' => $chartData
         ];
+    }
+
+    public function getSummaryStats($search, array $filter = []): array
+    {
+        $baseQuery = $this->buildBaseQuery($search, $filter);
+        $invoices = $baseQuery->get();
+
+        $totalInvoices = $invoices->count();
+        $uniqueDonors = $invoices->filter(fn ($invoice) => filled($invoice->customer_email))->pluck('customer_email')->unique()->count();
+        $averageDonation = $totalInvoices > 0 ? round((float) $invoices->avg('total_price'), 2) : 0;
+        $repeatDonors = $invoices->filter(fn ($invoice) => $this->isRepeatDonor($invoice))->count();
+
+        return [
+            'total_invoices' => $totalInvoices,
+            'unique_donors' => $uniqueDonors,
+            'average_donation' => $averageDonation,
+            'repeat_donations' => $repeatDonors,
+        ];
+    }
+
+    public function getExportRows($search, array $filter = []): array
+    {
+        $invoices = $this->buildBaseQuery($search, $filter)
+            ->orderByDesc('payment_date')
+            ->get();
+
+        return $this->formatReportingRows($invoices);
+    }
+
+    public function formatReportingRows(Collection $invoices): array
+    {
+        return $invoices->map(function ($invoice) {
+            $order = $invoice->order;
+            $paymentData = (array) ($order?->payment_data ?? []);
+            $causeTitle = $order?->cause?->content?->title ?: '-';
+            $paymentMethod = $invoice->payment_method ?: $order?->payment_method;
+
+            return [
+                'receipt_no' => $invoice->invoice_number,
+                'donation_date' => optional($invoice->payment_date)->format('Y-m-d') ?: optional($invoice->created_at)->format('Y-m-d'),
+                'donor_name' => $invoice->customer_name,
+                'amount' => (float) $invoice->total_price,
+                'mobile_no' => $invoice->customer_phone ?: '-',
+                'donation_cause' => $causeTitle,
+                'mode' => $this->resolveMode($paymentMethod, $paymentData),
+                'payment_source' => $this->resolvePaymentSource($paymentMethod, $paymentData),
+                'utr_no' => $this->resolveUtrNumber($order, $paymentData),
+                'email' => $invoice->customer_email ?: '-',
+                'address' => trim(implode(', ', array_filter([$invoice->shipping_address, $invoice->state]))) ?: '-',
+                'pan_no' => $invoice->pancard ?: '-',
+                'realized_amount' => (float) $invoice->realized_amount,
+                'pg_charges' => $this->resolvePgCharges($paymentData),
+                'remarks' => $invoice->notes ?: '-',
+                'fresh_repeat' => $this->isRepeatDonor($invoice) ? 'Repeat' : 'Fresh',
+            ];
+        })->values()->all();
+    }
+
+    private function resolveMode(?string $paymentMethod, array $paymentData): string
+    {
+        $method = strtolower((string) ($paymentData['method'] ?? $paymentMethod ?? ''));
+
+        if (str_contains($method, 'upi') || !empty($paymentData['vpa'])) {
+            return 'UPI';
+        }
+
+        if (str_contains($method, 'card') || !empty($paymentData['card_id'])) {
+            return 'Card';
+        }
+
+        if ($method !== '') {
+            return strtoupper($method);
+        }
+
+        return '-';
+    }
+
+    private function resolvePaymentSource(?string $paymentMethod, array $paymentData): string
+    {
+        return $paymentData['gateway']
+            ?? data_get($paymentData, 'source')
+            ?? data_get($paymentData, 'payment_source')
+            ?? ($paymentMethod ? ucwords(str_replace('_', ' ', $paymentMethod)) : '-');
+    }
+
+    private function resolveUtrNumber($order, array $paymentData): string
+    {
+        return $order?->transaction_id
+            ?? data_get($paymentData, 'acquirer_data.rrn')
+            ?? data_get($paymentData, 'acquirer_data.bank_transaction_id')
+            ?? data_get($paymentData, 'reference')
+            ?? '-';
+    }
+
+    private function resolvePgCharges(array $paymentData)
+    {
+        return data_get($paymentData, 'fee')
+            ?? data_get($paymentData, 'fees')
+            ?? data_get($paymentData, 'charges')
+            ?? '-';
+    }
+
+    private function isRepeatDonor(Invoice $invoice): bool
+    {
+        $query = Invoice::query()->where('id', '!=', $invoice->id);
+
+        if ($invoice->customer_email) {
+            $query->where('customer_email', $invoice->customer_email);
+        } elseif ($invoice->customer_phone) {
+            $query->where('customer_phone', $invoice->customer_phone);
+        } else {
+            return false;
+        }
+
+        return $query->exists();
     }
 
     public function destroy(Invoice $invoice): void

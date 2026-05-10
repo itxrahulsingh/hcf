@@ -89,7 +89,7 @@ export default function ContactWithFormBuilder1({ sections_data }) {
 
     return (
         <>
-            <div className="container">
+            <div className="container 1">
                 <div className="row cs_gap_y_40">
                     <div className="col-xl-5 col-lg-6">
                         {(sections_data.section_subtitle || sections_data.section_title) && (

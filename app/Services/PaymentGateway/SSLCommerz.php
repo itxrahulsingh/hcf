@@ -8,17 +8,22 @@ use Illuminate\Support\Facades\Config;
 
 class SSLCommerz
 {
-    public function __construct($plan_id)
+    public function __construct($plan_id, $type = null)
     {
         Config::set('sslcommerz.apiDomain', Setting::pull('sslcz_is_sandbox') == '1' ? 'https://sandbox.sslcommerz.com' : 'https://securepay.sslcommerz.com');
         Config::set('sslcommerz.projectPath', '');
         Config::set('sslcommerz.apiCredentials.store_id', Setting::pull('sslcz_store_id'));
         Config::set('sslcommerz.apiCredentials.store_password', Setting::pull('sslcz_store_password'));
 
+        $query = http_build_query(array_filter([
+            'identifier' => $plan_id,
+            'type' => $type,
+        ]));
+
         // set success url cancel url
-        Config::set('sslcommerz.success_url', '/payment/sslcmz/success?identifier='.$plan_id);
-        Config::set('sslcommerz.cancel_url', '/payment/sslcmz/cancel?identifier='.$plan_id);
-        Config::set('sslcommerz.failed_url', '/payment/sslcmz/cancel?identifier='.$plan_id);
+        Config::set('sslcommerz.success_url', '/payment/sslcmz/success?' . $query);
+        Config::set('sslcommerz.cancel_url', '/payment/sslcmz/cancel?' . $query);
+        Config::set('sslcommerz.failed_url', '/payment/sslcmz/cancel?' . $query);
     }
 
     public function initilizePatment($data)

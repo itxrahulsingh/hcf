@@ -182,6 +182,14 @@ const MiniSparkline = ({ data, color = "#10b981" }) => {
     );
 };
 
+const InsightCard = ({ label, value, note, accent = "#0f766e" }) => (
+    <div className="report-insight-card">
+        <div className="report-insight-label">{label}</div>
+        <div className="report-insight-value" style={{ color: accent }}>{value}</div>
+        <div className="report-insight-note">{note}</div>
+    </div>
+);
+
 // --- MAIN PAGE ---
 export default function Reports() {
     const { stats, revenue_trend, payment_methods, cross_tab, cause_deep_dive, geo_data, revenue_breakdown, filters } = usePage().props;
@@ -198,7 +206,22 @@ export default function Reports() {
         downloadCSV(exportData, `revenue_report_${dateRange.start_date}.csv`);
     };
 
+    const handleCauseExport = () => {
+        const exportData = cause_deep_dive.map(c => ({
+            Cause: c.title,
+            Raised: c.raised,
+            Donations: c.count,
+            Average_Gift: c.avg,
+            Trend: (c.trend || []).join(" | ")
+        }));
+        downloadCSV(exportData, `cause_intelligence_${dateRange.start_date}.csv`);
+    };
+
     const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6'];
+    const topPaymentMethod = payment_methods?.[0];
+    const topCause = cause_deep_dive?.[0];
+    const activeStates = geo_data?.filter((item) => Number(item.total) > 0)?.length || 0;
+    const bestDay = revenue_breakdown?.reduce((best, row) => Number(row.total) > Number(best?.total || 0) ? row : best, null);
 
     // Chart Options (Optimized for Hover)
     const lineOptions = {
@@ -228,31 +251,274 @@ export default function Reports() {
         <AdminLayouts>
             <Head title="Enterprise Analytics" />
             <style>{`
-                body { background-color: #f8fafc; }
-                .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15); transition: all 0.2s; }
-                .table-modern th { font-size: 0.7rem; text-transform: uppercase; color: #64748b; background: #f8fafc; padding: 16px 20px; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; }
-                .table-modern td { padding: 16px 20px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
-                .glass-header { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+                body { background-color: #edf2f7; }
+                .reports-shell {
+                    min-height: 100vh;
+                    padding: 30px 18px 56px;
+                    background:
+                        radial-gradient(circle at top left, rgba(15, 118, 110, 0.10), transparent 26%),
+                        radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 24%),
+                        linear-gradient(180deg, #f7fafc 0%, #edf2f7 100%);
+                }
+                .report-panel {
+                    border: 1px solid rgba(148, 163, 184, 0.14) !important;
+                    border-radius: 28px !important;
+                    background: rgba(255,255,255,0.92) !important;
+                    box-shadow: 0 20px 55px rgba(15, 23, 42, 0.06) !important;
+                    overflow: hidden;
+                }
+                .report-panel-soft {
+                    background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(243,248,252,0.96)) !important;
+                }
+                .reports-hero {
+                    display: flex;
+                    align-items: stretch;
+                    justify-content: space-between;
+                    gap: 18px;
+                    margin-bottom: 28px;
+                    padding: 28px;
+                    border-radius: 32px;
+                    background: linear-gradient(135deg, #0f172a 0%, #12324a 50%, #0f766e 100%);
+                    color: #f8fafc;
+                    box-shadow: 0 28px 60px rgba(15, 23, 42, 0.18);
+                }
+                .reports-hero-copy {
+                    max-width: 760px;
+                }
+                .reports-eyebrow {
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.18em;
+                    color: rgba(226, 232, 240, 0.74);
+                    margin-bottom: 12px;
+                }
+                .reports-title {
+                    margin: 0;
+                    color: #fff;
+                    font-size: 38px;
+                    line-height: 1.02;
+                    letter-spacing: -0.05em;
+                    font-weight: 800;
+                }
+                .reports-subtitle {
+                    margin: 14px 0 0;
+                    color: rgba(226, 232, 240, 0.82);
+                    max-width: 700px;
+                    font-size: 15px;
+                }
+                .reports-hero-meta {
+                    display: grid;
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                    gap: 12px;
+                    margin-top: 20px;
+                }
+                .reports-meta-card {
+                    padding: 14px 16px;
+                    border-radius: 18px;
+                    background: rgba(255,255,255,0.08);
+                    border: 1px solid rgba(255,255,255,0.10);
+                }
+                .reports-meta-label {
+                    display: block;
+                    font-size: 11px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.12em;
+                    color: rgba(226, 232, 240, 0.7);
+                    margin-bottom: 8px;
+                }
+                .reports-meta-value {
+                    font-size: 18px;
+                    font-weight: 700;
+                    color: #fff;
+                }
+                .reports-filter-card {
+                    width: 360px;
+                    padding: 18px;
+                    border-radius: 24px;
+                    background: rgba(255,255,255,0.1);
+                    border: 1px solid rgba(255,255,255,0.12);
+                    backdrop-filter: blur(10px);
+                }
+                .reports-filter-title {
+                    font-size: 13px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.14em;
+                    color: rgba(226, 232, 240, 0.74);
+                    margin-bottom: 12px;
+                }
+                .reports-filter-grid {
+                    display: grid;
+                    gap: 12px;
+                }
+                .reports-filter-grid input {
+                    width: 100%;
+                    border: 1px solid rgba(255,255,255,0.16);
+                    border-radius: 14px;
+                    padding: 12px 14px;
+                    background: rgba(15, 23, 42, 0.18);
+                    color: #fff;
+                }
+                .reports-filter-grid input::-webkit-calendar-picker-indicator {
+                    filter: invert(1);
+                }
+                .reports-filter-grid button {
+                    border-radius: 14px;
+                    padding: 12px 14px;
+                    font-weight: 700;
+                }
+                .report-card-grid .card {
+                    border: 1px solid rgba(148, 163, 184, 0.14) !important;
+                    border-radius: 24px !important;
+                    background: rgba(255,255,255,0.92);
+                    box-shadow: 0 16px 45px rgba(15, 23, 42, 0.05);
+                }
+                .hover-lift { transition: transform 0.22s ease, box-shadow 0.22s ease; }
+                .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(15,23,42,0.10); }
+                .table-modern th {
+                    font-size: 0.68rem;
+                    text-transform: uppercase;
+                    color: #64748b;
+                    background: #f8fafc;
+                    padding: 16px 20px;
+                    letter-spacing: 0.08em;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+                .table-modern td {
+                    padding: 16px 20px;
+                    vertical-align: middle;
+                    border-bottom: 1px solid #f1f5f9;
+                }
+                .report-section-head {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 12px;
+                    margin-bottom: 14px;
+                }
+                .report-section-kicker {
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.16em;
+                    color: #64748b;
+                    margin-bottom: 6px;
+                }
+                .report-section-title {
+                    font-size: 22px;
+                    font-weight: 800;
+                    color: #0f172a;
+                    letter-spacing: -0.03em;
+                    margin: 0;
+                }
+                .report-section-note {
+                    color: #64748b;
+                    margin-top: 6px;
+                    font-size: 14px;
+                }
+                .report-chip-row {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 12px;
+                    margin-bottom: 22px;
+                }
+                .report-insight-card {
+                    min-width: 180px;
+                    padding: 16px 18px;
+                    border-radius: 20px;
+                    background: rgba(255,255,255,0.92);
+                    border: 1px solid rgba(148,163,184,0.16);
+                    box-shadow: 0 12px 28px rgba(15,23,42,0.05);
+                }
+                .report-insight-label {
+                    font-size: 11px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.14em;
+                    color: #64748b;
+                    margin-bottom: 10px;
+                }
+                .report-insight-value {
+                    font-size: 24px;
+                    font-weight: 800;
+                    line-height: 1.05;
+                }
+                .report-insight-note {
+                    margin-top: 8px;
+                    font-size: 13px;
+                    color: #64748b;
+                }
+                @media (max-width: 991px) {
+                    .reports-hero {
+                        flex-direction: column;
+                    }
+                    .reports-filter-card {
+                        width: 100%;
+                    }
+                    .reports-hero-meta {
+                        grid-template-columns: 1fr;
+                    }
+                }
             `}</style>
 
-            <div className="container-fluid px-4 py-5">
-
-                {/* --- HEADER --- */}
-                <div className="d-flex justify-content-between align-items-end mb-5 pb-4 border-bottom glass-header sticky-top pt-3" style={{zIndex:100, top:0, margin:'0 -1.5rem', padding:'0 1.5rem'}}>
-                    <div>
-                        <h2 className="fw-bolder text-dark mb-0">Financial Command Center</h2>
-                        <p className="text-secondary mb-0 mt-1">Holistic view of donations, causes, and trends.</p>
+            <div className="reports-shell">
+                <div className="reports-hero">
+                    <div className="reports-hero-copy">
+                        <div className="reports-eyebrow">Advanced Reporting</div>
+                        <h2 className="reports-title">Financial command center</h2>
+                        <p className="reports-subtitle">
+                            Track donor momentum, payment behavior, cause performance, and geography in one modern operating view built for daily decision-making.
+                        </p>
+                        <div className="reports-hero-meta">
+                            <div className="reports-meta-card">
+                                <span className="reports-meta-label">Reporting window</span>
+                                <div className="reports-meta-value">{moment(filters.start).format("DD MMM")} to {moment(filters.end).format("DD MMM YYYY")}</div>
+                            </div>
+                            <div className="reports-meta-card">
+                                <span className="reports-meta-label">Best payment rail</span>
+                                <div className="reports-meta-value text-capitalize">{topPaymentMethod?.payment_method || "-"}</div>
+                            </div>
+                            <div className="reports-meta-card">
+                                <span className="reports-meta-label">Peak contribution day</span>
+                                <div className="reports-meta-value">{bestDay ? moment(bestDay.date).format("DD MMM YYYY") : "-"}</div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="d-flex gap-2 bg-white p-2 rounded-pill shadow-sm border">
-                        <input type="date" className="form-control-sm border-0" value={dateRange.start_date} onChange={e=>setDateRange({...dateRange,start_date:e.target.value})} />
-                        <span className="text-muted align-self-center">to</span>
-                        <input type="date" className="form-control-sm border-0" value={dateRange.end_date} onChange={e=>setDateRange({...dateRange,end_date:e.target.value})} />
-                        <button onClick={handleFilter} className="btn btn-dark rounded-pill btn-sm px-4 fw-bold">Update</button>
+                    <div className="reports-filter-card">
+                        <div className="reports-filter-title">Refine analytics</div>
+                        <div className="reports-filter-grid">
+                            <input type="date" value={dateRange.start_date} onChange={e=>setDateRange({...dateRange,start_date:e.target.value})} />
+                            <input type="date" value={dateRange.end_date} onChange={e=>setDateRange({...dateRange,end_date:e.target.value})} />
+                            <button onClick={handleFilter} className="btn btn-light text-dark">Update Dashboard</button>
+                        </div>
                     </div>
                 </div>
 
-                {/* --- 1. KPI CARDS --- */}
-                <div className="row g-4 mb-5">
+                <div className="report-chip-row">
+                    <InsightCard
+                        label="Top Payment Source"
+                        value={topPaymentMethod?.payment_method || "-"}
+                        note={<Amount amount={topPaymentMethod?.total || 0} />}
+                        accent="#1d4ed8"
+                    />
+                    <InsightCard
+                        label="Best Cause"
+                        value={topCause?.title || "-"}
+                        note={<Amount amount={topCause?.raised || 0} />}
+                        accent="#0f766e"
+                    />
+                    <InsightCard
+                        label="Active States"
+                        value={activeStates}
+                        note="Locations with donation activity"
+                        accent="#b45309"
+                    />
+                    <InsightCard
+                        label="Peak Day"
+                        value={bestDay ? moment(bestDay.date).format("DD MMM") : "-"}
+                        note={<Amount amount={bestDay?.total || 0} />}
+                        accent="#be123c"
+                    />
+                </div>
+
+                <div className="row g-4 mb-5 report-card-grid">
                     <div className="col-xl-3 col-md-6"><KpiCard title="Total Revenue" value={stats.revenue.value} prev={stats.revenue.prev} icon="ion:wallet" color="#6366f1"/></div>
                     <div className="col-xl-3 col-md-6"><KpiCard title="Donations" value={stats.donations.value} prev={stats.donations.prev} icon="ion:heart" color="#10b981"/></div>
                     <div className="col-xl-3 col-md-6"><KpiCard title="Avg. Gift" value={stats.avg_gift.value} prev={stats.avg_gift.prev} icon="ion:stats-chart" color="#f59e0b"/></div>
@@ -262,14 +528,22 @@ export default function Reports() {
                 {/* --- 2. MAIN TRENDS --- */}
                 <div className="row g-4 mb-5">
                     <div className="col-xl-8">
-                        <div className="card h-100 border-0 shadow-sm rounded-4">
-                            <div className="card-header bg-white border-0 pt-4 px-4"><h6 className="fw-bold mb-0">Revenue Trajectory</h6></div>
+                        <div className="card h-100 report-panel report-panel-soft">
+                            <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                <div className="report-section-kicker">Revenue Engine</div>
+                                <h6 className="report-section-title">Revenue trajectory</h6>
+                                <div className="report-section-note">Daily flow of realized donations across the selected reporting window.</div>
+                            </div>
                             <div className="card-body p-4"><div style={{height:'350px'}}><Line data={areaData} options={lineOptions} /></div></div>
                         </div>
                     </div>
                     <div className="col-xl-4">
-                        <div className="card h-100 border-0 shadow-sm rounded-4">
-                            <div className="card-header bg-white border-0 pt-4 px-4"><h6 className="fw-bold mb-0">Payment Mix</h6></div>
+                        <div className="card h-100 report-panel">
+                            <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                <div className="report-section-kicker">Donor Behavior</div>
+                                <h6 className="report-section-title">Payment mix</h6>
+                                <div className="report-section-note">Which payment rails are driving completed donations.</div>
+                            </div>
                             <div className="card-body p-4">
                                 <div className="row h-100 align-items-center">
                                     <div className="col-6"><div style={{height:'150px'}}><Doughnut data={pieData} options={{cutout:'70%', plugins:{legend:{display:false}}}} /></div></div>
@@ -283,22 +557,39 @@ export default function Reports() {
                 {/* --- 3. ADVANCED MIXING (Payment vs Cause & Map) --- */}
                 <div className="row g-4 mb-5">
                     <div className="col-xl-6">
-                        <div className="card h-100 border-0 shadow-sm rounded-4">
-                            <div className="card-header bg-white border-0 pt-4 px-4"><h6 className="fw-bold mb-0">Payment Attribution (Data Mixing)</h6><small className="text-muted">How donors pay for specific causes</small></div>
+                        <div className="card h-100 report-panel">
+                            <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                <div className="report-section-kicker">Attribution</div>
+                                <h6 className="report-section-title">Payment attribution</h6>
+                                <div className="report-section-note">How payment methods distribute across donation cause types.</div>
+                            </div>
                             <div className="card-body p-4"><div style={{height:'350px'}}><Bar data={crossData} options={{maintainAspectRatio:false, scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,display:false}}}} /></div></div>
                         </div>
                     </div>
                     <div className="col-xl-6">
-                        <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-                            <div className="card-header bg-white border-0 pt-4 px-4"><h6 className="fw-bold mb-0">Geographic Impact</h6></div>
+                        <div className="card h-100 report-panel overflow-hidden">
+                            <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                <div className="report-section-kicker">Distribution</div>
+                                <h6 className="report-section-title">Geographic impact</h6>
+                                <div className="report-section-note">State-level spread of donation activity and concentration.</div>
+                            </div>
                             <div className="card-body p-0"><GeoMap data={geo_data} /></div>
                         </div>
                     </div>
                 </div>
 
                 {/* --- 4. DEEP DIVE: CAUSE INTELLIGENCE --- */}
-                <div className="card border-0 shadow-sm rounded-4 mb-5">
-                    <div className="card-header bg-white border-0 py-3 px-4"><h5 className="fw-bold text-dark mb-0">Cause Intelligence & Trends</h5></div>
+                <div className="card report-panel mb-5">
+                    <div className="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+                        <div>
+                            <div className="report-section-kicker">Campaign Intelligence</div>
+                            <h5 className="report-section-title">Cause intelligence & trends</h5>
+                            <div className="report-section-note">Top causes by fundraising strength, donor count, and daily trend signal.</div>
+                        </div>
+                        <button onClick={handleCauseExport} className="btn btn-outline-dark btn-sm rounded-pill px-4 hover-lift">
+                            <Icon icon="ion:download-outline" className="me-2"/> Export Cause CSV
+                        </button>
+                    </div>
                     <div className="table-responsive">
                         <table className="table table-modern mb-0 align-middle">
                             <thead><tr><th className="ps-4">Cause Title</th><th>Total Raised</th><th>Avg. Gift</th><th>Activity Trend (Daily)</th><th className="text-end pe-4">Donations</th></tr></thead>
@@ -318,9 +609,13 @@ export default function Reports() {
                 </div>
 
                 {/* --- 5. TRANSACTION LOG --- */}
-                <div className="card border-0 shadow-sm rounded-4">
+                <div className="card report-panel">
                     <div className="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
-                        <h5 className="fw-bold text-dark mb-0">Transaction Log</h5>
+                        <div>
+                            <div className="report-section-kicker">Ledger View</div>
+                            <h5 className="report-section-title">Transaction log</h5>
+                            <div className="report-section-note">Export-ready daily ledger showing order volume and revenue by date.</div>
+                        </div>
                         <button onClick={handleExport} className="btn btn-outline-dark btn-sm rounded-pill px-4 hover-lift">
                             <Icon icon="ion:download-outline" className="me-2"/> Export CSV
                         </button>

@@ -16,6 +16,7 @@ export default function Footer() {
     const customize = useSelector((state) => state.customize)
     const { currentLang } = useSelector((state) => state.pages)
     const currentLanguage = currentLang ?? lang.default_lang
+    const contact = useSelector((state) => state.customize.contact)
 
     // --- Safe Parsing Helper for Addresses ---
     const addresses = useMemo(() => {
@@ -43,8 +44,9 @@ export default function Footer() {
     const usefulLinks = localStorage.getItem("useful_links") ? JSON.parse(localStorage.getItem("useful_links")) : []
     const useful_links = usefulLinks ? organizeMenusIntoHierarchy(usefulLinks[currentLanguage]) : []
 
+
     return (
-        <footer className="cs_footer cs_primary_bg cs_ternary_color">
+        <footer className="cs_footer cs_footer_bg cs_ternary_color">
             <div className="cs_footer_main">
                 <div className="container">
                     {Boolean(Number(customize?.footer?.footer_is_show_newslatter)) && (
@@ -80,7 +82,7 @@ export default function Footer() {
                         {customize?.footer?.footer_is_show_service_section && (
                             <div className="cs_footer_grid_item">
                                 <div className="cs_footer_item">
-                                    <MenuWidget menus={services_menu} title={translate("Service")} />
+                                    <MenuWidget menus={services_menu} title={translate("Campaign")} />
                                 </div>
                             </div>
                         )}
@@ -92,10 +94,11 @@ export default function Footer() {
                             </div>
                         )}
 
+
                         {customize?.footer?.footer_is_show_address && addresses.length > 0 && (
                             <div className="cs_footer_grid_item">
                                 <div className="cs_footer_item">
-                                    <h2 className="cs_widget_title cs_secondary_font cs_medium text-uppercase cs_fs_18 cs_white_color">{translate("Our Locations")}</h2>
+                                    <h2 className="cs_widget_title cs_secondary_font cs_medium text-uppercase cs_fs_24 cs_white_color">{translate("Contact")}</h2>
                                     <div className="cs_footer_address_list">
                                         {addresses.map((item, index) => (
                                             <div key={index} className="cs_address_block mb-2">
@@ -115,6 +118,13 @@ export default function Footer() {
                                                 </div>
                                             </div>
                                         ))}
+
+                                        {contact.contact_phone_number && (
+                                            <p className="mb-2">{contact.contact_phone_number}</p>
+                                        )}
+                                        {contact.contact_email && (
+                                            <p>{contact.contact_email}</p>
+                                        )}
                                     </div>
                                 </div>
                             </div>

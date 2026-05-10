@@ -57,7 +57,7 @@ export default function Team1({ data }) {
                                 <div className="cs_team_info_in">
                                     <p className="cs_team_member_designation">{item.team_member_designation}</p>
                                     <h2 className="cs_team_member_name cs_fs_24 cs_normal">
-                                        <NavigationLink href={item.team_member_action_url}>{item.team_member_name}</NavigationLink>
+                                        <NavigationLink>{item.team_member_name}</NavigationLink>
                                     </h2>
                                     <div className="cs_team_member_social cs_ternary_color">
                                         {item?.social_btns?.map((socialItem, socialIndex) => (

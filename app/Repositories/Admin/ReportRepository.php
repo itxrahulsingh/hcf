@@ -3,6 +3,7 @@
 namespace App\Repositories\Admin;
 
 use App\Models\Order;
+use App\Support\OrderTypePermission;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -11,7 +12,7 @@ class ReportRepository
     // --- CORE QUERY SCOPE ---
     private function getSuccessfulOrdersQuery($startDate, $endDate)
     {
-        return Order::query()
+        $query = Order::query()
             ->whereBetween('orders.created_at', [
                 $startDate->format('Y-m-d H:i:s'),
                 $endDate->format('Y-m-d H:i:s')
@@ -22,6 +23,10 @@ class ReportRepository
                   ->orWhere('orders.status', 'completed')
                   ->orWhere('orders.status', 'confirmed');
             });
+
+        OrderTypePermission::applyScope($query, auth()->user(), 'orders.type');
+
+        return $query;
     }
 
     // 1. KPI Cards

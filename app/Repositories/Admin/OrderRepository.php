@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Setting;
 use App\Repositories\Traits\ModelRepositoryTraits;
+use App\Support\OrderTypePermission;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
@@ -34,6 +35,7 @@ class OrderRepository
     public function paginateSearchResult($search, array $sort = [], array $filter = []): LengthAwarePaginator
     {
         $query = $this->model->with(['orderitems'])->newQuery();
+        OrderTypePermission::applyScope($query, auth()->user());
 
         $query->where('status', '!=', 'initialize');
 
@@ -313,7 +315,9 @@ class OrderRepository
     public function bulkUpdateStatus(string $ids, string $status): void
     {
         $idArray = explode(',', $ids);
-        $this->model->whereIn('id', $idArray)->update(['status' => $status]);
+        $query = $this->model->newQuery()->whereIn('id', $idArray);
+        OrderTypePermission::applyScope($query, auth()->user());
+        $query->update(['status' => $status]);
     }
 
     /**
@@ -330,6 +334,8 @@ class OrderRepository
     public function bulkDelete(string $ids): void
     {
         $idArray = explode(',', $ids);
-        $this->model->destroy($idArray);
+        $query = $this->model->newQuery()->whereIn('id', $idArray);
+        OrderTypePermission::applyScope($query, auth()->user());
+        $query->delete();
     }
 }

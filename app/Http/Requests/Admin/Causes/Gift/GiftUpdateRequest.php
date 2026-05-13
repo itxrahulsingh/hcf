@@ -26,6 +26,7 @@ class GiftUpdateRequest extends FormRequest
             'gift_image' => 'required|max:5000',
             'amount' => 'required|numeric|min:0',
             'min_qty' => 'nullable|integer|min:1',
+            'message' => 'nullable|string|max:255',
         ];
 
         // Append language-specific validation rules

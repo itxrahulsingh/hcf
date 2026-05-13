@@ -11,6 +11,7 @@ use App\Models\Post;
 use App\Models\Service;
 use App\Models\Subscriber;
 use App\Models\User;
+use App\Support\OrderTypePermission;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +19,10 @@ class DashboardRepository
 {
     private function getSuccessfulDonationsQuery()
     {
-        return Order::query()->where('payment_status', 2);
+        $query = Order::query()->where('payment_status', 2);
+        OrderTypePermission::applyScope($query, auth()->user());
+
+        return $query;
     }
 
     /**
@@ -77,15 +81,18 @@ class DashboardRepository
 
     public function getPendingDonationCount()
     {
-        return Order::query()
+        $query = Order::query()
             ->where(function ($query) {
                 $query->where('payment_status', 1)
                     ->orWhere(function ($inner) {
                         $inner->whereNull('payment_status')
                             ->where('status', 'pending');
                     });
-            })
-            ->count();
+            });
+
+        OrderTypePermission::applyScope($query, auth()->user());
+
+        return $query->count();
     }
 
     public function getUniqueDonorCount()
@@ -154,11 +161,14 @@ class DashboardRepository
      */
     public function getRecentDonations()
     {
-        return Order::with(['cause.content'])
+        $query = Order::with(['cause.content'])
             ->whereIn('payment_status', [1, 2])
             ->latest()
-            ->limit(8)
-            ->get();
+            ->limit(8);
+
+        OrderTypePermission::applyScope($query, auth()->user());
+
+        return $query->get();
     }
 
     /**
@@ -171,6 +181,7 @@ class DashboardRepository
             ->where('payment_status', 2)
             ->whereNotNull('cause_id')
             ->groupBy('cause_id');
+        OrderTypePermission::applyScope($donationTotals, auth()->user());
 
         return Cause::query()
             ->with('content')

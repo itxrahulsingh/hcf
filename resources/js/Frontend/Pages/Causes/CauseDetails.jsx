@@ -424,9 +424,26 @@ export default function CauseDetails({
                                 {variationGifts.length > 0 && (
                                     <div className="row justify-content-center">
                                         {variationGifts.map((gift, idx) => {
+                                            const giftMessage = `${gift?.message || ""}`.trim()
                                             return (
                                                 <div key={`var-${idx}`} className="col-md-6 my-2 my-md-3">
                                                     <div className="product-design design2">
+                                                        {giftMessage && (
+                                                            <div
+                                                                className="w-100 text-white text-center fw-bold px-2 py-2"
+                                                                style={{
+                                                                    background: "linear-gradient(90deg, #FF8A00 0%, #FF5E00 100%)",
+                                                                    fontSize: "16px",
+                                                                    lineHeight: "1.2",
+                                                                    letterSpacing: "0.4px",
+                                                                    textTransform: "uppercase",
+                                                                    textShadow: "0 1px 2px rgba(0, 0, 0, 0.25)",
+                                                                    boxShadow: "0 5px 14px rgba(255, 94, 0, 0.35)"
+                                                                }}
+                                                            >
+                                                                {giftMessage}
+                                                            </div>
+                                                        )}
                                                         <div className="product-img">
                                                             {gift.gift_image ? (
                                                                 <img loading="lazy" className="product-image" src={gift.gift_image} alt={gift.content?.title} />
@@ -487,16 +504,33 @@ export default function CauseDetails({
                                 {standardGifts.length > 0 && (
                                     <div className="row g-4 my-2">
                                         {standardGifts.map((gift, idx) => {
-                                            const isPortrait = cause?.gift_design === "portrait"
+                                            const isPortrait = `${cause?.gift_design || ""}`.toLowerCase() === "portrait"
                                             const colClass = isPortrait ? "col-6 col-md-3" : "col-12 col-md-6"
                                             const cartItem = carts.find((i) => i.id === gift.id && i.type === "gift")
                                             const quantity = cartItem ? cartItem.quantity : 0
+                                            const giftMessage = `${gift?.message || ""}`.trim()
 
                                             return (
                                                 <div key={`std-${idx}`} className={colClass}>
                                                     <div
                                                         className={`cause-card h-100 d-flex shadow-sm border-0 position-relative ${isPortrait ? "flex-column" : "flex-row"}`}
                                                     >
+                                                        {isPortrait && giftMessage && (
+                                                            <div
+                                                                className="w-100 text-white text-center fw-bold px-2 py-2"
+                                                                style={{
+                                                                    background: "linear-gradient(90deg, #FF8A00 0%, #FF5E00 100%)",
+                                                                    fontSize: "16px",
+                                                                    lineHeight: "1.2",
+                                                                    letterSpacing: "0.4px",
+                                                                    textTransform: "uppercase",
+                                                                    textShadow: "0 1px 2px rgba(0, 0, 0, 0.25)",
+                                                                    boxShadow: "0 5px 14px rgba(255, 94, 0, 0.35)"
+                                                                }}
+                                                            >
+                                                                {giftMessage}
+                                                            </div>
+                                                        )}
                                                         <div
                                                             className="cause-card-img-wrapper"
                                                             style={!isPortrait ? { width: "35%", minHeight: "120px", height: "100%" } : {}}

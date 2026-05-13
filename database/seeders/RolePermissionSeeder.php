@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Cause;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -197,6 +198,22 @@ class RolePermissionSeeder extends Seeder
             $permission->name = $name;
             $permission->title = $permission_array['title'];
             $permission->description = $permission_array['description'];
+            $permission->guard_name = 'web';
+            $permission->save();
+        }
+
+        // Order type level permissions
+        $orderTypes = array_keys(array_merge(Cause::$causeTypes, ['manual' => 'Manual']));
+        $typePermissions = array_merge(['orders.type.all'], array_map(fn($type) => "orders.type.{$type}", $orderTypes));
+
+        foreach ($typePermissions as $permissionName) {
+            $permission = new Permission;
+            $permission->name = $permissionName;
+            $permission->title = 'Order Type Access';
+            $permission->crud_group = 'order_type_access';
+            $permission->crud_action = $permissionName === 'orders.type.all'
+                ? 'all'
+                : str_replace('orders.type.', '', $permissionName);
             $permission->guard_name = 'web';
             $permission->save();
         }

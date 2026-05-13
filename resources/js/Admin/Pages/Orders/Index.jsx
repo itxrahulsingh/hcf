@@ -193,7 +193,7 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
 }
 
 export default function Index({ orders, sort, filter, causes }) {
-    const { causeTypes } = usePage().props
+    const { allowedOrderTypes } = usePage().props
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedOption, setSelectedOption] = useState("Bulk Action")
     const [selectedStatus, setSelectedStatus] = useState(filter?.status || "All Order Status")
@@ -419,8 +419,8 @@ export default function Index({ orders, sort, filter, causes }) {
                                                         selectedOption={
                                                             selectedType === "All"
                                                                 ? translate("All Types")
-                                                                : causeTypes[selectedType]
-                                                                  ? translate(causeTypes[selectedType])
+                                                                : allowedOrderTypes[selectedType]
+                                                                  ? translate(allowedOrderTypes[selectedType])
                                                                   : selectedType
                                                         }
                                                     >
@@ -432,8 +432,8 @@ export default function Index({ orders, sort, filter, causes }) {
                                                             {translate("All Types")}
                                                         </button>
 
-                                                        {causeTypes &&
-                                                            Object.entries(causeTypes).map(([key, label]) => (
+                                                        {allowedOrderTypes &&
+                                                            Object.entries(allowedOrderTypes).map(([key, label]) => (
                                                                 <button
                                                                     key={key}
                                                                     type="button"

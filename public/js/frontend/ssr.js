@@ -23959,11 +23959,24 @@ function CauseDetails(_ref) {
               className: "row justify-content-center",
               children: variationGifts.map(function (gift, idx) {
                 var _gift$content, _gift$content2, _gift$content3;
+                var giftMessage = "".concat((gift === null || gift === void 0 ? void 0 : gift.message) || "").trim();
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                   className: "col-md-6 my-2 my-md-3",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "product-design design2",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                    children: [giftMessage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                      className: "w-100 text-white text-center fw-bold px-2 py-2",
+                      style: {
+                        background: "linear-gradient(90deg, #FF8A00 0%, #FF5E00 100%)",
+                        fontSize: "16px",
+                        lineHeight: "1.2",
+                        letterSpacing: "0.4px",
+                        textTransform: "uppercase",
+                        textShadow: "0 1px 2px rgba(0, 0, 0, 0.25)",
+                        boxShadow: "0 5px 14px rgba(255, 94, 0, 0.35)"
+                      },
+                      children: giftMessage
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                       className: "product-img",
                       children: gift.gift_image ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("img", {
                         loading: "lazy",
@@ -24033,17 +24046,30 @@ function CauseDetails(_ref) {
               className: "row g-4 my-2",
               children: standardGifts.map(function (gift, idx) {
                 var _gift$content5, _gift$content6, _gift$content7, _gift$content8;
-                var isPortrait = (cause === null || cause === void 0 ? void 0 : cause.gift_design) === "portrait";
+                var isPortrait = "".concat((cause === null || cause === void 0 ? void 0 : cause.gift_design) || "").toLowerCase() === "portrait";
                 var colClass = isPortrait ? "col-6 col-md-3" : "col-12 col-md-6";
                 var cartItem = carts.find(function (i) {
                   return i.id === gift.id && i.type === "gift";
                 });
                 var quantity = cartItem ? cartItem.quantity : 0;
+                var giftMessage = "".concat((gift === null || gift === void 0 ? void 0 : gift.message) || "").trim();
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                   className: colClass,
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "cause-card h-100 d-flex shadow-sm border-0 position-relative ".concat(isPortrait ? "flex-column" : "flex-row"),
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                    children: [isPortrait && giftMessage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                      className: "w-100 text-white text-center fw-bold px-2 py-2",
+                      style: {
+                        background: "linear-gradient(90deg, #FF8A00 0%, #FF5E00 100%)",
+                        fontSize: "16px",
+                        lineHeight: "1.2",
+                        letterSpacing: "0.4px",
+                        textTransform: "uppercase",
+                        textShadow: "0 1px 2px rgba(0, 0, 0, 0.25)",
+                        boxShadow: "0 5px 14px rgba(255, 94, 0, 0.35)"
+                      },
+                      children: giftMessage
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                       className: "cause-card-img-wrapper",
                       style: !isPortrait ? {
                         width: "35%",
@@ -24485,9 +24511,26 @@ function CauseDetails(_ref) {
                       })
                     }, idx);
                   })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                   className: "mb-3",
-                  children: function () {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("label", {
+                    className: "form-label fw-bold small text-muted mb-1",
+                    children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Or Enter Custom Amount")
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                    className: "input-group input-group-lg border rounded-3 overflow-hidden",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
+                      className: "input-group-text bg-light border-0 fw-bold text-muted",
+                      children: "\u20B9"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
+                      type: "number",
+                      className: "form-control border-0 fw-bold fs-5 text-dark",
+                      placeholder: "0",
+                      value: localAmount,
+                      onChange: function onChange(e) {
+                        return handleDonationChange(e.target.value);
+                      }
+                    })]
+                  }), function () {
                     var minAmount = Number((cause === null || cause === void 0 ? void 0 : cause.min_amount) || 1);
                     if (total > 0 && total < minAmount) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "text-danger small mt-1 d-flex align-items-center animate__animated animate__fadeIn",
@@ -24498,7 +24541,7 @@ function CauseDetails(_ref) {
                         amount: minAmount
                       })]
                     });
-                  }()
+                  }()]
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("button", {
                   className: "btn-donate-lg ".concat(carts.length === 0 || total < Number((cause === null || cause === void 0 ? void 0 : cause.min_amount) || 1) ? "disabled" : ""),
                   disabled: carts.length === 0 || total < Number((cause === null || cause === void 0 ? void 0 : cause.min_amount) || 1),

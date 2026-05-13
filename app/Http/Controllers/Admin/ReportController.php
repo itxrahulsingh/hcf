@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Repositories\Admin\ReportRepository;
 use App\Models\Order;
+use App\Support\OrderTypePermission;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
@@ -24,7 +25,9 @@ class ReportController extends Controller
             $start = Carbon::parse($request->start_date)->startOfDay();
             $end   = Carbon::parse($request->end_date)->endOfDay();
         } else {
-            $latestOrder = Order::latest('created_at')->first();
+            $latestOrderQuery = Order::query()->latest('created_at');
+            OrderTypePermission::applyScope($latestOrderQuery, $request->user());
+            $latestOrder = $latestOrderQuery->first();
             if ($latestOrder) {
                 $end   = Carbon::parse($latestOrder->created_at)->endOfDay();
                 $start = $end->copy()->startOfMonth()->startOfDay();

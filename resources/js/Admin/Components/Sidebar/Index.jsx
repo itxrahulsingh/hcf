@@ -5,7 +5,7 @@ import translate from "@/utils/translate"
 import { Icon } from "@iconify/react"
 
 export default function Sidebar() {
-    const { auth, isEnabledEcommerce, isEnabledCaseStudy, isEnabledPortfolio, isEnabledService, isEnabledTeam, causeTypes } = usePage().props
+    const { auth, isEnabledEcommerce, isEnabledCaseStudy, isEnabledPortfolio, isEnabledService, isEnabledTeam, allowedOrderTypes } = usePage().props
     const [toggle, setToggle] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
 
@@ -405,7 +405,7 @@ export default function Sidebar() {
                                                     </Link>
                                                 </li>
 
-                                                {causeTypes && Object.entries(causeTypes).map(([key, label]) => (
+                                                {allowedOrderTypes && Object.entries(allowedOrderTypes).map(([key, label]) => (
                                                     <li
                                                         key={key}
                                                         className={`${route().current("admin.orders.index", { filter: { type: key } }) ? "active" : ""}`}

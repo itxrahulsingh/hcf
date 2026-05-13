@@ -134,6 +134,17 @@ export default function Edit({ gift, default_lang, languages }) {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="form-group">
+                                        <label htmlFor="message">{translate("Gift Message (Top Stripe)")}</label>
+                                        <TextInput
+                                            title={translate("Enter gift stripe message")}
+                                            type="text"
+                                            id="message"
+                                            error={errors?.message}
+                                            value={data.message || ""}
+                                            onChange={(e) => setData("message", e.target.value)}
+                                        />
+                                    </div>
 
                                     {/* Price Variations Toggle */}
                                     <div className="form-group d-flex align-items-center justify-content-between mb-3 border p-3 rounded bg-light">

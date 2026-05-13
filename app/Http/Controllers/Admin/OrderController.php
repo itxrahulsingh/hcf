@@ -9,6 +9,7 @@ use App\Models\Gift;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Repositories\Admin\OrderRepository;
+use App\Support\OrderTypePermission;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -39,6 +40,10 @@ class OrderController extends Controller
         $data['filter']['cause_id'] = $request->filter['cause_id'] ?? null;
         $data['filter']['type'] = $request->filter['type'] ?? 'All';
         $data['filter']['payment_status'] = $request->filter['payment_status'] ?? 'All Payment';
+        $allowedTypes = array_keys(OrderTypePermission::allowedTypeMapForUser($request->user()));
+        if ($data['filter']['type'] !== 'All' && !in_array($data['filter']['type'], $allowedTypes, true)) {
+            $data['filter']['type'] = 'All';
+        }
 
         $data['orders'] = $repository->paginateSearchResult($data['search'], $data['sort'], $data['filter']);
         $data['causes'] = Cause::with('content:cause_id,title')->select('id')->get();
@@ -110,6 +115,8 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
+        $this->assertOrderTypeAccess($order);
+
         if (Setting::pull("is_enabled_ecommerce") === "0") {
             abort(404);
         }
@@ -123,6 +130,8 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
+        $this->assertOrderTypeAccess($order);
+
         return Inertia::render('Orders/Edit', [
             'order' => $order
         ]);
@@ -133,6 +142,8 @@ class OrderController extends Controller
      */
     public function updateDetails(Request $request, Order $order, OrderRepository $repository)
     {
+        $this->assertOrderTypeAccess($order);
+
         $request->validate([
             'customer_name'  => 'required|string|max:255',
             'customer_email' => 'nullable|email',
@@ -152,6 +163,8 @@ class OrderController extends Controller
      */
     public function updateStatus(Request $request, Order $order, OrderRepository $repository)
     {
+        $this->assertOrderTypeAccess($order);
+
         $repository->updateStatus($request, $order);
 
         return redirect()->route('admin.orders.index')->with('success', 'Order status successfully updated!');
@@ -162,6 +175,8 @@ class OrderController extends Controller
      */
     public function showInvoice(Order $order, OrderRepository $repository)
     {
+        $this->assertOrderTypeAccess($order);
+
         if (Setting::pull("is_enabled_ecommerce") === "0") {
             abort(404);
         }
@@ -184,6 +199,8 @@ class OrderController extends Controller
      */
     public function downloadInvoice(Order $order, OrderRepository $repository)
     {
+        $this->assertOrderTypeAccess($order);
+
         if (Setting::pull("is_enabled_ecommerce") === "0") {
             abort(404);
         }
@@ -206,6 +223,8 @@ class OrderController extends Controller
      */
     public function updateRemarks(Request $request, Order $order): RedirectResponse
     {
+        $this->assertOrderTypeAccess($order);
+
         $request->validate([
             'remarks' => 'nullable|string|max:1000',
         ]);
@@ -234,6 +253,8 @@ class OrderController extends Controller
      */
     public function destroy(Order $order, OrderRepository $repository)
     {
+        $this->assertOrderTypeAccess($order);
+
         $repository->destroy($order);
 
         return back()->with('success', 'Orders successfully deleted!');
@@ -247,5 +268,10 @@ class OrderController extends Controller
         $repository->bulkDelete($request->ids);
 
         return back()->with('success', 'Orders successfully deleted!');
+    }
+
+    private function assertOrderTypeAccess(Order $order): void
+    {
+        abort_unless(OrderTypePermission::canAccessOrder(auth()->user(), $order), 403);
     }
 }

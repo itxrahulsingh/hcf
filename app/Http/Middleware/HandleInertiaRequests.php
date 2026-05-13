@@ -6,6 +6,7 @@ use App\Models\Cause;
 use App\Models\Page;
 use App\Models\Setting;
 use App\Repositories\SettingRepository;
+use App\Support\OrderTypePermission;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -73,6 +74,7 @@ class HandleInertiaRequests extends Middleware
                 'isEnabledService' => $isEnabledService,
                 'isEnabledTeam' => $isEnabledTeam,
                 'causeTypes' => Cause::$causeTypes,
+                'allowedOrderTypes' => OrderTypePermission::allowedTypeMapForUser($request->user()),
             ]);
         }
 

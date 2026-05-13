@@ -69,6 +69,7 @@ class GiftRepository
             'gift_image' => $request->input('gift_image'),
             'amount' => $request->input('amount'),
             'unit' => $request->input('unit'), // Added Global Unit
+            'message' => $request->input('message'),
             'min_qty' => $request->input('min_qty'),
             'have_variations' => $request->input('have_variations', 0),
             'variations' => $request->input('variations', []),
@@ -97,6 +98,7 @@ class GiftRepository
             'gift_image' => $gift->gift_image,
             'amount' => $gift->amount,
             'unit' => $gift->unit, // Added Unit for Edit form
+            'message' => $gift->message,
             'min_qty' => $gift->min_qty,
             'have_variations' => $gift->have_variations,
             'variations' => $gift->variations ?? [],
@@ -137,6 +139,7 @@ class GiftRepository
             'gift_image' => $request->input('gift_image'),
             'amount' => $request->input('amount'),
             'unit' => $request->input('unit'),
+            'message' => $request->input('message'),
             'min_qty' => $request->input('min_qty'),
             'have_variations' => $request->input('have_variations', 0),
             'variations' => $variations ?? [],

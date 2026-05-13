@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\LanguagesController;
 use App\Http\Controllers\Admin\ManualPaymentGatewayController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\MonthlyGivingController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PaymentHistoryController;
@@ -494,6 +495,14 @@ Route::group(['prefix' => 'tickets', 'as' => 'tickets.'], function () {
     Route::post('/reply/{ticket}', [TicketController::class, 'submitReply'])->name('submit.reply');
     Route::delete('/delete/{ticket}', [TicketController::class, 'destroy'])->name('destroy');
     Route::delete('/bulk-delete', [TicketController::class, 'bulkDelete'])->name('bulk.delete');
+});
+
+Route::group(['prefix' => 'monthly-giving', 'as' => 'monthly.giving.'], function () {
+    Route::get('/', [MonthlyGivingController::class, 'index'])->name('index')->can('monthly_giving.index');
+    Route::get('/export', [MonthlyGivingController::class, 'export'])->name('export')->can('monthly_giving.index');
+    Route::get('/show/{subscription}', [MonthlyGivingController::class, 'show'])->name('show')->can('monthly_giving.show');
+    Route::post('/cancel/{subscription}', [MonthlyGivingController::class, 'cancel'])->name('cancel')->can('monthly_giving.edit');
+    Route::delete('/destroy/{subscription}', [MonthlyGivingController::class, 'destroy'])->name('destroy')->can('monthly_giving.delete');
 });
 
 /** Manual payment gateway routes **/

@@ -119,6 +119,20 @@ export default function AddSection({ setIsAddSection, addSection }) {
             sectionId: ""
         },
         {
+            type: "MonthlyGiving",
+            title: "Monthly Giving",
+            icon: "lucide:badge-indian-rupee",
+            data: {},
+            advanced: {
+                backgroundImage: "",
+                backgroundColor: "",
+                is_section_dark: false,
+                classes: [],
+                padding: { top: { lg: 0, md: 0 }, bottom: { lg: 0, md: 0 } }
+            },
+            sectionId: ""
+        },
+        {
             type: "CoreValue",
             title: "Core Value",
             icon: "lucide:cpu",
@@ -508,7 +522,8 @@ export default function AddSection({ setIsAddSection, addSection }) {
             !(isEnabledCaseStudy === "0" && (section.type === "CaseStudy" || section.type === "CaseStudyDetails")) &&
             !(isEnabledPortfolio === "0" && (section.type === "Portfolio" || section.type === "PortfolioDetails")) &&
             !(isEnabledService === "0" && section.type === "Service") &&
-            !(isEnabledTeam === "0" && (section.type === "Team" || section.type === "TeamDetails"))
+            !(isEnabledTeam === "0" && (section.type === "Team" || section.type === "TeamDetails")) &&
+            !(section.type === "MonthlyGiving" && !route().current("admin.pages.*"))
 
         return matchesSearch && shouldShow
     })

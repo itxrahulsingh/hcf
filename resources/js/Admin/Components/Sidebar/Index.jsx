@@ -101,6 +101,18 @@ export default function Sidebar() {
                                     </Link>
                                 </li>
                             )}
+                            {hasPermission("monthly_giving.index") && (
+                                <li className={`${route().current("admin.monthly.giving.*") ? "active" : ""}`}>
+                                    <Link href={route("admin.monthly.giving.index")}>
+                                        <span className="yoo-sidebar-link-title">
+                                            <span className="yoo-sidebar-link-icon yoo-orange-bg">
+                                                <Icon icon="ion:repeat-outline" width="20" height="20" />
+                                            </span>
+                                            <span className="yoo-sidebar-link-text">{translate("Monthly Giving")}</span>
+                                        </span>
+                                    </Link>
+                                </li>
+                            )}
 
                             {/* Posts Menu */}
                             <li className={`yoo-sidebar-has-children ${activeMenu === "posts" ? "active" : ""}`}>

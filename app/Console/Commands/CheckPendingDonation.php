@@ -9,6 +9,7 @@ use App\Models\Setting;
 use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Events\DonationSuccess;
 
 class CheckPendingDonation extends Command
@@ -31,12 +32,10 @@ class CheckPendingDonation extends Command
 
             $api = new Api($keyId, $keySecret);
 
-            $startDate = Carbon::yesterday()->startOfDay();
-            $endDate = Carbon::now()->endOfDay();
-
             $pendingOrders = Order::whereIn('payment_status', ['0', '1'])
                 ->whereNotNull('rzp_order_id')
-                ->whereBetween('created_at', [$startDate, $endDate])
+                // Keep a wider window so old "stuck" pending donations are retried too.
+                ->where('created_at', '>=', Carbon::now()->subDays(14))
                 ->get();
 
             if ($pendingOrders->isEmpty()) {
@@ -76,7 +75,17 @@ class CheckPendingDonation extends Command
             return;
         }
 
-        $payment = $api->payment->fetch($payments->items[0]->id);
+        // Prefer a captured payment first, then authorized, then the latest failed attempt.
+        $captured = collect($payments->items)->first(fn($p) => ($p->status ?? null) === 'captured');
+        $authorized = collect($payments->items)->first(fn($p) => ($p->status ?? null) === 'authorized');
+        $latest = collect($payments->items)->sortByDesc(fn($p) => $p->created_at ?? 0)->first();
+        $selected = $captured ?: $authorized ?: $latest;
+        if (!$selected?->id) {
+            $this->warn("Order {$order->order_number}: No valid payment item to process.");
+            return;
+        }
+
+        $payment = $api->payment->fetch($selected->id);
 
         $this->info("Checking Order {$order->order_number} - Payment Status: {$payment->status}");
 
@@ -87,69 +96,83 @@ class CheckPendingDonation extends Command
 
             case 'authorized':
                 try {
-                    $capture = $payment->capture(['amount' => $payment->amount, 'currency' => 'INR']);
+                    $capture = $payment->capture([
+                        'amount' => $payment->amount,
+                        'currency' => $payment->currency ?? 'INR'
+                    ]);
                     if ($capture->status === 'captured') {
                         $this->markAsSuccess($order, $payment->id);
                     }
                 } catch (\Exception $e) {
-                    $this->error("Order {$order->order_number}: Capture failed.");
+                    $this->error("Order {$order->order_number}: Capture failed. {$e->getMessage()}");
                 }
                 break;
 
             case 'failed':
-                $this->markAsFailed($order);
+                // Only mark failed when all known attempts are failed.
+                $hasNonFailedAttempt = collect($payments->items)->contains(
+                    fn ($p) => in_array(($p->status ?? ''), ['captured', 'authorized', 'created'], true)
+                );
+                if (!$hasNonFailedAttempt) {
+                    $this->markAsFailed($order);
+                } else {
+                    $this->warn("Order {$order->order_number}: Failed attempt exists but other attempts still pending/authorized.");
+                }
                 break;
         }
     }
 
     private function markAsSuccess(Order $order, $transactionId)
     {
-        $updateData = [
-            'payment_status' => '2',
-            'transaction_id' => $transactionId,
-            'payment_data'   => ['cron_verified' => true, 'rzp_status' => 'captured']
-        ];
+        $invoice = DB::transaction(function () use ($order, $transactionId) {
+            $existingPaymentData = is_array($order->payment_data) ? $order->payment_data : [];
+            $updateData = [
+                'payment_status' => '2',
+                'transaction_id' => $transactionId,
+                'payment_data'   => array_merge($existingPaymentData, ['cron_verified' => true, 'rzp_status' => 'captured'])
+            ];
 
-        if ($order->type === 'normal') {
-            $updateData['status'] = 'completed';
-        }
-
-        $order->update($updateData);
-
-        if (function_exists('generate_invoice_number')) {
-
-            $invoiceExists = Invoice::where('order_id', $order->id)->exists();
-            if (!$invoiceExists) {
-                $invData = generate_invoice_number();
-
-                Invoice::create([
-                    'invoice_number'        => $invData['number'],
-                    'invoice_count'         => $invData['count'],
-                    'order_id'              => $order->id,
-                    'customer_name'         => $order->customer_name,
-                    'customer_email'        => $order->customer_email,
-                    'customer_phone'        => $order->customer_phone,
-                    'shipping_address'      => $order->shipping_address,
-                    'state'                 => $order->state,
-                    'is_80g'                => $order->is_80g ?? false,
-                    'pancard'               => $order->pancard,
-                    'financial_year'        => $invData['fy'],
-                    'financial_year_start'  => $invData['start'],
-                    'financial_year_end'    => $invData['end'],
-                    'total_price'           => $order->total_price,
-                    'payment_method'        => $order->payment_method,
-                    'type'                  => $order->type,
-                    'payment_date'          => now(),
-                    'status'                => 'paid',
-                ]);
-
-                $this->info("Invoice generated for Order {$order->order_number}");
-            } else {
-                $this->info("Invoice already exists for Order {$order->order_number}, skipping generation.");
+            if ($order->type === 'normal') {
+                $updateData['status'] = 'completed';
             }
-        }
 
-        DonationSuccess::dispatch($order->invoice);
+            $order->update($updateData);
+
+            if (!function_exists('generate_invoice_number')) {
+                return $order->invoice()->first();
+            }
+
+            $invoice = $order->invoice()->first();
+            if ($invoice) {
+                return $invoice;
+            }
+
+            $invData = generate_invoice_number();
+            return Invoice::create([
+                'invoice_number'        => $invData['number'],
+                'invoice_count'         => $invData['count'],
+                'order_id'              => $order->id,
+                'customer_name'         => $order->customer_name,
+                'customer_email'        => $order->customer_email,
+                'customer_phone'        => $order->customer_phone,
+                'shipping_address'      => $order->shipping_address,
+                'state'                 => $order->state,
+                'is_80g'                => $order->is_80g ?? false,
+                'pancard'               => $order->pancard,
+                'financial_year'        => $invData['fy'],
+                'financial_year_start'  => $invData['start'],
+                'financial_year_end'    => $invData['end'],
+                'total_price'           => $order->total_price,
+                'payment_method'        => $order->payment_method,
+                'type'                  => $order->type,
+                'payment_date'          => now(),
+                'status'                => 'paid',
+            ]);
+        });
+
+        if ($invoice) {
+            DonationSuccess::dispatch($invoice);
+        }
 
         $this->info("Order {$order->order_number}: Marked as Success.");
     }

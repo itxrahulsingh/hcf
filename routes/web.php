@@ -9,6 +9,7 @@ use App\Http\Controllers\Frontend\CauseController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\FormResponseController;
+use App\Http\Controllers\Frontend\MonthlyGivingController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\PaymentController;
 use App\Http\Controllers\Frontend\PortfolioController;
@@ -136,6 +137,12 @@ Route::post('/form-store', [FormResponseController::class, 'store'])->name('form
 
 // Apply Coupon
 Route::post('/apply/coupon', [CheckoutController::class, 'applyCoupon'])->name('apply.coupon');
+
+// monthly giving
+Route::get('/monthly-giving/causes', [MonthlyGivingController::class, 'causes'])->name('monthly.giving.causes');
+Route::post('/monthly-giving/create', [MonthlyGivingController::class, 'create'])->name('monthly.giving.create');
+Route::post('/monthly-giving/verify', [MonthlyGivingController::class, 'verifySubscription'])->name('monthly.giving.verify');
+Route::post('/monthly-giving/webhook', [MonthlyGivingController::class, 'webhook'])->name('monthly.giving.webhook');
 
 // payment gateway related route
 Route::any('payment/{method}/cancel', [PaymentController::class, 'cancelCallback'])->name('payment.cancel');

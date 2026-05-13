@@ -47,6 +47,7 @@ import { Icon } from "@iconify/react"
 import CategorySectionCustomize from "@/Admin/Components/SectionCustomize/CategorySectionCustomize"
 import PopularProductSectionCustomize from "@/Admin/Components/SectionCustomize/PopularProductSectionCustomize"
 import TrendingProductSectionCustomize from "@/Admin/Components/SectionCustomize/TrendingProductSectionCustomize"
+import MonthlyGivingSectionCustomize from "@/Admin/Components/SectionCustomize/MonthlyGivingSectionCustomize"
 
 export default function Create() {
     const { pageData, pageInfo, clickedSection, currentLang } = useSelector((state) => state.pages)
@@ -337,6 +338,9 @@ export default function Create() {
             break
         case "TrendingProduct":
             customizeSection = <TrendingProductSectionCustomize index={sectionIndex.toString()} />
+            break
+        case "MonthlyGiving":
+            customizeSection = <MonthlyGivingSectionCustomize index={sectionIndex.toString()} />
             break
     }
 

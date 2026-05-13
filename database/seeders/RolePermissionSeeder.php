@@ -67,6 +67,10 @@ class RolePermissionSeeder extends Seeder
             'title' => 'Manage orders',
             'action' => ['index' => 1, 'delete' => 1, 'edit' => 1, 'create' => 1, 'show' => 1],
         ],
+        'monthly_giving' => [
+            'title' => 'Manage Monthly Giving',
+            'action' => ['index' => 1, 'show' => 1, 'create' => 1, 'edit' => 1, 'delete' => 1],
+        ],
         'support_tickets' => [
             'title' => 'Manage support tickets',
             'action' => ['index' => 1, 'delete' => 1, 'show' => 1, 'reply' => 1],

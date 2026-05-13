@@ -41,6 +41,7 @@ import CaseStudyDetailsSection from "@/Frontend/Components/Sections/CaseStudyDet
 import CategorySection from "@/Frontend/Components/Sections/CategorySection"
 import PopularProductSection from "@/Frontend/Components/Sections/PopularProductSection"
 import TrendingProductSection from "@/Frontend/Components/Sections/TrendingProductSection"
+import MonthlyGivingSection from "@/Frontend/Components/Sections/MonthlyGivingSection"
 
 export default function Page() {
     const { page_data, lang, page_info, site_name } = usePage().props
@@ -85,7 +86,8 @@ export default function Page() {
         TextEditor: TextEditorSection,
         Category: CategorySection,
         PopularProduct: PopularProductSection,
-        TrendingProduct: TrendingProductSection
+        TrendingProduct: TrendingProductSection,
+        MonthlyGiving: MonthlyGivingSection
     }
 
     SeoMeta(

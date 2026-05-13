@@ -152,6 +152,7 @@ export default function Page() {
                     data={pageHeaderData}
                     is_show_breadcrumb={currentLangPageInfo?.is_show_breadcrumb}
                     bgSrc={currentLangPageInfo?.breadcrumb_image ? currentLangPageInfo?.breadcrumb_image : "/static/page_heading.jpeg"}
+                    mobileBgSrc={currentLangPageInfo?.mobile_breadcrumb_image || ""}
                 />
             )}
 

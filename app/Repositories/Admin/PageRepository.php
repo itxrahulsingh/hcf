@@ -87,6 +87,7 @@ class PageRepository
             'is_show_breadcrumb' => $request->pageInfo[$default_lang]['is_show_breadcrumb'] ? '1' : '0',
             'is_show_shopping_cart' => $request->pageInfo[$default_lang]['is_show_shopping_cart'] ? '1' : '0',
             'breadcrumb_image' => $request->pageInfo[$default_lang]['breadcrumb_image'],
+            'mobile_breadcrumb_image' => $request->pageInfo[$default_lang]['mobile_breadcrumb_image'] ?? null,
             'header_layout' => $request->pageInfo[$default_lang]['header_layout'],
             'footer_layout' => $request->pageInfo[$default_lang]['footer_layout'],
             'sections' => json_encode($request->customizeSections),
@@ -119,6 +120,7 @@ class PageRepository
             'is_show_breadcrumb' => $request->pageInfo[$default_lang]['is_show_breadcrumb'] ? '1' : '0',
             'is_show_shopping_cart' => $request->pageInfo[$default_lang]['is_show_shopping_cart'] ? '1' : '0',
             'breadcrumb_image' => $request->pageInfo[$default_lang]['breadcrumb_image'],
+            'mobile_breadcrumb_image' => $request->pageInfo[$default_lang]['mobile_breadcrumb_image'] ?? null,
             'header_layout' => $request->pageInfo[$default_lang]['header_layout'],
             'footer_layout' => $request->pageInfo[$default_lang]['footer_layout'],
             'sections' => json_encode($request->customizeSections),
@@ -199,6 +201,7 @@ class PageRepository
                 'is_show_breadcrumb' => (bool) $page->is_show_breadcrumb,
                 'is_show_shopping_cart' => (bool) $page->is_show_shopping_cart,
                 'breadcrumb_image' => $page->breadcrumb_image,
+                'mobile_breadcrumb_image' => $page->mobile_breadcrumb_image,
                 'header_layout' => $page->header_layout,
                 'footer_layout' => $page->footer_layout,
             ];

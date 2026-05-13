@@ -18,7 +18,7 @@ export default function ContactInfoWidget() {
                     neglected by the society & have no one to take care for them.
                 </p>
             )}
-            {contact.contact_phone_number && (
+            {/* {contact.contact_phone_number && (
                 <h3>
                     <a href={`tel:${contact.contact_phone_number}`}>{contact.contact_phone_number}</a>
                 </h3>
@@ -27,7 +27,7 @@ export default function ContactInfoWidget() {
                 <p>
                     <a href={`mailto:${contact.contact_email}`}>{contact.contact_email}</a>
                 </p>
-            )}
+            )} */}
         </>
     )
 }

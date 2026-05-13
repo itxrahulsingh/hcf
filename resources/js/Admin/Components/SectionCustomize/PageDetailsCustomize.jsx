@@ -13,6 +13,7 @@ import {
     updatePageHeaderLayout,
     updatePageFooterLayout,
     updatePageBreadcrumbImage,
+    updatePageMobileBreadcrumbImage,
     updatePageBreadcrumbTitle,
     updatePageHeaderActionButtonText,
     updatePageHeaderActionButtonURL,
@@ -41,6 +42,7 @@ export default function PageDetailsCustomize() {
         dispatch(updatePageHeaderActionButtonText(data.header_action_button_text))
         dispatch(updatePageHeaderActionButtonURL(data.header_action_button_url))
         dispatch(updatePageBreadcrumbImage(data.breadcrumb_image))
+        dispatch(updatePageMobileBreadcrumbImage(data.mobile_breadcrumb_image))
         dispatch(updatePageMetaTitle(data.meta_title))
         dispatch(updatePageMetaDescription(data.meta_description))
         dispatch(updatePageMetaTags(data.meta_tags))
@@ -252,6 +254,26 @@ export default function PageDetailsCustomize() {
                                 )
                             }
                             defaultValue={data.breadcrumb_image}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>{translate("Breadcrumb Mobile Image")}</label>
+                        <SingleMediaUploader
+                            onSelected={(e) => {
+                                setData(
+                                    produce((draft) => {
+                                        draft.mobile_breadcrumb_image = e
+                                    })
+                                )
+                            }}
+                            handleRemoved={() =>
+                                setData(
+                                    produce((draft) => {
+                                        draft.mobile_breadcrumb_image = ""
+                                    })
+                                )
+                            }
+                            defaultValue={data.mobile_breadcrumb_image}
                         />
                     </div>
                 </div>

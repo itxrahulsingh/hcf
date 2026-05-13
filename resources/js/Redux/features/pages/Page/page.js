@@ -233,6 +233,14 @@ const pageSlice = createSlice({
                 state.pageInfo[currentLang].breadcrumb_image = newData
             }
         },
+        updatePageMobileBreadcrumbImage(state, action) {
+            const newData = action.payload
+            const currentLang = state.currentLang
+
+            if (state.pageInfo[currentLang]) {
+                state.pageInfo[currentLang].mobile_breadcrumb_image = newData
+            }
+        },
         updatePageBreadcrumbTitle(state, action) {
             const newData = action.payload
             const currentLang = state.currentLang
@@ -355,6 +363,7 @@ export const {
     updatePageSectionsData,
     updatePageBreadcrumb,
     updatePageBreadcrumbImage,
+    updatePageMobileBreadcrumbImage,
     updatePageBreadcrumbTitle,
     updatePageHeaderActionButtonText,
     updatePageHeaderActionButtonURL,

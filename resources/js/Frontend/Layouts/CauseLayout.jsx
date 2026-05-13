@@ -8,6 +8,7 @@ export default function CauseLayout({
     causeDetails,
     causeDetailsTitle,
     causeDetailsBannerImageUrl,
+    causeDetailsMobileBannerImageUrl,
     causeDetailsCategory,
     causeDetailsDate,
     causeDetailsUser,
@@ -32,7 +33,10 @@ export default function CauseLayout({
             {causeDetails ? (
                 <>
                     <div className="cause-banner-wrapper">
-                        <img src={causeDetailsBannerImageUrl} alt={causeDetails?.content?.title || "Cause Banner"} loading="lazy" decoding="async" className="cause-banner-image" />
+                        <picture>
+                            {causeDetailsMobileBannerImageUrl && <source media="(max-width: 767px)" srcSet={causeDetailsMobileBannerImageUrl} />}
+                            <img src={causeDetailsBannerImageUrl} alt={causeDetails?.content?.title || "Cause Banner"} loading="lazy" decoding="async" className="cause-banner-image" />
+                        </picture>
                     </div>
                 </>
             ) : (

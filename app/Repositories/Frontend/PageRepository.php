@@ -32,6 +32,7 @@ class PageRepository
                 'is_show_breadcrumb' => (bool) $page->is_show_breadcrumb,
                 'is_show_shopping_cart' => (bool) $page->is_show_shopping_cart,
                 'breadcrumb_image' => $page->breadcrumb_image,
+                'mobile_breadcrumb_image' => $page->mobile_breadcrumb_image,
                 'header_layout' => $page->header_layout,
                 'footer_layout' => $page->footer_layout,
             ];

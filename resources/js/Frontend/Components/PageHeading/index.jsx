@@ -1,13 +1,27 @@
 import { Link } from "@inertiajs/react"
-import React from "react"
+import React, { useEffect, useState } from "react"
 
-export default function PageHeading({ data, bgSrc, variant }) {
+export default function PageHeading({ data, bgSrc, mobileBgSrc, variant }) {
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768)
+        }
+
+        handleResize()
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
+    }, [])
+
+    const resolvedBg = isMobile && mobileBgSrc ? mobileBgSrc : bgSrc
+
     return (
         <>
             <div
                 className={`cs_page_heading cs_style_1 cs_bg_filed cs_primary_bg ${variant ? variant : ""}`}
                 style={{
-                    backgroundImage: `url(${bgSrc})`
+                    backgroundImage: `url(${resolvedBg})`
                 }}
             >
                 <div className="container">

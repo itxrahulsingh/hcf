@@ -75,6 +75,7 @@ export default function CauseDetails({
     const [selectedGateway, setSelectedGateway] = useState(null)
     const [receiptFile, setReceiptFile] = useState(null)
     const [special_image, setSpecialImage] = useState(null)
+    const [phoneValidationError, setPhoneValidationError] = useState("")
     const { states } = useStatesByCountry("IN")
     const [showDonateModal, setShowDonateModal] = useState(false)
     const [openFaqIndex, setOpenFaqIndex] = useState(null)
@@ -226,9 +227,18 @@ export default function CauseDetails({
         setData("special_image", file)
     }
 
+    const isValidIndianMobile = (mobile) => /^[6-9][0-9]{9}$/.test((mobile || "").trim())
+
     const handlePlaceOrder = (e) => {
         setIsCheckouting(true)
         e.preventDefault()
+
+        if (!isValidIndianMobile(data.phone)) {
+            setPhoneValidationError(translate("Please enter a valid 10-digit mobile number"))
+            return
+        }
+        setPhoneValidationError("")
+
         if (!captchaVerified && is_active_google_captcha === "1") {
             setCaptchaError(translate("Please complete the captcha verification"))
             return
@@ -325,6 +335,7 @@ export default function CauseDetails({
                 causeDetails={true}
                 causeDetailsTitle={cause?.content?.title}
                 causeDetailsBannerImageUrl={cause?.banner_image}
+                causeDetailsMobileBannerImageUrl={cause?.mobile_banner_image}
                 causeDetailsCategory={cause?.category?.content?.title}
                 causeDetailsDate={moment(cause?.created_at).format("ll")}
                 causeDetailsUser={cause?.user?.name}
@@ -1063,7 +1074,7 @@ export default function CauseDetails({
                                             <div className="form-floating">
                                                 <input
                                                     type="text"
-                                                    className={`Log form-control ${errors.phone ? "is-invalid" : ""}`}
+                                                    className={`Log form-control ${errors.phone || phoneValidationError ? "is-invalid" : ""}`}
                                                     id="donorPhone"
                                                     placeholder="Phone"
                                                     value={data.phone}
@@ -1071,9 +1082,15 @@ export default function CauseDetails({
                                                     onChange={(e) => {
                                                         const numericValue = e.target.value.replace(/\D/g, "")
                                                         setData("phone", numericValue)
+                                                        if (!numericValue || isValidIndianMobile(numericValue)) {
+                                                            setPhoneValidationError("")
+                                                        } else {
+                                                            setPhoneValidationError(translate("Please enter a valid 10-digit mobile number"))
+                                                        }
                                                     }}
                                                 />
                                                 <label htmlFor="donorPhone">{translate("Phone Number")} *</label>
+                                                {phoneValidationError && <div className="text-danger small mt-1">{phoneValidationError}</div>}
                                             </div>
                                         </div>
                                         <div className="col-md-12">

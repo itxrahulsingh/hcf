@@ -18,6 +18,7 @@ class CauseUpdateRequest extends FormRequest
             'category' => ['required'],
             'thumbnail_image' => ['required'],
             'banner_image' => ['required'],
+            'mobile_banner_image' => ['nullable', 'string'],
             'gallery_images' => ['nullable', 'array'],
             'gallery_images.*' => ['string'],
             'have_gift' => ['required', 'integer'],

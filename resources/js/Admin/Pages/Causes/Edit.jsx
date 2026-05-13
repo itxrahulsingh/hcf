@@ -570,6 +570,26 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                         }
                                     />
 
+                                    <label className="mt-3">{translate("Mobile Banner")}</label>
+                                    <SingleMediaUploader
+                                        onSelected={(e) =>
+                                            setData(
+                                                produce((d) => {
+                                                    d.mobile_banner_image = e
+                                                })
+                                            )
+                                        }
+                                        defaultValue={data.mobile_banner_image}
+                                        handleRemoved={() =>
+                                            setData(
+                                                produce((d) => {
+                                                    d.mobile_banner_image = ""
+                                                })
+                                            )
+                                        }
+                                    />
+                                    <FormValidationError message={errors?.mobile_banner_image} />
+
                                     <label className="mt-3">{translate("Gallery")}</label>
                                     <MultipleMediaUploader
                                         onSelected={(e) =>

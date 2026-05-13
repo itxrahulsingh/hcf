@@ -267,6 +267,7 @@ export default function BannerSectionCustomize({ index }) {
                 subtitle: sectionData?.data?.subtitle ?? "",
                 background_image_url: sectionData?.data?.background_image_url ?? "",
                 image_url: sectionData?.data?.image_url ?? "",
+                mobile_background_image_url: sectionData?.data?.mobile_background_image_url ?? "",
                 desktop_height: sectionData?.data?.desktop_height ?? "",
                 mobile_height: sectionData?.data?.mobile_height ?? "",
                 action_url: sectionData?.data?.action_url ?? ""
@@ -341,6 +342,26 @@ export default function BannerSectionCustomize({ index }) {
                         )}
                     </div>
                     {customizer}
+                    <div className="form-group">
+                        <label>Mobile Background Image (optional)</label>
+                        <SingleMediaUploader
+                            onSelected={(e) => {
+                                setData(
+                                    produce((draft) => {
+                                        draft.mobile_background_image_url = e
+                                    })
+                                )
+                            }}
+                            handleRemoved={() =>
+                                setData(
+                                    produce((draft) => {
+                                        draft.mobile_background_image_url = ""
+                                    })
+                                )
+                            }
+                            defaultValue={data.mobile_background_image_url}
+                        />
+                    </div>
                 </>
             ) : (
                 <AdvanceCustomize advancedCallback={advancedCallback} currentSection={advancedData} />

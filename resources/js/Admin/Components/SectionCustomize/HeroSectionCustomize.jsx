@@ -1862,6 +1862,7 @@ export default function HeroSectionCustomize({ index }) {
                 action_text: sectionData?.data?.action_text,
                 action_text_2: sectionData?.data?.action_text_2,
                 background_image_url: sectionData?.data?.background_image_url,
+                mobile_background_image_url: sectionData?.data?.mobile_background_image_url ?? "",
                 avatar_image_url: sectionData?.data?.avatar_image_url,
                 avatar_image_url_2: sectionData?.data?.avatar_image_url_2,
                 action_url: sectionData?.data?.action_url,
@@ -1987,6 +1988,26 @@ export default function HeroSectionCustomize({ index }) {
                         )}
                     </div>
                     {customizer}
+                    <div className="form-group">
+                        <label>Mobile Background image (optional)</label>
+                        <SingleMediaUploader
+                            onSelected={(e) => {
+                                setData(
+                                    produce((draft) => {
+                                        draft.mobile_background_image_url = e
+                                    })
+                                )
+                            }}
+                            handleRemoved={() =>
+                                setData(
+                                    produce((draft) => {
+                                        draft.mobile_background_image_url = ""
+                                    })
+                                )
+                            }
+                            defaultValue={data.mobile_background_image_url}
+                        />
+                    </div>
                 </>
             ) : (
                 <AdvanceCustomize advancedCallback={advancedCallback} currentSection={advancedData} />

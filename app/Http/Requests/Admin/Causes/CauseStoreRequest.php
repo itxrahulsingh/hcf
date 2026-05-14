@@ -23,6 +23,7 @@ class CauseStoreRequest extends FormRequest
             'gallery_images.*' => ['max:2048'],
             'custom_style' => ['nullable'],
             'status' => ['required'],
+            'deadline' => ['nullable', 'date', 'after:today'],
         ];
 
         // Append language-specific validation rules

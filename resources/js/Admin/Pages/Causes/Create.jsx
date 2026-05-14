@@ -13,6 +13,7 @@ import translate from "@/utils/translate"
 
 // Added products to props
 export default function Create({ languages, cause_categories, default_lang, gifts, products, cause_types }) {
+    const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0]
     const normalizedLanguages = Array.isArray(languages)
         ? languages.reduce((acc, language) => {
               if (language?.code) {
@@ -462,9 +463,11 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         <input
                                             type="date"
                                             className="form-control"
+                                            min={tomorrow}
                                             value={data.deadline}
                                             onChange={(e) => setData("deadline", e.target.value)}
                                         />
+                                        <FormValidationError message={errors.deadline} />
                                     </div>
                                 </div>
                             </div>

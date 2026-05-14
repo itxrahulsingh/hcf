@@ -257,13 +257,13 @@ export default function Show({ invoice, canEdit = false }) {
                                     {order && (
                                         <div className="btn-list mt-5 text-right">
                                             <a
-                                                href={route("admin.orders.show.invoice", order.id)}
+                                                href={route("admin.invoices.preview.pdf", invoice.id)}
                                                 target="_blank"
                                                 className="btn btn-outline-primary mr-2"
                                             >
                                                 <i className="fa fa-eye mr-1"></i> {translate("View PDF")}
                                             </a>
-                                            <a href={route("admin.orders.download.invoice", order.id)} className="btn btn-primary">
+                                            <a href={route("admin.invoices.download.pdf", invoice.id)} className="btn btn-primary">
                                                 <i className="fa fa-download mr-1"></i> {translate("Download PDF")}
                                             </a>
                                         </div>

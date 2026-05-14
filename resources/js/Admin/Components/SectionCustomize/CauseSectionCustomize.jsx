@@ -12,6 +12,18 @@ export default function CauseCustomize({ index }) {
     const [advancedData, setAdvancedData] = useState({})
     const [data, setData] = useState({})
     const [layout, setLayout] = useState(false)
+    const [dragIndex, setDragIndex] = useState(null)
+    const causeOptions = (() => {
+        try {
+            const causes = localStorage.getItem("causes") ? JSON.parse(localStorage.getItem("causes")) : []
+            return (Array.isArray(causes) ? causes : []).map((cause) => ({
+                value: String(cause?.id),
+                label: cause?.content?.title || `Cause #${cause?.id}`
+            }))
+        } catch {
+            return []
+        }
+    })()
 
     const advancedCallback = (data) => {
         if (index) {
@@ -74,6 +86,7 @@ export default function CauseCustomize({ index }) {
                                 <option value="oldest">Oldest First</option>
                                 <option value="alphabetical">Alphabetical (A-Z)</option>
                                 <option value="random">Random</option>
+                                <option value="manual_selection">Manual Selection</option>
                             </select>
                         </div>
                     </div>
@@ -151,6 +164,7 @@ export default function CauseCustomize({ index }) {
                                 <option value="oldest">Oldest First</option>
                                 <option value="alphabetical">Alphabetical (A-Z)</option>
                                 <option value="random">Random</option>
+                                <option value="manual_selection">Manual Selection</option>
                             </select>
                         </div>
                     </div>
@@ -253,6 +267,7 @@ export default function CauseCustomize({ index }) {
                                 <option value="oldest">Oldest First</option>
                                 <option value="alphabetical">Alphabetical (A-Z)</option>
                                 <option value="random">Random</option>
+                                <option value="manual_selection">Manual Selection</option>
                             </select>
                         </div>
                     </div>
@@ -331,6 +346,7 @@ export default function CauseCustomize({ index }) {
                                 <option value="oldest">Oldest First</option>
                                 <option value="alphabetical">Alphabetical (A-Z)</option>
                                 <option value="random">Random</option>
+                                <option value="manual_selection">Manual Selection</option>
                             </select>
                         </div>
                     </div>
@@ -417,6 +433,7 @@ export default function CauseCustomize({ index }) {
                                 <option value="oldest">Oldest First</option>
                                 <option value="alphabetical">Alphabetical (A-Z)</option>
                                 <option value="random">Random</option>
+                                <option value="manual_selection">Manual Selection</option>
                             </select>
                         </div>
                     </div>
@@ -462,7 +479,8 @@ export default function CauseCustomize({ index }) {
                 action_text: sectionData?.data?.action_text ?? "",
                 is_show_sidebar: sectionData?.data?.is_show_sidebar ?? true,
                 record_limit: sectionData?.data?.record_limit ?? "4",
-                order_by: sectionData?.data?.order_by ?? "latest"
+                order_by: sectionData?.data?.order_by ?? "latest",
+                selected_cause_ids: Array.isArray(sectionData?.data?.selected_cause_ids) ? sectionData?.data?.selected_cause_ids : []
             })
         }
     }, [currentLang, sectionData, index])
@@ -534,6 +552,76 @@ export default function CauseCustomize({ index }) {
                         )}
                     </div>
                     {customizer}
+                    {data.order_by === "manual_selection" && (
+                        <div className="form-group mt-3">
+                            <label className="mb-2">Selected Causes (in display order)</label>
+                            {(data.selected_cause_ids || []).map((causeId, idx) => (
+                                <div
+                                    className="d-flex align-items-center mb-2"
+                                    key={`selected-cause-${idx}`}
+                                    draggable
+                                    onDragStart={() => setDragIndex(idx)}
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDrop={() => {
+                                        if (dragIndex === null || dragIndex === idx) return
+                                        const next = [...(data.selected_cause_ids || [])]
+                                        const [moved] = next.splice(dragIndex, 1)
+                                        next.splice(idx, 0, moved)
+                                        setData({ ...data, selected_cause_ids: next })
+                                        setDragIndex(null)
+                                    }}
+                                    onDragEnd={() => setDragIndex(null)}
+                                    style={{
+                                        cursor: "move",
+                                        opacity: dragIndex === idx ? 0.6 : 1
+                                    }}
+                                >
+                                    <span className="me-2 text-muted" title="Drag to reorder" style={{ userSelect: "none" }}>
+                                        ::
+                                    </span>
+                                    <select
+                                        className="form-control me-2"
+                                        value={String(causeId || "")}
+                                        onChange={(e) => {
+                                            const next = [...(data.selected_cause_ids || [])]
+                                            next[idx] = e.target.value
+                                            setData({ ...data, selected_cause_ids: next })
+                                        }}
+                                    >
+                                        <option value="">Select Cause</option>
+                                        {causeOptions.map((opt) => (
+                                            <option key={opt.value} value={opt.value}>
+                                                {opt.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() => {
+                                            const next = (data.selected_cause_ids || []).filter((_, i) => i !== idx)
+                                            setData({ ...data, selected_cause_ids: next })
+                                        }}
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-sm mt-1"
+                                onClick={() =>
+                                    setData({
+                                        ...data,
+                                        selected_cause_ids: [...(data.selected_cause_ids || []), ""]
+                                    })
+                                }
+                            >
+                                Add Cause
+                            </button>
+                            <div className="small text-muted mt-2">Tip: Drag rows using :: to reorder selected causes.</div>
+                        </div>
+                    )}
                 </>
             ) : (
                 <AdvanceCustomize advancedCallback={advancedCallback} currentSection={advancedData} />

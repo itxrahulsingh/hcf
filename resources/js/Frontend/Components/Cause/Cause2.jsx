@@ -105,6 +105,12 @@ export default function Cause2({ data }) {
         })
     } else if (orderBy === "random") {
         processedCauses.sort(() => Math.random() - 0.5)
+    } else if (orderBy === "manual_selection") {
+        const selectedIds = Array.isArray(data?.selected_cause_ids) ? data.selected_cause_ids.map((id) => String(id)) : []
+        if (selectedIds.length > 0) {
+            const causeMap = new Map(processedCauses.map((cause) => [String(cause?.id), cause]))
+            processedCauses = selectedIds.map((id) => causeMap.get(id)).filter(Boolean)
+        }
     }
 
     const finalCauses = processedCauses.slice(0, limit)

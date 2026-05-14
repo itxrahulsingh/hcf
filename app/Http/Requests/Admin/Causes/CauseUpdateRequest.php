@@ -28,7 +28,7 @@ class CauseUpdateRequest extends FormRequest
             'custom_donation_amounts' => ['nullable', 'string'],
             'raised_amount' => ['nullable', 'numeric'],
             'goal_amount' => ['nullable', 'numeric'],
-            'deadline' => ['nullable', 'date'],
+            'deadline' => ['nullable', 'date', 'after:today'],
             'type' => ['nullable', 'string'],
             'video_url' => ['nullable', 'string'],
             'meta_image' => ['nullable', 'string'],

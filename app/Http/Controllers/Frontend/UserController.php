@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\UserUpdateRequest;
 use App\Models\Order;
+use App\Models\Invoice;
 use App\Models\Setting;
 use App\Models\User;
 use App\Repositories\Admin\OrderRepository;
@@ -68,10 +69,14 @@ class UserController extends Controller
         $data['font_family'] = $repository->getInvoiceFrontName();
         $data['direction'] = $repository->getInvoiceDirection();
         $data['text_align'] = $data['direction'] == 'ltr' ? 'left' : 'right';
+        $invoice = Invoice::where('order_id', $order->id)->latest('id')->first();
         $data['order'] = $order->load('orderitems');
+        $data['invoice'] = $invoice?->loadMissing('order');
         $pdf = PDF::loadView('invoice', $data);
 
-        return $pdf->download("invoice-{$order->order_number}.pdf");
+        $invoiceNumber = $invoice?->invoice_number ?: $order->order_number;
+        $safeInvoiceNumber = str_replace(['/', '\\'], '-', (string) $invoiceNumber);
+        return $pdf->download("invoice-{$safeInvoiceNumber}.pdf");
     }
 
     public function profile()

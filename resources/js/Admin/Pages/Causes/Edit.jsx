@@ -13,6 +13,7 @@ import translate from "@/utils/translate"
 
 // Added products to props
 export default function Edit({ languages, cause_categories, default_lang, gifts, products, cause, cause_types }) {
+    const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0]
     const { props } = usePage()
     const normalizedLanguages = Array.isArray(languages)
         ? languages.reduce((acc, language) => {
@@ -34,7 +35,13 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
             try {
                 let raw = cause?.[`${code}_faq`]
                 const parsed = typeof raw === "string" ? JSON.parse(raw) : raw
-                result[code] = Array.isArray(parsed) && parsed.length > 0 ? parsed : [{ title: "", content: "" }]
+                const normalized = (Array.isArray(parsed) ? parsed : [])
+                    .map((item) => ({
+                        title: (item?.title ?? item?.question ?? item?.faq_question ?? "").toString(),
+                        content: (item?.content ?? item?.answer ?? item?.faq_answer ?? "").toString()
+                    }))
+                    .filter((item) => item.title || item.content)
+                result[code] = normalized.length > 0 ? normalized : [{ title: "", content: "" }]
             } catch {
                 result[code] = [{ title: "", content: "" }]
             }
@@ -439,9 +446,11 @@ export default function Edit({ languages, cause_categories, default_lang, gifts,
                                         <input
                                             type="date"
                                             className="form-control"
+                                            min={tomorrow}
                                             value={data.deadline}
                                             onChange={(e) => setData("deadline", e.target.value)}
                                         />
+                                        <FormValidationError message={errors.deadline} />
                                     </div>
                                 </div>
                             </div>

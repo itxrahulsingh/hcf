@@ -471,6 +471,8 @@ Route::group(['prefix' => 'invoices', 'as' => 'invoices.'], function () {
     Route::get('/', [InvoiceController::class, 'index'])->name('index')->can('invoices.index');
     Route::get('/show/{invoice}', [InvoiceController::class, 'show'])->name('show')->can('invoices.show');
     Route::get('/edit/{invoice}', [InvoiceController::class, 'edit'])->name('edit')->can('invoices.edit');
+    Route::get('/preview-pdf/{invoice}', [InvoiceController::class, 'previewPdf'])->name('preview.pdf')->can('invoices.show');
+    Route::get('/download-pdf/{invoice}', [InvoiceController::class, 'downloadPdf'])->name('download.pdf')->can('invoices.show');
     Route::put('/update/{invoice}', [InvoiceController::class, 'update'])->name('update')->can('invoices.edit');
     Route::get('/export', [InvoiceController::class, 'export'])->name('export')->can('invoices.index');
     Route::post('/resend-invoice/{invoice}', [InvoiceController::class, 'resendInvoice'])->name('resend')->can('invoices.edit');
@@ -478,6 +480,7 @@ Route::group(['prefix' => 'invoices', 'as' => 'invoices.'], function () {
     Route::delete('/destroy/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy')->can('invoices.delete');
     Route::delete('/bulk-delete', [InvoiceController::class, 'bulkDelete'])->name('bulk.delete')->can('invoices.delete');
     Route::post('bulk-download', [InvoiceController::class, 'bulkDownload'])->name('bulk.download');
+    Route::post('/sync-pending-payments', [InvoiceController::class, 'syncPendingPayments'])->name('sync.pending.payments')->can('invoices.edit');
     Route::post('/status/toggle', [InvoiceController::class, 'statusToggle'])->name('status.toggle')->can('invoices.edit');
 });
 

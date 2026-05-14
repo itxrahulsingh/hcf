@@ -36,6 +36,10 @@ export default function CauseDetails({
     site_name,
     tagline
 }) {
+    const SPECIAL_MESSAGE_MAX_WORDS = 50
+    const HIDE_STICKY_FOR_BIRTHDAY = true
+    const HIDE_MOBILE_BOTTOM_STICKY_FOR_BIRTHDAY = true
+    const todayDate = moment().format("YYYY-MM-DD")
     const dispatch = useDispatch()
     const { carts, coupon } = useSelector((state) => state.carts)
 
@@ -76,6 +80,7 @@ export default function CauseDetails({
     const [receiptFile, setReceiptFile] = useState(null)
     const [special_image, setSpecialImage] = useState(null)
     const [phoneValidationError, setPhoneValidationError] = useState("")
+    const [specialDateError, setSpecialDateError] = useState("")
     const { states } = useStatesByCountry("IN")
     const [showDonateModal, setShowDonateModal] = useState(false)
     const [openFaqIndex, setOpenFaqIndex] = useState(null)
@@ -102,7 +107,7 @@ export default function CauseDetails({
         transactionId: "",
         receiptFile: null,
         special_name: "",
-        special_date: "",
+        special_date: todayDate,
         special_image: null,
         special_message: "",
         type: cause?.type || "",
@@ -221,6 +226,18 @@ export default function CauseDetails({
         setReceiptFile(file)
         setData("receiptFile", file)
     }
+
+    const countWords = (text = "") =>
+        text
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean).length
+
+    const trimToWordLimit = (text = "", maxWords = SPECIAL_MESSAGE_MAX_WORDS) => {
+        const words = text.trim().split(/\s+/).filter(Boolean)
+        if (words.length <= maxWords) return text
+        return words.slice(0, maxWords).join(" ")
+    }
     const handleSFileChange = (e) => {
         const file = e.target.files[0]
         setSpecialImage(file)
@@ -238,6 +255,16 @@ export default function CauseDetails({
             return
         }
         setPhoneValidationError("")
+
+        if (data.special_date) {
+            const isFormatValid = /^\d{4}-\d{2}-\d{2}$/.test(data.special_date)
+            const isFutureOrToday = moment(data.special_date, "YYYY-MM-DD", true).isSameOrAfter(moment(todayDate, "YYYY-MM-DD"), "day")
+            if (!isFormatValid || !isFutureOrToday) {
+                setSpecialDateError(translate("Please select a valid date (today or future)."))
+                return
+            }
+        }
+        setSpecialDateError("")
 
         if (!captchaVerified && is_active_google_captcha === "1") {
             setCaptchaError(translate("Please complete the captcha verification"))
@@ -276,8 +303,13 @@ export default function CauseDetails({
 
     const faqItems = (() => {
         try {
-            if (Array.isArray(cause?.content?.faq)) return cause.content.faq
-            return JSON.parse(cause?.content?.faq || "[]")
+            const rawFaq = Array.isArray(cause?.content?.faq) ? cause.content.faq : JSON.parse(cause?.content?.faq || "[]")
+            return (Array.isArray(rawFaq) ? rawFaq : [])
+                .map((item) => ({
+                    title: `${item?.title ?? item?.question ?? item?.faq_question ?? ""}`.trim(),
+                    content: `${item?.content ?? item?.answer ?? item?.faq_answer ?? ""}`.trim()
+                }))
+                .filter((item) => item.title || item.content)
         } catch {
             return []
         }
@@ -322,6 +354,8 @@ export default function CauseDetails({
             .join(" ")
     }
     const [hoveredGift, setHoveredGift] = useState(null)
+    const shouldHideStickyForCurrentCause = HIDE_STICKY_FOR_BIRTHDAY && cause?.type === "birthday"
+    const shouldHideMobileBottomSticky = HIDE_MOBILE_BOTTOM_STICKY_FOR_BIRTHDAY && cause?.type === "birthday"
 
     return (
         <FrontendLayout>
@@ -341,7 +375,7 @@ export default function CauseDetails({
                 causeDetailsUser={cause?.user?.name}
                 is_show_cause_details_sidebar={is_show_cause_details_sidebar}
             >
-                {!["birthday", "anniversary"].includes(cause?.type) && cause?.content?.content && (
+                {!shouldHideStickyForCurrentCause && !["anniversary"].includes(cause?.type) && cause?.content?.content && (
                     <div className="cause-sticky-nav">
                         <div className="container">
                             <ul className="cause-nav-list">
@@ -1014,22 +1048,24 @@ export default function CauseDetails({
                 </div>
 
                 {/* Mobile Sticky Footer & Modal Code */}
-                <div className="mobile-sticky-footer d-lg-none animate__animated animate__slideInUp">
-                    <div className="d-flex flex-column">
-                        <span className="small text-muted lh-1">{translate("Total")}</span>
-                        <span className="fw-bolder fs-4 text-primary lh-1 mt-1">
-                            <Amount amount={total.toFixed(2)} />
-                        </span>
+                {!shouldHideMobileBottomSticky && (
+                    <div className="mobile-sticky-footer d-lg-none animate__animated animate__slideInUp">
+                        <div className="d-flex flex-column">
+                            <span className="small text-muted lh-1">{translate("Total")}</span>
+                            <span className="fw-bolder fs-4 text-primary lh-1 mt-1">
+                                <Amount amount={total.toFixed(2)} />
+                            </span>
+                        </div>
+                        <button
+                            className="btn btn-primary rounded-pill fw-bold px-4 py-2 shadow-sm"
+                            style={{ background: "linear-gradient(45deg, #ff8c00, #ffaa33)", border: "none", minWidth: "150px" }}
+                            disabled={carts.length === 0 || total < Number(cause?.min_amount || 1)}
+                            onClick={() => setShowDonateModal(true)}
+                        >
+                            {translate("Donate Now")}
+                        </button>
                     </div>
-                    <button
-                        className="btn btn-primary rounded-pill fw-bold px-4 py-2 shadow-sm"
-                        style={{ background: "linear-gradient(45deg, #ff8c00, #ffaa33)", border: "none", minWidth: "150px" }}
-                        disabled={carts.length === 0 || total < Number(cause?.min_amount || 1)}
-                        onClick={() => setShowDonateModal(true)}
-                    >
-                        {translate("Donate Now")}
-                    </button>
-                </div>
+                )}
 
                 {/* Donation Modal (Keep existing logic) */}
                 {showDonateModal && <div className="modal-backdrop fade show"></div>}
@@ -1171,11 +1207,30 @@ export default function CauseDetails({
                                                                 type="date"
                                                                 className="form-control"
                                                                 id="specialDate"
+                                                                min={todayDate}
                                                                 value={data.special_date}
-                                                                onChange={(e) => setData("special_date", e.target.value)}
+                                                                onKeyDown={(e) => e.preventDefault()}
+                                                                onPaste={(e) => e.preventDefault()}
+                                                                onDrop={(e) => e.preventDefault()}
+                                                                onChange={(e) => {
+                                                                    const val = e.target.value
+                                                                    setData("special_date", val)
+                                                                    if (!val) {
+                                                                        setSpecialDateError("")
+                                                                        return
+                                                                    }
+                                                                    const isFormatValid = /^\d{4}-\d{2}-\d{2}$/.test(val)
+                                                                    const isFutureOrToday = moment(val, "YYYY-MM-DD", true).isSameOrAfter(moment(todayDate, "YYYY-MM-DD"), "day")
+                                                                    setSpecialDateError(
+                                                                        isFormatValid && isFutureOrToday
+                                                                            ? ""
+                                                                            : translate("Please select a valid date (today or future).")
+                                                                    )
+                                                                }}
                                                             />
                                                             <label htmlFor="specialDate">{translate(specialConfig.dateLabel)}</label>
                                                         </div>
+                                                        {specialDateError && <div className="text-danger small mt-1">{specialDateError}</div>}
                                                     </div>
                                                 )}
                                                 {specialConfig.showImage && (
@@ -1199,9 +1254,12 @@ export default function CauseDetails({
                                                                 placeholder="Message"
                                                                 id="specialMsg"
                                                                 value={data.special_message}
-                                                                onChange={(e) => setData("special_message", e.target.value)}
+                                                                onChange={(e) => setData("special_message", trimToWordLimit(e.target.value))}
                                                             ></textarea>
                                                             <label htmlFor="specialMsg">{translate(specialConfig.messageLabel)}</label>
+                                                        </div>
+                                                        <div className="small text-muted mt-1">
+                                                            {countWords(data.special_message)}/{SPECIAL_MESSAGE_MAX_WORDS} {translate("words")}
                                                         </div>
                                                     </div>
                                                 )}

@@ -14,7 +14,10 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Export;
 use App\Jobs\GenerateBulkInvoices;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use App\Repositories\Admin\OrderRepository;
+use PDF;
 
 class InvoiceController extends Controller
 {
@@ -25,7 +28,7 @@ class InvoiceController extends Controller
     {
         $this->middleware('can:invoices.index', ['only' => ['index', 'export', 'bulkDownload']]);
         $this->middleware('can:invoices.show', ['only' => ['show']]);
-        $this->middleware('can:invoices.edit', ['only' => ['edit', 'update', 'resendInvoice', 'updateRemarks']]);
+        $this->middleware('can:invoices.edit', ['only' => ['edit', 'update', 'resendInvoice', 'updateRemarks', 'syncPendingPayments']]);
         $this->middleware('can:invoices.delete', ['only' => ['destroy', 'bulkDelete']]);
     }
 
@@ -116,6 +119,46 @@ class InvoiceController extends Controller
         $invoice->update($validated);
 
         return back()->with('success', 'Invoice details updated successfully!');
+    }
+
+    public function previewPdf(Invoice $invoice, OrderRepository $repository)
+    {
+        $invoice->load('order.orderitems');
+
+        $data['invoice_logo'] = \App\Models\Setting::pull('invoice_logo');
+        $data['footer_contact'] = \App\Models\Setting::pull('footer_contact');
+        $data['footer_address'] = \App\Models\Setting::pull('footer_address');
+        $data['currency_symbol'] = \App\Models\Setting::pull('currency_symbol');
+        $data['font_family'] = $repository->getInvoiceFrontName();
+        $data['direction'] = $repository->getInvoiceDirection();
+        $data['text_align'] = $data['direction'] == 'ltr' ? 'left' : 'right';
+        $data['order'] = $invoice->order;
+        $data['invoice'] = $invoice;
+
+        $pdf = PDF::loadView('invoice', $data);
+        $invoiceNumber = $invoice->invoice_number ?: ($invoice->order?->order_number ?? $invoice->id);
+        $safeInvoiceNumber = str_replace(['/', '\\'], '-', (string) $invoiceNumber);
+        return $pdf->stream("invoice-{$safeInvoiceNumber}.pdf");
+    }
+
+    public function downloadPdf(Invoice $invoice, OrderRepository $repository)
+    {
+        $invoice->load('order.orderitems');
+
+        $data['invoice_logo'] = \App\Models\Setting::pull('invoice_logo');
+        $data['footer_contact'] = \App\Models\Setting::pull('footer_contact');
+        $data['footer_address'] = \App\Models\Setting::pull('footer_address');
+        $data['currency_symbol'] = \App\Models\Setting::pull('currency_symbol');
+        $data['font_family'] = $repository->getInvoiceFrontName();
+        $data['direction'] = $repository->getInvoiceDirection();
+        $data['text_align'] = $data['direction'] == 'ltr' ? 'left' : 'right';
+        $data['order'] = $invoice->order;
+        $data['invoice'] = $invoice;
+
+        $pdf = PDF::loadView('invoice', $data);
+        $invoiceNumber = $invoice->invoice_number ?: ($invoice->order?->order_number ?? $invoice->id);
+        $safeInvoiceNumber = str_replace(['/', '\\'], '-', (string) $invoiceNumber);
+        return $pdf->download("invoice-{$safeInvoiceNumber}.pdf");
     }
 
     /**
@@ -237,5 +280,29 @@ class InvoiceController extends Controller
         }, $fileName, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+    /**
+     * Manually run pending donation payment reconciliation.
+     */
+    public function syncPendingPayments(): RedirectResponse
+    {
+        try {
+            $exitCode = Artisan::call('donations:check-pending');
+            $output = trim((string) Artisan::output());
+
+            if ($exitCode === 0) {
+                $msg = 'Pending donation sync completed successfully.';
+                if ($output !== '') {
+                    $short = mb_substr(str_replace(["\r\n", "\n"], ' | ', $output), 0, 280);
+                    $msg .= ' ' . $short;
+                }
+                return back()->with('success', $msg);
+            }
+
+            return back()->with('error', 'Pending donation sync failed. Please check logs.');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Unable to run pending sync: ' . $e->getMessage());
+        }
     }
 }

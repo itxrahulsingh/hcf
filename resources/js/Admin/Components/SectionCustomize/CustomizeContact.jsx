@@ -5,7 +5,12 @@ import { updateContact } from "@/Redux/features/pages/Customize/customize"
 export default function CustomizeContact() {
     const contact = useSelector((state) => state.customize.contact)
     const dispatch = useDispatch()
-    const [data, setData] = useState(contact)
+    const [data, setData] = useState({
+        contact_phone_number: contact?.contact_phone_number || "",
+        contact_email: contact?.contact_email || "",
+        contact_address: contact?.contact_address || "",
+        footer_about_description: contact?.footer_about_description || ""
+    })
 
     useEffect(() => {
         dispatch(updateContact(data))
@@ -17,7 +22,7 @@ export default function CustomizeContact() {
                 <label>Contact Phone Number</label>
                 <input
                     type="text"
-                    value={data.contact_phone_number}
+                    value={data.contact_phone_number || ""}
                     onChange={(e) => setData({ ...data, contact_phone_number: e.target.value })}
                     className="form-control"
                 />
@@ -26,7 +31,7 @@ export default function CustomizeContact() {
                 <label>Contact Email</label>
                 <input
                     type="text"
-                    value={data.contact_email}
+                    value={data.contact_email || ""}
                     onChange={(e) => setData({ ...data, contact_email: e.target.value })}
                     className="form-control"
                 />
@@ -35,9 +40,19 @@ export default function CustomizeContact() {
                 <label>Contact Address</label>
                 <input
                     type="text"
-                    value={data.contact_address}
+                    value={data.contact_address || ""}
                     onChange={(e) => setData({ ...data, contact_address: e.target.value })}
                     className="form-control"
+                />
+            </div>
+            <div className="form-group">
+                <label>Footer About Description</label>
+                <textarea
+                    rows="4"
+                    value={data.footer_about_description || ""}
+                    onChange={(e) => setData({ ...data, footer_about_description: e.target.value })}
+                    className="form-control"
+                    placeholder="This text will show in footer about box when contact address is empty."
                 />
             </div>
         </>

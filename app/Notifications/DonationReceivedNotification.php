@@ -42,7 +42,8 @@ class DonationReceivedNotification extends Notification
             'font_family'     => $repository->getInvoiceFrontName(),
             'direction'       => $repository->getInvoiceDirection(),
             'text_align'      => $repository->getInvoiceDirection() == 'ltr' ? 'left' : 'right',
-            'order'           => $this->invoice->order
+            'order'           => $this->invoice->order,
+            'invoice'         => $this->invoice,
         ]);
 
         $pdf = PDF::loadView('invoice', $pdfData);

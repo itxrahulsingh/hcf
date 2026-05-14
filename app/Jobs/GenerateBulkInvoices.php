@@ -71,6 +71,7 @@ class GenerateBulkInvoices implements ShouldQueue
                         try {
                             $data = $globalData;
                             $data['order'] = $invoice->order;
+                            $data['invoice'] = $invoice;
 
                             $pdf = PDF::loadView('invoice', $data);
 

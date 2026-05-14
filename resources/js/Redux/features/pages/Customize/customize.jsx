@@ -40,7 +40,8 @@ const initialState = {
     contact: {
         contact_phone_number: "",
         contact_email: "",
-        contact_address: ""
+        contact_address: "",
+        footer_about_description: ""
     },
     custom_css: "",
     html_embed_code: ""

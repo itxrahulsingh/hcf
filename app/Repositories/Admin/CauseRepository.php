@@ -143,6 +143,28 @@ class CauseRepository
             if (!is_array($faqData)) {
                 $faqData = [];
             }
+            $faqData = collect($faqData)
+                ->map(function ($item) {
+                    if (!is_array($item)) {
+                        return null;
+                    }
+
+                    $title = trim((string) ($item['title'] ?? $item['question'] ?? $item['faq_question'] ?? ''));
+                    $content = trim((string) ($item['content'] ?? $item['answer'] ?? $item['faq_answer'] ?? ''));
+
+                    if ($title === '' && $content === '') {
+                        return null;
+                    }
+
+                    return [
+                        'title' => $title,
+                        'content' => $content,
+                    ];
+                })
+                ->filter()
+                ->values()
+                ->all();
+
             $cause->contents()->updateOrCreate(
                 ['language_code' => $code],
                 [
@@ -210,10 +232,36 @@ class CauseRepository
 
         foreach ($cause->contents as $content) {
             $code = $content->language_code;
+            $faq = $content->faq;
+            if (!is_array($faq)) {
+                $faq = [];
+            }
+            $faq = collect($faq)
+                ->map(function ($item) {
+                    if (!is_array($item)) {
+                        return null;
+                    }
+
+                    $title = trim((string) ($item['title'] ?? $item['question'] ?? $item['faq_question'] ?? ''));
+                    $body = trim((string) ($item['content'] ?? $item['answer'] ?? $item['faq_answer'] ?? ''));
+
+                    if ($title === '' && $body === '') {
+                        return null;
+                    }
+
+                    return [
+                        'title' => $title,
+                        'content' => $body,
+                    ];
+                })
+                ->filter()
+                ->values()
+                ->all();
+
             $data["{$code}_title"] = $content->title;
             $data["{$code}_content"] = $content->content;
             $data["{$code}_projects"] = $content->projects;
-            $data["{$code}_faq"] = $content->faq;
+            $data["{$code}_faq"] = $faq;
             $data["{$code}_updates"] = $content->updates;
         }
 

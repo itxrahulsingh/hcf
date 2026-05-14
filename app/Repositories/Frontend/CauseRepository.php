@@ -3,6 +3,7 @@
 namespace App\Repositories\Frontend;
 
 use App\Models\Cause;
+use App\Models\Setting;
 
 class CauseRepository
 {
@@ -40,9 +41,22 @@ class CauseRepository
      */
     public function show($slug): mixed
     {
-        $cause = $this->model->with(['content', 'category.content', 'user'])->where('slug', $slug)->first();
+        $cause = $this->model->with(['content', 'contents', 'category.content', 'user'])->where('slug', $slug)->first();
         if (! $cause) {
             abort(404);
+        }
+
+        // Permanent safety: if current language content is missing,
+        // fallback to default language so FAQ/updates/content never disappear.
+        if (!$cause->content) {
+            $defaultLang = Setting::pull('default_lang') ?: 'en';
+            $fallbackContent = $cause->contents->firstWhere('language_code', $defaultLang);
+            if (!$fallbackContent) {
+                $fallbackContent = $cause->contents->first();
+            }
+            if ($fallbackContent) {
+                $cause->setRelation('content', $fallbackContent);
+            }
         }
 
         return $cause;

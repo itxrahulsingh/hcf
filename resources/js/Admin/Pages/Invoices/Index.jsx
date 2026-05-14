@@ -679,6 +679,23 @@ export default function Index({ invoices, sort, filter, causes, total_turnover, 
                                     </div>
 
                                     <div className="dataTables_heading_right">
+                                        {hasPermission("invoices.edit") && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-warning btn-sm mr-3"
+                                                onClick={() =>
+                                                    showAlert(
+                                                        "Run Pending Sync?",
+                                                        "This will manually verify pending Razorpay donations and update receipts.",
+                                                        "Run Sync",
+                                                        () => router.post(route("admin.invoices.sync.pending.payments"))
+                                                    )
+                                                }
+                                            >
+                                                <IonIcon icon={refreshOutline} className="mr-2" />
+                                                {translate("Sync Pending Payments")}
+                                            </button>
+                                        )}
                                         <a
                                             href={route("admin.invoices.export", {
                                                 search: searchQuery,

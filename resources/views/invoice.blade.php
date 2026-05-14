@@ -98,7 +98,7 @@
         $inv = $invoice ?? ($order->invoice ?? null);
 
         $orgName    = $general['site_name'] ?? 'HOMELESS CARE FOUNDATION';
-        $orgLogo    = $general['site_logo_light'] ?? null;
+        $orgLogoRaw = $invoice_logo ?? ($general['site_logo_light'] ?? null);
         $orgAddress = $contact['contact_address'] ?? 'Address Not Configured';
         $orgPhone   = $contact['contact_phone_number'] ?? '';
         $orgEmail   = $contact['contact_email'] ?? '';
@@ -130,13 +130,28 @@
         if(function_exists('number_to_words')) {
              $amountWords = ucwords(number_to_words($amount)) . ' Only';
         }
+
+        $orgLogoPath = null;
+        if (!empty($orgLogoRaw) && is_string($orgLogoRaw)) {
+            // Normalize URL/path formats for dompdf local file loading.
+            $normalized = preg_replace('#^https?://[^/]+#', '', $orgLogoRaw);
+            if (str_starts_with($normalized, '/storage/')) {
+                $candidate = storage_path('app/public/' . ltrim(substr($normalized, strlen('/storage/')), '/'));
+            } else {
+                $candidate = public_path(ltrim($normalized, '/'));
+            }
+
+            if (is_file($candidate)) {
+                $orgLogoPath = $candidate;
+            }
+        }
     @endphp
 
     <div class="container">
 
         <div class="header-section">
-            @if($orgLogo)
-                <img src="{{ public_path($orgLogo) }}" class="logo" alt="Logo">
+            @if($orgLogoPath)
+                <img src="{{ $orgLogoPath }}" class="logo" alt="Logo">
             @endif
             <div class="org-name">{{ $orgName }}</div>
             <div class="org-details">Address: {{ $orgAddress }}</div>

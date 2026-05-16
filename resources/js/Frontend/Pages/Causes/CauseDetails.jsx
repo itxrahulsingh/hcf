@@ -36,7 +36,7 @@ export default function CauseDetails({
     site_name,
     tagline
 }) {
-    const SPECIAL_MESSAGE_MAX_WORDS = 50
+    const SPECIAL_MESSAGE_MAX_CHARS = 50
     const HIDE_STICKY_FOR_BIRTHDAY = true
     const HIDE_MOBILE_BOTTOM_STICKY_FOR_BIRTHDAY = true
     const todayDate = moment().format("YYYY-MM-DD")
@@ -79,6 +79,7 @@ export default function CauseDetails({
     const [selectedGateway, setSelectedGateway] = useState(null)
     const [receiptFile, setReceiptFile] = useState(null)
     const [special_image, setSpecialImage] = useState(null)
+    const [nameValidationError, setNameValidationError] = useState("")
     const [phoneValidationError, setPhoneValidationError] = useState("")
     const [specialDateError, setSpecialDateError] = useState("")
     const { states } = useStatesByCountry("IN")
@@ -142,10 +143,28 @@ export default function CauseDetails({
                 config = { ...config, title: "Anniversary Details", nameLabel: "Couple Name" }
                 break
             case "in_memory":
+                config = {
+                    ...config,
+                    title: "In the Memory Of",
+                    nameLabel: "Memory Of",
+                    dateLabel: "Date of Distribution",
+                    showImage: false,
+                    showMessage: false
+                }
+                break
+            case "pitru_paksha":
+                config = {
+                    ...config,
+                    title: "In the Memory Of",
+                    nameLabel: "Memory Of",
+                    dateLabel: "Date of Distribution",
+                    showImage: false,
+                    showMessage: false
+                }
+                break
             case "sadhu_seva":
             case "tiffin_seva":
             case "gau_seva":
-            case "pitru_paksha":
             case "homeless_needy":
                 config = {
                     ...config,
@@ -191,12 +210,15 @@ export default function CauseDetails({
         }
     }, [data.paymentMethod])
 
-    const handleDonationChange = (value) => {
-        setLocalAmount(value)
+    const handleDonationChange = (value, toggleIfSame = false) => {
         const numericVal = parseFloat(value)
+        const currentVal = parseFloat(localAmount)
+        const shouldClear = toggleIfSame && !isNaN(numericVal) && !isNaN(currentVal) && numericVal === currentVal
+        const nextValue = shouldClear ? "" : value
+        setLocalAmount(nextValue)
         dispatch(removeCart({ id: cause.id, type: "cause" }))
 
-        if (value && !isNaN(numericVal) && numericVal > 0) {
+        if (nextValue && !isNaN(numericVal) && numericVal > 0) {
             dispatch(
                 addCart({
                     id: cause.id,
@@ -227,17 +249,7 @@ export default function CauseDetails({
         setData("receiptFile", file)
     }
 
-    const countWords = (text = "") =>
-        text
-            .trim()
-            .split(/\s+/)
-            .filter(Boolean).length
-
-    const trimToWordLimit = (text = "", maxWords = SPECIAL_MESSAGE_MAX_WORDS) => {
-        const words = text.trim().split(/\s+/).filter(Boolean)
-        if (words.length <= maxWords) return text
-        return words.slice(0, maxWords).join(" ")
-    }
+    const trimToCharLimit = (text = "", maxChars = SPECIAL_MESSAGE_MAX_CHARS) => text.slice(0, maxChars)
     const handleSFileChange = (e) => {
         const file = e.target.files[0]
         setSpecialImage(file)
@@ -249,6 +261,12 @@ export default function CauseDetails({
     const handlePlaceOrder = (e) => {
         setIsCheckouting(true)
         e.preventDefault()
+
+        if (!`${data.name || ""}`.trim()) {
+            setNameValidationError(translate("Name is required"))
+            return
+        }
+        setNameValidationError("")
 
         if (!isValidIndianMobile(data.phone)) {
             setPhoneValidationError(translate("Please enter a valid 10-digit mobile number"))
@@ -356,6 +374,7 @@ export default function CauseDetails({
     const [hoveredGift, setHoveredGift] = useState(null)
     const shouldHideStickyForCurrentCause = HIDE_STICKY_FOR_BIRTHDAY && cause?.type === "birthday"
     const shouldHideMobileBottomSticky = HIDE_MOBILE_BOTTOM_STICKY_FOR_BIRTHDAY && cause?.type === "birthday"
+    const getFieldError = (field) => (errors?.[field] ? <div className="text-danger small mt-1">{errors[field]}</div> : null)
 
     return (
         <FrontendLayout>
@@ -415,51 +434,53 @@ export default function CauseDetails({
 
                 <div className="row">
                     <div className={`${["birthday", "anniversary"].includes(cause?.type) ? "col-md-12" : "col-md-8"}`}>
-                        <div className="mobile-donation-card d-lg-none" id="donate-section">
-                            <h5 className="fw-bold mb-3">{translate("Make a Donation")}</h5>
-                            {cause?.custom_donation_amounts && (
-                                <div className="amount-grid mb-3">
-                                    {(Array.isArray(cause.custom_donation_amounts)
-                                        ? cause.custom_donation_amounts
-                                        : cause.custom_donation_amounts.split(",")
-                                    ).map((val, idx) => {
-                                        const btnAmount = Number(val)
-                                        const isSelected = Number(localAmount) === btnAmount
-                                        return (
-                                            <button
-                                                key={idx}
-                                                type="button"
-                                                className={`amount-btn ${isSelected ? "active" : ""}`}
-                                                onClick={() => handleDonationChange(btnAmount)}
-                                            >
-                                                <Amount amount={btnAmount.toFixed(0)} />
-                                            </button>
-                                        )
-                                    })}
+                        {cause?.type !== "birthday" && (
+                            <div className="mobile-donation-card d-lg-none" id="donate-section">
+                                <h5 className="fw-bold mb-3">{translate("Make a Donation")}</h5>
+                                {cause?.custom_donation_amounts && (
+                                    <div className="amount-grid mb-3">
+                                        {(Array.isArray(cause.custom_donation_amounts)
+                                            ? cause.custom_donation_amounts
+                                            : cause.custom_donation_amounts.split(",")
+                                        ).map((val, idx) => {
+                                            const btnAmount = Number(val)
+                                            const isSelected = Number(localAmount) === btnAmount
+                                            return (
+                                                <button
+                                                    key={idx}
+                                                    type="button"
+                                                    className={`amount-btn ${isSelected ? "active" : ""}`}
+                                                    onClick={() => handleDonationChange(btnAmount, true)}
+                                                >
+                                                    <Amount amount={btnAmount.toFixed(0)} />
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                )}
+                                <div className="input-group input-group-lg border rounded-3 overflow-hidden bg-white">
+                                    <span className="input-group-text bg-white border-0 fw-bold text-muted">
+                                        <Amount amount={0} showSymbolOnly={true} />
+                                    </span>
+                                    <input
+                                        type="number"
+                                        className="form-control border-0 fw-bold fs-5 text-dark"
+                                        placeholder="Custom Amount"
+                                        value={localAmount}
+                                        onChange={(e) => handleDonationChange(e.target.value)}
+                                    />
                                 </div>
-                            )}
-                            <div className="input-group input-group-lg border rounded-3 overflow-hidden bg-white">
-                                <span className="input-group-text bg-white border-0 fw-bold text-muted">
-                                    <Amount amount={0} showSymbolOnly={true} />
-                                </span>
-                                <input
-                                    type="number"
-                                    className="form-control border-0 fw-bold fs-5 text-dark"
-                                    placeholder="Custom Amount"
-                                    value={localAmount}
-                                    onChange={(e) => handleDonationChange(e.target.value)}
-                                />
+                                {(() => {
+                                    const minAmount = Number(cause?.min_amount || 1)
+                                    if (total > 0 && total < minAmount)
+                                        return (
+                                            <div className="text-danger small mt-2 d-flex align-items-center">
+                                                <Icon icon="mdi:alert-circle-outline" className="me-1" /> Min total: <Amount amount={minAmount} />
+                                            </div>
+                                        )
+                                })()}
                             </div>
-                            {(() => {
-                                const minAmount = Number(cause?.min_amount || 1)
-                                if (total > 0 && total < minAmount)
-                                    return (
-                                        <div className="text-danger small mt-2 d-flex align-items-center">
-                                            <Icon icon="mdi:alert-circle-outline" className="me-1" /> Min total: <Amount amount={minAmount} />
-                                        </div>
-                                    )
-                            })()}
-                        </div>
+                        )}
 
                         {/* Gifts Section */}
                         {cause?.have_gift == 1 && cause?.gifts?.length > 0 && (
@@ -978,7 +999,7 @@ export default function CauseDetails({
                                                         key={idx}
                                                         type="button"
                                                         className={`amount-btn ${Number(localAmount) === Number(val) ? "active" : ""}`}
-                                                        onClick={() => handleDonationChange(Number(val))}
+                                                        onClick={() => handleDonationChange(Number(val), true)}
                                                     >
                                                         <Amount amount={Number(val).toFixed(0)} />
                                                     </button>
@@ -1094,23 +1115,28 @@ export default function CauseDetails({
                                             <div className="form-floating">
                                                 <input
                                                     type="text"
-                                                    className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                                                    className={`form-control ${errors.name || nameValidationError ? "is-invalid" : ""}`}
                                                     id="donorName"
                                                     placeholder="Name"
                                                     value={data.name}
                                                     onChange={(e) => {
                                                         const cleanValue = e.target.value.replace(/[^a-zA-Z\s]/g, "")
                                                         setData("name", toTitleCase(cleanValue))
+                                                        if (cleanValue.trim()) {
+                                                            setNameValidationError("")
+                                                        }
                                                     }}
                                                 />
                                                 <label htmlFor="donorName">{translate("Full Name")} *</label>
                                             </div>
+                                            {nameValidationError && <div className="text-danger small mt-1">{nameValidationError}</div>}
+                                            {getFieldError("name")}
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-floating">
                                                 <input
                                                     type="text"
-                                                    className={`Log form-control ${errors.phone || phoneValidationError ? "is-invalid" : ""}`}
+                                                    className={`form-control ${errors.phone || phoneValidationError ? "is-invalid" : ""}`}
                                                     id="donorPhone"
                                                     placeholder="Phone"
                                                     value={data.phone}
@@ -1128,6 +1154,7 @@ export default function CauseDetails({
                                                 <label htmlFor="donorPhone">{translate("Phone Number")} *</label>
                                                 {phoneValidationError && <div className="text-danger small mt-1">{phoneValidationError}</div>}
                                             </div>
+                                            {getFieldError("phone")}
                                         </div>
                                         <div className="col-md-12">
                                             <div className="form-floating">
@@ -1141,6 +1168,7 @@ export default function CauseDetails({
                                                 />
                                                 <label htmlFor="donorEmail">{translate("Email Address")} *</label>
                                             </div>
+                                            {getFieldError("email")}
                                         </div>
                                         <div className="col-md-8">
                                             <div className="form-floating">
@@ -1156,6 +1184,7 @@ export default function CauseDetails({
                                                 />
                                                 <label htmlFor="donorAddress">{translate("Address")} *</label>
                                             </div>
+                                            {getFieldError("address")}
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-floating">
@@ -1175,6 +1204,7 @@ export default function CauseDetails({
                                                 </select>
                                                 <label htmlFor="donorState">{translate("State")} *</label>
                                             </div>
+                                            {getFieldError("state")}
                                         </div>
                                     </div>
 
@@ -1190,7 +1220,7 @@ export default function CauseDetails({
                                                         <div className="form-floating">
                                                             <input
                                                                 type="text"
-                                                                className="form-control"
+                                                                className={`form-control ${errors.special_name ? "is-invalid" : ""}`}
                                                                 id="specialName"
                                                                 placeholder="Name"
                                                                 value={data.special_name}
@@ -1198,6 +1228,7 @@ export default function CauseDetails({
                                                             />
                                                             <label htmlFor="specialName">{translate(specialConfig.nameLabel)}</label>
                                                         </div>
+                                                        {getFieldError("special_name")}
                                                     </div>
                                                 )}
                                                 {specialConfig.showDate && (
@@ -1205,7 +1236,7 @@ export default function CauseDetails({
                                                         <div className="form-floating">
                                                             <input
                                                                 type="date"
-                                                                className="form-control"
+                                                                className={`form-control ${errors.special_date ? "is-invalid" : ""}`}
                                                                 id="specialDate"
                                                                 min={todayDate}
                                                                 value={data.special_date}
@@ -1230,6 +1261,7 @@ export default function CauseDetails({
                                                             />
                                                             <label htmlFor="specialDate">{translate(specialConfig.dateLabel)}</label>
                                                         </div>
+                                                        {getFieldError("special_date")}
                                                         {specialDateError && <div className="text-danger small mt-1">{specialDateError}</div>}
                                                     </div>
                                                 )}
@@ -1238,28 +1270,31 @@ export default function CauseDetails({
                                                         <input
                                                             type="file"
                                                             accept="image/*"
-                                                            className="form-control form-control-sm"
+                                                            className={`form-control form-control-sm ${errors.special_image ? "is-invalid" : ""}`}
                                                             onChange={handleSFileChange}
                                                         />
                                                         {special_image && (
                                                             <div className="small text-success mt-1 ms-1">Selected: {special_image.name}</div>
                                                         )}
+                                                        {getFieldError("special_image")}
                                                     </div>
                                                 )}
                                                 {specialConfig.showMessage && (
                                                     <div className="col-md-12">
                                                         <div className="form-floating">
                                                             <textarea
-                                                                className="form-control"
+                                                                className={`form-control ${errors.special_message ? "is-invalid" : ""}`}
                                                                 placeholder="Message"
                                                                 id="specialMsg"
+                                                                maxLength={SPECIAL_MESSAGE_MAX_CHARS}
                                                                 value={data.special_message}
-                                                                onChange={(e) => setData("special_message", trimToWordLimit(e.target.value))}
+                                                                onChange={(e) => setData("special_message", trimToCharLimit(e.target.value))}
                                                             ></textarea>
                                                             <label htmlFor="specialMsg">{translate(specialConfig.messageLabel)}</label>
                                                         </div>
+                                                        {getFieldError("special_message")}
                                                         <div className="small text-muted mt-1">
-                                                            {countWords(data.special_message)}/{SPECIAL_MESSAGE_MAX_WORDS} {translate("words")}
+                                                            {(data.special_message || "").length}/{SPECIAL_MESSAGE_MAX_CHARS} {translate("characters")}
                                                         </div>
                                                     </div>
                                                 )}
@@ -1316,6 +1351,7 @@ export default function CauseDetails({
                                                     <div className="text-danger small mt-1">Invalid Indian PAN format</div>
                                                 )}
                                             </div>
+                                            {getFieldError("pancard")}
                                         </div>
                                     )}
 
@@ -1395,7 +1431,7 @@ export default function CauseDetails({
                                                     <div className="form-floating">
                                                         <input
                                                             type="text"
-                                                            className="form-control"
+                                                            className={`form-control ${errors.transactionId ? "is-invalid" : ""}`}
                                                             id="txnId"
                                                             placeholder="Txn ID"
                                                             value={data.transactionId}
@@ -1404,15 +1440,17 @@ export default function CauseDetails({
                                                         />
                                                         <label htmlFor="txnId">{translate("Transaction ID")} *</label>
                                                     </div>
+                                                    {getFieldError("transactionId")}
                                                 </div>
                                                 <div className="col-5">
                                                     <input
                                                         type="file"
-                                                        className="form-control form-control-sm"
+                                                        className={`form-control form-control-sm ${errors.receiptFile ? "is-invalid" : ""}`}
                                                         style={{ height: "45px", paddingTop: "10px" }}
                                                         onChange={handleFileChange}
                                                         accept="image/*,.pdf"
                                                     />
+                                                    {getFieldError("receiptFile")}
                                                 </div>
                                             </div>
                                         </div>
@@ -1424,6 +1462,7 @@ export default function CauseDetails({
                                                 <ReCAPTCHA sitekey={captchaSiteKey} onChange={handleCaptchaChange} />
                                             </div>
                                         )}
+                                        {getFieldError("captchaToken")}
                                         <div className="form-check mb-3" style={{ display: "none" }}>
                                             <input
                                                 className="form-check-input"
@@ -1439,6 +1478,8 @@ export default function CauseDetails({
                                                 </Link>
                                             </label>
                                         </div>
+                                        {getFieldError("agreed")}
+                                        {getFieldError("paymentMethod")}
                                         <button
                                             className="btn btn-primary rounded-pill w-100 fw-bold"
                                             style={{ background: "linear-gradient(45deg, #ff8c00, #ffaa33)", border: "none", padding: "10px" }}

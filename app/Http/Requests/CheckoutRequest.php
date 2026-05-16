@@ -63,16 +63,7 @@ class CheckoutRequest extends FormRequest
             'transactionId' => [Rule::requiredIf(fn() => in_array($this->input('paymentMethod'), $manualGatewayNames, true)), 'nullable', 'string', 'max:255'],
             'receiptFile' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
             'special_name' => 'nullable|string|max:255',
-            'special_message' => [
-                'nullable',
-                'string',
-                function ($attribute, $value, $fail) {
-                    $words = preg_split('/\s+/', trim((string) $value), -1, PREG_SPLIT_NO_EMPTY);
-                    if (count($words) > 50) {
-                        $fail('The special message may not be greater than 50 words.');
-                    }
-                },
-            ],
+            'special_message' => 'nullable|string|max:50',
             'special_date' => 'nullable|date_format:Y-m-d|after_or_equal:today',
             'special_image' => 'nullable|file|image|max:5120',
             'is_80g' => 'nullable|boolean',

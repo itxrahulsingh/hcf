@@ -81,6 +81,21 @@ export default function InvoiceSetting({ invoice_setting }) {
                                         </div>
                                     </div>
 
+                                    <div className="row mt-3">
+                                        <div className="col-md-6">
+                                            <label htmlFor="invoice_unique_reg_no">{translate("Unique Reg. No")}</label>
+                                            <TextInput
+                                                title="Unique Reg. No"
+                                                type="text"
+                                                id="invoice_unique_reg_no"
+                                                error={errors?.invoice_unique_reg_no}
+                                                value={data.invoice_unique_reg_no || ""}
+                                                onChange={(e) => setData("invoice_unique_reg_no", e.target.value)}
+                                            />
+                                            <FromValidationError message={errors?.invoice_unique_reg_no} />
+                                        </div>
+                                    </div>
+
                                     {/* NEW FIELDS */}
                                     <div className="row mt-4">
                                         {/* Invoice Prefix */}

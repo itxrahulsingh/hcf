@@ -97,12 +97,22 @@
 
         $inv = $invoice ?? ($order->invoice ?? null);
 
+        $invoiceAddress = $footer_address
+            ?? \App\Models\Setting::query()
+                ->where('setting_group', 'invoice_setting')
+                ->where('setting_key', 'footer_address')
+                ->value('setting_value');
+        $invoiceUniqueRegNo = \App\Models\Setting::query()
+            ->where('setting_group', 'invoice_setting')
+            ->where('setting_key', 'invoice_unique_reg_no')
+            ->value('setting_value');
+
         $orgName    = $general['site_name'] ?? 'HOMELESS CARE FOUNDATION';
         $orgLogoRaw = $invoice_logo ?? ($general['site_logo_light'] ?? null);
-        $orgAddress = $contact['contact_address'] ?? 'Address Not Configured';
+        $orgAddress = $invoiceAddress ?: ($contact['contact_address'] ?? 'Address Not Configured');
         $orgPhone   = $contact['contact_phone_number'] ?? '';
         $orgEmail   = $contact['contact_email'] ?? '';
-        $orgReg     = $general['registration_number'] ?? 'AACTH6506JF20221';
+        $orgReg     = $invoiceUniqueRegNo ?: ($general['registration_number'] ?? '');
         $orgPan     = $general['pan_number'] ?? 'AACTH6506J';
         $orgWeb     = $general['site_url'] ?? 'www.homelesscarefoundation.com';
 
@@ -155,7 +165,9 @@
             @endif
             <div class="org-name">{{ $orgName }}</div>
             <div class="org-details">Address: {{ $orgAddress }}</div>
-            <div class="org-details reg-no">Unique Reg. No: {{ $orgReg }}</div>
+            @if(!empty($orgReg))
+                <div class="org-details reg-no">Unique Reg. No: {{ $orgReg }}</div>
+            @endif
         </div>
 
         <div class="receipt-title">Donation Receipt</div>

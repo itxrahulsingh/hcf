@@ -77,7 +77,7 @@ const RemarksCell = ({ order, canEdit }) => {
     )
 }
 
-const generateDonationSticker = (order, type, logoUrl) => {
+const generateDonationSticker = (order, type, logos = {}) => {
     const canvas = document.createElement("canvas")
     const ctx = canvas.getContext("2d")
     canvas.width = 1280
@@ -101,9 +101,11 @@ const generateDonationSticker = (order, type, logoUrl) => {
     const activeConfig = configs[type] || configs.birthday
     const frameImg = new Image()
     const logoImg = new Image()
+    logoImg.crossOrigin = "anonymous"
 
     frameImg.src = activeConfig.frame
-    logoImg.src = logoUrl
+    const resolvedLogo = logos?.dark || logos?.light || ""
+    logoImg.src = resolvedLogo
 
     frameImg.onload = () => {
         ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height)
@@ -112,7 +114,7 @@ const generateDonationSticker = (order, type, logoUrl) => {
             const hasImage = !!userImg
             const centerX = hasImage ? 380 : 640
 
-            if (logoImg.complete) {
+            if (logoImg.complete && logoImg.naturalWidth > 0) {
                 const logoW = 200
                 const logoH = (logoImg.height * logoW) / logoImg.width
                 ctx.drawImage(logoImg, centerX - logoW / 2, 60, logoW, logoH)
@@ -164,16 +166,137 @@ const generateDonationSticker = (order, type, logoUrl) => {
             link.click()
         }
 
-        if (order.special_image) {
-            const userImg = new Image()
-            userImg.crossOrigin = "anonymous"
-            userImg.src = `/storage/${order.special_image}`
-            userImg.onload = () => renderFinal(userImg)
-            userImg.onerror = () => renderFinal(null)
+        const renderWithOptionalUserImage = () => {
+            if (order.special_image) {
+                const userImg = new Image()
+                userImg.crossOrigin = "anonymous"
+                userImg.src = `/storage/${order.special_image}`
+                userImg.onload = () => renderFinal(userImg)
+                userImg.onerror = () => renderFinal(null)
+            } else {
+                renderFinal(null)
+            }
+        }
+
+        const resolvedLogo = logos?.dark || logos?.light || ""
+        if (!resolvedLogo) {
+            renderWithOptionalUserImage()
+            return
+        }
+
+        if (logoImg.complete) {
+            renderWithOptionalUserImage()
         } else {
-            renderFinal(null)
+            logoImg.onload = renderWithOptionalUserImage
+            logoImg.onerror = renderWithOptionalUserImage
         }
     }
+}
+
+const generateA4NameStickerSheet = (order, logos = {}) => {
+    const specialName = (order?.special_name || "").trim()
+    if (!specialName) return
+
+    const canvas = document.createElement("canvas")
+    const ctx = canvas.getContext("2d")
+
+    // A4 at 300 DPI (portrait)
+    canvas.width = 2480
+    canvas.height = 3508
+
+    const columns = 2
+    const rows = 3
+    const pagePadding = 80
+    const gutterX = 40
+    const gutterY = 80
+    const stickerW = Math.floor((canvas.width - pagePadding * 2 - gutterX * (columns - 1)) / columns)
+    const baseStickerH = Math.floor((canvas.height - pagePadding * 2 - gutterY * (rows - 1)) / rows)
+    const stickerH = Math.floor(baseStickerH * 0.92)
+
+    const logoUrl = logos?.dark || logos?.light || ""
+    const logoImg = new Image()
+    logoImg.crossOrigin = "anonymous"
+    logoImg.src = logoUrl
+
+    const fitText = (text, maxWidth, maxFont, minFont = 40, weight = "bold") => {
+        let size = maxFont
+        while (size >= minFont) {
+            ctx.font = `${weight} ${size}px sans-serif`
+            if (ctx.measureText(text).width <= maxWidth) return size
+            size -= 2
+        }
+        return minFont
+    }
+
+    const drawSticker = (x, y) => {
+        // Outer border
+        ctx.fillStyle = "#ffffff"
+        ctx.fillRect(x, y, stickerW, stickerH)
+        ctx.strokeStyle = "#111"
+        ctx.lineWidth = 3
+        ctx.strokeRect(x, y, stickerW, stickerH)
+
+        const topH = Math.floor(stickerH * 0.5)
+        const bottomY = y + topH
+
+        // Middle divider
+        ctx.beginPath()
+        ctx.moveTo(x, bottomY)
+        ctx.lineTo(x + stickerW, bottomY)
+        ctx.stroke()
+
+        // Top text area
+        const textMaxWidth = stickerW - 60
+        ctx.fillStyle = "#000"
+        ctx.textAlign = "center"
+
+        const titleFont = fitText("With Love From", textMaxWidth, 90, 44, "700")
+        ctx.font = `700 ${titleFont}px sans-serif`
+        ctx.fillText("With Love From", x + stickerW / 2, y + Math.floor(topH * 0.35))
+
+        const nameFont = fitText(specialName, textMaxWidth, 100, 46, "800")
+        ctx.font = `800 ${nameFont}px sans-serif`
+        ctx.fillText(specialName, x + stickerW / 2, y + Math.floor(topH * 0.78))
+
+        // Bottom logo area
+        if (logoImg.complete && logoImg.naturalWidth > 0) {
+            const maxLogoW = stickerW - 120
+            const maxLogoH = Math.floor(stickerH * 0.38)
+            const ratio = Math.min(maxLogoW / logoImg.width, maxLogoH / logoImg.height)
+            const drawW = Math.floor(logoImg.width * ratio)
+            const drawH = Math.floor(logoImg.height * ratio)
+            const logoX = x + Math.floor((stickerW - drawW) / 2)
+            const logoY = bottomY + Math.floor((stickerH - topH - drawH) / 2)
+            ctx.drawImage(logoImg, logoX, logoY, drawW, drawH)
+        }
+    }
+
+    const render = () => {
+        ctx.fillStyle = "#fff"
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < columns; c++) {
+                const x = pagePadding + c * (stickerW + gutterX)
+                const y = pagePadding + r * (stickerH + gutterY)
+                drawSticker(x, y)
+            }
+        }
+
+        const link = document.createElement("a")
+        const safeName = specialName.replace(/[^a-z0-9-_]+/gi, "_")
+        link.download = `a4_name_sticker_sheet_${safeName}.png`
+        link.href = canvas.toDataURL("image/png")
+        link.click()
+    }
+
+    if (!logoUrl) {
+        render()
+        return
+    }
+
+    logoImg.onload = render
+    logoImg.onerror = render
 }
 
 function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
@@ -203,7 +326,10 @@ export default function Index({ orders, sort, filter, causes }) {
     const [isMarkAll, setIsMarkAll] = useState(false)
     const [markItems, setMarkItems] = useState([])
     const customize = useSelector((state) => state.customize)
-    const siteLogo = customize?.general?.site_logo_light
+    const siteLogos = {
+        light: customize?.general?.site_logo_light,
+        dark: customize?.general?.site_logo_dark
+    }
 
     // State for Media Modal
     const [mediaModalOrder, setMediaModalOrder] = useState(null)
@@ -737,21 +863,39 @@ export default function Index({ orders, sort, filter, causes }) {
                                                                     )}
                                                                     {order.special_name &&
                                                                         (order.type === "birthday" || order.type === "anniversary") && (
-                                                                            <button
-                                                                                onClick={() => generateDonationSticker(order, order.type, siteLogo)}
-                                                                                className="badge border-0 p-2"
-                                                                                style={{
-                                                                                    backgroundColor:
-                                                                                        order.type === "birthday" ? "#FFE600" : "#FFC0CB",
-                                                                                    cursor: "pointer",
-                                                                                    borderRadius: "4px"
-                                                                                }}
-                                                                            >
-                                                                                <IonIcon
-                                                                                    icon={giftOutline}
-                                                                                    style={{ color: "#000", fontSize: "18px" }}
-                                                                                />
-                                                                            </button>
+                                                                            <>
+                                                                                <button
+                                                                                    onClick={() => generateDonationSticker(order, order.type, siteLogos)}
+                                                                                    className="badge border-0 p-2"
+                                                                                    title="Download framed sticker"
+                                                                                    style={{
+                                                                                        backgroundColor:
+                                                                                            order.type === "birthday" ? "#FFE600" : "#FFC0CB",
+                                                                                        cursor: "pointer",
+                                                                                        borderRadius: "4px"
+                                                                                    }}
+                                                                                >
+                                                                                    <IonIcon
+                                                                                        icon={giftOutline}
+                                                                                        style={{ color: "#000", fontSize: "18px" }}
+                                                                                    />
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={() => generateA4NameStickerSheet(order, siteLogos)}
+                                                                                    className="badge border-0 p-2"
+                                                                                    title="Download A4 sticker sheet (6)"
+                                                                                    style={{
+                                                                                        backgroundColor: "#111827",
+                                                                                        cursor: "pointer",
+                                                                                        borderRadius: "4px"
+                                                                                    }}
+                                                                                >
+                                                                                    <IonIcon
+                                                                                        icon={documentTextOutline}
+                                                                                        style={{ color: "#fff", fontSize: "18px" }}
+                                                                                    />
+                                                                                </button>
+                                                                            </>
                                                                         )}
                                                                 </div>
                                                             </td>

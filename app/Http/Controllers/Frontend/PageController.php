@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cause;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Page;
@@ -11,6 +12,7 @@ use App\Models\ProductCategory;
 use App\Models\Setting;
 use App\Models\Tag;
 use App\Repositories\Frontend\BlogRepository;
+use App\Repositories\Frontend\CauseRepository;
 use App\Repositories\Frontend\PageRepository;
 use App\Repositories\Frontend\ProductRepository;
 use Artesaos\SEOTools\Facades\OpenGraph;
@@ -35,8 +37,26 @@ class PageController extends Controller
         return Inertia::render('Page/Page', $data);
     }
 
-    public function show($slug, PageRepository $pageRepository, BlogRepository $blogRepository, ProductRepository $productRepository)
+    public function show(
+        $slug,
+        PageRepository $pageRepository,
+        BlogRepository $blogRepository,
+        ProductRepository $productRepository,
+        CauseRepository $causeRepository
+    )
     {
+        // Cause-first resolver for root slug URLs:
+        // /{cause-slug} should open cause details and
+        // keep dynamic page builder pages working as fallback.
+        $hasPublishedCause = Cause::query()
+            ->where('slug', $slug)
+            ->where('status', '1')
+            ->exists();
+
+        if ($hasPublishedCause) {
+            return app(CauseController::class)->show($slug, $causeRepository);
+        }
+
         $page = Page::where('slug', $slug)->with('content')->first();
         if (! $page) {
             abort(404);

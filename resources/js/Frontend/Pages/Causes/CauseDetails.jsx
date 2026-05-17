@@ -613,7 +613,7 @@ export default function CauseDetails({
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <div className="card-body py-2 px-4 d-flex flex-column justify-content-center">
+                                                        <div className="card-body py-2 px-2 d-flex flex-column justify-content-center">
                                                             <div className="cause-card-title small fw-bold mb-1">{gift.content?.title}</div>
 
                                                             {/* FIX: Only show Description section if content exists */}

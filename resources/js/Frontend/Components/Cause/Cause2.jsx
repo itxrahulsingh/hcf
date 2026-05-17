@@ -130,15 +130,15 @@ export default function Cause2({ data }) {
                     {finalCauses?.map((item, index) => (
                         <div className="col-xl-3 col-lg-4 col-sm-6" key={index}>
                             <div style={styles.cardContainer} className="cs_zoom_effect_wrap">
-                                <NavigationLink href={route("cause.show", item?.slug)} style={styles.imgWrapper} className="cs_zoom_effect">
+                                <NavigationLink href={route("pages.show", item?.slug)} style={styles.imgWrapper} className="cs_zoom_effect">
                                     <img src={item?.thumbnail_image} alt={item?.content?.title} loading="lazy" decoding="async" style={styles.img} />
                                 </NavigationLink>
                                 <h2 className="mb-0 p-0 fs-6">
-                                    <NavigationLink href={route("cause.show", item?.slug)} style={styles.title} title={item?.content?.title}>
+                                    <NavigationLink href={route("pages.show", item?.slug)} style={styles.title} title={item?.content?.title}>
                                         {item?.content?.title}
                                     </NavigationLink>
                                 </h2>
-                                <NavigationLink href={route("cause.show", item?.slug)} style={styles.donateBtn} className="cs_donate_btn_hover">
+                                <NavigationLink href={route("pages.show", item?.slug)} style={styles.donateBtn} className="cs_donate_btn_hover">
                                    {data?.action_text || "DONATE NOW"}
                                 </NavigationLink>
                             </div>

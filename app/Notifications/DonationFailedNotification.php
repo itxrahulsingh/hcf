@@ -18,7 +18,7 @@ class DonationFailedNotification extends Notification
     public function __construct(Order $order)
     {
         $this->order = $order;
-        $this->retryUrl = route('cause.show', $this->order->cause->slug);
+        $this->retryUrl = route("pages.show", $this->order->cause->slug);
     }
 
     public function via($notifiable)

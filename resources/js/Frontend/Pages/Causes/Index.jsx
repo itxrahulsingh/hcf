@@ -73,7 +73,7 @@ export default function Index({
                                 <div className="col-sm-6" key={index}>
                                     <div className="cs_post cs_style_1">
                                         {item?.thumbnail_image && (
-                                            <Link href={route("cause.show", { slug: item.slug })} className="cs_post_thumb">
+                                            <Link href={route("pages.show", { slug: item.slug })} className="cs_post_thumb">
                                                 <img src={item?.thumbnail_image} alt="Post" loading="lazy" decoding="async"/>
                                             </Link>
                                         )}
@@ -83,7 +83,7 @@ export default function Index({
                                                 <span>{moment(item?.created_at).format("ll")}</span>
                                             </div>
                                             <h2 className="cs_post_title cs_fs_30 cs_normal mb-0">
-                                                <Link href={route("cause.show", {slug: item.slug})}>
+                                                <Link href={route("pages.show", {slug: item.slug})}>
                                                     {item?.content?.title}
                                                 </Link>
                                             </h2>

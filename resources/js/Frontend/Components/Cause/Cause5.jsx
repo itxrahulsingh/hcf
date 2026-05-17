@@ -96,17 +96,17 @@ export default function Cause5({ data }) {
                     {finalCauses?.map((item, index) => (
                         <SwiperSlide key={index}>
                             <div className="cs_post cs_style_2">
-                                <NavigationLink href={route("cause.show", item?.slug)} className="cs_post_thumb">
+                                <NavigationLink href={route("pages.show", item?.slug)} className="cs_post_thumb">
                                     <img src={item?.thumbnail_image} alt={item?.content?.title} loading="lazy" decoding="async"/>
                                 </NavigationLink>
                                 <div className="cs_post_info">
                                     <h2 className="cs_post_title cs_fs_30 cs_normal">
-                                        <NavigationLink href={route("cause.show", item?.slug)}>{item?.content?.title}</NavigationLink>
+                                        <NavigationLink href={route("pages.show", item?.slug)}>{item?.content?.title}</NavigationLink>
                                     </h2>
                                     <p className="cs_post_subtitle">{item?.content?.content?.replace(/<[^>]*>/g, "").substring(0, 200)}</p>
                                     {action_text && (
                                         <Button
-                                            href={route("cause.show", item?.slug)}
+                                            href={route("pages.show", item?.slug)}
                                             btnText={action_text}
                                             btnClass="cs_btn cs_style_1 cs_type_4 cs_primary_color cs_fs_18 cs_medium"
                                         />

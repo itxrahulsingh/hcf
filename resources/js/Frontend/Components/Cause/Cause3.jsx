@@ -113,20 +113,20 @@ export default function Cause3({ data }) {
                             {finalCauses?.map((item, index) => (
                                 <SwiperSlide key={index}>
                                     <div className="cs_post cs_style_1">
-                                        <NavigationLink href={route("cause.show", item?.slug)} className="cs_post_thumb">
+                                        <NavigationLink href={route("pages.show", item?.slug)} className="cs_post_thumb">
                                             <img src={item?.thumbnail_image} alt={item?.content?.title} loading="lazy" decoding="async" />
                                         </NavigationLink>
                                         <div className="cs_post_info">
                                             <div className="cs_post_meta">
                                                 <span className="cs_medium cs_fs_18 cs_primary_color">
-                                                    <NavigationLink href={route("cause.show", item?.slug)}>
+                                                    <NavigationLink href={route("pages.show", item?.slug)}>
                                                         {item?.category?.content?.title}
                                                     </NavigationLink>
                                                 </span>
                                                 <span>{moment(item?.created_at).format("ll")}</span>
                                             </div>
                                             <h2 className="cs_post_title cs_fs_30 cs_normal mb-0">
-                                                <NavigationLink href={route("cause.show", item?.slug)}>{item?.content?.title}</NavigationLink>
+                                                <NavigationLink href={route("pages.show", item?.slug)}>{item?.content?.title}</NavigationLink>
                                             </h2>
                                         </div>
                                     </div>

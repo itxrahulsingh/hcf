@@ -318,7 +318,7 @@ export default function Index({ causes = { data: [], total: 0, links: [] }, sort
                                                                 )}
                                                                 {hasPermission("causes.show") && (
                                                                     <a
-                                                                        href={route("cause.show", cause.slug)}
+                                                                        href={route("pages.show", cause.slug)}
                                                                         target="_blank"
                                                                         className="badge badge-secondary"
                                                                     >

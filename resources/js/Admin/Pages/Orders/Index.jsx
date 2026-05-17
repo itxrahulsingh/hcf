@@ -83,18 +83,32 @@ const generateDonationSticker = (order, type, logos = {}) => {
     canvas.width = 1280
     canvas.height = 720
 
+    const STICKER_TEXT_BY_TYPE = {
+        valentine_day: "Happy Valentine Day",
+        birthday: "Happy Birthday",
+        anniversary: "Happy Anniversary",
+        in_memory: "In Loving Memory of",
+        sadhu_seva: "With Love From",
+        tiffin_seva: "With Love From",
+        gau_seva: "With Love From",
+        pitru_paksha: "Pitru Paksha Anndan Seva",
+        homeless_needy: "With Love From"
+    }
+
+    const resolvedTypeTitle = STICKER_TEXT_BY_TYPE[type] || "With Love From"
+
     const configs = {
         birthday: {
             frame: "/static/images/sticker/birthday-frame.jpeg",
             badgeText: "May God bless you",
             badgeColor: "#FFE600",
-            titleText: "Happy Birthday"
+            titleText: resolvedTypeTitle
         },
         anniversary: {
             frame: "/static/images/sticker/anniversary-frame.jpeg",
             badgeText: "We bless you",
             badgeColor: "#FFC0CB",
-            titleText: "Happy Anniversary"
+            titleText: resolvedTypeTitle
         }
     }
 
@@ -195,6 +209,19 @@ const generateDonationSticker = (order, type, logos = {}) => {
 
 const generateA4NameStickerSheet = (order, logos = {}) => {
     const specialName = (order?.special_name || "").trim()
+    const type = order?.type
+    const STICKER_TEXT_BY_TYPE = {
+        valentine_day: "Happy Valentine Day",
+        birthday: "Happy Birthday",
+        anniversary: "Happy Anniversary",
+        in_memory: "In Loving Memory of",
+        sadhu_seva: "With Love From",
+        tiffin_seva: "With Love From",
+        gau_seva: "With Love From",
+        pitru_paksha: "Pitru Paksha Anndan Seva",
+        homeless_needy: "With Love From"
+    }
+    const headlineText = STICKER_TEXT_BY_TYPE[type] || "With Love From"
     if (!specialName) return
 
     const canvas = document.createElement("canvas")
@@ -250,9 +277,9 @@ const generateA4NameStickerSheet = (order, logos = {}) => {
         ctx.fillStyle = "#000"
         ctx.textAlign = "center"
 
-        const titleFont = fitText("With Love From", textMaxWidth, 90, 44, "700")
+        const titleFont = fitText(headlineText, textMaxWidth, 90, 44, "700")
         ctx.font = `700 ${titleFont}px sans-serif`
-        ctx.fillText("With Love From", x + stickerW / 2, y + Math.floor(topH * 0.35))
+        ctx.fillText(headlineText, x + stickerW / 2, y + Math.floor(topH * 0.35))
 
         const nameFont = fitText(specialName, textMaxWidth, 100, 46, "800")
         ctx.font = `800 ${nameFont}px sans-serif`
@@ -333,6 +360,17 @@ export default function Index({ orders, sort, filter, causes }) {
 
     // State for Media Modal
     const [mediaModalOrder, setMediaModalOrder] = useState(null)
+    const STICKER_SUPPORTED_TYPES = [
+        "valentine_day",
+        "birthday",
+        "anniversary",
+        "in_memory",
+        "sadhu_seva",
+        "tiffin_seva",
+        "gau_seva",
+        "pitru_paksha",
+        "homeless_needy"
+    ]
 
     const paymentStatusOptions = {
         0: "Initialize",
@@ -861,8 +899,7 @@ export default function Index({ orders, sort, filter, causes }) {
                                                                     {hasPermission("orders.delete") && (
                                                                         <DeleteButton href={route("admin.orders.destroy", order)} />
                                                                     )}
-                                                                    {order.special_name &&
-                                                                        (order.type === "birthday" || order.type === "anniversary") && (
+                                                                    {order.special_name && STICKER_SUPPORTED_TYPES.includes(order.type) && (
                                                                             <>
                                                                                 <button
                                                                                     onClick={() => generateDonationSticker(order, order.type, siteLogos)}

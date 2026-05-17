@@ -433,7 +433,7 @@ export default function CauseDetails({
                 )}
 
                 <div className="row">
-                    <div className={`${["birthday", "anniversary"].includes(cause?.type) ? "col-md-12" : "col-md-8"}`}>
+                    <div className={`${cause?.type === "birthday" ? "col-md-12" : "col-md-8"}`}>
                         {cause?.type !== "birthday" && (
                             <div className="mobile-donation-card d-lg-none" id="donate-section">
                                 <h5 className="fw-bold mb-3">{translate("Make a Donation")}</h5>
@@ -485,7 +485,7 @@ export default function CauseDetails({
                         {/* Gifts Section */}
                         {cause?.have_gift == 1 && cause?.gifts?.length > 0 && (
                             <div className="cs_cause_details_wrap mt-5 mt-md-0">
-                                <h3 className="mb-2">{translate("Select a Gift")}</h3>
+                                <h3 className="mb-2">{translate("Donation")}</h3>
 
                                 {variationGifts.length > 0 && (
                                     <div className="row justify-content-center">
@@ -984,8 +984,8 @@ export default function CauseDetails({
                     </div>
 
                     {/* Right Sidebar*/}
-                    {!["birthday", "anniversary"].includes(cause?.type) && (
-                        <div className={`col-xl-4`}>
+                    {cause?.type !== "birthday" && (
+                        <div className={`col-xl-4 d-none d-xl-block`}>
                             <div className="sidebar-sticky-wrapper">
                                 <div className="donation-card">
                                     <div className="donation-logic-wrapper">

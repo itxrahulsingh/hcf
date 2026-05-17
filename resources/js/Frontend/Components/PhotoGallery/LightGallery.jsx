@@ -8,6 +8,7 @@ export default function LightGallery({ modalToggle, setModalToggle, galleryList,
     const [zoomLevel, setZoomLevel] = useState(1)
     const [swiperRef, setSwiperRef] = useState(null)
     const [isFullscreen, setIsFullscreen] = useState(false)
+    const [activeSlideIndex, setActiveSlideIndex] = useState(initialSlideIndex || 0)
 
     // Helper to convert YouTube links to Embed links
     const getEmbedUrl = (url) => {
@@ -21,7 +22,7 @@ export default function LightGallery({ modalToggle, setModalToggle, galleryList,
         } else {
             videoId = url.split("/").pop()
         }
-        return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`
+        return `https://www.youtube.com/embed/${videoId}?rel=0`
     }
 
     const handleZoomIn = () => setZoomLevel((prev) => prev * 1.1)
@@ -63,6 +64,7 @@ export default function LightGallery({ modalToggle, setModalToggle, galleryList,
                 <div className="cs_gallery_modal_slider_wrap">
                     <Swiper
                         onSwiper={setSwiperRef}
+                        onSlideChange={(swiper) => setActiveSlideIndex(swiper.activeIndex)}
                         pagination={{ type: "fraction" }}
                         navigation={true}
                         modules={[Pagination, Mousewheel, Navigation, Autoplay]}
@@ -79,10 +81,10 @@ export default function LightGallery({ modalToggle, setModalToggle, galleryList,
                                             <iframe
                                                 width="100%"
                                                 height="100%"
-                                                src={getEmbedUrl(item.video_url)}
+                                                src={index === activeSlideIndex ? getEmbedUrl(item.video_url) : "about:blank"}
                                                 title={item.gallery_title}
                                                 frameBorder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                                 allowFullScreen
                                             ></iframe>
                                         </div>

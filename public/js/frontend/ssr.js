@@ -24167,7 +24167,7 @@ function CauseDetails(_ref) {
     meta_image = _ref.meta_image,
     site_name = _ref.site_name,
     tagline = _ref.tagline;
-  var SPECIAL_MESSAGE_MAX_WORDS = 50;
+  var SPECIAL_MESSAGE_MAX_CHARS = 50;
   var HIDE_STICKY_FOR_BIRTHDAY = true;
   var HIDE_MOBILE_BOTTOM_STICKY_FOR_BIRTHDAY = true;
   var todayDate = moment__WEBPACK_IMPORTED_MODULE_1___default()().format("YYYY-MM-DD");
@@ -24237,26 +24237,30 @@ function CauseDetails(_ref) {
     setSpecialImage = _useState12[1];
   var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(""),
     _useState14 = _slicedToArray(_useState13, 2),
-    phoneValidationError = _useState14[0],
-    setPhoneValidationError = _useState14[1];
+    nameValidationError = _useState14[0],
+    setNameValidationError = _useState14[1];
   var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(""),
     _useState16 = _slicedToArray(_useState15, 2),
-    specialDateError = _useState16[0],
-    setSpecialDateError = _useState16[1];
+    phoneValidationError = _useState16[0],
+    setPhoneValidationError = _useState16[1];
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(""),
+    _useState18 = _slicedToArray(_useState17, 2),
+    specialDateError = _useState18[0],
+    setSpecialDateError = _useState18[1];
   var _useStatesByCountry = (0,_hooks_useStatesByCountry__WEBPACK_IMPORTED_MODULE_20__["default"])("IN"),
     states = _useStatesByCountry.states;
-  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(false),
-    _useState18 = _slicedToArray(_useState17, 2),
-    showDonateModal = _useState18[0],
-    setShowDonateModal = _useState18[1];
-  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(null),
+  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(false),
     _useState20 = _slicedToArray(_useState19, 2),
-    openFaqIndex = _useState20[0],
-    setOpenFaqIndex = _useState20[1];
-  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(""),
+    showDonateModal = _useState20[0],
+    setShowDonateModal = _useState20[1];
+  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(null),
     _useState22 = _slicedToArray(_useState21, 2),
-    localAmount = _useState22[0],
-    setLocalAmount = _useState22[1];
+    openFaqIndex = _useState22[0],
+    setOpenFaqIndex = _useState22[1];
+  var _useState23 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(""),
+    _useState24 = _slicedToArray(_useState23, 2),
+    localAmount = _useState24[0],
+    setLocalAmount = _useState24[1];
   var toggleFaq = function toggleFaq(index) {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
   };
@@ -24326,10 +24330,26 @@ function CauseDetails(_ref) {
         });
         break;
       case "in_memory":
+        config = _objectSpread(_objectSpread({}, config), {}, {
+          title: "In the Memory Of",
+          nameLabel: "Memory Of",
+          dateLabel: "Date of Distribution",
+          showImage: false,
+          showMessage: false
+        });
+        break;
+      case "pitru_paksha":
+        config = _objectSpread(_objectSpread({}, config), {}, {
+          title: "In the Memory Of",
+          nameLabel: "Memory Of",
+          dateLabel: "Date of Distribution",
+          showImage: false,
+          showMessage: false
+        });
+        break;
       case "sadhu_seva":
       case "tiffin_seva":
       case "gau_seva":
-      case "pitru_paksha":
       case "homeless_needy":
         config = _objectSpread(_objectSpread({}, config), {}, {
           title: "Seva / Distribution",
@@ -24380,13 +24400,17 @@ function CauseDetails(_ref) {
     }
   }, [data.paymentMethod]);
   var handleDonationChange = function handleDonationChange(value) {
-    setLocalAmount(value);
+    var toggleIfSame = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var numericVal = parseFloat(value);
+    var currentVal = parseFloat(localAmount);
+    var shouldClear = toggleIfSame && !isNaN(numericVal) && !isNaN(currentVal) && numericVal === currentVal;
+    var nextValue = shouldClear ? "" : value;
+    setLocalAmount(nextValue);
     dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.removeCart)({
       id: cause.id,
       type: "cause"
     }));
-    if (value && !isNaN(numericVal) && numericVal > 0) {
+    if (nextValue && !isNaN(numericVal) && numericVal > 0) {
       dispatch((0,_Redux_features_Cart_cart__WEBPACK_IMPORTED_MODULE_3__.addCart)({
         id: cause.id,
         type: "cause",
@@ -24414,16 +24438,10 @@ function CauseDetails(_ref) {
     setReceiptFile(file);
     setData("receiptFile", file);
   };
-  var countWords = function countWords() {
+  var trimToCharLimit = function trimToCharLimit() {
     var text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-    return text.trim().split(/\s+/).filter(Boolean).length;
-  };
-  var trimToWordLimit = function trimToWordLimit() {
-    var text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-    var maxWords = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : SPECIAL_MESSAGE_MAX_WORDS;
-    var words = text.trim().split(/\s+/).filter(Boolean);
-    if (words.length <= maxWords) return text;
-    return words.slice(0, maxWords).join(" ");
+    var maxChars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : SPECIAL_MESSAGE_MAX_CHARS;
+    return text.slice(0, maxChars);
   };
   var handleSFileChange = function handleSFileChange(e) {
     var file = e.target.files[0];
@@ -24436,6 +24454,11 @@ function CauseDetails(_ref) {
   var handlePlaceOrder = function handlePlaceOrder(e) {
     setIsCheckouting(true);
     e.preventDefault();
+    if (!"".concat(data.name || "").trim()) {
+      setNameValidationError((0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Name is required"));
+      return;
+    }
+    setNameValidationError("");
     if (!isValidIndianMobile(data.phone)) {
       setPhoneValidationError((0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Please enter a valid 10-digit mobile number"));
       return;
@@ -24549,12 +24572,18 @@ function CauseDetails(_ref) {
       return word.charAt(0).toUpperCase() + word.slice(1);
     }).join(" ");
   };
-  var _useState23 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(null),
-    _useState24 = _slicedToArray(_useState23, 2),
-    hoveredGift = _useState24[0],
-    setHoveredGift = _useState24[1];
+  var _useState25 = (0,react__WEBPACK_IMPORTED_MODULE_17__.useState)(null),
+    _useState26 = _slicedToArray(_useState25, 2),
+    hoveredGift = _useState26[0],
+    setHoveredGift = _useState26[1];
   var shouldHideStickyForCurrentCause = HIDE_STICKY_FOR_BIRTHDAY && (cause === null || cause === void 0 ? void 0 : cause.type) === "birthday";
   var shouldHideMobileBottomSticky = HIDE_MOBILE_BOTTOM_STICKY_FOR_BIRTHDAY && (cause === null || cause === void 0 ? void 0 : cause.type) === "birthday";
+  var getFieldError = function getFieldError(field) {
+    return errors !== null && errors !== void 0 && errors[field] ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+      className: "text-danger small mt-1",
+      children: errors[field]
+    }) : null;
+  };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)(_Frontend_Layouts_FrontendLayout__WEBPACK_IMPORTED_MODULE_11__["default"], {
     children: [(cause === null || cause === void 0 ? void 0 : cause.custom_style) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_inertiajs_react__WEBPACK_IMPORTED_MODULE_0__.Head, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("style", {
@@ -24632,7 +24661,7 @@ function CauseDetails(_ref) {
         className: "row",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
           className: "".concat(["birthday", "anniversary"].includes(cause === null || cause === void 0 ? void 0 : cause.type) ? "col-md-12" : "col-md-8"),
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+          children: [(cause === null || cause === void 0 ? void 0 : cause.type) !== "birthday" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
             className: "mobile-donation-card d-lg-none",
             id: "donate-section",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("h5", {
@@ -24647,7 +24676,7 @@ function CauseDetails(_ref) {
                   type: "button",
                   className: "amount-btn ".concat(isSelected ? "active" : ""),
                   onClick: function onClick() {
-                    return handleDonationChange(btnAmount);
+                    return handleDonationChange(btnAmount, true);
                   },
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
                     amount: btnAmount.toFixed(0)
@@ -25237,7 +25266,7 @@ function CauseDetails(_ref) {
                       type: "button",
                       className: "amount-btn ".concat(Number(localAmount) === Number(val) ? "active" : ""),
                       onClick: function onClick() {
-                        return handleDonationChange(Number(val));
+                        return handleDonationChange(Number(val), true);
                       },
                       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_Components_Amount__WEBPACK_IMPORTED_MODULE_19__["default"], {
                         amount: Number(val).toFixed(0)
@@ -25394,32 +25423,38 @@ function CauseDetails(_ref) {
                   children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Personal Details")
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                   className: "row g-2 mb-3",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "col-md-6",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "form-floating",
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                         type: "text",
-                        className: "form-control ".concat(errors.name ? "is-invalid" : ""),
+                        className: "form-control ".concat(errors.name || nameValidationError ? "is-invalid" : ""),
                         id: "donorName",
                         placeholder: "Name",
                         value: data.name,
                         onChange: function onChange(e) {
                           var cleanValue = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                           setData("name", toTitleCase(cleanValue));
+                          if (cleanValue.trim()) {
+                            setNameValidationError("");
+                          }
                         }
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("label", {
                         htmlFor: "donorName",
                         children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Full Name"), " *"]
                       })]
-                    })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                    }), nameValidationError && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                      className: "text-danger small mt-1",
+                      children: nameValidationError
+                    }), getFieldError("name")]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "col-md-6",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "form-floating",
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                         type: "text",
-                        className: "Log form-control ".concat(errors.phone || phoneValidationError ? "is-invalid" : ""),
+                        className: "form-control ".concat(errors.phone || phoneValidationError ? "is-invalid" : ""),
                         id: "donorPhone",
                         placeholder: "Phone",
                         value: data.phone,
@@ -25440,10 +25475,10 @@ function CauseDetails(_ref) {
                         className: "text-danger small mt-1",
                         children: phoneValidationError
                       })]
-                    })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                    }), getFieldError("phone")]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "col-md-12",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "form-floating",
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                         type: "email",
@@ -25458,10 +25493,10 @@ function CauseDetails(_ref) {
                         htmlFor: "donorEmail",
                         children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Email Address"), " *"]
                       })]
-                    })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                    }), getFieldError("email")]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "col-md-8",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "form-floating",
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                         type: "text",
@@ -25476,10 +25511,10 @@ function CauseDetails(_ref) {
                         htmlFor: "donorAddress",
                         children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Address"), " *"]
                       })]
-                    })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                    }), getFieldError("address")]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "col-md-4",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "form-floating",
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("select", {
                         className: "form-select",
@@ -25504,7 +25539,7 @@ function CauseDetails(_ref) {
                         htmlFor: "donorState",
                         children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("State"), " *"]
                       })]
-                    })
+                    }), getFieldError("state")]
                   })]
                 }), !!(cause !== null && cause !== void 0 && cause.is_special) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                   className: "bg-light p-3 rounded-2 mb-3 border border-dashed",
@@ -25519,13 +25554,13 @@ function CauseDetails(_ref) {
                     })]
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "row g-2",
-                    children: [specialConfig.showName && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                    children: [specialConfig.showName && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "col-md-6",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                         className: "form-floating",
                         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                           type: "text",
-                          className: "form-control",
+                          className: "form-control ".concat(errors.special_name ? "is-invalid" : ""),
                           id: "specialName",
                           placeholder: "Name",
                           value: data.special_name,
@@ -25536,14 +25571,14 @@ function CauseDetails(_ref) {
                           htmlFor: "specialName",
                           children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])(specialConfig.nameLabel)
                         })]
-                      })
+                      }), getFieldError("special_name")]
                     }), specialConfig.showDate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "col-md-6",
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                         className: "form-floating",
                         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                           type: "date",
-                          className: "form-control",
+                          className: "form-control ".concat(errors.special_date ? "is-invalid" : ""),
                           id: "specialDate",
                           min: todayDate,
                           value: data.special_date,
@@ -25571,7 +25606,7 @@ function CauseDetails(_ref) {
                           htmlFor: "specialDate",
                           children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])(specialConfig.dateLabel)
                         })]
-                      }), specialDateError && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                      }), getFieldError("special_date"), specialDateError && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
                         className: "text-danger small mt-1",
                         children: specialDateError
                       })]
@@ -25580,31 +25615,32 @@ function CauseDetails(_ref) {
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                         type: "file",
                         accept: "image/*",
-                        className: "form-control form-control-sm",
+                        className: "form-control form-control-sm ".concat(errors.special_image ? "is-invalid" : ""),
                         onChange: handleSFileChange
                       }), special_image && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                         className: "small text-success mt-1 ms-1",
                         children: ["Selected: ", special_image.name]
-                      })]
+                      }), getFieldError("special_image")]
                     }), specialConfig.showMessage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "col-md-12",
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                         className: "form-floating",
                         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("textarea", {
-                          className: "form-control",
+                          className: "form-control ".concat(errors.special_message ? "is-invalid" : ""),
                           placeholder: "Message",
                           id: "specialMsg",
+                          maxLength: SPECIAL_MESSAGE_MAX_CHARS,
                           value: data.special_message,
                           onChange: function onChange(e) {
-                            return setData("special_message", trimToWordLimit(e.target.value));
+                            return setData("special_message", trimToCharLimit(e.target.value));
                           }
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("label", {
                           htmlFor: "specialMsg",
                           children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])(specialConfig.messageLabel)
                         })]
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                      }), getFieldError("special_message"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                         className: "small text-muted mt-1",
-                        children: [countWords(data.special_message), "/", SPECIAL_MESSAGE_MAX_WORDS, " ", (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("words")]
+                        children: [(data.special_message || "").length, "/", SPECIAL_MESSAGE_MAX_CHARS, " ", (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("characters")]
                       })]
                     })]
                   })]
@@ -25630,9 +25666,9 @@ function CauseDetails(_ref) {
                       children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("I need 80G Tax Exemption Certificate")
                     })]
                   })
-                }), data.is_80g && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                }), data.is_80g && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                   className: "mb-3 animate__animated animate__fadeIn",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "form-floating",
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                       type: "text",
@@ -25664,7 +25700,7 @@ function CauseDetails(_ref) {
                       className: "text-danger small mt-1",
                       children: "Invalid Indian PAN format"
                     })]
-                  })
+                  }), getFieldError("pancard")]
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("span", {
                   className: "section-label",
                   style: {
@@ -25764,13 +25800,13 @@ function CauseDetails(_ref) {
                     }
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "row g-2",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "col-7",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                         className: "form-floating",
                         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                           type: "text",
-                          className: "form-control",
+                          className: "form-control ".concat(errors.transactionId ? "is-invalid" : ""),
                           id: "txnId",
                           placeholder: "Txn ID",
                           value: data.transactionId,
@@ -25782,19 +25818,19 @@ function CauseDetails(_ref) {
                           htmlFor: "txnId",
                           children: [(0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Transaction ID"), " *"]
                         })]
-                      })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+                      }), getFieldError("transactionId")]
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                       className: "col-5",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("input", {
                         type: "file",
-                        className: "form-control form-control-sm",
+                        className: "form-control form-control-sm ".concat(errors.receiptFile ? "is-invalid" : ""),
                         style: {
                           height: "45px",
                           paddingTop: "10px"
                         },
                         onChange: handleFileChange,
                         accept: "image/*,.pdf"
-                      })
+                      }), getFieldError("receiptFile")]
                     })]
                   })]
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
@@ -25805,7 +25841,7 @@ function CauseDetails(_ref) {
                       sitekey: captchaSiteKey,
                       onChange: handleCaptchaChange
                     })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
+                  }), getFieldError("captchaToken"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("div", {
                     className: "form-check mb-3",
                     style: {
                       display: "none"
@@ -25830,7 +25866,7 @@ function CauseDetails(_ref) {
                         children: (0,_utils_translate__WEBPACK_IMPORTED_MODULE_10__["default"])("Terms & Conditions")
                       })]
                     })]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("button", {
+                  }), getFieldError("agreed"), getFieldError("paymentMethod"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsxs)("button", {
                     className: "btn btn-primary rounded-pill w-100 fw-bold",
                     style: {
                       background: "linear-gradient(45deg, #ff8c00, #ffaa33)",

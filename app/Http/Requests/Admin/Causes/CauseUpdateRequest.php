@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Admin\Causes;
 
+use App\Models\Cause;
 use App\Models\Setting;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CauseUpdateRequest extends FormRequest
 {
@@ -16,6 +18,13 @@ class CauseUpdateRequest extends FormRequest
     {
         $rules = [
             'category' => ['required'],
+            'slug' => [
+                'nullable',
+                'string',
+                'max:255',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                Rule::unique('causes', 'slug')->ignore($this->route('cause') instanceof Cause ? $this->route('cause')->id : null),
+            ],
             'thumbnail_image' => ['required'],
             'banner_image' => ['required'],
             'mobile_banner_image' => ['nullable', 'string'],
@@ -26,8 +35,9 @@ class CauseUpdateRequest extends FormRequest
             'is_special' => ['required', 'integer'],
             'status' => ['required', 'integer'],
             'custom_donation_amounts' => ['nullable', 'string'],
+            'min_amount' => ['required', 'numeric', 'min:0'],
             'raised_amount' => ['nullable', 'numeric'],
-            'goal_amount' => ['nullable', 'numeric'],
+            'goal_amount' => ['nullable', 'numeric', 'min:0'],
             'deadline' => ['nullable', 'date', 'after:today'],
             'type' => ['nullable', 'string'],
             'video_url' => ['nullable', 'string'],
@@ -44,9 +54,12 @@ class CauseUpdateRequest extends FormRequest
             $code = $language->code;
 
             $rules["{$code}_title"] = ['required', 'string', 'max:255'];
+            $rules["{$code}_cause_title"] = ['nullable', 'string', 'max:255'];
             $rules["{$code}_content"] = ['nullable', 'string'];
             $rules["{$code}_projects"] = ['nullable', 'string'];
-            $rules["{$code}_faq"] = ['nullable'];
+            $rules["{$code}_faq"] = ['nullable', 'array'];
+            $rules["{$code}_faq.*.title"] = ['nullable', 'string', 'max:255'];
+            $rules["{$code}_faq.*.content"] = ['nullable', 'string'];
             $rules["{$code}_updates"] = ['nullable', 'string'];
         }
 

@@ -3,7 +3,7 @@ import { IonIcon } from "@ionic/react"
 import { checkmarkOutline } from 'ionicons/icons';
 import "./CustomSelect.css"
 
-export default function CustomMultiSelect({ options, value = [], placeholder, onChange }) {
+export default function CustomMultiSelect({ options, value = [], placeholder, onChange, hideSelectedTags = false }) {
     const [open, setOpen] = useState(false)
     const [search, setSearch] = useState("")
     const boxRef = useRef(null)
@@ -42,7 +42,7 @@ export default function CustomMultiSelect({ options, value = [], placeholder, on
         <div className={`custom-select-container ${open ? "is-open" : ""}`} ref={boxRef}>
             <div className="selected-area" onClick={() => setOpen(!open)}>
                 <div className="selected-tags">
-                    {value.length > 0 ? (
+                    {value.length > 0 && !hideSelectedTags ? (
                         options.filter(o => value.includes(o.value)).map(o => (
                             <span key={o.value} className="select-tag">
                                 {o.image && <img src={o.image} alt="" className="tag-img" />}

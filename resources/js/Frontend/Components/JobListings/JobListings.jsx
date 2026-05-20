@@ -1,8 +1,30 @@
-import React from "react"
-import Button from "../Button"
+import React, { useMemo, useState } from "react"
 
 export default function JobListings({ data }) {
     const { section_title, section_subtitle, job_list } = data
+    const [activeJobIndex, setActiveJobIndex] = useState(null)
+    const activeJob = useMemo(() => {
+        if (activeJobIndex === null) return null
+        return (job_list || [])[activeJobIndex] || null
+    }, [activeJobIndex, job_list])
+
+    const buildMailTo = (job) => {
+        const to = (job?.contact_email || "").trim() || "careers@homelesscarefoundation.org"
+        const subject = `Application for ${job?.job_title || "Open Position"}`
+        const body = `Hello Team,\n\nI am interested in applying for the ${
+            job?.job_title || "open role"
+        } role.\n\nRegards,`
+        return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    }
+
+    const labelValuePairs = (job) => [
+        { label: "Work Place", value: job?.workplace || job?.job_duration },
+        { label: "Organization Type", value: job?.organization_type },
+        { label: "Reporting To", value: job?.reporting_to },
+        { label: "Employment Type", value: job?.employment_type || job?.job_status },
+        { label: "Salary", value: job?.salary }
+    ]
+
     return (
         <div className="container">
             {(section_subtitle || section_title) && (
@@ -41,11 +63,11 @@ export default function JobListings({ data }) {
                             />
                             <p
                                 dangerouslySetInnerHTML={{
-                                    __html: item.job_description
+                                    __html: item.job_summary || item.job_description
                                 }}
                             />
                             <div className="cs_list_meta">
-                                {item.job_duration && (
+                                {(item.workplace || item.job_duration) && (
                                     <span>
                                         <i>
                                             <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -55,10 +77,10 @@ export default function JobListings({ data }) {
                                                 />
                                             </svg>
                                         </i>
-                                        {item.job_duration}
+                                        {item.workplace || item.job_duration}
                                     </span>
                                 )}
-                                {item.job_status && (
+                                {(item.employment_type || item.job_status) && (
                                     <span>
                                         <i>
                                             <svg width={20} height={19} viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -70,23 +92,77 @@ export default function JobListings({ data }) {
                                                 />
                                             </svg>
                                         </i>
-                                        {item.job_status}
+                                        {item.employment_type || item.job_status}
                                     </span>
                                 )}
                             </div>
                         </div>
                         <div className="cs_list_right">
-                            {(item.job_action_url || item.job_action_text) && (
-                                <Button
-                                    href={item.job_action_url}
-                                    btnText={item.job_action_text}
-                                    btnClass="cs_btn cs_style_1 cs_type_2 cs_primary_bg cs_white_color"
-                                />
-                            )}
+                            <button
+                                type="button"
+                                className="cs_btn cs_style_1 cs_type_2 cs_primary_bg cs_white_color"
+                                onClick={() => setActiveJobIndex(index)}
+                            >
+                                View Details
+                            </button>
                         </div>
                     </li>
                 ))}
             </ul>
+
+            {activeJob && (
+                <>
+                    <div className="modal-backdrop fade show" onClick={() => setActiveJobIndex(null)} />
+                    <div className="modal fade show d-block" tabIndex="-1" role="dialog">
+                        <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">{activeJob.job_title}</h5>
+                                    <button type="button" className="close" onClick={() => setActiveJobIndex(null)}>
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <div className="row">
+                                        {labelValuePairs(activeJob)
+                                            .filter((entry) => entry.value)
+                                            .map((entry) => (
+                                                <div className="col-md-6 mb-2" key={entry.label}>
+                                                    <strong>{entry.label}: </strong>
+                                                    <span>{entry.value}</span>
+                                                </div>
+                                            ))}
+                                    </div>
+                                    {activeJob.job_summary && (
+                                        <div
+                                            className="mt-3"
+                                            dangerouslySetInnerHTML={{
+                                                __html: activeJob.job_summary
+                                            }}
+                                        />
+                                    )}
+                                    {activeJob.job_description && (
+                                        <div
+                                            className="mt-2 mb-0"
+                                            dangerouslySetInnerHTML={{
+                                                __html: activeJob.job_description
+                                            }}
+                                        />
+                                    )}
+                                </div>
+                                <div className="modal-footer">
+                                    <a
+                                        href={buildMailTo(activeJob)}
+                                        className="cs_btn cs_style_1 cs_type_2 cs_primary_bg cs_white_color"
+                                    >
+                                        Send Email
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     )
 }

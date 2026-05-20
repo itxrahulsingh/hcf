@@ -869,24 +869,42 @@ export default function CauseDetails({
                         {/* FAQ, Updates, Gallery */}
                         {faqItems.length > 0 && (
                             <div id="faq-section" className="cs_cause_details_wrap mt-5 pt-4 border-top">
-                                <div className="d-flex align-items-center mb-4">
+                                <style>{`
+                                    #faq-section .accordion-button::after {
+                                        display: none !important;
+                                    }
+                                `}</style>
+                                <div className="d-flex align-items-center mb-3">
                                     <h3 className="mb-0 fw-bold">FAQ</h3>
                                 </div>
                                 <div className="accordion custom-accordion">
                                     {faqItems.map((item, idx) => (
-                                        <div className="accordion-item" key={idx}>
+                                        <div
+                                            className="accordion-item mb-2 border-0 rounded-3 overflow-hidden shadow-sm"
+                                            key={idx}
+                                            style={{ background: "#fff7f2" }}
+                                        >
                                             <h2 className="accordion-header">
                                                 <button
-                                                    className={`accordion-button ${openFaqIndex === idx ? "" : "collapsed"}`}
+                                                    className={`accordion-button d-flex justify-content-between align-items-center ${openFaqIndex === idx ? "" : "collapsed"}`}
                                                     type="button"
                                                     onClick={() => toggleFaq(idx)}
+                                                    style={{
+                                                        background: openFaqIndex === idx ? "#ffe9dc" : "#fff7f2",
+                                                        boxShadow: "none",
+                                                        fontWeight: 600
+                                                    }}
                                                 >
-                                                    {item.title}
+                                                    <span>{item.title}</span>
+                                                    <span className="ms-2">
+                                                        <Icon icon={openFaqIndex === idx ? "lucide:minus" : "lucide:plus"} width="18" height="18" />
+                                                    </span>
                                                 </button>
                                             </h2>
                                             <div className={`accordion-collapse collapse ${openFaqIndex === idx ? "show" : ""}`}>
                                                 <div
-                                                    className="accordion-body rich-content"
+                                                    className="accordion-body rich-content pt-2"
+                                                    style={{ background: "#ffffff" }}
                                                     dangerouslySetInnerHTML={{ __html: ProcessContent(item.content || "") }}
                                                 />
                                             </div>

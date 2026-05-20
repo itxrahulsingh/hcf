@@ -89,6 +89,7 @@ const styles = {
 }
 
 export default function Cause2({ data }) {
+    const getDisplayTitle = (cause) => cause?.content?.cause_title || cause?.content?.title || ""
     const limit = parseInt(data?.record_limit) || 4
     const orderBy = data?.order_by || "latest"
     let processedCauses = localStorage.getItem("causes") ? JSON.parse(localStorage.getItem("causes")) : []
@@ -99,8 +100,8 @@ export default function Cause2({ data }) {
         processedCauses.sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
     } else if (orderBy === "alphabetical") {
         processedCauses.sort((a, b) => {
-            const titleA = a.content?.title?.toLowerCase() || ""
-            const titleB = b.content?.title?.toLowerCase() || ""
+            const titleA = getDisplayTitle(a).toLowerCase()
+            const titleB = getDisplayTitle(b).toLowerCase()
             return titleA.localeCompare(titleB)
         })
     } else if (orderBy === "random") {
@@ -128,14 +129,14 @@ export default function Cause2({ data }) {
 
                 <div className="row cs_gap_y_30">
                     {finalCauses?.map((item, index) => (
-                        <div className="col-xl-3 col-lg-4 col-sm-6" key={index}>
+                        <div className="col-xl-3 col-lg-4 col-6 my-3" key={index}>
                             <div style={styles.cardContainer} className="cs_zoom_effect_wrap">
                                 <NavigationLink href={route("pages.show", item?.slug)} style={styles.imgWrapper} className="cs_zoom_effect">
-                                    <img src={item?.thumbnail_image} alt={item?.content?.title} loading="lazy" decoding="async" style={styles.img} />
+                                    <img src={item?.thumbnail_image} alt={getDisplayTitle(item)} loading="lazy" decoding="async" style={styles.img} />
                                 </NavigationLink>
                                 <h2 className="mb-0 p-0 fs-6">
-                                    <NavigationLink href={route("pages.show", item?.slug)} style={styles.title} title={item?.content?.title}>
-                                        {item?.content?.title}
+                                    <NavigationLink href={route("pages.show", item?.slug)} style={styles.title} title={getDisplayTitle(item)}>
+                                        {getDisplayTitle(item)}
                                     </NavigationLink>
                                 </h2>
                                 <NavigationLink href={route("pages.show", item?.slug)} style={styles.donateBtn} className="cs_donate_btn_hover">

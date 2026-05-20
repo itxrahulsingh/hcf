@@ -8,6 +8,7 @@ import MultipleMediaUploader from "@/Admin/Components/Media/MultipleMediaUploade
 import CustomMultiSelect from "@/Admin/Components/Inputs/CustomMultiSelect"
 import CustomSelect from "@/Admin/Components/Inputs/CustomSelect"
 import { produce } from "immer"
+import { Icon } from "@iconify/react"
 import AdminLayouts from "@/Admin/Layouts/AdminLayouts"
 import translate from "@/utils/translate"
 
@@ -28,14 +29,18 @@ export default function Create({ languages, cause_categories, default_lang, gift
     const [tempLang, setTempLang] = useState(initialLanguage)
     const languageArr = Object.entries(normalizedLanguages)
     const { props } = usePage()
+    const defaultTitleKey = `${default_lang || initialLanguage}_title`
+    const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false)
 
-    // --- 1. FAQ STATE INITIALIZATION ---
-    const [faqs, setFaqs] = useState(
-        languageCodes.reduce((acc, code) => {
-            acc[code] = [{ title: "", content: "" }]
-            return acc
-        }, {})
-    )
+    const slugify = (value) =>
+        (value || "")
+            .toString()
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "")
 
     // Prepare options for "Special Occasion Type" dropdown
     const typeOptions = cause_types
@@ -44,6 +49,11 @@ export default function Create({ languages, cause_categories, default_lang, gift
               label: label
           }))
         : []
+    const giftOptions = gifts.map((g) => ({
+        value: g.id,
+        label: g?.content?.title || "Untitled Gift",
+        image: g?.gift_image
+    }))
 
     // --- 2. FORM INITIALIZATION ---
     const { data, setData, errors, post, processing } = useForm({
@@ -75,65 +85,66 @@ export default function Create({ languages, cause_categories, default_lang, gift
         // Initialize multi-language fields
         ...languageCodes.reduce((acc, code) => {
             acc[code + "_title"] = ""
+            acc[code + "_cause_title"] = ""
             acc[code + "_content"] = ""
             acc[code + "_projects"] = ""
-            acc[code + "_faq"] = ""
+            acc[code + "_faq"] = [{ title: "", content: "" }]
             acc[code + "_updates"] = ""
             return acc
         }, {})
     })
 
-    // Add a new empty FAQ row
+    const getFaqList = (langCode) => {
+        const key = `${langCode}_faq`
+        const list = data[key]
+        return Array.isArray(list) ? list : [{ title: "", content: "" }]
+    }
+
     const addFaq = () => {
-        setFaqs((prev) => ({
-            ...prev,
-            [selectedLang]: [...(prev[selectedLang] || []), { title: "", content: "" }]
-        }))
+        const key = `${selectedLang}_faq`
+        setData(key, [...getFaqList(selectedLang), { title: "", content: "" }])
     }
 
-    // Remove a FAQ row
     const removeFaq = (index) => {
-        setFaqs((prev) => ({
-            ...prev,
-            [selectedLang]: (prev[selectedLang] || []).filter((_, i) => i !== index)
-        }))
+        const key = `${selectedLang}_faq`
+        const next = getFaqList(selectedLang).filter((_, i) => i !== index)
+        setData(key, next.length > 0 ? next : [{ title: "", content: "" }])
     }
 
-    // Update specific FAQ field
     const updateFaq = (index, field, value) => {
-        setFaqs((prev) => {
-            const list = [...(prev[selectedLang] || [])]
-            list[index] = { ...list[index], [field]: value }
-            return {
-                ...prev,
-                [selectedLang]: list
-            }
-        })
+        const key = `${selectedLang}_faq`
+        const list = [...getFaqList(selectedLang)]
+        list[index] = { ...list[index], [field]: value }
+        setData(key, list)
+    }
+
+    const moveGift = (fromIndex, toIndex) => {
+        if (toIndex < 0 || toIndex >= data.gift_ids.length) return
+        const ordered = [...data.gift_ids]
+        const [moved] = ordered.splice(fromIndex, 1)
+        ordered.splice(toIndex, 0, moved)
+        setData("gift_ids", ordered)
+    }
+    const [dragGiftIndex, setDragGiftIndex] = useState(null)
+
+    const onGiftDragStart = (index) => setDragGiftIndex(index)
+    const onGiftDragOver = (e) => e.preventDefault()
+    const onGiftDrop = (dropIndex) => {
+        if (dragGiftIndex === null || dragGiftIndex === dropIndex) return
+        moveGift(dragGiftIndex, dropIndex)
+        setDragGiftIndex(null)
     }
     const handlePublish = (e) => {
         e.preventDefault()
-
-        post(route("admin.causes.store"), {
-            transform: (currData) => {
-                const transformed = { ...currData }
-
-                languageCodes.forEach((lang) => {
-                    const currentLangFaqs = faqs[lang] || []
-                    const cleaned = currentLangFaqs
-                        .map((f) => ({
-                            title: (f.title || "").toString().trim(),
-                            content: (f.content || "").toString().trim()
-                        }))
-                        .filter((f) => f.title || f.content)
-                    transformed[`${lang}_faq`] = JSON.stringify(cleaned)
-                })
-
-                return transformed
-            }
-        })
+        post(route("admin.causes.store"))
     }
 
     useEffect(() => setSelectedLang(tempLang), [tempLang])
+
+    useEffect(() => {
+        if (isSlugManuallyEdited) return
+        setData("slug", slugify(data[defaultTitleKey]))
+    }, [data[defaultTitleKey], defaultTitleKey, isSlugManuallyEdited])
 
     useEffect(() => {
         if (Object.keys(errors).length > 0) {
@@ -148,12 +159,28 @@ export default function Create({ languages, cause_categories, default_lang, gift
         <AdminLayouts>
             <Head title="Create Cause" />
             <div className="container-fluid">
+                <style>{`
+                    .cause-form-compact .row { margin-bottom: 6px; }
+                    .cause-form-compact .yoo-height-b20 { height: 10px !important; }
+                    .cause-form-compact .form-group { margin-bottom: 8px; }
+                    .cause-form-compact label { margin-bottom: 4px; font-size: 13px; }
+                    .cause-form-compact .form-control { margin-bottom: 0; }
+                    .cause-form-compact .form-control,
+                    .cause-form-compact input.form-control,
+                    .cause-form-compact textarea.form-control,
+                    .cause-form-compact select.form-control { min-height: 36px; padding-top: 6px; padding-bottom: 6px; }
+                    .cause-form-compact .upload-area { min-height: 110px; padding: 10px; }
+                    .cause-form-compact .upload-area.upload-area-sm { min-height: 90px; }
+                    .cause-form-compact .preview-image { max-height: 95px; object-fit: contain; }
+                    .cause-form-compact .multi-image-preview { width: 84px; height: 84px; }
+                    .cause-form-compact .multi-preview-image { width: 100%; height: 100%; object-fit: cover; }
+                `}</style>
                 <div className="yoo-uikits-heading">
                     <h2 className="yoo-uikits-title">{translate("Create Cause")}</h2>
                 </div>
                 <div className="yoo-height-b20" />
 
-                <form className="row" onSubmit={handlePublish}>
+                <form className="row cause-form-compact" onSubmit={handlePublish}>
                     {/* LEFT COLUMN */}
                     <div className="col-lg-8">
                         <div className="yoo-card yoo-style1">
@@ -189,6 +216,32 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                             />
                                         </div>
                                     </div>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <label>{translate("Cause Title")} ({translate("For Page Builder")})</label>
+                                            <TextInput
+                                                type="text"
+                                                error={errors[`${selectedLang}_cause_title`]}
+                                                value={data[`${selectedLang}_cause_title`]}
+                                                onChange={(e) => setData(`${selectedLang}_cause_title`, e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <label>{translate("Slug")}</label>
+                                            <TextInput
+                                                type="text"
+                                                error={errors.slug}
+                                                value={data.slug}
+                                                onChange={(e) => {
+                                                    setIsSlugManuallyEdited(true)
+                                                    setData("slug", e.target.value)
+                                                }}
+                                                placeholder="help-vrindavans-sadhus-stay-warm-this-winter"
+                                            />
+                                        </div>
+                                    </div>
 
                                     {/* Amounts */}
                                     <div className="row">
@@ -206,7 +259,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         </div>
                                         <div className="col-md-6">
                                             <label>
-                                                {translate("Goal Amount")} ({props.currency?.currency_code || "INR"}) *
+                                                {translate("Goal Amount")} ({props.currency?.currency_code || "INR"})
                                             </label>
                                             <TextInput
                                                 type="number"
@@ -293,39 +346,47 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                     {/* --- FAQ SECTION --- */}
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <label>{translate("FAQ")}</label>
-                                            {(faqs[selectedLang] || []).map((item, index) => (
-                                                <div key={index} className="p-3 mb-3 border rounded">
-                                                    <div className="mb-2">
+                                            <div className="d-flex align-items-center justify-content-between mb-2">
+                                                <label className="mb-0">{translate("FAQ")}</label>
+                                                <button type="button" className="btn btn-sm btn-primary" onClick={addFaq}>
+                                                    + {translate("Add FAQ")}
+                                                </button>
+                                            </div>
+                                            {getFaqList(selectedLang).map((item, index) => (
+                                                <div key={index} className="p-2 mb-2 border rounded position-relative bg-white">
+                                                    {getFaqList(selectedLang).length > 1 && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-link text-danger p-0 position-absolute"
+                                                            style={{ top: "8px", right: "8px", lineHeight: 1 }}
+                                                            onClick={() => removeFaq(index)}
+                                                            title={translate("Remove")}
+                                                        >
+                                                            <Icon icon="lucide:x" width="16" height="16" />
+                                                        </button>
+                                                    )}
+                                                    <div className="mb-2 pr-4">
                                                         <input
                                                             type="text"
-                                                            className="form-control"
+                                                            className="form-control form-control-sm"
                                                             placeholder="Question"
                                                             value={item.title}
                                                             onChange={(e) => updateFaq(index, "title", e.target.value)}
+                                                            style={{ backgroundColor: "#fff" }}
                                                         />
                                                     </div>
-                                                    <div className="mb-2">
+                                                    <div>
                                                         <input
                                                             type="text"
-                                                            className="form-control"
+                                                            className="form-control form-control-sm"
                                                             placeholder="Answer"
                                                             value={item.content}
                                                             onChange={(e) => updateFaq(index, "content", e.target.value)}
+                                                            style={{ backgroundColor: "#fff" }}
                                                         />
-                                                    </div>
-                                                    <div className="text-right">
-                                                        {(faqs[selectedLang] || []).length > 1 && (
-                                                            <button type="button" className="btn btn-danger btn-sm" onClick={() => removeFaq(index)}>
-                                                                {translate("Remove")}
-                                                            </button>
-                                                        )}
                                                     </div>
                                                 </div>
                                             ))}
-                                            <button type="button" className="btn btn-primary btn-sm mt-2" onClick={addFaq}>
-                                                + {translate("Add FAQ")}
-                                            </button>
                                         </div>
                                     </div>
 
@@ -370,7 +431,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         </div>
 
                                         {/* --- ADD CUSTOM CSS SECTION HERE --- */}
-                                        <div className="col-md-12 mt-3">
+                                        <div className="col-md-12">
                                             <div className="form-group">
                                                 <label>{translate("Custom CSS Style")}</label>
                                                 <textarea
@@ -406,29 +467,29 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                 <div className="yoo-padd-lr-20">
                                     <div className="yoo-height-b20" />
 
-                                    <div className="form-group d-flex justify-content-between align-items-center mb-3">
+                                    <div className="form-group d-flex justify-content-between align-items-center mb-2">
                                         <label className="mb-0">{translate("Is Active")}:</label>
                                         <div
-                                            className={`yoo-switch ${data.status === 1 ? "active" : ""}`}
-                                            onClick={() => setData("status", data.status === 1 ? 0 : 1)}
+                                            className={`yoo-switch ${Number(data.status) === 1 ? "active" : ""}`}
+                                            onClick={() => setData("status", Number(data.status) === 1 ? 0 : 1)}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
                                         </div>
                                     </div>
 
-                                    <div className="form-group d-flex justify-content-between align-items-center mb-3">
+                                    <div className="form-group d-flex justify-content-between align-items-center mb-2">
                                         <label className="mb-0">{translate("Is Special")}:</label>
                                         <div
-                                            className={`yoo-switch ${data.is_special === 1 ? "active" : ""}`}
-                                            onClick={() => setData("is_special", data.is_special === 1 ? 0 : 1)}
+                                            className={`yoo-switch ${Number(data.is_special) === 1 ? "active" : ""}`}
+                                            onClick={() => setData("is_special", Number(data.is_special) === 1 ? 0 : 1)}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
                                         </div>
                                     </div>
 
-                                    {data.is_special === 1 && (
+                                    {Number(data.is_special) === 1 && (
                                         <div className="form-group mt-3">
                                             <label>{translate("Special Occasion Type")} *</label>
                                             <CustomSelect options={typeOptions} value={data.type} onSelect={(value) => setData("type", value)} />
@@ -436,22 +497,22 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         </div>
                                     )}
 
-                                    <div className="form-group d-flex justify-content-between align-items-center mb-3">
+                                    <div className="form-group d-flex justify-content-between align-items-center mb-2">
                                         <label className="mb-0">{translate("Have Gift")}:</label>
                                         <div
-                                            className={`yoo-switch ${data.have_gift === 1 ? "active" : ""}`}
-                                            onClick={() => setData("have_gift", data.have_gift === 1 ? 0 : 1)}
+                                            className={`yoo-switch ${Number(data.have_gift) === 1 ? "active" : ""}`}
+                                            onClick={() => setData("have_gift", Number(data.have_gift) === 1 ? 0 : 1)}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
                                         </div>
                                     </div>
 
-                                    <div className="form-group d-flex justify-content-between align-items-center mb-3">
+                                    <div className="form-group d-flex justify-content-between align-items-center mb-2">
                                         <label className="mb-0">{translate("Have Product")}:</label>
                                         <div
-                                            className={`yoo-switch ${data.have_product === 1 ? "active" : ""}`}
-                                            onClick={() => setData("have_product", data.have_product === 1 ? 0 : 1)}
+                                            className={`yoo-switch ${Number(data.have_product) === 1 ? "active" : ""}`}
+                                            onClick={() => setData("have_product", Number(data.have_product) === 1 ? 0 : 1)}
                                             style={{ cursor: "pointer" }}
                                         >
                                             <div className="yoo-switch-in"></div>
@@ -473,7 +534,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
                             </div>
                         </div>
 
-                        {data.have_gift === 1 && (
+                        {Number(data.have_gift) === 1 && (
                             <div className="yoo-card yoo-style1 mt-4">
                                 <div className="yoo-card-heading">
                                     <h2 className="yoo-card-title">{translate("Gifts")}</h2>
@@ -496,23 +557,54 @@ export default function Create({ languages, cause_categories, default_lang, gift
                                         </div>
 
                                         <CustomMultiSelect
-                                            options={gifts.map((g) => ({
-                                                value: g.id,
-                                                label: g?.content?.title || "Untitled Gift",
-                                                image: g?.gift_image
-                                            }))}
+                                            options={giftOptions}
                                             value={data.gift_ids}
                                             placeholder="Select Gifts"
                                             onChange={(selected) => setData("gift_ids", selected)}
+                                            hideSelectedTags={true}
                                         />
                                         <FormValidationError message={errors.gift_ids} />
+                                        {data.gift_ids.length > 0 && (
+                                            <div className="">
+                                                <label>{translate("Selected Gift Order")}</label>
+                                                {data.gift_ids.map((giftId, idx) => {
+                                                    const gift = giftOptions.find((g) => g.value === giftId)
+                                                    if (!gift) return null
+                                                    return (
+                                                        <div
+                                                            key={`gift_order_${giftId}_${idx}`}
+                                                            className="d-flex align-items-center justify-content-between border rounded px-2 py-2 mb-2"
+                                                            draggable
+                                                            onDragStart={() => onGiftDragStart(idx)}
+                                                            onDragOver={onGiftDragOver}
+                                                            onDrop={() => onGiftDrop(idx)}
+                                                        >
+                                                            <div className="d-flex align-items-center">
+                                                                <span className="text-muted mr-2" style={{ cursor: "grab" }}>
+                                                                    ::
+                                                                </span>
+                                                                {gift.image && (
+                                                                    <img
+                                                                        src={gift.image}
+                                                                        alt=""
+                                                                        style={{ width: "30px", height: "30px", objectFit: "cover", borderRadius: "4px" }}
+                                                                    />
+                                                                )}
+                                                                <span className="ml-2">{gift.label}</span>
+                                                            </div>
+                                                            <small className="text-muted">{translate("Drag to reorder")}</small>
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        )}
                                         <div className="yoo-height-b20" />
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        {data.have_product === 1 && (
+                        {Number(data.have_product) === 1 && (
                             <div className="yoo-card yoo-style1 mt-4">
                                 <div className="yoo-card-heading">
                                     <h2 className="yoo-card-title">{translate("Products")}</h2>
@@ -561,6 +653,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
 
                                     <label>{translate("Thumbnail")} *</label>
                                     <SingleMediaUploader
+                                        size_sm={true}
                                         onSelected={(e) =>
                                             setData(
                                                 produce((d) => {
@@ -581,6 +674,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
 
                                     <label className="mt-3">{translate("Banner")} *</label>
                                     <SingleMediaUploader
+                                        size_sm={true}
                                         onSelected={(e) =>
                                             setData(
                                                 produce((d) => {
@@ -601,6 +695,7 @@ export default function Create({ languages, cause_categories, default_lang, gift
 
                                     <label className="mt-3">{translate("Mobile Banner")}</label>
                                     <SingleMediaUploader
+                                        size_sm={true}
                                         onSelected={(e) =>
                                             setData(
                                                 produce((d) => {

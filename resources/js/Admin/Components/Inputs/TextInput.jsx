@@ -1,6 +1,6 @@
 import { useRef, useState } from "react"
 
-export default function TextInput({ marginBottom = "20px", ...props }) {
+export default function TextInput({ marginBottom = "5px", ...props }) {
     const [isFocused, setIsFocused] = useState(false)
     const inputRef = useRef()
 

@@ -56,11 +56,14 @@ export default function JobListingsSectionCustomize({ index }) {
             produce((draft) => {
                 draft.job_list.push({
                     job_title: "",
+                    job_summary: "",
+                    workplace: "",
+                    organization_type: "",
+                    reporting_to: "",
+                    employment_type: "",
+                    salary: "",
                     job_description: "",
-                    job_duration: "",
-                    job_status: "",
-                    job_action_text: "",
-                    job_action_url: ""
+                    contact_email: ""
                 })
                 setOpenIndex(draft.job_list.length - 1)
             })
@@ -104,13 +107,13 @@ export default function JobListingsSectionCustomize({ index }) {
                                         <span>{item.job_title ? item.job_title : "List Item"}</span>
                                     </span>
                                     <div className="cs_loop_item_control_btns">
-                                        <button className="cs_clone_loop_item" onClick={() => cloneJob(index)}>
+                                        <button type="button" className="cs_clone_loop_item" onClick={() => cloneJob(index)}>
                                             <Icon icon="lucide:copy" width="18" height="18" />
                                         </button>
                                         {data.job_list.length === 1 ? (
                                             ""
                                         ) : (
-                                            <button className="cs_remove_loop_item" onClick={() => removeJob(index)}>
+                                            <button type="button" className="cs_remove_loop_item" onClick={() => removeJob(index)}>
                                                 <Icon icon="lucide:x" width="18" height="18" />
                                             </button>
                                         )}
@@ -134,10 +137,135 @@ export default function JobListingsSectionCustomize({ index }) {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Job Description</label>
+                                            <label>Short Summary</label>
                                             <textarea
                                                 cols="30"
-                                                rows="10"
+                                                rows="3"
+                                                value={item.job_summary || ""}
+                                                onChange={(e) => {
+                                                    setData(
+                                                        produce((draft) => {
+                                                            draft.job_list[index].job_summary = e.target.value
+                                                        })
+                                                    )
+                                                }}
+                                                className="form-control"
+                                            />
+                                        </div>
+                                        <div className="row row_space_10">
+                                            <div className="col-sm-6">
+                                                <div className="form-group">
+                                                    <label>Work Place</label>
+                                                    <input
+                                                        type="text"
+                                                        value={item.workplace || ""}
+                                                        onChange={(e) => {
+                                                            setData(
+                                                                produce((draft) => {
+                                                                    draft.job_list[index].workplace = e.target.value
+                                                                })
+                                                            )
+                                                        }}
+                                                        className="form-control"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <div className="form-group">
+                                                    <label>Organization Type</label>
+                                                    <input
+                                                        type="text"
+                                                        value={item.organization_type || ""}
+                                                        onChange={(e) => {
+                                                            setData(
+                                                                produce((draft) => {
+                                                                    draft.job_list[index].organization_type = e.target.value
+                                                                })
+                                                            )
+                                                        }}
+                                                        className="form-control"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="row row_space_10">
+                                            <div className="col-sm-6">
+                                                <div className="form-group">
+                                                    <label>Reporting To</label>
+                                                    <input
+                                                        type="text"
+                                                        value={item.reporting_to || ""}
+                                                        onChange={(e) => {
+                                                            setData(
+                                                                produce((draft) => {
+                                                                    draft.job_list[index].reporting_to = e.target.value
+                                                                })
+                                                            )
+                                                        }}
+                                                        className="form-control"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <div className="form-group">
+                                                    <label>Employment Type</label>
+                                                    <input
+                                                        type="text"
+                                                        value={item.employment_type || ""}
+                                                        onChange={(e) => {
+                                                            setData(
+                                                                produce((draft) => {
+                                                                    draft.job_list[index].employment_type = e.target.value
+                                                                })
+                                                            )
+                                                        }}
+                                                        className="form-control"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="row row_space_10">
+                                            <div className="col-sm-6">
+                                                <div className="form-group">
+                                                    <label>Salary</label>
+                                                    <input
+                                                        type="text"
+                                                        value={item.salary || ""}
+                                                        onChange={(e) => {
+                                                            setData(
+                                                                produce((draft) => {
+                                                                    draft.job_list[index].salary = e.target.value
+                                                                })
+                                                            )
+                                                        }}
+                                                        className="form-control"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <div className="form-group">
+                                                    <label>Contact Email</label>
+                                                    <input
+                                                        type="email"
+                                                        value={item.contact_email || ""}
+                                                        onChange={(e) => {
+                                                            setData(
+                                                                produce((draft) => {
+                                                                    draft.job_list[index].contact_email = e.target.value
+                                                                })
+                                                            )
+                                                        }}
+                                                        className="form-control"
+                                                        placeholder="careers@example.com"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Role Description</label>
+                                            <textarea
+                                                cols="30"
+                                                rows="8"
                                                 value={item.job_description}
                                                 onChange={(e) => {
                                                     setData(
@@ -149,8 +277,8 @@ export default function JobListingsSectionCustomize({ index }) {
                                                 className="form-control"
                                             />
                                         </div>
-                                        <div className="form-group">
-                                            <label>Job Duration</label>
+                                        <div className="form-group d-none">
+                                            <label>Legacy Duration</label>
                                             <input
                                                 type="text"
                                                 value={item.job_duration}
@@ -164,8 +292,8 @@ export default function JobListingsSectionCustomize({ index }) {
                                                 className="form-control"
                                             />
                                         </div>
-                                        <div className="form-group">
-                                            <label>Job Status</label>
+                                        <div className="form-group d-none">
+                                            <label>Legacy Status</label>
                                             <input
                                                 type="text"
                                                 value={item.job_status}
@@ -179,48 +307,42 @@ export default function JobListingsSectionCustomize({ index }) {
                                                 className="form-control"
                                             />
                                         </div>
-                                        <div className="row row_space_10">
-                                            <div className="col-sm-6">
-                                                <div className="form-group">
-                                                    <label>Action Text</label>
-                                                    <input
-                                                        type="text"
-                                                        value={item.job_action_text}
-                                                        onChange={(e) => {
-                                                            setData(
-                                                                produce((draft) => {
-                                                                    draft.job_list[index].job_action_text = e.target.value
-                                                                })
-                                                            )
-                                                        }}
-                                                        className="form-control"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="col-sm-6">
-                                                <div className="form-group">
-                                                    <label>Action URL</label>
-                                                    <input
-                                                        type="text"
-                                                        value={item.job_action_url}
-                                                        onChange={(e) => {
-                                                            setData(
-                                                                produce((draft) => {
-                                                                    draft.job_list[index].job_action_url = e.target.value
-                                                                })
-                                                            )
-                                                        }}
-                                                        className="form-control"
-                                                    />
-                                                </div>
-                                            </div>
+                                        <div className="form-group d-none">
+                                            <label>Legacy Action Text</label>
+                                            <input
+                                                type="text"
+                                                value={item.job_action_text || ""}
+                                                onChange={(e) => {
+                                                    setData(
+                                                        produce((draft) => {
+                                                            draft.job_list[index].job_action_text = e.target.value
+                                                        })
+                                                    )
+                                                }}
+                                                className="form-control"
+                                            />
+                                        </div>
+                                        <div className="form-group d-none">
+                                            <label>Legacy Action URL</label>
+                                            <input
+                                                type="text"
+                                                value={item.job_action_url || ""}
+                                                onChange={(e) => {
+                                                    setData(
+                                                        produce((draft) => {
+                                                            draft.job_list[index].job_action_url = e.target.value
+                                                        })
+                                                    )
+                                                }}
+                                                className="form-control"
+                                            />
                                         </div>
                                     </div>
                                 )}
                             </div>
                         ))}
                         <div className="cs_loop_list_btn">
-                            <button className="btn btn-sm btn-primary" onClick={addNewJob}>
+                            <button type="button" className="btn btn-sm btn-primary" onClick={addNewJob}>
                                 Add new
                             </button>
                         </div>
@@ -237,8 +359,16 @@ export default function JobListingsSectionCustomize({ index }) {
                 section_subtitle: sectionData?.data?.section_subtitle ?? "",
                 job_list: sectionData?.data?.job_list ?? [
                     {
-                        job_title: "",
-                        job_description: "",
+                        job_title: "Front Office Executive",
+                        job_summary: "Support outreach and beneficiary engagement through strong communication and coordination.",
+                        workplace: "Janakpuri, Delhi",
+                        organization_type: "Non-Governmental Organization (NGO)",
+                        reporting_to: "Chief Operating Officer (COO)",
+                        employment_type: "Full-Time (In-Office)",
+                        salary: "Commensurate with Experience",
+                        job_description:
+                            "We are seeking a Customer Care Executive with excellent communication skills to support our outreach and beneficiary engagement. This role is ideal for individuals passionate about social impact, eager to learn, and motivated to contribute to meaningful change. Homeless Care Foundation is a community-driven nonprofit dedicated to improving the lives of urban homeless populations through sustainable, SDG-aligned initiatives.",
+                        contact_email: "careers@homelesscarefoundation.org",
                         job_duration: "",
                         job_status: "",
                         job_action_text: "",

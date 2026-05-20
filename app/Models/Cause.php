@@ -20,7 +20,7 @@ class Cause extends Model
         'have_gift' => 'integer',
         'have_product' => 'integer',
         'is_special' => 'integer',
-        'status' => 'boolean',
+        'status' => 'integer',
     ];
 
     public static $causeTypes = [
@@ -63,7 +63,17 @@ class Cause extends Model
             return collect();
         }
 
-        return Gift::with('content')->whereIn('id', $ids)->where('status', 1)->get();
+        $ids = array_values(array_filter(array_map('intval', $ids), fn($id) => $id > 0));
+        if (empty($ids)) {
+            return collect();
+        }
+
+        $idList = implode(',', $ids);
+        return Gift::with('content')
+            ->whereIn('id', $ids)
+            ->where('status', 1)
+            ->orderByRaw("FIELD(id, {$idList})")
+            ->get();
     }
 
     public function getProductsAttribute()

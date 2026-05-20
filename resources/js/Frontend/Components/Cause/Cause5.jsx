@@ -6,6 +6,7 @@ import Button from "../Button"
 
 export default function Cause5({ data }) {
     const { section_title, section_subtitle, action_text, pagination_style } = data
+    const getDisplayTitle = (cause) => cause?.content?.cause_title || cause?.content?.title || ""
 
     const limit = parseInt(data?.record_limit) || 4;
     const orderBy = data?.order_by || "latest";
@@ -17,8 +18,8 @@ export default function Cause5({ data }) {
         processedCauses.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     } else if (orderBy === "alphabetical") {
         processedCauses.sort((a, b) => {
-            const titleA = a.content?.title?.toLowerCase() || "";
-            const titleB = b.content?.title?.toLowerCase() || "";
+            const titleA = getDisplayTitle(a).toLowerCase();
+            const titleB = getDisplayTitle(b).toLowerCase();
             return titleA.localeCompare(titleB);
         });
     } else if (orderBy === "random") {
@@ -97,11 +98,11 @@ export default function Cause5({ data }) {
                         <SwiperSlide key={index}>
                             <div className="cs_post cs_style_2">
                                 <NavigationLink href={route("pages.show", item?.slug)} className="cs_post_thumb">
-                                    <img src={item?.thumbnail_image} alt={item?.content?.title} loading="lazy" decoding="async"/>
+                                    <img src={item?.thumbnail_image} alt={getDisplayTitle(item)} loading="lazy" decoding="async"/>
                                 </NavigationLink>
                                 <div className="cs_post_info">
                                     <h2 className="cs_post_title cs_fs_30 cs_normal">
-                                        <NavigationLink href={route("pages.show", item?.slug)}>{item?.content?.title}</NavigationLink>
+                                        <NavigationLink href={route("pages.show", item?.slug)}>{getDisplayTitle(item)}</NavigationLink>
                                     </h2>
                                     <p className="cs_post_subtitle">{item?.content?.content?.replace(/<[^>]*>/g, "").substring(0, 200)}</p>
                                     {action_text && (

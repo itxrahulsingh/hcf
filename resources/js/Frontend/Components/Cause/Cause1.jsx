@@ -6,6 +6,7 @@ import moment from "moment"
 
 export default function Cause1({ data }) {
     const { section_title, section_subtitle, pagination_style } = data
+    const getDisplayTitle = (cause) => cause?.content?.cause_title || cause?.content?.title || ""
 
     // 1. Get settings from the admin 'data' prop
     const limit = parseInt(data?.record_limit) || 4
@@ -21,8 +22,8 @@ export default function Cause1({ data }) {
         processedCauses.sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
     } else if (orderBy === "alphabetical") {
         processedCauses.sort((a, b) => {
-            const titleA = a.content?.title?.toLowerCase() || ""
-            const titleB = b.content?.title?.toLowerCase() || ""
+            const titleA = getDisplayTitle(a).toLowerCase()
+            const titleB = getDisplayTitle(b).toLowerCase()
             return titleA.localeCompare(titleB)
         })
     } else if (orderBy === "random") {
@@ -97,7 +98,7 @@ export default function Cause1({ data }) {
                         <SwiperSlide key={index}>
                             <div className="cs_post cs_style_1">
                                 <NavigationLink href={route("pages.show", item?.slug)} className="cs_post_thumb">
-                                    <img src={item?.thumbnail_image} alt={item?.content?.title} loading="lazy" decoding="async" />
+                                    <img src={item?.thumbnail_image} alt={getDisplayTitle(item)} loading="lazy" decoding="async" />
                                 </NavigationLink>
                                 <div className="cs_post_info">
                                     <div className="cs_post_meta">
@@ -106,7 +107,7 @@ export default function Cause1({ data }) {
                                         </span>
                                     </div>
                                     <h2 className="cs_post_title cs_fs_30 cs_normal mb-0">
-                                        <NavigationLink href={route("pages.show", item?.slug)}>{item?.content?.title}</NavigationLink>
+                                        <NavigationLink href={route("pages.show", item?.slug)}>{getDisplayTitle(item)}</NavigationLink>
                                     </h2>
                                 </div>
                             </div>
